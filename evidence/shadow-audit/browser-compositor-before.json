@@ -1,0 +1,111 @@
+{
+  "browser": "155.0.8059.84",
+  "checks": [
+    {
+      "kind": "viewport-edge",
+      "before": {
+        "changed": 0,
+        "values": [],
+        "sampleRGBA": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      "after": {
+        "changed": 78252,
+        "values": [
+          127
+        ],
+        "sampleRGBA": [
+          127,
+          127,
+          127,
+          191
+        ]
+      },
+      "multisampled": {
+        "changed": 78252,
+        "values": [
+          127,
+          159
+        ],
+        "sampleRGBA": [
+          127,
+          127,
+          127,
+          191
+        ]
+      },
+      "mirrored": {
+        "changed": 78252,
+        "values": [
+          127,
+          191
+        ],
+        "sampleRGBA": [
+          127,
+          127,
+          127,
+          191
+        ]
+      },
+      "msaa": {
+        "enabled": true,
+        "requestedSamples": 4,
+        "actualSamples": 4,
+        "supportedSamples": [
+          4
+        ]
+      },
+      "context": {
+        "alpha": true,
+        "antialias": false,
+        "depth": true,
+        "desynchronized": false,
+        "failIfMajorPerformanceCaveat": false,
+        "powerPreference": "default",
+        "premultipliedAlpha": true,
+        "preserveDrawingBuffer": false,
+        "stencil": false,
+        "xrCompatible": false
+      },
+      "oldSphere": 21.111445785061708,
+      "newSphere": 37.95783986293829,
+      "color": [
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        128,
+        0,
+        0,
+        0,
+        128
+      ],
+      "texture": {
+        "premultiplyAlpha": true,
+        "filter": 1006
+      }
+    }
+  ],
+  "errors": [],
+  "scope": "Original shadow texture/quad through actual WebGL materials. An isolated viewport-edge control recreates the old stale sphere; live loaded races verify kart/road ordering and both scene resolve paths. Controlled inspection cameras are not original-game screenshots.",
+  "sourceSha256": {
+    "src/kart-shadow.js": "564d385a8488909cf7d739e8fabe35300929d14b5706c0277441ea1bfac4c871",
+    "src/race-visuals.js": "8a11de78b7e360d8a2994ecd31d8847a43d817ed52cb419213f062b48c7850f2",
+    "src/asset-materials.js": "d23bda2a186dc457f794a932254a7af271a9b5d15fd6175a48675edbada28b2f",
+    "src/multisample-renderer.js": "8c3e059193ead46edbdfff3072aefa93be03dbe0e9e64a67f7162a8377dfb283",
+    "tests/kart-shadow-browser.mjs": "79c3d8799d8b1a87cf6f42b3f6f91db18cb3ab06742570467551d1c3a60548d6"
+  },
+  "status": "failed",
+  "failure": "AssertionError [ERR_ASSERTION]: Browser-composited shadow must match original backbuffer RGB, without extra canvas-alpha blending\n+ actual - expected\n\n  [\n+   191,\n+   191,\n+   191\n-   127,\n-   127,\n-   127\n  ]\n\n    at file:///home/rick/Documents/Rebuilds/RedCat%20Superkarts/tests/kart-shadow-browser.mjs:72:10"
+}

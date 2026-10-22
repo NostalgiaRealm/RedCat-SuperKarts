@@ -1,0 +1,519 @@
+{
+  "status": "passed",
+  "variant": "source",
+  "platform": "linux",
+  "profile": "/tmp/rcsk-desktop-test-sajJj3",
+  "graphicsArgs": [
+    "--ozone-platform=x11",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--autoplay-policy=no-user-gesture-required"
+  ],
+  "windowManager": "kwin_x11",
+  "scope": "Automated Linux Electron under Xvfb with SwiftShader software GPU. Real original media decoding/playback, native menu actions, authored race opening and ordinary keyboard movement. No full-race, physical GPU, sound-card output, or Windows/macOS execution claim. Renderer Node isolation is checked separately.",
+  "chromiumSandboxDisabled": false,
+  "checks": [
+    {
+      "name": "Original intro decodes and advances in the desktop protocol",
+      "media": {
+        "url": "rcsk://game/assets/media/intro.mp4",
+        "currentTime": 0.420053,
+        "duration": 106.109002,
+        "width": 320,
+        "height": 240,
+        "frames": 15,
+        "decodedAudioBytes": 16117,
+        "muted": false,
+        "volume": 1
+      }
+    },
+    {
+      "name": "Local media HEAD and byte-range responses support playback",
+      "head": {
+        "status": 200,
+        "length": 9624733,
+        "bytes": 0,
+        "type": "video/mp4",
+        "acceptRanges": "bytes"
+      },
+      "range": {
+        "status": 206,
+        "contentRange": "bytes 0-31/9624733",
+        "bytes": [
+          0,
+          0,
+          0,
+          32,
+          102,
+          116,
+          121,
+          112,
+          105,
+          115,
+          111,
+          109,
+          0,
+          0,
+          2,
+          0,
+          105,
+          115,
+          111,
+          109,
+          105,
+          115,
+          111,
+          50,
+          97,
+          118,
+          99,
+          49,
+          109,
+          112,
+          52,
+          49
+        ]
+      }
+    },
+    {
+      "name": "Renderer has no Node globals and retains isolated sandbox preferences",
+      "renderer": {
+        "require": "undefined",
+        "process": "undefined",
+        "module": "undefined",
+        "origin": "rcsk://game"
+      }
+    },
+    {
+      "name": "Original main-menu artwork and greeting play",
+      "images": [
+        {
+          "url": "rcsk://game/assets/menu/mn_0000x.png",
+          "width": 640,
+          "height": 480
+        },
+        {
+          "url": "rcsk://game/assets/menu/mn_0003x.png",
+          "width": 160,
+          "height": 45
+        },
+        {
+          "url": "rcsk://game/assets/menu/mn_0105x.png",
+          "width": 262,
+          "height": 38
+        }
+      ],
+      "quickrace": "url(\"rcsk://game/assets/menu/mn_0102b.png\")",
+      "greeting": {
+        "source": "rcsk://game/assets/audio/mn_hm02.wav",
+        "duration": 4.654104,
+        "readyState": 4,
+        "volume": 1
+      }
+    },
+    {
+      "name": "F11 enters and leaves native fullscreen"
+    },
+    {
+      "name": "A second launch with the same profile returns to the existing window",
+      "code": 0,
+      "signal": null,
+      "stderr": ""
+    },
+    {
+      "name": "Native QuickRace selections enter the authored camera opening",
+      "selection": {
+        "character": 1,
+        "difficulty": 1,
+        "country": 0,
+        "race": 2
+      },
+      "phase": 1,
+      "elapsed": 0,
+      "startCamera": true,
+      "countdownStarted": false,
+      "movementActive": false,
+      "difficulty": 1,
+      "mode": 2
+    },
+    {
+      "name": "Original countdown prevents motion until green"
+    },
+    {
+      "name": "Keyboard driving renders the original course and starts race audio",
+      "position": [
+        -2350.202880859375,
+        -13.952922821044922,
+        7170.17041015625
+      ],
+      "speed": 23.02686882019043,
+      "triangles": 5613,
+      "errors": [],
+      "canvas": [
+        639,
+        452
+      ],
+      "engineActive": true,
+      "audioState": "running",
+      "bufferStarts": [
+        {
+          "duration": 0.74575,
+          "frames": 35796,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 1.1276458333333332,
+          "frames": 54127,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": true
+        },
+        {
+          "duration": 3.504125,
+          "frames": 168198,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": true
+        },
+        {
+          "duration": 3.5015416666666668,
+          "frames": 168074,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": true
+        },
+        {
+          "duration": 0.7351875,
+          "frames": 35289,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.7351458333333334,
+          "frames": 35287,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.6861041666666666,
+          "frames": 32933,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 1.801125,
+          "frames": 86454,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.3228958333333333,
+          "frames": 15499,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": true
+        },
+        {
+          "duration": 1.1638541666666666,
+          "frames": 55865,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.383125,
+          "frames": 18390,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.5804375,
+          "frames": 27861,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 0.383125,
+          "frames": 18390,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        },
+        {
+          "duration": 1.1638541666666666,
+          "frames": 55865,
+          "sampleRate": 48000,
+          "context": "running",
+          "loop": false
+        }
+      ],
+      "music": {
+        "url": "rcsk://game/assets/audio/rclemu00.mp3",
+        "currentTime": 9.236979,
+        "decodedBytes": 231967,
+        "volume": 0.8912509381337456
+      },
+      "renderer": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)"
+    },
+    {
+      "name": "Native race exit and settings OK commit the local save",
+      "selection": {
+        "character": 1,
+        "difficulty": 1,
+        "country": 0,
+        "race": 2
+      },
+      "settings": {
+        "resolution": "640x480",
+        "renderScale": 100,
+        "music": 1,
+        "msaaEnabled": false,
+        "msaaSamples": 4,
+        "freeFlight": false,
+        "effects": 1,
+        "deadzone": 0.18,
+        "touch": "auto",
+        "fullscreen": false,
+        "startInfo": true,
+        "controlType": 0,
+        "display": {
+          "brightnessLight": true,
+          "bilinearFiltering": true,
+          "alphaBlending": true,
+          "particles": true
+        },
+        "bindings": {
+          "accelerate": "ArrowUp",
+          "brake": "ArrowDown",
+          "left": "ArrowLeft",
+          "right": "ArrowRight",
+          "bonus": "ControlLeft",
+          "handbrake": "AltLeft"
+        }
+      },
+      "storage": {
+        "rcsk.selection.v1": "{\"character\":1,\"difficulty\":1,\"country\":0,\"race\":2}",
+        "rcsk.settings.v1": "{\"resolution\":\"640x480\",\"renderScale\":100,\"music\":1,\"msaaEnabled\":false,\"msaaSamples\":4,\"freeFlight\":false,\"effects\":1,\"deadzone\":0.18,\"touch\":\"auto\",\"fullscreen\":false,\"startInfo\":true,\"controlType\":0,\"display\":{\"brightnessLight\":true,\"bilinearFiltering\":true,\"alphaBlending\":true,\"particles\":true},\"bindings\":{\"accelerate\":\"ArrowUp\",\"brake\":\"ArrowDown\",\"left\":\"ArrowLeft\",\"right\":\"ArrowRight\",\"bonus\":\"ControlLeft\",\"handbrake\":\"AltLeft\"}}",
+        "rcsk.race-save.v1": "{\"boards\":[[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}]],\"bestTimes\":{},\"lastResult\":{\"PLAYER\":{\"finished\":0}},\"quickRaceName\":\"Speler 1\",\"profiles\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],\"selectedSlot\":-1,\"locks\":[false,false,true,true,true,true]}"
+      }
+    },
+    {
+      "name": "Selections, settings and save survive app relaunch with --skip-intro",
+      "selection": {
+        "character": 1,
+        "difficulty": 1,
+        "country": 0,
+        "race": 2
+      },
+      "settings": {
+        "resolution": "640x480",
+        "renderScale": 100,
+        "music": 1,
+        "msaaEnabled": false,
+        "msaaSamples": 4,
+        "freeFlight": false,
+        "effects": 1,
+        "deadzone": 0.18,
+        "touch": "auto",
+        "fullscreen": false,
+        "startInfo": true,
+        "controlType": 0,
+        "display": {
+          "brightnessLight": true,
+          "bilinearFiltering": true,
+          "alphaBlending": true,
+          "particles": true
+        },
+        "bindings": {
+          "accelerate": "ArrowUp",
+          "brake": "ArrowDown",
+          "left": "ArrowLeft",
+          "right": "ArrowRight",
+          "bonus": "ControlLeft",
+          "handbrake": "AltLeft"
+        }
+      },
+      "storage": {
+        "rcsk.selection.v1": "{\"character\":1,\"difficulty\":1,\"country\":0,\"race\":2}",
+        "rcsk.settings.v1": "{\"resolution\":\"640x480\",\"renderScale\":100,\"music\":1,\"msaaEnabled\":false,\"msaaSamples\":4,\"freeFlight\":false,\"effects\":1,\"deadzone\":0.18,\"touch\":\"auto\",\"fullscreen\":false,\"startInfo\":true,\"controlType\":0,\"display\":{\"brightnessLight\":true,\"bilinearFiltering\":true,\"alphaBlending\":true,\"particles\":true},\"bindings\":{\"accelerate\":\"ArrowUp\",\"brake\":\"ArrowDown\",\"left\":\"ArrowLeft\",\"right\":\"ArrowRight\",\"bonus\":\"ControlLeft\",\"handbrake\":\"AltLeft\"}}",
+        "rcsk.race-save.v1": "{\"boards\":[[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}],[{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0},{\"name\":\"\",\"character\":0,\"totalRaceMs\":0,\"bestLapMs\":0,\"difficulty\":0}]],\"bestTimes\":{},\"lastResult\":{\"PLAYER\":{\"finished\":0}},\"quickRaceName\":\"Speler 1\",\"profiles\":[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null],\"selectedSlot\":-1,\"locks\":[false,false,true,true,true,true]}"
+      },
+      "introHidden": true,
+      "movieSource": null
+    },
+    {
+      "name": "Original menu quit requester closes the Electron application",
+      "prompt": "Weet je zeker dat je wilt stoppen?"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "launches": [
+    {
+      "number": 1,
+      "args": [
+        ".",
+        "--ozone-platform=x11",
+        "--disable-dev-shm-usage",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--autoplay-policy=no-user-gesture-required"
+      ],
+      "stdout": "",
+      "stderr": "Debugger ending on ws://127.0.0.1:45681/ee313edf-e042-4b2d-aab4-4411eef3dcda\nFor help, see: https://nodejs.org/learn/getting-started/debugging\n",
+      "runtime": {
+        "packaged": false,
+        "appPath": "/home/rick/Documents/Rebuilds/RedCat Superkarts",
+        "resourcesPath": "/home/rick/Documents/Rebuilds/RedCat Superkarts/node_modules/electron/dist/resources",
+        "profile": "/tmp/rcsk-desktop-test-sajJj3",
+        "sessionData": "/tmp/rcsk-desktop-test-sajJj3",
+        "versions": {
+          "node": "24.22.0",
+          "acorn": "8.18.0",
+          "ada": "4.0.0",
+          "amaro": "1.1.11",
+          "ares": "1.34.8",
+          "brotli": "1.2.0",
+          "cldr": "48.0",
+          "icu": "78.2",
+          "llhttp": "9.4.3",
+          "merve": "1.2.2",
+          "modules": "149",
+          "napi": "10",
+          "nbytes": "0.1.4",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.70.0",
+          "nghttp3": "",
+          "ngtcp2": "",
+          "openssl": "0.0.0",
+          "simdjson": "4.6.11",
+          "simdutf": "7.7.0",
+          "sqlite": "3.53.4",
+          "tz": "2026d",
+          "undici": "7.29.1",
+          "unicode": "17.0",
+          "uv": "1.52.1",
+          "uvwasi": "0.0.23",
+          "v8": "15.2.124.43-electron.0",
+          "zlib": "1.3.2.1-motley",
+          "zstd": "1.6.0",
+          "electron": "44.9.2",
+          "chrome": "152.0.7977.167"
+        },
+        "preferences": {
+          "allowRunningInsecureContent": false,
+          "contextIsolation": true,
+          "disableDialogs": false,
+          "disablePopups": false,
+          "enableBlinkFeatures": "",
+          "experimentalFeatures": false,
+          "javascript": true,
+          "nodeIntegration": false,
+          "nodeIntegrationInSubFrames": false,
+          "nodeIntegrationInWorker": false,
+          "safeDialogs": false,
+          "safeDialogsMessage": "",
+          "sandbox": true,
+          "webSecurity": true,
+          "webviewTag": false
+        }
+      }
+    },
+    {
+      "number": 2,
+      "args": [
+        ".",
+        "--ozone-platform=x11",
+        "--disable-dev-shm-usage",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--autoplay-policy=no-user-gesture-required",
+        "--skip-intro"
+      ],
+      "stdout": "",
+      "stderr": "Waiting for the debugger to disconnect...\n",
+      "runtime": {
+        "packaged": false,
+        "appPath": "/home/rick/Documents/Rebuilds/RedCat Superkarts",
+        "resourcesPath": "/home/rick/Documents/Rebuilds/RedCat Superkarts/node_modules/electron/dist/resources",
+        "profile": "/tmp/rcsk-desktop-test-sajJj3",
+        "sessionData": "/tmp/rcsk-desktop-test-sajJj3",
+        "versions": {
+          "node": "24.22.0",
+          "acorn": "8.18.0",
+          "ada": "4.0.0",
+          "amaro": "1.1.11",
+          "ares": "1.34.8",
+          "brotli": "1.2.0",
+          "cldr": "48.0",
+          "icu": "78.2",
+          "llhttp": "9.4.3",
+          "merve": "1.2.2",
+          "modules": "149",
+          "napi": "10",
+          "nbytes": "0.1.4",
+          "ncrypto": "0.0.1",
+          "nghttp2": "1.70.0",
+          "nghttp3": "",
+          "ngtcp2": "",
+          "openssl": "0.0.0",
+          "simdjson": "4.6.11",
+          "simdutf": "7.7.0",
+          "sqlite": "3.53.4",
+          "tz": "2026d",
+          "undici": "7.29.1",
+          "unicode": "17.0",
+          "uv": "1.52.1",
+          "uvwasi": "0.0.23",
+          "v8": "15.2.124.43-electron.0",
+          "zlib": "1.3.2.1-motley",
+          "zstd": "1.6.0",
+          "electron": "44.9.2",
+          "chrome": "152.0.7977.167"
+        },
+        "preferences": {
+          "allowRunningInsecureContent": false,
+          "contextIsolation": true,
+          "disableDialogs": false,
+          "disablePopups": false,
+          "enableBlinkFeatures": "",
+          "experimentalFeatures": false,
+          "javascript": true,
+          "nodeIntegration": false,
+          "nodeIntegrationInSubFrames": false,
+          "nodeIntegrationInWorker": false,
+          "safeDialogs": false,
+          "safeDialogsMessage": "",
+          "sandbox": true,
+          "webSecurity": true,
+          "webviewTag": false
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "intro.png",
+    "menu.png",
+    "race-opening.png",
+    "race-countdown.png",
+    "race-driving.png",
+    "relaunch.png",
+    "quit-requester.png"
+  ],
+  "sourceSha256": {
+    "package.json": "7f6d2de18e59ad72b0f5d6f8f6955b7dca4ea047e172305f9f91202e0153c621",
+    "electron/main.mjs": "6e77f2717dfd0886cb353a454dfc83862efbe141d97f1bc732abef976a51b391",
+    "electron/runtime.mjs": "c0da3bf4a8c0b2a7dfa1a550bad1f213de89bb668ec7352e0898c387b7985d45",
+    "electron/game-protocol.mjs": "01c771ed7933b6f8820d0d2027855d80f0ef1e16bb9cc3a048523c25d1cf04b6",
+    "tests/desktop.mjs": "bf9bdf1cef026a44be9ed3efb8498eea89c6b11248e658140e0acbf48d690ef0"
+  }
+}

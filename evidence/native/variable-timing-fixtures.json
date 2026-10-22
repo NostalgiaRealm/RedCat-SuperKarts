@@ -1,0 +1,5061 @@
+{
+  "format": "superkarts-variable-timing-v1",
+  "sourceSha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "scope": "Original main-loop admission and absolute engine-clock arithmetic.\n\nRead-only original input. The gate range executes 44331b..44333a; clock calls\nexecute 48f2c0/48f3e0/48f4d0/48f4e0/48f520. OS clocks, heap and logging are\nexplicit stubs, and the game-update body is an observation boundary.",
+  "gateTraces": [
+    {
+      "name": "boundary",
+      "initialStart": 0,
+      "frames": [
+        {
+          "poll": 0,
+          "start": 0,
+          "admitted": false,
+          "previousStart": 0
+        },
+        {
+          "poll": 8,
+          "start": 8,
+          "admitted": false,
+          "previousStart": 0
+        },
+        {
+          "poll": 24,
+          "start": 24,
+          "admitted": false,
+          "previousStart": 0
+        },
+        {
+          "poll": 25,
+          "start": 25,
+          "admitted": true,
+          "previousStart": 25
+        },
+        {
+          "poll": 25,
+          "start": 25,
+          "admitted": false,
+          "previousStart": 25
+        },
+        {
+          "poll": 49,
+          "start": 49,
+          "admitted": false,
+          "previousStart": 25
+        },
+        {
+          "poll": 50,
+          "start": 50,
+          "admitted": true,
+          "previousStart": 50
+        },
+        {
+          "poll": 75,
+          "start": 75,
+          "admitted": true,
+          "previousStart": 75
+        }
+      ],
+      "starts": [
+        25,
+        50,
+        75
+      ]
+    },
+    {
+      "name": "late-no-catchup",
+      "initialStart": 1000,
+      "frames": [
+        {
+          "poll": 1024,
+          "start": 1024,
+          "admitted": false,
+          "previousStart": 1000
+        },
+        {
+          "poll": 1025,
+          "start": 1025,
+          "admitted": true,
+          "previousStart": 1025
+        },
+        {
+          "poll": 1325,
+          "start": 1325,
+          "admitted": true,
+          "previousStart": 1325
+        },
+        {
+          "poll": 1325,
+          "start": 1325,
+          "admitted": false,
+          "previousStart": 1325
+        },
+        {
+          "poll": 1326,
+          "start": 1326,
+          "admitted": false,
+          "previousStart": 1325
+        },
+        {
+          "poll": 1349,
+          "start": 1349,
+          "admitted": false,
+          "previousStart": 1325
+        },
+        {
+          "poll": 1350,
+          "start": 1350,
+          "admitted": true,
+          "previousStart": 1350
+        }
+      ],
+      "starts": [
+        1025,
+        1325,
+        1350
+      ]
+    },
+    {
+      "name": "distinct-poll-and-start",
+      "initialStart": 0,
+      "frames": [
+        {
+          "poll": 25,
+          "start": 26,
+          "admitted": true,
+          "previousStart": 26
+        },
+        {
+          "poll": 50,
+          "start": 50,
+          "admitted": false,
+          "previousStart": 26
+        },
+        {
+          "poll": 51,
+          "start": 52,
+          "admitted": true,
+          "previousStart": 52
+        },
+        {
+          "poll": 76,
+          "start": 76,
+          "admitted": false,
+          "previousStart": 52
+        },
+        {
+          "poll": 77,
+          "start": 77,
+          "admitted": true,
+          "previousStart": 77
+        }
+      ],
+      "starts": [
+        26,
+        52,
+        77
+      ]
+    },
+    {
+      "name": "integer-display-opportunities",
+      "initialStart": 0,
+      "frames": [
+        {
+          "poll": 16,
+          "start": 16,
+          "admitted": false,
+          "previousStart": 0
+        },
+        {
+          "poll": 33,
+          "start": 33,
+          "admitted": true,
+          "previousStart": 33
+        },
+        {
+          "poll": 50,
+          "start": 50,
+          "admitted": false,
+          "previousStart": 33
+        },
+        {
+          "poll": 66,
+          "start": 66,
+          "admitted": true,
+          "previousStart": 66
+        },
+        {
+          "poll": 83,
+          "start": 83,
+          "admitted": false,
+          "previousStart": 66
+        },
+        {
+          "poll": 100,
+          "start": 100,
+          "admitted": true,
+          "previousStart": 100
+        }
+      ],
+      "starts": [
+        33,
+        66,
+        100
+      ]
+    },
+    {
+      "name": "unsigned-wrap",
+      "initialStart": 4294967280,
+      "frames": [
+        {
+          "poll": 8,
+          "start": 8,
+          "admitted": false,
+          "previousStart": 4294967280
+        },
+        {
+          "poll": 9,
+          "start": 9,
+          "admitted": true,
+          "previousStart": 9
+        },
+        {
+          "poll": 33,
+          "start": 33,
+          "admitted": false,
+          "previousStart": 9
+        },
+        {
+          "poll": 34,
+          "start": 34,
+          "admitted": true,
+          "previousStart": 34
+        },
+        {
+          "poll": 84,
+          "start": 84,
+          "admitted": true,
+          "previousStart": 84
+        }
+      ],
+      "starts": [
+        9,
+        34,
+        84
+      ]
+    },
+    {
+      "name": "pause-does-not-reset-gate",
+      "initialStart": 60000,
+      "frames": [
+        {
+          "poll": 60025,
+          "start": 60025,
+          "admitted": true,
+          "previousStart": 60025
+        },
+        {
+          "poll": 61037,
+          "start": 61037,
+          "admitted": true,
+          "previousStart": 61037
+        },
+        {
+          "poll": 61038,
+          "start": 61038,
+          "admitted": false,
+          "previousStart": 61037
+        },
+        {
+          "poll": 61061,
+          "start": 61061,
+          "admitted": false,
+          "previousStart": 61037
+        },
+        {
+          "poll": 61062,
+          "start": 61062,
+          "admitted": true,
+          "previousStart": 61062
+        }
+      ],
+      "starts": [
+        60025,
+        61037,
+        61062
+      ]
+    }
+  ],
+  "clockTraces": [
+    {
+      "precision": 24,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 25,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.02500000037252903,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.03750000149011612,
+          "returnedDelta": 0.03750000149011612,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 58,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.057999998331069946,
+          "rawDelta": 0.032999999821186066,
+          "deltaField": 0.03525000065565109,
+          "returnedDelta": 0.03525000065565109,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 83,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299999684095383,
+          "rawDelta": 0.02499999850988388,
+          "deltaField": 0.023874999955296516,
+          "returnedDelta": 0.023874999955296516,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 125,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.125,
+          "rawDelta": 0.04200000315904617,
+          "deltaField": 0.03450000286102295,
+          "returnedDelta": 0.03450000286102295,
+          "history": [
+            0.04200000315904617,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 425,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.42500001192092896,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16775000095367432,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 450,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999998807907104,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.09587498754262924,
+          "returnedDelta": 0.09587498754262924,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.02499999850988388
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 475,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4749999940395355,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.06149999797344208,
+          "returnedDelta": 0.06149999797344208,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 500,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.5,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.05937500298023224,
+          "returnedDelta": 0.05937500298023224,
+          "history": [
+            0.025000005960464478,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 525,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.024999987334012985,
+          "returnedDelta": 0.024999987334012985,
+          "history": [
+            0.025000005960464478,
+            0.02499997615814209,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 1537,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1537,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1538,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.001000046730041504,
+          "deltaField": 0.025500023737549782,
+          "returnedDelta": 0.025500023737549782,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1563,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.562999963760376,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.02524999901652336,
+          "returnedDelta": 0.02524999901652336,
+          "history": [
+            0.02499997615814209,
+            0.10000000149011612,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1596,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.5959999561309814,
+          "rawDelta": 0.03299999237060547,
+          "deltaField": 0.022874996066093445,
+          "returnedDelta": 0.022874996066093445,
+          "history": [
+            0.02499997615814209,
+            0.03299999237060547,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1621,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.621000051498413,
+          "rawDelta": 0.02500009536743164,
+          "deltaField": 0.024000048637390137,
+          "returnedDelta": 0.024000048637390137,
+          "history": [
+            0.02499997615814209,
+            0.03299999237060547,
+            0.02500009536743164,
+            0.001000046730041504
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 60000,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60025,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 15.037500381469727,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60058,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.03299713134765625,
+          "deltaField": 7.535248756408691,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60083,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60125,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.04199981689453125,
+          "deltaField": 0.0345001220703125,
+          "returnedDelta": 0.0345001220703125,
+          "history": [
+            0.04199981689453125,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60425,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.2999992370605469,
+          "deltaField": 0.16774940490722656,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60450,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.09587574005126953,
+          "returnedDelta": 0.09587574005126953,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.02500152587890625
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60475,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.06149911880493164,
+          "returnedDelta": 0.06149911880493164,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60500,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.05937528610229492,
+          "returnedDelta": 0.05937528610229492,
+          "history": [
+            0.02500152587890625,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60525,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025001049041748047,
+          "returnedDelta": 0.025001049041748047,
+          "history": [
+            0.02500152587890625,
+            0.02500152587890625,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 61537,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61537,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 61538,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.00099945068359375,
+          "deltaField": 0.025499725714325905,
+          "returnedDelta": 0.025499725714325905,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 61563,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025250624865293503,
+          "returnedDelta": 0.025250624865293503,
+          "history": [
+            0.02500152587890625,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 61596,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.033000946044921875,
+          "deltaField": 0.02287578582763672,
+          "returnedDelta": 0.02287578582763672,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61621,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.02399921417236328,
+          "returnedDelta": 0.02399921417236328,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.024997711181640625,
+            0.00099945068359375
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 86400000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400025,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400058,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0341796875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400083,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400125,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.0390625,
+          "deltaField": 0.0341796875,
+          "returnedDelta": 0.0341796875,
+          "history": [
+            0.0390625,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400425,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.296875,
+          "deltaField": 0.166015625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400450,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.03125,
+          "deltaField": 0.0986328125,
+          "returnedDelta": 0.0986328125,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400475,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0615234375,
+          "returnedDelta": 0.0615234375,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400500,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.05859375,
+          "returnedDelta": 0.05859375,
+          "history": [
+            0.0234375,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400525,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0244140625,
+          "returnedDelta": 0.0244140625,
+          "history": [
+            0.0234375,
+            0.0234375,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 86401537,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401537,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86401538,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.02500000037252903,
+          "returnedDelta": 0.02500000037252903,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86401563,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.02421874925494194,
+          "returnedDelta": 0.02421874925494194,
+          "history": [
+            0.0234375,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86401596,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03125,
+          "deltaField": 0.021484375,
+          "returnedDelta": 0.021484375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401621,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0224609375,
+          "returnedDelta": 0.0224609375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0234375,
+            0.0
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 25000,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.02500000037252903,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.03750000149011612,
+          "returnedDelta": 0.03750000149011612,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 58000,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.057999998331069946,
+          "rawDelta": 0.032999999821186066,
+          "deltaField": 0.03525000065565109,
+          "returnedDelta": 0.03525000065565109,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 83000,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299999684095383,
+          "rawDelta": 0.02499999850988388,
+          "deltaField": 0.023874999955296516,
+          "returnedDelta": 0.023874999955296516,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 125000,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.125,
+          "rawDelta": 0.04200000315904617,
+          "deltaField": 0.03450000286102295,
+          "returnedDelta": 0.03450000286102295,
+          "history": [
+            0.04200000315904617,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 425000,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.42500001192092896,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16775000095367432,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.032999999821186066,
+            0.02499999850988388
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 450000,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999998807907104,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.09587498754262924,
+          "returnedDelta": 0.09587498754262924,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.02499999850988388
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 475000,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4749999940395355,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.06149999797344208,
+          "returnedDelta": 0.06149999797344208,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 500000,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.5,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.05937500298023224,
+          "returnedDelta": 0.05937500298023224,
+          "history": [
+            0.025000005960464478,
+            0.30000001192092896,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 525000,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.024999987334012985,
+          "returnedDelta": 0.024999987334012985,
+          "history": [
+            0.025000005960464478,
+            0.02499997615814209,
+            0.02499997615814209,
+            0.025000005960464478
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 1537000,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1537000,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1538000,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.001000046730041504,
+          "deltaField": 0.025500023737549782,
+          "returnedDelta": 0.025500023737549782,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1563000,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.562999963760376,
+          "rawDelta": 0.02499997615814209,
+          "deltaField": 0.02524999901652336,
+          "returnedDelta": 0.02524999901652336,
+          "history": [
+            0.02499997615814209,
+            0.10000000149011612,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1596000,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.5959999561309814,
+          "rawDelta": 0.03299999237060547,
+          "deltaField": 0.022874996066093445,
+          "returnedDelta": 0.022874996066093445,
+          "history": [
+            0.02499997615814209,
+            0.03299999237060547,
+            0.0,
+            0.001000046730041504
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1621000,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.621000051498413,
+          "rawDelta": 0.02500009536743164,
+          "deltaField": 0.024000048637390137,
+          "returnedDelta": 0.024000048637390137,
+          "history": [
+            0.02499997615814209,
+            0.03299999237060547,
+            0.02500009536743164,
+            0.001000046730041504
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 60000000,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60025000,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 15.037500381469727,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60058000,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.03299713134765625,
+          "deltaField": 7.535248756408691,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60083000,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60125000,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.04199981689453125,
+          "deltaField": 0.0345001220703125,
+          "returnedDelta": 0.0345001220703125,
+          "history": [
+            0.04199981689453125,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60425000,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.2999992370605469,
+          "deltaField": 0.16774940490722656,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60450000,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.09587574005126953,
+          "returnedDelta": 0.09587574005126953,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.02500152587890625
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60475000,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.06149911880493164,
+          "returnedDelta": 0.06149911880493164,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60500000,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.05937528610229492,
+          "returnedDelta": 0.05937528610229492,
+          "history": [
+            0.02500152587890625,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60525000,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025001049041748047,
+          "returnedDelta": 0.025001049041748047,
+          "history": [
+            0.02500152587890625,
+            0.02500152587890625,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 61537000,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61537000,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 61538000,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.00099945068359375,
+          "deltaField": 0.025499725714325905,
+          "returnedDelta": 0.025499725714325905,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 61563000,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025250624865293503,
+          "returnedDelta": 0.025250624865293503,
+          "history": [
+            0.02500152587890625,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 61596000,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.033000946044921875,
+          "deltaField": 0.02287578582763672,
+          "returnedDelta": 0.02287578582763672,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61621000,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.02399921417236328,
+          "returnedDelta": 0.02399921417236328,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.024997711181640625,
+            0.00099945068359375
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 86400000000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400025000,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400058000,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0341796875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400083000,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400125000,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.0390625,
+          "deltaField": 0.0341796875,
+          "returnedDelta": 0.0341796875,
+          "history": [
+            0.0390625,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400425000,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.296875,
+          "deltaField": 0.166015625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400450000,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.03125,
+          "deltaField": 0.0986328125,
+          "returnedDelta": 0.0986328125,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400475000,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0615234375,
+          "returnedDelta": 0.0615234375,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400500000,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.05859375,
+          "returnedDelta": 0.05859375,
+          "history": [
+            0.0234375,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400525000,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0244140625,
+          "returnedDelta": 0.0244140625,
+          "history": [
+            0.0234375,
+            0.0234375,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 86401537000,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401537000,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86401538000,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.02500000037252903,
+          "returnedDelta": 0.02500000037252903,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86401563000,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.02421874925494194,
+          "returnedDelta": 0.02421874925494194,
+          "history": [
+            0.0234375,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86401596000,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03125,
+          "deltaField": 0.021484375,
+          "returnedDelta": 0.021484375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401621000,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0224609375,
+          "returnedDelta": 0.0224609375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0234375,
+            0.0
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 89489,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.025000104680657387,
+          "rawDelta": 0.025000104680657387,
+          "deltaField": 0.0375000536441803,
+          "returnedDelta": 0.0375000536441803,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 207614,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.0580001100897789,
+          "rawDelta": 0.03300000727176666,
+          "deltaField": 0.03525003045797348,
+          "returnedDelta": 0.03525003045797348,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.03300000727176666,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 297102,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299993723630905,
+          "rawDelta": 0.02499982714653015,
+          "deltaField": 0.023874929174780846,
+          "returnedDelta": 0.023874929174780846,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.03300000727176666,
+            0.02499982714653015
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 447443,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.12499996274709702,
+          "rawDelta": 0.042000025510787964,
+          "deltaField": 0.03449998050928116,
+          "returnedDelta": 0.03449998050928116,
+          "history": [
+            0.042000025510787964,
+            0.025000104680657387,
+            0.03300000727176666,
+            0.02499982714653015
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1521307,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.4250001013278961,
+          "rawDelta": 0.3000001311302185,
+          "deltaField": 0.1677500605583191,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.042000025510787964,
+            0.3000001311302185,
+            0.03300000727176666,
+            0.02499982714653015
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1610795,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999992847442627,
+          "rawDelta": 0.02499982714653015,
+          "deltaField": 0.09587493538856506,
+          "returnedDelta": 0.09587493538856506,
+          "history": [
+            0.042000025510787964,
+            0.3000001311302185,
+            0.02499982714653015,
+            0.02499982714653015
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1700284,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4750000238418579,
+          "rawDelta": 0.02500009536743164,
+          "deltaField": 0.06150002405047417,
+          "returnedDelta": 0.06150002405047417,
+          "history": [
+            0.042000025510787964,
+            0.3000001311302185,
+            0.02499982714653015,
+            0.02500009536743164
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1789772,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.49999985098838806,
+          "rawDelta": 0.02499982714653015,
+          "deltaField": 0.05937493219971657,
+          "returnedDelta": 0.05937493219971657,
+          "history": [
+            0.02499982714653015,
+            0.3000001311302185,
+            0.02499982714653015,
+            0.02500009536743164
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1879261,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.02500012516975403,
+          "deltaField": 0.025000009685754776,
+          "returnedDelta": 0.025000009685754776,
+          "history": [
+            0.02499982714653015,
+            0.02500012516975403,
+            0.02499982714653015,
+            0.02500009536743164
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 5501761,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.537000060081482,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 5501761,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.537000060081482,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 5505340,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.0009999275207519531,
+          "deltaField": 0.025499964132905006,
+          "returnedDelta": 0.025499964132905006,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.0009999275207519531
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 5594829,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.5630000829696655,
+          "rawDelta": 0.02500009536743164,
+          "deltaField": 0.02525002881884575,
+          "returnedDelta": 0.02525002881884575,
+          "history": [
+            0.02500009536743164,
+            0.10000000149011612,
+            0.0,
+            0.0009999275207519531
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 5712954,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.596000075340271,
+          "rawDelta": 0.03299999237060547,
+          "deltaField": 0.02287501096725464,
+          "returnedDelta": 0.02287501096725464,
+          "history": [
+            0.02500009536743164,
+            0.03299999237060547,
+            0.0,
+            0.0009999275207519531
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 5802442,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.6209999322891235,
+          "rawDelta": 0.02499985694885254,
+          "deltaField": 0.023999929428100586,
+          "returnedDelta": 0.023999929428100586,
+          "history": [
+            0.02500009536743164,
+            0.03299999237060547,
+            0.02499985694885254,
+            0.0009999275207519531
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 214772700,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 214862189,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 15.037500381469727,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 214980314,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.03299713134765625,
+          "deltaField": 7.535248756408691,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 215069802,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 215220143,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.04199981689453125,
+          "deltaField": 0.0345001220703125,
+          "returnedDelta": 0.0345001220703125,
+          "history": [
+            0.04199981689453125,
+            0.02500152587890625,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 216294007,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.2999992370605469,
+          "deltaField": 0.16774940490722656,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.03299713134765625,
+            0.02500152587890625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 216383495,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.09587574005126953,
+          "returnedDelta": 0.09587574005126953,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.02500152587890625
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 216472984,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.06149911880493164,
+          "returnedDelta": 0.06149911880493164,
+          "history": [
+            0.04199981689453125,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 216562472,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.05937528610229492,
+          "returnedDelta": 0.05937528610229492,
+          "history": [
+            0.02500152587890625,
+            0.2999992370605469,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 216651961,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025001049041748047,
+          "returnedDelta": 0.025001049041748047,
+          "history": [
+            0.02500152587890625,
+            0.02500152587890625,
+            0.02500152587890625,
+            0.024997711181640625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 220274461,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 220274461,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 220278040,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.00099945068359375,
+          "deltaField": 0.025499725714325905,
+          "returnedDelta": 0.025499725714325905,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 220367529,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.025250624865293503,
+          "returnedDelta": 0.025250624865293503,
+          "history": [
+            0.02500152587890625,
+            0.10000000149011612,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 220485654,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.033000946044921875,
+          "deltaField": 0.02287578582763672,
+          "returnedDelta": 0.02287578582763672,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.0,
+            0.00099945068359375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 220575142,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024997711181640625,
+          "deltaField": 0.02399921417236328,
+          "returnedDelta": 0.02399921417236328,
+          "history": [
+            0.02500152587890625,
+            0.033000946044921875,
+            0.024997711181640625,
+            0.00099945068359375
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 24,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 309272688000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309272777489,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309272895614,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0341796875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309272985102,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.03125,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309273135443,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.0390625,
+          "deltaField": 0.0341796875,
+          "returnedDelta": 0.0341796875,
+          "history": [
+            0.0390625,
+            0.0234375,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309274209307,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.296875,
+          "deltaField": 0.166015625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309274298795,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.03125,
+          "deltaField": 0.0986328125,
+          "returnedDelta": 0.0986328125,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.03125
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309274388284,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0615234375,
+          "returnedDelta": 0.0615234375,
+          "history": [
+            0.0390625,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309274477772,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.05859375,
+          "returnedDelta": 0.05859375,
+          "history": [
+            0.0234375,
+            0.296875,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309274567261,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0244140625,
+          "returnedDelta": 0.0244140625,
+          "history": [
+            0.0234375,
+            0.0234375,
+            0.03125,
+            0.0234375
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 309278189761,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309278189761,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309278193340,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": 0.0,
+          "deltaField": 0.02500000037252903,
+          "returnedDelta": 0.02500000037252903,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309278282829,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.02421874925494194,
+          "returnedDelta": 0.02421874925494194,
+          "history": [
+            0.0234375,
+            0.10000000149011612,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309278400954,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03125,
+          "deltaField": 0.021484375,
+          "returnedDelta": 0.021484375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0,
+            0.0
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309278490442,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.0224609375,
+          "returnedDelta": 0.0224609375,
+          "history": [
+            0.0234375,
+            0.03125,
+            0.0234375,
+            0.0
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 25,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.02500000037252903,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.03750000149011612,
+          "returnedDelta": 0.03750000149011612,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 58,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.057999998331069946,
+          "rawDelta": 0.032999999821186066,
+          "deltaField": 0.03525000065565109,
+          "returnedDelta": 0.03525000065565109,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 83,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299999684095383,
+          "rawDelta": 0.02500000223517418,
+          "deltaField": 0.023875001817941666,
+          "returnedDelta": 0.023875001817941666,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 125,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.125,
+          "rawDelta": 0.04200000315904617,
+          "deltaField": 0.03450000286102295,
+          "returnedDelta": 0.03450000286102295,
+          "history": [
+            0.04200000315904617,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 425,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.42500001192092896,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16775000095367432,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 450,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999998807907104,
+          "rawDelta": 0.024999987334012985,
+          "deltaField": 0.09587499499320984,
+          "returnedDelta": 0.09587499499320984,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.02500000223517418
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 475,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4749999940395355,
+          "rawDelta": 0.025000011548399925,
+          "deltaField": 0.061500005424022675,
+          "returnedDelta": 0.061500005424022675,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 500,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.5,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.05937500670552254,
+          "returnedDelta": 0.05937500670552254,
+          "history": [
+            0.025000005960464478,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 525,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.02500000037252903,
+          "returnedDelta": 0.02500000037252903,
+          "history": [
+            0.025000005960464478,
+            0.02500000037252903,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 1537,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1537,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": 5.912780665084938e-08,
+          "deltaField": 0.05000003054738045,
+          "returnedDelta": 0.05000003054738045,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1538,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.0010000590700656176,
+          "deltaField": 0.025500044226646423,
+          "returnedDelta": 0.025500044226646423,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1563,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.562999963760376,
+          "rawDelta": 0.025000011548399925,
+          "deltaField": 0.02525002881884575,
+          "returnedDelta": 0.02525002881884575,
+          "history": [
+            0.025000011548399925,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1596,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.5959999561309814,
+          "rawDelta": 0.03300003707408905,
+          "deltaField": 0.022875037044286728,
+          "returnedDelta": 0.022875037044286728,
+          "history": [
+            0.025000011548399925,
+            0.03300003707408905,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1621,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.621000051498413,
+          "rawDelta": 0.025000043213367462,
+          "deltaField": 0.02400003932416439,
+          "returnedDelta": 0.02400003932416439,
+          "history": [
+            0.025000011548399925,
+            0.03300003707408905,
+            0.025000043213367462,
+            0.0010000590700656176
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 60000,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60025,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 15.03749942779541,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60058,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.032998472452163696,
+          "deltaField": 7.53524923324585,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60083,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.025001343339681625,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60125,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.04199981689453125,
+          "deltaField": 0.03450005501508713,
+          "returnedDelta": 0.03450005501508713,
+          "history": [
+            0.04199981689453125,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60425,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16774992644786835,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60450,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.025000762194395065,
+          "deltaField": 0.09587553143501282,
+          "returnedDelta": 0.09587553143501282,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.025001343339681625
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60475,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.024999236688017845,
+          "deltaField": 0.061499789357185364,
+          "returnedDelta": 0.061499789357185364,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60500,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.05937566980719566,
+          "returnedDelta": 0.05937566980719566,
+          "history": [
+            0.02500152587890625,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60525,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.025000380352139473,
+          "returnedDelta": 0.025000380352139473,
+          "history": [
+            0.02500152587890625,
+            0.02500000037252903,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 61537,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61537,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 1.2512207376857987e-06,
+          "deltaField": 0.0500006265938282,
+          "returnedDelta": 0.0500006265938282,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 61538,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.0010012511629611254,
+          "deltaField": 0.025500938296318054,
+          "returnedDelta": 0.025500938296318054,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 61563,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.025001799687743187,
+          "deltaField": 0.025251369923353195,
+          "returnedDelta": 0.025251369923353195,
+          "history": [
+            0.025001799687743187,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 61596,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.03300027549266815,
+          "deltaField": 0.02287590131163597,
+          "returnedDelta": 0.02287590131163597,
+          "history": [
+            0.025001799687743187,
+            0.03300027549266815,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61621,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024999327957630157,
+          "deltaField": 0.02400011382997036,
+          "returnedDelta": 0.02400011382997036,
+          "history": [
+            0.025001799687743187,
+            0.03300027549266815,
+            0.024999327957630157,
+            0.0010012511629611254
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "timeGetTime",
+      "frequency": 1000,
+      "storedFrequency": 1000.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 86400000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400025,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400058,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.034562498331069946,
+          "deltaField": 10800.0361328125,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400083,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.028312500566244125,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400125,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.0390625,
+          "deltaField": 0.03405468910932541,
+          "returnedDelta": 0.03405468910932541,
+          "history": [
+            0.0390625,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400425,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16762499511241913,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400450,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.02812499925494194,
+          "deltaField": 0.09748438000679016,
+          "returnedDelta": 0.09748438000679016,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.028312500566244125
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400475,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.02187499962747097,
+          "deltaField": 0.06035156548023224,
+          "returnedDelta": 0.06035156548023224,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400500,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.05820312723517418,
+          "returnedDelta": 0.05820312723517418,
+          "history": [
+            0.0234375,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400525,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.02460937388241291,
+          "returnedDelta": 0.02460937388241291,
+          "history": [
+            0.0234375,
+            0.02500000037252903,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 86401537,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401537,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.002062499988824129,
+          "deltaField": 0.04896875098347664,
+          "returnedDelta": 0.04896875098347664,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.002062499988824129,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86401538,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.0010625000577419996,
+          "deltaField": 0.02395312488079071,
+          "returnedDelta": 0.02395312488079071,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86401563,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.023937499150633812,
+          "deltaField": 0.023945312947034836,
+          "returnedDelta": 0.023945312947034836,
+          "history": [
+            0.023937499150633812,
+            0.10000000149011612,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86401596,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03350000083446503,
+          "deltaField": 0.022343751043081284,
+          "returnedDelta": 0.022343751043081284,
+          "history": [
+            0.023937499150633812,
+            0.03350000083446503,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401621,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.027249999344348907,
+          "deltaField": 0.02485937438905239,
+          "returnedDelta": 0.02485937438905239,
+          "history": [
+            0.023937499150633812,
+            0.03350000083446503,
+            0.027249999344348907,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 25000,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.02500000037252903,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.03750000149011612,
+          "returnedDelta": 0.03750000149011612,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 58000,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.057999998331069946,
+          "rawDelta": 0.032999999821186066,
+          "deltaField": 0.03525000065565109,
+          "returnedDelta": 0.03525000065565109,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 83000,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299999684095383,
+          "rawDelta": 0.02500000223517418,
+          "deltaField": 0.023875001817941666,
+          "returnedDelta": 0.023875001817941666,
+          "history": [
+            0.0,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 125000,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.125,
+          "rawDelta": 0.04200000315904617,
+          "deltaField": 0.03450000286102295,
+          "returnedDelta": 0.03450000286102295,
+          "history": [
+            0.04200000315904617,
+            0.02500000037252903,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 425000,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.42500001192092896,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16775000095367432,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.032999999821186066,
+            0.02500000223517418
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 450000,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999998807907104,
+          "rawDelta": 0.024999987334012985,
+          "deltaField": 0.09587499499320984,
+          "returnedDelta": 0.09587499499320984,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.02500000223517418
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 475000,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4749999940395355,
+          "rawDelta": 0.025000011548399925,
+          "deltaField": 0.061500005424022675,
+          "returnedDelta": 0.061500005424022675,
+          "history": [
+            0.04200000315904617,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 500000,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.5,
+          "rawDelta": 0.025000005960464478,
+          "deltaField": 0.05937500670552254,
+          "returnedDelta": 0.05937500670552254,
+          "history": [
+            0.025000005960464478,
+            0.30000001192092896,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 525000,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.02500000037252903,
+          "returnedDelta": 0.02500000037252903,
+          "history": [
+            0.025000005960464478,
+            0.02500000037252903,
+            0.024999987334012985,
+            0.025000011548399925
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 1537000,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1537000,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.5369999408721924,
+          "rawDelta": 5.912780665084938e-08,
+          "deltaField": 0.05000003054738045,
+          "returnedDelta": 0.05000003054738045,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1538000,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.0010000590700656176,
+          "deltaField": 0.025500044226646423,
+          "returnedDelta": 0.025500044226646423,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1563000,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.562999963760376,
+          "rawDelta": 0.025000011548399925,
+          "deltaField": 0.02525002881884575,
+          "returnedDelta": 0.02525002881884575,
+          "history": [
+            0.025000011548399925,
+            0.10000000149011612,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1596000,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.5959999561309814,
+          "rawDelta": 0.03300003707408905,
+          "deltaField": 0.022875037044286728,
+          "returnedDelta": 0.022875037044286728,
+          "history": [
+            0.025000011548399925,
+            0.03300003707408905,
+            5.912780665084938e-08,
+            0.0010000590700656176
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1621000,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.621000051498413,
+          "rawDelta": 0.025000043213367462,
+          "deltaField": 0.02400003932416439,
+          "returnedDelta": 0.02400003932416439,
+          "history": [
+            0.025000011548399925,
+            0.03300003707408905,
+            0.025000043213367462,
+            0.0010000590700656176
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 60000000,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60025000,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 15.03749942779541,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60058000,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.032998472452163696,
+          "deltaField": 7.53524923324585,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60083000,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.025001343339681625,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60125000,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.04199981689453125,
+          "deltaField": 0.03450005501508713,
+          "returnedDelta": 0.03450005501508713,
+          "history": [
+            0.04199981689453125,
+            0.02500000037252903,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60425000,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16774992644786835,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.032998472452163696,
+            0.025001343339681625
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 60450000,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.025000762194395065,
+          "deltaField": 0.09587553143501282,
+          "returnedDelta": 0.09587553143501282,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.025001343339681625
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 60475000,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.024999236688017845,
+          "deltaField": 0.061499789357185364,
+          "returnedDelta": 0.061499789357185364,
+          "history": [
+            0.04199981689453125,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 60500000,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.02500152587890625,
+          "deltaField": 0.05937566980719566,
+          "returnedDelta": 0.05937566980719566,
+          "history": [
+            0.02500152587890625,
+            0.30000001192092896,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 60525000,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.025000380352139473,
+          "returnedDelta": 0.025000380352139473,
+          "history": [
+            0.02500152587890625,
+            0.02500000037252903,
+            0.025000762194395065,
+            0.024999236688017845
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 61537000,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61537000,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 1.2512207376857987e-06,
+          "deltaField": 0.0500006265938282,
+          "returnedDelta": 0.0500006265938282,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 61538000,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.0010012511629611254,
+          "deltaField": 0.025500938296318054,
+          "returnedDelta": 0.025500938296318054,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 61563000,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.025001799687743187,
+          "deltaField": 0.025251369923353195,
+          "returnedDelta": 0.025251369923353195,
+          "history": [
+            0.025001799687743187,
+            0.10000000149011612,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 61596000,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.03300027549266815,
+          "deltaField": 0.02287590131163597,
+          "returnedDelta": 0.02287590131163597,
+          "history": [
+            0.025001799687743187,
+            0.03300027549266815,
+            1.2512207376857987e-06,
+            0.0010012511629611254
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 61621000,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024999327957630157,
+          "deltaField": 0.02400011382997036,
+          "returnedDelta": 0.02400011382997036,
+          "history": [
+            0.025001799687743187,
+            0.03300027549266815,
+            0.024999327957630157,
+            0.0010012511629611254
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 1000000,
+      "storedFrequency": 1000000.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 86400000000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400025000,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400058000,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.034562498331069946,
+          "deltaField": 10800.0361328125,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400083000,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.028312500566244125,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400125000,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.0390625,
+          "deltaField": 0.03405468910932541,
+          "returnedDelta": 0.03405468910932541,
+          "history": [
+            0.0390625,
+            0.02500000037252903,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400425000,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.30000001192092896,
+          "deltaField": 0.16762499511241913,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.034562498331069946,
+            0.028312500566244125
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86400450000,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.02812499925494194,
+          "deltaField": 0.09748438000679016,
+          "returnedDelta": 0.09748438000679016,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.028312500566244125
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86400475000,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.02187499962747097,
+          "deltaField": 0.06035156548023224,
+          "returnedDelta": 0.06035156548023224,
+          "history": [
+            0.0390625,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86400500000,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.0234375,
+          "deltaField": 0.05820312723517418,
+          "returnedDelta": 0.05820312723517418,
+          "history": [
+            0.0234375,
+            0.30000001192092896,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86400525000,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.02500000037252903,
+          "deltaField": 0.02460937388241291,
+          "returnedDelta": 0.02460937388241291,
+          "history": [
+            0.0234375,
+            0.02500000037252903,
+            0.02812499925494194,
+            0.02187499962747097
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 86401537000,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401537000,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.002062499988824129,
+          "deltaField": 0.04896875098347664,
+          "returnedDelta": 0.04896875098347664,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.002062499988824129,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 86401538000,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.0010625000577419996,
+          "deltaField": 0.02395312488079071,
+          "returnedDelta": 0.02395312488079071,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 86401563000,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.023937499150633812,
+          "deltaField": 0.023945312947034836,
+          "returnedDelta": 0.023945312947034836,
+          "history": [
+            0.023937499150633812,
+            0.10000000149011612,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 86401596000,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03350000083446503,
+          "deltaField": 0.022343751043081284,
+          "returnedDelta": 0.022343751043081284,
+          "history": [
+            0.023937499150633812,
+            0.03350000083446503,
+            -0.002062499988824129,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 86401621000,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.027249999344348907,
+          "deltaField": 0.02485937438905239,
+          "returnedDelta": 0.02485937438905239,
+          "history": [
+            0.023937499150633812,
+            0.03350000083446503,
+            0.027249999344348907,
+            -0.0010625000577419996
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 0,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 0,
+          "absoluteMs": 0,
+          "absoluteSeconds": 0.0,
+          "rawDelta": 0.0,
+          "deltaField": 0.05000000074505806,
+          "returnedDelta": 0.05000000074505806,
+          "history": [
+            0.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 89489,
+          "absoluteMs": 25,
+          "absoluteSeconds": 0.025000104680657387,
+          "rawDelta": 0.025000104680657387,
+          "deltaField": 0.0375000536441803,
+          "returnedDelta": 0.0375000536441803,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 207614,
+          "absoluteMs": 58,
+          "absoluteSeconds": 0.0580001100897789,
+          "rawDelta": 0.033000003546476364,
+          "deltaField": 0.03525002673268318,
+          "returnedDelta": 0.03525002673268318,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.033000003546476364,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 297102,
+          "absoluteMs": 83,
+          "absoluteSeconds": 0.08299993723630905,
+          "rawDelta": 0.024999823421239853,
+          "deltaField": 0.023874925449490547,
+          "returnedDelta": 0.023874925449490547,
+          "history": [
+            0.0,
+            0.025000104680657387,
+            0.033000003546476364,
+            0.024999823421239853
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 447443,
+          "absoluteMs": 125,
+          "absoluteSeconds": 0.12499996274709702,
+          "rawDelta": 0.04200002923607826,
+          "deltaField": 0.03449998050928116,
+          "returnedDelta": 0.03449998050928116,
+          "history": [
+            0.04200002923607826,
+            0.025000104680657387,
+            0.033000003546476364,
+            0.024999823421239853
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1521307,
+          "absoluteMs": 425,
+          "absoluteSeconds": 0.4250001013278961,
+          "rawDelta": 0.3000001311302185,
+          "deltaField": 0.1677500605583191,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.04200002923607826,
+            0.3000001311302185,
+            0.033000003546476364,
+            0.024999823421239853
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 1610795,
+          "absoluteMs": 450,
+          "absoluteSeconds": 0.44999992847442627,
+          "rawDelta": 0.0249998290091753,
+          "deltaField": 0.09587492793798447,
+          "returnedDelta": 0.09587492793798447,
+          "history": [
+            0.04200002923607826,
+            0.3000001311302185,
+            0.0249998290091753,
+            0.024999823421239853
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 1700284,
+          "absoluteMs": 475,
+          "absoluteSeconds": 0.4750000238418579,
+          "rawDelta": 0.025000106543302536,
+          "deltaField": 0.061500031501054764,
+          "returnedDelta": 0.061500031501054764,
+          "history": [
+            0.04200002923607826,
+            0.3000001311302185,
+            0.0249998290091753,
+            0.025000106543302536
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 1789772,
+          "absoluteMs": 500,
+          "absoluteSeconds": 0.49999985098838806,
+          "rawDelta": 0.024999836459755898,
+          "deltaField": 0.059374939650297165,
+          "returnedDelta": 0.059374939650297165,
+          "history": [
+            0.024999836459755898,
+            0.3000001311302185,
+            0.0249998290091753,
+            0.025000106543302536
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 1879261,
+          "absoluteMs": 525,
+          "absoluteSeconds": 0.5249999761581421,
+          "rawDelta": 0.025000113993883133,
+          "deltaField": 0.025000007823109627,
+          "returnedDelta": 0.025000007823109627,
+          "history": [
+            0.024999836459755898,
+            0.025000113993883133,
+            0.0249998290091753,
+            0.025000106543302536
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 5501761,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.537000060081482,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 5501761,
+          "absoluteMs": 1537,
+          "absoluteSeconds": 1.537000060081482,
+          "rawDelta": 3.35058309985925e-08,
+          "deltaField": 0.050000015646219254,
+          "returnedDelta": 0.050000015646219254,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            3.35058309985925e-08,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 5505340,
+          "absoluteMs": 1538,
+          "absoluteSeconds": 1.5379999876022339,
+          "rawDelta": 0.0009998813038691878,
+          "deltaField": 0.025499949231743813,
+          "returnedDelta": 0.025499949231743813,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            3.35058309985925e-08,
+            0.0009998813038691878
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 5594829,
+          "absoluteMs": 1563,
+          "absoluteSeconds": 1.5630000829696655,
+          "rawDelta": 0.025000058114528656,
+          "deltaField": 0.02525000274181366,
+          "returnedDelta": 0.02525000274181366,
+          "history": [
+            0.025000058114528656,
+            0.10000000149011612,
+            3.35058309985925e-08,
+            0.0009998813038691878
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 5712954,
+          "absoluteMs": 1596,
+          "absoluteSeconds": 1.596000075340271,
+          "rawDelta": 0.03299996629357338,
+          "deltaField": 0.0228749867528677,
+          "returnedDelta": 0.0228749867528677,
+          "history": [
+            0.025000058114528656,
+            0.03299996629357338,
+            3.35058309985925e-08,
+            0.0009998813038691878
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 5802442,
+          "absoluteMs": 1621,
+          "absoluteSeconds": 1.6209999322891235,
+          "rawDelta": 0.024999801069498062,
+          "deltaField": 0.023999886587262154,
+          "returnedDelta": 0.023999886587262154,
+          "history": [
+            0.025000058114528656,
+            0.03299996629357338,
+            0.024999801069498062,
+            0.0009998813038691878
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 60000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 214772700,
+          "absoluteMs": 60000,
+          "absoluteSeconds": 60.0,
+          "rawDelta": 60.0,
+          "deltaField": 30.05000114440918,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 214862189,
+          "absoluteMs": 60025,
+          "absoluteSeconds": 60.025001525878906,
+          "rawDelta": 0.025000104680657387,
+          "deltaField": 15.03749942779541,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.025000104680657387,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 214980314,
+          "absoluteMs": 60058,
+          "absoluteSeconds": 60.05799865722656,
+          "rawDelta": 0.03299858421087265,
+          "deltaField": 7.53524923324585,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.025000104680657387,
+            0.03299858421087265,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 215069802,
+          "absoluteMs": 60083,
+          "absoluteSeconds": 60.08300018310547,
+          "rawDelta": 0.025001276284456253,
+          "deltaField": 7.5238752365112305,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            60.0,
+            0.025000104680657387,
+            0.03299858421087265,
+            0.025001276284456253
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 215220143,
+          "absoluteMs": 60125,
+          "absoluteSeconds": 60.125,
+          "rawDelta": 0.041999783366918564,
+          "deltaField": 0.03450004756450653,
+          "returnedDelta": 0.03450004756450653,
+          "history": [
+            0.041999783366918564,
+            0.025000104680657387,
+            0.03299858421087265,
+            0.025001276284456253
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 216294007,
+          "absoluteMs": 60425,
+          "absoluteSeconds": 60.42499923706055,
+          "rawDelta": 0.3000001013278961,
+          "deltaField": 0.16774997115135193,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.041999783366918564,
+            0.3000001013278961,
+            0.03299858421087265,
+            0.025001276284456253
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 216383495,
+          "absoluteMs": 60450,
+          "absoluteSeconds": 60.45000076293945,
+          "rawDelta": 0.025000693276524544,
+          "deltaField": 0.09587550163269043,
+          "returnedDelta": 0.09587550163269043,
+          "history": [
+            0.041999783366918564,
+            0.3000001013278961,
+            0.025000693276524544,
+            0.025001276284456253
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 216472984,
+          "absoluteMs": 60475,
+          "absoluteSeconds": 60.474998474121094,
+          "rawDelta": 0.02499927207827568,
+          "deltaField": 0.06149979308247566,
+          "returnedDelta": 0.06149979308247566,
+          "history": [
+            0.041999783366918564,
+            0.3000001013278961,
+            0.025000693276524544,
+            0.02499927207827568
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 216562472,
+          "absoluteMs": 60500,
+          "absoluteSeconds": 60.5,
+          "rawDelta": 0.025001386180520058,
+          "deltaField": 0.05937561020255089,
+          "returnedDelta": 0.05937561020255089,
+          "history": [
+            0.025001386180520058,
+            0.3000001013278961,
+            0.025000693276524544,
+            0.02499927207827568
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 216651961,
+          "absoluteMs": 60525,
+          "absoluteSeconds": 60.525001525878906,
+          "rawDelta": 0.024999964982271194,
+          "deltaField": 0.025000324472784996,
+          "returnedDelta": 0.025000324472784996,
+          "history": [
+            0.025001386180520058,
+            0.024999964982271194,
+            0.025000693276524544,
+            0.02499927207827568
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 220274461,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 220274461,
+          "absoluteMs": 61537,
+          "absoluteSeconds": 61.5369987487793,
+          "rawDelta": 1.3448079698719084e-06,
+          "deltaField": 0.05000067129731178,
+          "returnedDelta": 0.05000067129731178,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.3448079698719084e-06,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 220278040,
+          "absoluteMs": 61538,
+          "absoluteSeconds": 61.53799819946289,
+          "rawDelta": 0.0010011926060542464,
+          "deltaField": 0.025500932708382607,
+          "returnedDelta": 0.025500932708382607,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            1.3448079698719084e-06,
+            0.0010011926060542464
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 220367529,
+          "absoluteMs": 61563,
+          "absoluteSeconds": 61.5629997253418,
+          "rawDelta": 0.025001846253871918,
+          "deltaField": 0.025251388549804688,
+          "returnedDelta": 0.025251388549804688,
+          "history": [
+            0.025001846253871918,
+            0.10000000149011612,
+            1.3448079698719084e-06,
+            0.0010011926060542464
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 220485654,
+          "absoluteMs": 61596,
+          "absoluteSeconds": 61.59600067138672,
+          "rawDelta": 0.03300032392144203,
+          "deltaField": 0.022875940427184105,
+          "returnedDelta": 0.022875940427184105,
+          "history": [
+            0.025001846253871918,
+            0.03300032392144203,
+            1.3448079698719084e-06,
+            0.0010011926060542464
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 220575142,
+          "absoluteMs": 61621,
+          "absoluteSeconds": 61.62099838256836,
+          "rawDelta": 0.024999205023050308,
+          "deltaField": 0.02400006540119648,
+          "returnedDelta": 0.02400006540119648,
+          "history": [
+            0.025001846253871918,
+            0.03300032392144203,
+            0.024999205023050308,
+            0.0010011926060542464
+          ],
+          "historyIndex": 3
+        }
+      ]
+    },
+    {
+      "precision": 53,
+      "api": "QPC",
+      "frequency": 3579545,
+      "storedFrequency": 3579545.0,
+      "epochMs": 86400000,
+      "frames": [
+        {
+          "operation": "initialize",
+          "counter": 309272688000,
+          "absoluteMs": 86400000,
+          "absoluteSeconds": 86400.0,
+          "rawDelta": 86400.0,
+          "deltaField": 43200.046875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309272777489,
+          "absoluteMs": 86400025,
+          "absoluteSeconds": 86400.0234375,
+          "rawDelta": 0.025000104680657387,
+          "deltaField": 21600.03515625,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.025000104680657387,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309272895614,
+          "absoluteMs": 86400058,
+          "absoluteSeconds": 86400.0546875,
+          "rawDelta": 0.0345626100897789,
+          "deltaField": 10800.0361328125,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.025000104680657387,
+            0.0345626100897789,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309272985102,
+          "absoluteMs": 86400083,
+          "absoluteSeconds": 86400.0859375,
+          "rawDelta": 0.028312433511018753,
+          "deltaField": 10800.0263671875,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            86400.0,
+            0.025000104680657387,
+            0.0345626100897789,
+            0.028312433511018753
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309273135443,
+          "absoluteMs": 86400125,
+          "absoluteSeconds": 86400.125,
+          "rawDelta": 0.039062466472387314,
+          "deltaField": 0.03405468165874481,
+          "returnedDelta": 0.03405468165874481,
+          "history": [
+            0.039062466472387314,
+            0.025000104680657387,
+            0.0345626100897789,
+            0.028312433511018753
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309274209307,
+          "absoluteMs": 86400425,
+          "absoluteSeconds": 86400.421875,
+          "rawDelta": 0.3000001013278961,
+          "deltaField": 0.1676250398159027,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.039062466472387314,
+            0.3000001013278961,
+            0.0345626100897789,
+            0.028312433511018753
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309274298795,
+          "absoluteMs": 86400450,
+          "absoluteSeconds": 86400.453125,
+          "rawDelta": 0.02812493033707142,
+          "deltaField": 0.09748435020446777,
+          "returnedDelta": 0.09748435020446777,
+          "history": [
+            0.039062466472387314,
+            0.3000001013278961,
+            0.02812493033707142,
+            0.028312433511018753
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309274388284,
+          "absoluteMs": 86400475,
+          "absoluteSeconds": 86400.4765625,
+          "rawDelta": 0.021875035017728806,
+          "deltaField": 0.06035156920552254,
+          "returnedDelta": 0.06035156920552254,
+          "history": [
+            0.039062466472387314,
+            0.3000001013278961,
+            0.02812493033707142,
+            0.021875035017728806
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309274477772,
+          "absoluteMs": 86400500,
+          "absoluteSeconds": 86400.5,
+          "rawDelta": 0.023437360301613808,
+          "deltaField": 0.058203067630529404,
+          "returnedDelta": 0.058203067630529404,
+          "history": [
+            0.023437360301613808,
+            0.3000001013278961,
+            0.02812493033707142,
+            0.021875035017728806
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309274567261,
+          "absoluteMs": 86400525,
+          "absoluteSeconds": 86400.5234375,
+          "rawDelta": 0.024999964982271194,
+          "deltaField": 0.024609318003058434,
+          "returnedDelta": 0.024609318003058434,
+          "history": [
+            0.023437360301613808,
+            0.024999964982271194,
+            0.02812493033707142,
+            0.021875035017728806
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "reset",
+          "counter": 309278189761,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": null,
+          "deltaField": 0.0,
+          "returnedDelta": 0.10000000149011612,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612,
+            0.10000000149011612
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309278189761,
+          "absoluteMs": 86401537,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.0020624063909053802,
+          "deltaField": 0.04896879568696022,
+          "returnedDelta": 0.04896879568696022,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.0020624063909053802,
+            0.10000000149011612
+          ],
+          "historyIndex": 3
+        },
+        {
+          "operation": "update",
+          "counter": 309278193340,
+          "absoluteMs": 86401538,
+          "absoluteSeconds": 86401.5390625,
+          "rawDelta": -0.0010625587310642004,
+          "deltaField": 0.023953119292855263,
+          "returnedDelta": 0.023953119292855263,
+          "history": [
+            0.10000000149011612,
+            0.10000000149011612,
+            -0.0020624063909053802,
+            -0.0010625587310642004
+          ],
+          "historyIndex": 0
+        },
+        {
+          "operation": "update",
+          "counter": 309278282829,
+          "absoluteMs": 86401563,
+          "absoluteSeconds": 86401.5625,
+          "rawDelta": 0.023937545716762543,
+          "deltaField": 0.023945331573486328,
+          "returnedDelta": 0.023945331573486328,
+          "history": [
+            0.023937545716762543,
+            0.10000000149011612,
+            -0.0020624063909053802,
+            -0.0010625587310642004
+          ],
+          "historyIndex": 1
+        },
+        {
+          "operation": "update",
+          "counter": 309278400954,
+          "absoluteMs": 86401596,
+          "absoluteSeconds": 86401.59375,
+          "rawDelta": 0.03350004926323891,
+          "deltaField": 0.022343790158629417,
+          "returnedDelta": 0.022343790158629417,
+          "history": [
+            0.023937545716762543,
+            0.03350004926323891,
+            -0.0020624063909053802,
+            -0.0010625587310642004
+          ],
+          "historyIndex": 2
+        },
+        {
+          "operation": "update",
+          "counter": 309278490442,
+          "absoluteMs": 86401621,
+          "absoluteSeconds": 86401.6171875,
+          "rawDelta": 0.027249876409769058,
+          "deltaField": 0.02485932596027851,
+          "returnedDelta": 0.02485932596027851,
+          "history": [
+            0.023937545716762543,
+            0.03350004926323891,
+            0.027249876409769058,
+            -0.0010625587310642004
+          ],
+          "historyIndex": 3
+        }
+      ]
+    }
+  ]
+}

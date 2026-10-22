@@ -1,0 +1,87 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-20T23:36:26.311888+00:00",
+  "scope": "Source-only correction of lap-display hold and quit-requester timing identified by the HUD audit. Bounded original instruction probes, focused unit tests and Chromium integration; no full race, original Windows GPU observation or packaged-app verification is claimed.",
+  "original": {
+    "binary": "/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/data/Game/rcskspel.dat",
+    "sha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+    "lapAndQuitFixturesMatchOriginal": true,
+    "requesterConfig": "/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/data/Game/SndGfx.ini",
+    "requesterConfigSha256": "7d1a869727d334a4b926748f5d94b7fb2c1310ce19826bf22c9715827868c0d6"
+  },
+  "nativeEvidence": {
+    "lap": {
+      "path": "evidence/native/lap-display-fixtures.json",
+      "initializedTraces": 88,
+      "callbacks": 440,
+      "pauseClockResets": 6,
+      "precisionBits": [
+        24,
+        53
+      ]
+    },
+    "quit": {
+      "path": "evidence/native/quit-requester-fixtures.json",
+      "traces": 15,
+      "timedObservations": 75,
+      "keyboardReleaseEvidence": "evidence/native/race-lifecycle-fixtures.json"
+    }
+  },
+  "focusedTests": {
+    "command": "node --test tests/native-lap-display.test.mjs tests/race-hud-order.test.mjs tests/hud-text.test.mjs tests/race-requester.test.mjs tests/native-race-lifecycle.test.mjs tests/hud-gameplay-events.test.mjs",
+    "passed": 28,
+    "failed": 0,
+    "durationMs": 81.39,
+    "reporting": "Observed terminal TAP result; not a full-suite run."
+  },
+  "browser": {
+    "report": "evidence/hud-timing/browser/report.json",
+    "passedGroups": 9,
+    "errors": [],
+    "sourceHashesUnchangedDuringRun": true,
+    "currentSourceMatchesVerifiedHashes": true,
+    "observedCommitDelayMs": [
+      115,
+      107,
+      108,
+      100,
+      100,
+      113
+    ],
+    "scope": "Source-only Chromium software-WebGL integration. Lap boundary cases supply disclosed race/absolute-clock snapshots to the real RaceHud; pause and requester cases use actual keyboard, pointer, and emulated standard Gamepad API input in the running game. The lap event in the pause case is controlled; no completed race is claimed. Audio observation calls through the original HTMLMediaElement.play. No packaged app or existing user session is accessed."
+  },
+  "sourceOnly": true,
+  "releaseBuildsRun": false,
+  "fullSuiteRun": false,
+  "hashes": {
+    "src/main.js": "0285eb22b5cd07eef57aa31353565d93167a985eccddc29a0d850a9df97fc422",
+    "src/input.js": "f1c73e4ef48d56e5f46833ba072b81a9fec42af92f5638c6ff6ef4bfa255b90e",
+    "src/driving-view.js": "a43d0b688beda8c72aa1405dc0ea24755cd0358a57e61b2caf1c7082e1322f23",
+    "src/race-hud.js": "5796cffe6992ea87002bc40edaede95da73ce2ce30fb545fccbf1b461b1c78d2",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/hud-notifications.js": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+    "src/hud-gameplay-events.js": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+    "src/race-requester.js": "f3599509503910fdf35bd21f0235d9b8ef54d86ef829630fb30d786673b86764",
+    "src/native-quit-requester.js": "cdfd4381b625bc37781cb727e51e04f140cfc2b03ece74fb09fc8706fe18304c",
+    "src/style.css": "83d6e96cbfcd68920523098817910311c8280aeb2bb84299ced0772b5b0454c7",
+    "src/simulation/native-lap-display.js": "78a78cf486cd2e21603a564b8b4d7a179e71f68c76da593908772c81c934debe",
+    "src/simulation/native-race-lifecycle.js": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "tests/hud-timing-browser.mjs": "f10ca84bc48cd5bbb94189a3138f16c3af2cbd6943951ab68b4cd9ea511b4b04",
+    "evidence/native/lap-display-fixtures.json": "2348be7987713b56696f73e90b5447dabc0e3af3fa558e16da2e13d13caa7eb1",
+    "evidence/native/quit-requester-fixtures.json": "5a0d641dbca1ba6c915e40022ae52d6ae2ad8c048c3eee5e84895e449a2e2ab3",
+    "tools/native-lap-display-fixtures.py": "63427bb5db04679186daef5b9c88428c86bffad729d08b438f4ea4767be7e1e4",
+    "tools/native-quit-requester-fixtures.py": "48eb6f36296089f51ea7632bbe67b485e37191047f5d0ab9aa9da65edd62c31f",
+    "tests/native-lap-display.test.mjs": "45550f822d8abb5c3a6e31f034264bc4b129f0b2947d3ed30c2f318a7c4d7c37",
+    "tests/race-hud-order.test.mjs": "6af3530c567af2a91e2c142308ae8d102c11d7c11617e622f06c286f4d152b96",
+    "tests/hud-text.test.mjs": "f214193a71f9569df582d5387492d7ab3cbcdeb09c7a786ff57e962e3db90992",
+    "tests/race-requester.test.mjs": "bad1baf0e83723d73a4157a76dc49390a9d119d7b7a8536e54936a26b059935a",
+    "tests/native-race-lifecycle.test.mjs": "673276ed3cd46dc3a90bcc5e48028ae722c6732bc2bb9baccb67d0a2a372d47d",
+    "tests/hud-gameplay-events.test.mjs": "b6597c112e063adcc872b3f3b7f72b9000109b6d901a9b221de53132a8aae243",
+    "docs/research-lap-display.md": "5693e2ba7c8e4b6aa3cafea4adaa8e74afee4ed8fa04c33e9de46683d450a286",
+    "docs/research-quit-requester.md": "c1e176b50b37bcfdc9cc9ebf62b0501ba6cf32938b9662e40a09b332770bd8c6",
+    "docs/research-hud-notice-audit.md": "f7b4e21319f0a3891eb56915e85d98d439b6e5191fdb61d4d79a8b139fd7e9e7",
+    "docs/research-hud-modes.md": "5cd578016714765752b28fbf41a869395e26c090fdc123e1896553af7a3caae9",
+    "docs/research-hud-arrows.md": "aa7fb15dfdabfd3cfeefa486777e3aacc9a8d2df520b439c1f5cd82a7c85532d"
+  }
+}

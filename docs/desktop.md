@@ -1,0 +1,285 @@
+# Desktop application
+
+The desktop application runs the same game locally in Electron. It opens the
+original introduction and menus in its own window. It does not require a browser
+server, `npm start`, or a separate `npm run build` step.
+
+The locked toolchain is **Node.js 24**, **Electron 44.9.2** and
+**electron-builder 26.15.3**. Use the committed `package-lock.json` with `npm ci`.
+The builder references below deliberately use the [v26 documentation](https://www.electron.build/v26/docs/);
+the unversioned website currently describes the next major version.
+
+## Run from this folder
+
+Install Node.js 24 and npm from the [official Node.js downloads](https://nodejs.org/en/download).
+In Bash, macOS Terminal or PowerShell, open the project directory and run:
+
+```sh
+node --version
+npm --version
+npm ci
+npm run desktop
+```
+
+`node --version` should report `v24.x`. The first desktop launch downloads the
+pinned Electron runtime if it is not cached. Subsequent starts only need `npm run desktop` unless
+dependencies were removed or changed. Do not omit development dependencies:
+Electron and the packager are development tools used by these commands.
+
+The prepared `public/assets/` folder is already present in this working copy.
+It is excluded from Git, as are `node_modules/` and generated packages. A clean
+checkout therefore needs the original local game/CD/font files and
+`npm run prepare:assets` before desktop launch or packaging. Follow the
+[asset preparation instructions](../README.md#prepare-and-run) for Python, Pillow,
+pefile, ffmpeg, helpdeco and source paths. These extraction tools are not needed
+on a computer that only runs a completed desktop package.
+For building on another OS, you can also copy the complete prepared
+`public/assets/` tree from an existing working checkout; keep its directory
+structure unchanged. Windows extraction can select its installed Python with
+`$env:PYTHON = 'python'` before running the preparation command in PowerShell.
+
+Both the source application and packaged application use `rcsk://game/` for
+their local content. No port is opened and an existing browser server on 4173
+can remain running independently.
+
+Use the **Beeld → Volledig scherm** menu or F11 for fullscreen; macOS also
+offers Control+Command+F. The game keeps its own original Esc quit/pause
+behavior. To launch directly into the menu during development:
+
+```sh
+npm run desktop -- --skip-intro
+```
+
+## Build packages
+
+Run the commands from the project root after preparing assets and installing
+dependencies. Outputs go to `release/`. The scripts explicitly use
+`--publish never`: packaging does not upload a release or publish anything.
+This matters because builder v26 also supports implicit CI publishing when no
+explicit policy is supplied. [Publishing reference](https://www.electron.build/v26/docs/publish/)
+
+| Command | Output |
+| --- | --- |
+| `npm run desktop:pack` | Unpacked application for the current host OS/architecture |
+| `npm run dist:linux` | Linux x64 AppImage and `.tar.gz` |
+| `npm run dist:win` | Windows x64 NSIS installer and `.zip` |
+| `npm run dist:mac` | Separate macOS x64 and arm64 `.dmg` and `.zip` packages |
+
+The macOS outputs are separate Intel and Apple Silicon packages, not one
+universal binary. A package includes Electron, so its recipient does not need
+Node.js, npm, Python, the original Windows executable, or a local web server.
+Packaging refreshes the static game staging folder and icons automatically.
+The configuration is [electron-builder.json](../electron-builder.json).
+Before archiving, the build verifies every staged game file byte-for-byte and
+checks the wrapper's contents. Missing Three.js modules or media stop the build.
+The resulting `release/integrity-<platform>-<arch>.json` records this check.
+Artifact names include version, OS and architecture, for example
+`RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage`.
+
+### Linux
+
+Build on a graphical Linux desktop with Node.js 24 installed. Electron needs the
+system's normal graphics, audio and desktop libraries. On Debian/Ubuntu, the
+builder documentation lists this additional distribution-build tool:
+
+```sh
+sudo apt-get install --no-install-recommends libopenjp2-tools
+npm ci
+npm run desktop:pack
+npm run dist:linux
+ls -lh release/
+```
+
+Use the equivalent package for another distribution if the build requests it.
+Launch the generated AppImage after making it executable:
+
+```sh
+chmod +x release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage
+./release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage
+```
+
+Adjust the version in the filename after a version change. The unpacked test
+build runs as `./release/linux-unpacked/redcat-superkarts`. Alternatively,
+extract the `.tar.gz` and run `redcat-superkarts` inside its directory. If the host cannot mount
+AppImages, the tar archive provides the same game without an AppImage mount.
+Keep the extracted application directory together; copying only its executable
+omits required resources.
+
+### Windows
+
+Use Windows PowerShell with the Windows x64 Node.js 24 installation on `PATH`:
+
+```powershell
+Set-Location 'C:\path\to\RedCat Superkarts'
+node --version
+npm ci
+npm run desktop
+npm run dist:win
+Get-ChildItem .\release\
+```
+
+Run the generated NSIS `.exe` to install, or extract the `.zip` completely and
+run `redcat-superkarts.exe`. The unpacked test build is
+`release\win-unpacked\redcat-superkarts.exe`. NSIS does not require Mono. A Windows build should be
+tested on Windows before distribution, including introduction playback, sound,
+gamepads, fullscreen and save persistence.
+
+### macOS
+
+Use Terminal on macOS with Node.js 24 installed. Install Apple's command-line
+tools if they are absent, then build:
+
+```sh
+xcode-select --install
+cd '/path/to/RedCat Superkarts'
+node --version
+npm ci
+npm run desktop
+npm run dist:mac
+ls -lh release/
+```
+
+If the command-line tools are already installed, skip their installation.
+Open the DMG for the intended architecture and copy the application to
+Applications, or extract the corresponding ZIP. The default build uses an
+ad-hoc signature for local testing; it is not a notarized Developer ID release.
+macOS can require approval under Privacy & Security. Test both architecture
+packages on suitable Macs before claiming support.
+
+The unpacked bundles are `release/mac/RedCat SuperKarts.app` for x64 and
+`release/mac-arm64/RedCat SuperKarts.app` for arm64. Open the bundle matching
+your Mac, for example:
+
+```sh
+open 'release/mac-arm64/RedCat SuperKarts.app'
+```
+
+### Cross-building
+
+Building on each target operating system is the recommended workflow. The
+builder supports Windows builds from Linux with Wine, but producing an archive
+on Linux does not verify Windows execution. macOS signing must run on macOS;
+use a Mac for DMG creation and signed/notarized releases. No cross-platform
+runtime validation is implied by the command table.
+[Platform prerequisites](https://www.electron.build/v26/docs/features/multi-platform-build/)
+
+## Saves and settings
+
+Desktop settings, adventure profiles, highscores and records persist in the
+application's Chromium profile under:
+
+| System | Profile directory |
+| --- | --- |
+| Linux | `$XDG_CONFIG_HOME/RedCat SuperKarts`, or `~/.config/RedCat SuperKarts` when unset |
+| Windows | `%APPDATA%\RedCat SuperKarts` |
+| macOS | `~/Library/Application Support/RedCat SuperKarts` |
+
+Source and packaged desktop launches use the same profile and local origin.
+Browser saves at `http://127.0.0.1:4173/` remain separate; they are not
+automatically imported. Rebuilding the application does not overwrite the
+profile. Quit the application before copying the profile directory for backup.
+These paths follow Electron's platform-specific application-data directories.
+[Electron path reference](https://www.electronjs.org/docs/latest/api/app#appgetpathname)
+
+For a separate test profile, set `RCSK_USER_DATA` to an **absolute** directory
+before launching. This changes only the desktop profile; it does not import or
+erase the normal profile.
+
+```sh
+RCSK_USER_DATA=/absolute/path/to/test-profile npm run desktop
+```
+
+```powershell
+$env:RCSK_USER_DATA = 'C:\absolute\path\to\test-profile'
+npm run desktop
+Remove-Item Env:RCSK_USER_DATA
+```
+
+## Package contents
+
+The wrapper is stored in `app.asar`; its files are `electron/**`, package
+metadata and the desktop icon. The game is copied separately into `resources/game/` (inside the app's
+`Contents/Resources/` on macOS): the entry page, `src/`, prepared assets and the
+required Three.js runtime modules. Movies and audio are served locally from
+these packaged files. The packaging scripts generate this payload through
+`npm run build`; the resulting `dist/` contents become `resources/game/`.
+
+Original installers/executables, raw extraction folders, native research,
+evidence, tests and development dependencies are not part of the game resource
+payload. The prepared original artwork, sound, fonts
+and movies retain their owners' rights; packaging does not change their license
+or grant redistribution rights.
+
+## Optional release signing
+
+Local builds do not require purchased signing credentials. Windows packages
+without a trusted publisher signature may show SmartScreen warnings. The
+default macOS ad-hoc signature does not establish a publisher identity or
+notarization. Do not describe either as a signed public release.
+
+For a Windows publisher release, configure a supported certificate or signing
+service using the [v26 Windows signing guide](https://www.electron.build/v26/docs/features/code-signing/code-signing-win/).
+For file-based signing, inject `WIN_CSC_LINK` and `WIN_CSC_KEY_PASSWORD` through
+the build environment, then run `npm run dist:win`. The project does not disable
+Windows executable signing. Keep certificate material and passwords outside the
+repository.
+
+For a macOS publisher release, use a Developer ID Application identity on a Mac
+and override the local ad-hoc identity and disabled notarization:
+
+```sh
+npm run dist:mac -- \
+  -c.mac.identity="Developer ID Application: Your Name (TEAMID)" \
+  -c.mac.notarize=true
+```
+
+Use your actual installed/imported signing identity. Hardened runtime and the
+Electron entitlements are already configured in
+[desktop/entitlements.mac.plist](../desktop/entitlements.mac.plist), including
+the library-validation exception needed by the default ad-hoc build. Review
+entitlements for the intended publisher release. The Apple ID route uses
+`APPLE_ID`, `APPLE_APP_SPECIFIC_PASSWORD` and `APPLE_TEAM_ID`; certificate import
+can use `CSC_LINK` and `CSC_KEY_PASSWORD`. Configure these as environment secrets,
+then follow the [macOS signing](https://www.electron.build/v26/docs/features/code-signing/code-signing-mac/)
+and [notarization](https://www.electron.build/v26/docs/features/code-signing/notarization/)
+guides. Signing and notarization are optional separate build work, not completed
+by the local unsigned/ad-hoc validation. The packaging scripts still do not
+publish the resulting files.
+
+## Validation scope
+
+The integration passed **513 JavaScript tests**, including six desktop protocol
+and startup tests. Both the source launcher and the actual Linux AppImage passed
+**12 desktop checks**: intro decoding/playback, movie byte ranges, renderer
+isolation, original menu imagery/greeting, fullscreen, single-instance focus,
+QuickRace opening/countdown, keyboard movement and race audio, save persistence,
+and the original quit requester. The normal Chromium sandbox remained enabled.
+The AppImage ran directly, without an extraction or FUSE fallback.
+
+These automated runs used Linux/Xvfb, KWin and SwiftShader. They do not establish
+physical GPU performance, speaker output, physical controller operation, full
+race completion or new original-game parity. The earlier browser and native
+research records remain separate. The Windows x64 installer and ZIP were
+cross-built on Linux; native Windows execution remains untested. macOS package
+creation/execution, publisher signing and notarization require separate
+validation on their target systems.
+
+See [the consolidated record](../evidence/desktop/validation.json),
+[source launch checks](../evidence/desktop/source/report.json) and
+[AppImage checks](../evidence/desktop/packaged/report.json). Earlier test-harness
+fullscreen failures are retained separately: a window manager and native
+Electron key events were needed to exercise browser-side shortcuts.
+
+To repeat the Linux checks in an isolated display, install `xvfb-run`,
+`dbus-run-session`, `wmctrl`, and one of Openbox, Fluxbox or KWin X11, then run:
+
+```sh
+npm test
+bash tools/run-desktop-test-linux.sh
+RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage" \
+  bash tools/run-desktop-test-linux.sh
+```
+
+The helper starts and cleans up its own display and window manager. On an
+existing Linux X11 desktop, `npm run test:desktop` runs the same checks directly.
+Tests use a temporary profile and remove it after closing the app.

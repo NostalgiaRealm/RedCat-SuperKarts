@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#142443">
+  <title>RedCat SuperKarts</title>
+  <link rel="icon" href="/assets/ui/original.ico" type="image/x-icon">
+  <link rel="stylesheet" href="/src/style.css">
+  <script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>
+</head>
+<body>
+  <main id="app">
+    <canvas id="world" aria-label="Origineel circuit"></canvas>
+    <canvas id="race-hud" aria-label="Ronde, rondetijd en snelste ronde" hidden></canvas>
+    <section id="screen" aria-live="polite"></section>
+    <section id="intro" hidden>
+      <video id="movie" playsinline preload="metadata"></video>
+      <div class="movie-actions"><button id="play-movie">Start</button><button id="skip-movie" hidden>Overslaan</button></div>
+    </section>
+    <section id="viewer-hud" hidden>
+      <header><button id="leave-viewer">Terug</button><strong id="track-title"></strong><button id="viewer-settings">Instellingen</button></header>
+      <div id="viewer-caption"><b>Circuit bekijken</b><span>Sleep om rond te kijken · scroll of knijp om te zoomen</span></div>
+      <output id="render-size"></output>
+    </section>
+    <div id="touch-controls" hidden>
+      <div><button data-input="left">Links</button><button data-input="right">Rechts</button></div>
+      <div><button data-input="bonus">Gebruik bonus</button><button data-input="handbrake">Handrem</button><button data-input="brake">Remmen</button><button data-input="accelerate">Gas geven</button></div>
+      <button id="touch-stop">Stoppen</button>
+    </div>
+    <div id="message" role="status" hidden></div>
+  </main>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {nativeRaceSettings} from '../src/simulation/native-race.js';
+import {nativeAdventureQualification} from '../src/simulation/native-adventure.js';
+const file='evidence/full-race-matrix/timed-nl-authored-opening-3.json';
+const read=p=>JSON.parse(fs.readFileSync(p));
+const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const report=read(file),run=report.runs[0],track=read('public/assets/tracks/etappe0.json');
+assert.equal(report.status,'all-finished');assert.equal(report.cadenceMs,25);
+assert.deepEqual([run.track,run.difficulty,run.raceMode],[0,2,1]);
+assert.equal(run.status,'finished');assert.equal(run.race.finished,true);assert.equal(run.race.lapCount,5);
+assert.deepEqual(report.sourceChangedDuringRun,[]);assert.deepEqual(report.assetsChangedDuringRun,[]);
+for(const [file,hash] of Object.entries(report.sourceAtStart))assert.equal(sha(file),hash,file);
+for(const [file,hash] of Object.entries(report.assetSha256))assert.equal(sha(`public/assets/${file}`),hash,file);
+for(const file of report.executionDependencies)assert.ok(report.sourceAtStart[file],file);
+assert.equal(run.race.lapTimes.reduce((sum,value)=>sum+value,0),run.race.raceTimeMs);
+assert.deepEqual(run.lapEvents.map(x=>x.lap),[1,2,3,4,5]);
+const settings=nativeRaceSettings(read('public/assets/config.json'),0,2,1);
+assert.equal(run.gateEvents.length,15);
+for(const [index,event] of run.gateEvents.entries()){
+  assert.equal(event.index,index%3+1);assert.equal(event.additionalMs,settings.gateTimes[event.index]);
+}
+assert.equal(settings.gateTimes[0]+run.gateEvents.reduce((sum,event)=>sum+event.additionalMs,0)-run.race.elapsedMs,run.race.remainingMs);
+assert.deepEqual(run.qualification,nativeAdventureQualification({difficulty:2,raceType:1},{rank:run.rank,finished:run.race.finished,stars:run.stars}));
+const nodes=report.authoredBranch;
+for(let i=1;i<nodes.length;i++)assert.ok(track.drive[nodes[i-1]].links.slice(0,3).includes(nodes[i]),`${nodes[i-1]} -> ${nodes[i]}`);
+const length=nodes.slice(1).reduce((sum,node,index)=>{const a=track.drive[nodes[index]].position,b=track.drive[node].position;return sum+Math.hypot(b[0]-a[0],b[2]-a[2]);},0);
+const result={status:'passed',scope:'Read-only completion, source/assets, authored-node linkage and original timer-accounting audit. This does not replay the full native Windows trajectory.',report:file,reportSha256:sha(file),runtimeAndControllerFiles:Object.keys(report.sourceAtStart).length,assets:Object.keys(report.assetSha256).length,cadenceMs:25,character:report.character,constructionSeed:report.constructionSeed,gameplaySeed:report.gameplaySeed,laps:run.race.lapCount,elapsedMs:run.race.elapsedMs,lapTimes:run.race.lapTimes,rank:run.rank,qualified:run.qualification.qualified,gates:run.gateEvents.length,originalGateTimes:settings.gateTimes,remainingMs:run.race.remainingMs,rescue:run.rescue,reverseRecoveries:run.recoveries,npcVelocitySafetyEvents:run.events['npc-velocity-safety']??0,authoredBranch:{nodes,originalLinkedEdges:nodes.length-1,lengthXZ:length},inputSha256:run.inputSha256};
+fs.writeFileSync('evidence/full-race-matrix/nl-authored-completion-audit.json',JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({...result,authoredBranch:{originalLinkedEdges:nodes.length-1,lengthXZ:length}}));

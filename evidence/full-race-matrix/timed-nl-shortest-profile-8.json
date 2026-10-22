@@ -1,0 +1,3547 @@
+{
+  "format": "superkarts-control-only-races-v1",
+  "scope": "Composed JavaScript race with original physics, AI, contacts, bonuses and timers. A test-only route follower supplies ordinary analog controls. No poses, velocities, triggers, pickups, timers, or physics tables are changed. This is not an original Windows full-process comparison or a full-campaign UI run.",
+  "startedAt": "2026-10-20T19:13:09.762Z",
+  "sourceAtStart": {
+    "src/arm-audio.js": "50a4e7848d441449e66b1d61e55bb205e7b2050d5714205e66c557820ce0e474",
+    "src/asset-animation.js": "0f47660a069ca25811db1e52874f6b1cecaff8d767030f3a331b3dfc5846c99d",
+    "src/asset-materials.js": "d23bda2a186dc457f794a932254a7af271a9b5d15fd6175a48675edbada28b2f",
+    "src/audio-mixing.js": "e643893d232e87b8f23d465cd447e339da16f514346f1f297d21ba24ee868434",
+    "src/bonus-audio.js": "d3a18547691988a15b9cc0230162847d97833e1862ac8fdf860cca3f5945a06b",
+    "src/bubble-visuals.js": "2fb8035ff823121e994a62f92b5e5f992acfaa469d7747b3f4357c25e0a02ae7",
+    "src/driving-view.js": "84a87effc210c19ca816b44bfcd2e940a15ce6aa9c14896adeeb2443c0d11552",
+    "src/engine-audio.js": "1535161cb9c6117b2f412d2c191fe6c0b401a1a9982cc5088d5ae173b091cdf6",
+    "src/finish-flag.js": "3150bccdd8226a2f2b5b3a236bbdd0703def554ff61aab8ce589441b094409d5",
+    "src/game-audio.js": "9f4c47ca08468d5941dff26497cc47e87148e514d53381b91fba828d0d6bac9e",
+    "src/hud-mesh.js": "0237ab735d353f9e43164c664a67d54a89ecc3153083b104c8bb9d0e3f1e7c9b",
+    "src/hud-notifications.js": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+    "src/hud-portraits.js": "9d577ef6b58bf77147b9e080141d047f733ffa96494ded02d78f799bc98c4dfc",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/input.js": "dfd512b614ccbdd6999bbae96691ebad3958a84254705e19ecb0fa6f8de8a12b",
+    "src/kart-shadow.js": "564d385a8488909cf7d739e8fabe35300929d14b5706c0277441ea1bfac4c871",
+    "src/loading-screen.js": "8e98c1c4152b783841d17783eb3704b618a2c623b091e711ceb4ad15d06ccfab",
+    "src/main.js": "115d16fb8f67cb48b9d89aa55e7ee4d85b10f01b8f43de73d198b37eaf046349",
+    "src/menu-audio.js": "2e9618b813b790e2480c2936a4a7bfeb9238ce9448ed5f1bb6d0155b167d09b8",
+    "src/menu-regions.js": "54d5f616a966313ff104fd0405d4ef911988eb9169a12fc246a46cd93fe4ba77",
+    "src/menu-sound-events.js": "7235a2437166efcc1f44191e16c43494bf4a617db4ddc99f4015ccbabf9ae811",
+    "src/native-blend-state.js": "d4f1031a2defe2da38659c0c970e4c1fbecc7762cb398881e2915dec5332d941",
+    "src/native-control-settings.js": "40254dbc99776bb784044f4eca52139823763b8a2dbd4530bbd7a952c34a59b3",
+    "src/native-crash-audio.js": "1924aca759e5c4f30ccf32cedd7f502387c4114fe95e8b67845b8327f6ac5d41",
+    "src/native-display-settings.js": "2a66b1ca069b55273076698e687a1f142f155eecc9676f38a95019a644197de2",
+    "src/native-key-audio.js": "f894c02d565c53fbafc3568e816acb8ac82f1ca04c86eadca14ee59a9e9f0bc8",
+    "src/native-menu.js": "b841b05d731dd52fd98548d3f604e9f86e4a4079d6d1b494cf7dc136e6c91265",
+    "src/native-portrait.js": "445c1e9be2a44f4b6a137024887d4d74ab923d5e68b3b4787a9c584b671f9997",
+    "src/native-race-audio.js": "246ea97bfdf3859e65d53a02397078cb956f9cfdefd6d012cad7f913e73ccee1",
+    "src/native-tab-order.js": "f7a281ab1165028833d2f404a56a8eb1d77ab99e17f5606deb7b5bfa3fd83917",
+    "src/native-voice-controller.js": "e76556a912202116fe666a1be89055a79f1a2f456e832c3ead3904a14240e313",
+    "src/player-assets.js": "d48d7358267213f406c29d035199f42759f476d97eff907365a21437ae1bc093",
+    "src/race-hud-layout.js": "7472e765e521066434bae60c02f04fba053267b83042df3abb613bef515d999b",
+    "src/race-hud-meshes.js": "84f42c189e6f6aac818a0cef9f43476fc8ca49c814295a9e05277379d0a44eba",
+    "src/race-hud.js": "c006cf42457db10e724fb8ebce215565ed05cd22d2325efd5c0af25538c79701",
+    "src/race-requester.js": "3c8693ada810ed43cfdde17677b82be4a2a1f3d5702604ba55a7d2b6062bdb4e",
+    "src/race-save.js": "a6942cf021a8345f110744e0d20971818a48136ac13c2f5f41b3cdbe66e0f220",
+    "src/race-simulation.js": "db2ab19213c5a9728a1aa4f2462f9073c14c58c7b472702ead53b5dbab1de5e6",
+    "src/race-visuals.js": "5dff28754496b3ce19840e228256accba381498878c080fd35180ae981092ae4",
+    "src/render-order.js": "df7d7bca5091ba67c5629aafb970011c6765cebc23901906e24460d09e1246f2",
+    "src/render-transforms.js": "bac6824132b7f0509c7c18f77a960dd318adc4807108b4824930d90126dba547",
+    "src/rescue-assets.js": "0afcc47d953e925219b2109b33731556524ae9fa37074efd3810d7e810aeb244",
+    "src/scenery-paths.js": "4d141521caa83fa0e93291d344dec6e6ab06038156ea4591d985f17f70a57353",
+    "src/settings.js": "d85dbb3c2cebc073bbf9eeb3cef15f8715dda0820197c8c141313806346f82ef",
+    "src/simulation/clock.js": "aade0e63fae8ef5e54dce4ac97f5ef2818ae4d21b7a767737e33827a300be929",
+    "src/simulation/native-adventure.js": "de2fcf64afb03cdb39b1e6c56cce70fbf6938a3b211c07b838d2421e6064b57f",
+    "src/simulation/native-ai-driver.js": "d3a8a498548b4d507ed1d856fff8e1ce0b66aac1230e461150fd973776009057",
+    "src/simulation/native-ai-items.js": "0239e7e8896efaff47fc14a7a08d609dc5011cebf97a7fe7bc8eaa8af854066e",
+    "src/simulation/native-ai-range.js": "b7ee558c101d7351ebe44984426839ad7640fc64d1488cf7d7b979befa2d5a9a",
+    "src/simulation/native-ai.js": "0fe56f773b759dfd1a23f10e4291f6406f815e07ed8ec2207882f662c0b789e9",
+    "src/simulation/native-bonus-effects.js": "38d46156b11fe47b1fc503ed6c5559f7e9c66b9fd5066d1dd7919b3d54c5e152",
+    "src/simulation/native-bonus-hud.js": "cdd4f8e1fadf4f5f8ea87c91401b9d0fbd2d1d0d58940fe4a9cc69964e9e77b8",
+    "src/simulation/native-bonus.js": "197120cabd17871542c7fb12b46521674a0bbac30d2c85b6e0974a73118a74fd",
+    "src/simulation/native-bubble-attachments.js": "4c74e4da78382b130f2472c8a4c7dce217211bf89aab372e750092700116cd31",
+    "src/simulation/native-camera-matrix.js": "43d93b5f1b80dfcaf20b4104552c241ff9e36a694525d36410e73151045552b3",
+    "src/simulation/native-camera.js": "b0b28d4e907665b290e1cce08b7d0b0429d55498faed5c6c3f220fb1360d70f9",
+    "src/simulation/native-character-voice.js": "f8ff4ff3428214463bf04c330199aab8f2156886c9b54de228ceb0184fb21ac1",
+    "src/simulation/native-collision.js": "b0c31b1fc3265ed73fcbdbf483d98d2437d73a23c4a4dc65b6024ff3eb4f357b",
+    "src/simulation/native-combat.js": "244ff374df1373a96f2714223508bf4ce2599d00895c7a1d654d3f28eb1738a3",
+    "src/simulation/native-countdown.js": "d86173ecc11e3aad9530d1b88b390c93941e12ad7d8a4053274b0ece0e55758c",
+    "src/simulation/native-display-settings.js": "20dc1b53374d5be94bec6af1c254f0327268ed056e164509744f05b54d12736e",
+    "src/simulation/native-explosions.js": "56de8b200814b20ded1f363158f7198d41845bde2752dee31baeebf2903c73ef",
+    "src/simulation/native-forces.js": "c54c1ef342a811d5d0a45fda6d66ac8aa7aa2c69e74db3ac6e00f1641e24c5ab",
+    "src/simulation/native-game-timers.js": "9a77fc6bc40d97165aaf9a1b5462bca33792b90cb34cf8472293b47b295ee05c",
+    "src/simulation/native-ground.js": "81509b6e31c7beadab94a8657669a548f8356c3e1a58b0317dd72e96e69a64f9",
+    "src/simulation/native-homing-arm.js": "4b780cfa2c1b7f7e6a9d168a6819b4a18f65eebb804a0396e6929eeb522f56f8",
+    "src/simulation/native-hud-sampler.js": "fb055011cf32eb95e282ce0bb9abbb3c069a81a671dec564c5c9a672e32b6139",
+    "src/simulation/native-input.js": "0f87768e140625295143480a76309924b7341b5411358d11f014b0c84c4bc4cc",
+    "src/simulation/native-integrator.js": "dccb39d1567bb0eea0fc9e65ccc34380ae23ea227ff9f3ec16c7ee0d3a6200f4",
+    "src/simulation/native-jump.js": "94c42ff6657b307991350289c749723922bbe996a48c29c659a62c6df43dac0d",
+    "src/simulation/native-kart-color.js": "ec78a402a8ba3e5fb3f9b8bc540d9b9fb130adfe895241244936d2df4270be50",
+    "src/simulation/native-kart-contact.js": "a23d2ef6f71561f36a1c79ddd906ae34c4a01e1d6bd1e75521abfb0ad7faab40",
+    "src/simulation/native-menu-random.js": "53bdc41ad401223e5d6ad577ca12da7f428d02e2d20703cb26fe58b8d34b431c",
+    "src/simulation/native-minimap.js": "59d6dcdd05e556954e44cf9c6d397415dccd1967b77cdbe15ca79460b88b4207",
+    "src/simulation/native-motion.js": "a6e71091a63f7aaaaed420837620b7a3e5f9ab5fa827f874b09cb2e60af329e0",
+    "src/simulation/native-player.js": "f01084d23ff4e018d2f9cfc24fa5eba0a97cea94734d9ce68f23f4c5da58a147",
+    "src/simulation/native-projectile.js": "20b56de54faa0a11f3e8cc9e620f8f0cd079e873b99444ce8c28f7a169b3d420",
+    "src/simulation/native-race-lifecycle.js": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+    "src/simulation/native-race-options.js": "ec70fec5caa34ce4eed9bf9043dedd055d3a26fe90a4aa8af8f66fe40413f8d0",
+    "src/simulation/native-race-setup.js": "b3370dab9fc672873a9f445e77ae770c34d4d4adc9cea7dffe302e1afb6837a8",
+    "src/simulation/native-race.js": "d959bb036a04cd0b28bfbb571293589d23c93fb6ebf09070f579fb4b43946365",
+    "src/simulation/native-random.js": "3b48183445a61d648668edef1a6e28f21af75dea0b3868997ff0840eea24222e",
+    "src/simulation/native-rank.js": "6ad847379732a10b946e02ab797ef1e5149b49429588b9c86a645103a287a4a1",
+    "src/simulation/native-render.js": "04fd89992d788eda788bdcfc1dc8ac99bab54d3191f64bf87548c866bfbab5ec",
+    "src/simulation/native-rescue.js": "4e62d5ab6f224461a94f419e4a15e2e80dc4dcf3539c9cb5e3a1a7a82e8f4bb5",
+    "src/simulation/native-results.js": "bcc63a5be5174182d704d4464dfe81f21b4d5f0ffac3210f8670a7d2a53275f8",
+    "src/simulation/native-scenery-contact.js": "829a880d6807eb9929fa6532a06c5af48af1573a4e8bf114660a5df83ff7ca6e",
+    "src/simulation/native-scenery-hazards.js": "a4eef6a41df12cb9c83e7e09121e17ccbd6fba8868c2ba63a6bc9a5f837dea65",
+    "src/simulation/native-scenery-reactions.js": "ac3818577b1a28e17381619647f7369a8d2647ce4b2162a5af3248858ded0f0b",
+    "src/simulation/native-skidmarks.js": "ca6b943d1f45df9e86eb225e103db2c37a5d4ee74614761759b0496ef0b11b99",
+    "src/simulation/native-smoke.js": "01208ca8764ed903ecd13471a61087aff76b9df110d9fa4334d7f21990c31359",
+    "src/simulation/native-squash-activation.js": "f5595ec89b66ac13149fce4b003fef0f4e24cc95c0bcb4aa5dae13cde29ef47a",
+    "src/simulation/native-squash.js": "a47854d777833421bc81188ba7e4ebe0d26be5489e6bea1daba606242c23cbaa",
+    "src/simulation/native-start-camera.js": "99b1ba35593f26069de45891e331686e9988a06743c9fbe5d5743cf9ef89e171",
+    "src/simulation/native-start.js": "878cb672d8bc15e9902834fe419ae625fee9e7ac82d9101d7366aefa009ad33b",
+    "src/simulation/native-streams.js": "b75d1c0e460074e404272680eaf8b6565a49dfb4a9a9b3d5cf9ba773ef7256f6",
+    "src/simulation/native-tables.js": "d2b5f412b60ab099a6422652ee8aba2b2cabf31ec1c820668c26a931bb050dbf",
+    "src/simulation/native-track.js": "c86c29355caaded4eeb6b34d617deb261f5da54419ab1bcec5c59fdeaacc70f5",
+    "src/simulation/native-transform.js": "d73b56e15c253c7cff001ab59822e81b100ed1070711a066454d8fe576a5aaec",
+    "src/simulation/native-weather.js": "36f751b5e7654bc47d00736b99726d8dfb4b55bcf8f7312f6e97e6bc65a4012b",
+    "src/simulation/npc-velocity-safety.js": "27cb0c46abfa5eeaf982f42e99ba09c4d8817833aad644569d016802e3f3661a",
+    "src/simulation/rescue-safety.js": "42ceb67e8c0095354d1aecc9e36bc82e33e4f8a59d40e87b927955ca30b3f1e5",
+    "src/skid-audio.js": "d29faabaefbc9127999b8c3dc56cdc5e02ad8d11fb05c39f72578b9f5e3aa2f0",
+    "src/spatial-audio.js": "b5e89fd2d3138d80314fcb46747b618bcef93a04f51ff3ec8e3384ade2f83bf3",
+    "src/style.css": "2b4bad769a052dbaf760f6f44444ada72d883b9870d5759c8c33d81c0e79b9a5",
+    "src/world.js": "59e802e19eccfe6ec45861c32b93174cce4d3e6446ab624ea98f6726997ea425",
+    "tests/helpers/private-timed-lane-driver.mjs": "62cc4ac91d1f9c11a8fb85e8ed1eca40acdbf29e2538989a983d730f757f3b5f",
+    "tests/helpers/route-test-driver.mjs": "32799e63d38c5b75acd4a66194ef4d8a1d450be8d384105110ebd4afcb81e48d",
+    "tests/helpers/star-approach-planner.mjs": "d7269de055a6cc29cc0eb1edbb86d3b9ce49a2ed28ca318d189dd8306c69678e",
+    "tools/native-blockage-timed-character.mjs": "f3393fb91776b48a964dc3c5b8288ca57fe30e99207045bab1bf020f5d651599",
+    "tools/native-blockage-timed-corridors.mjs": "532285d65c76d96fcbec303cc0b2e9edaf82716db8b00282d8e78277b85b2e87",
+    "tools/native-blockage-timed-lane.mjs": "dad63a443c2c267894b59dcfb3f072aae2ba92374b3efe1653113d54b5ab3739",
+    "tools/native-blockage-timed-probe.mjs": "06fc28930ffd202fd8741cedbe9fc016ea53562f5a7d296f6989867d32347816",
+    "tools/native-blockage-timed-road-center.mjs": "0c164c98e7503eaa8a8315455b4a1d21c18247a3c079e49b188d152ce264e5a8",
+    "tools/native-blockage-timed-road-profile.mjs": "4a94e9fe6cf0da9b289a7bf958040c1dd95178259642bdb81fb96eddec1afb87",
+    "tools/native-blockage-timed-seeded-lane.mjs": "cf37b7ac5e7da256c612a35f3bbe566fc3df58b28488ec0f57e54292593196ad",
+    "tools/native-blockage-timed-waypoints.mjs": "9d49d68a90896f890424ec3c3430a0d208e9cc74b0156ba83242660da45a4774",
+    "tools/timed-nl-shortest-profile.mjs": "17aff5624e1f25ea5c37ffb98309b566716d551a3fa4700466101ba2e6098b13",
+    "tools/validate-driven-races.mjs": "349ba99144d958128bb260aa8d09a93c14802cad6bef7aa3716aeb9891f6004c",
+    "tools/validation-source-dependencies.mjs": "faffe4832c1d4110fd703f084057665f80d2d9aee5d0a0205c500f564552fdf3"
+  },
+  "sourceGuard": "all-source",
+  "executionDependencies": [
+    "src/arm-audio.js",
+    "src/asset-animation.js",
+    "src/audio-mixing.js",
+    "src/bonus-audio.js",
+    "src/native-crash-audio.js",
+    "src/native-key-audio.js",
+    "src/player-assets.js",
+    "src/race-simulation.js",
+    "src/scenery-paths.js",
+    "src/simulation/clock.js",
+    "src/simulation/native-adventure.js",
+    "src/simulation/native-ai-driver.js",
+    "src/simulation/native-ai-items.js",
+    "src/simulation/native-ai.js",
+    "src/simulation/native-bonus-effects.js",
+    "src/simulation/native-bonus.js",
+    "src/simulation/native-bubble-attachments.js",
+    "src/simulation/native-camera-matrix.js",
+    "src/simulation/native-camera.js",
+    "src/simulation/native-character-voice.js",
+    "src/simulation/native-collision.js",
+    "src/simulation/native-combat.js",
+    "src/simulation/native-countdown.js",
+    "src/simulation/native-explosions.js",
+    "src/simulation/native-forces.js",
+    "src/simulation/native-game-timers.js",
+    "src/simulation/native-ground.js",
+    "src/simulation/native-homing-arm.js",
+    "src/simulation/native-input.js",
+    "src/simulation/native-integrator.js",
+    "src/simulation/native-jump.js",
+    "src/simulation/native-kart-contact.js",
+    "src/simulation/native-motion.js",
+    "src/simulation/native-player.js",
+    "src/simulation/native-projectile.js",
+    "src/simulation/native-race-lifecycle.js",
+    "src/simulation/native-race-options.js",
+    "src/simulation/native-race-setup.js",
+    "src/simulation/native-race.js",
+    "src/simulation/native-random.js",
+    "src/simulation/native-rank.js",
+    "src/simulation/native-render.js",
+    "src/simulation/native-rescue.js",
+    "src/simulation/native-results.js",
+    "src/simulation/native-scenery-contact.js",
+    "src/simulation/native-scenery-hazards.js",
+    "src/simulation/native-scenery-reactions.js",
+    "src/simulation/native-skidmarks.js",
+    "src/simulation/native-smoke.js",
+    "src/simulation/native-squash-activation.js",
+    "src/simulation/native-squash.js",
+    "src/simulation/native-start-camera.js",
+    "src/simulation/native-start.js",
+    "src/simulation/native-streams.js",
+    "src/simulation/native-tables.js",
+    "src/simulation/native-track.js",
+    "src/simulation/native-transform.js",
+    "src/simulation/native-weather.js",
+    "src/simulation/npc-velocity-safety.js",
+    "src/simulation/rescue-safety.js",
+    "src/spatial-audio.js",
+    "tests/helpers/route-test-driver.mjs",
+    "tests/helpers/star-approach-planner.mjs",
+    "tools/timed-nl-shortest-profile.mjs",
+    "tools/validation-source-dependencies.mjs"
+  ],
+  "assetSha256": {
+    "cars.json": "95d18e77938c03738ae02eff1ed2dce92cb535e81d7947c37949d55950f05402",
+    "config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "manifest.json": "7a0e7b731abee33d6752cc65c05fba25357d0cf8afcc34fc019abc2064f7e8cc",
+    "physics/phys1.dat": "850c5f8a708dff59cad168943fff2c374e91c294198449f502cbd6b975acae58",
+    "racer-tables/cars1.dat": "216ce4b367bc7a367bf85b012c8cba9507881b91b9e6f0782fd92936450b7233",
+    "tracks/etappe0.json": "5bcf250c62593161645aed294e60e06ee49ffb77839417b9bb9122e09d017e43",
+    "physics/phys2.dat": "850c5f8a708dff59cad168943fff2c374e91c294198449f502cbd6b975acae58",
+    "racer-tables/cars2.dat": "216ce4b367bc7a367bf85b012c8cba9507881b91b9e6f0782fd92936450b7233"
+  },
+  "testDriverPolicy": "Recorded policyProfiles adjust only test driver speed/lookahead/gains by sector. Recorded centerSections use ordinary steering toward original PMP centerline lookahead; other sections retain lane priorities and optional authored waypoint goals by sector (waypointSchedule recorded) supplied only to the test controller, no game pickup/trigger calls; fixed authored-link direction priority; original linked-road follower with its optional detour planner disabled; production obstacles and collision responses remain active. Ordinary inputs only.",
+  "cadenceMs": 25,
+  "linkedNodePolicy": "Shortest rail-prechecked original DMP link, from canonical test helper; private profiles change only driver goals/gains.",
+  "policyProfiles": [
+    {
+      "sectors": [
+        48,
+        120
+      ],
+      "options": {
+        "lookAheadSeconds": 0.9,
+        "dampingGain": 0.6
+      }
+    }
+  ],
+  "centerSections": [],
+  "constructionSeed": 0,
+  "gameplaySeed": 0,
+  "character": 1,
+  "driverOptions": {
+    "speed": 170,
+    "lookAheadSeconds": 0.7,
+    "steeringGain": 1.5,
+    "dampingGain": 0.4
+  },
+  "laneOrder": [
+    0,
+    1,
+    2
+  ],
+  "laneSchedule": [],
+  "waypointSchedule": [],
+  "seekStars": false,
+  "fireHeld": false,
+  "maxMs": 900000,
+  "runs": [
+    {
+      "track": 0,
+      "difficulty": 1,
+      "raceMode": 1,
+      "opponents": 3,
+      "status": "time-expired",
+      "events": {
+        "overtake": 20,
+        "time-tick": 10,
+        "time-gate": 1,
+        "time-expired": 1
+      },
+      "samples": [
+        {
+          "timeMs": 1000,
+          "sector": 4,
+          "position": [
+            -2360.59765625,
+            -16.319068908691406,
+            7135.63037109375
+          ],
+          "speed": 26.681455612182617,
+          "lap": 0,
+          "distance": 1,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2284.486344737927,
+              0,
+              6926.471046372792
+            ],
+            "headingError": 0.2831280428199787,
+            "targetSpeed": 108.5390834606332,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2000.9139404296875,
+          "yawRate": 0.5618361830711365,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.188100176755908,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.188100176755908
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 2000,
+          "sector": 7,
+          "position": [
+            -2283.1611328125,
+            -44.583526611328125,
+            6795.5107421875
+          ],
+          "speed": 41.379371643066406,
+          "lap": 0,
+          "distance": 4,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2265.208647790784,
+              0,
+              6473.926286952728
+            ],
+            "headingError": -0.13852169285144988,
+            "targetSpeed": 133.11998785885413,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1924.683837890625,
+          "yawRate": -0.36603260040283203,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.0645891036082295,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.0645891036082295
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 3000,
+          "sector": 11,
+          "position": [
+            -2294.967529296875,
+            -60,
+            6337.3623046875
+          ],
+          "speed": 50.32076644897461,
+          "lap": 0,
+          "distance": 8,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2470.6533302324588,
+              0,
+              6000.5020656016595
+            ],
+            "headingError": -0.2444044958095051,
+            "targetSpeed": 114.18523192497176,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2205.020263671875,
+          "yawRate": -0.5154602527618408,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.16595433511440413,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.16595433511440413
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 4000,
+          "sector": 15,
+          "position": [
+            -2519.001953125,
+            -34.17186737060547,
+            5853.65478515625
+          ],
+          "speed": 56.39605712890625,
+          "lap": 0,
+          "distance": 12,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2514.8392374836217,
+              0,
+              5456.152764794563
+            ],
+            "headingError": 0.4580638269146992,
+            "targetSpeed": 88.72060254454,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2334.100341796875,
+          "yawRate": 1.0134491920471191,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.3128205090106596,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.3128205090106596
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 5000,
+          "sector": 20,
+          "position": [
+            -2531.8662109375,
+            4.76837158203125e-7,
+            5303.5986328125
+          ],
+          "speed": 57.731285095214844,
+          "lap": 0,
+          "distance": 17,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2140.013178911359,
+              0,
+              5097.893440278076
+            ],
+            "headingError": 0.568169828908772,
+            "targetSpeed": 79.57536123898468,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1706.233642578125,
+          "yawRate": 0.9537390470504761,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.45469238259960815,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.45469238259960815
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 6000,
+          "sector": 25,
+          "position": [
+            -2091.50537109375,
+            15.767892837524414,
+            4913.263671875
+          ],
+          "speed": 61.81211853027344,
+          "lap": 0,
+          "distance": 21,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1871.8897590886281,
+              0,
+              4527.463427859581
+            ],
+            "headingError": -0.3686678442036877,
+            "targetSpeed": 97.85098017288753,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1469.5301513671875,
+          "yawRate": -0.5154893398284912,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.34816215525206473,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.34816215525206473
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 7000,
+          "sector": 31,
+          "position": [
+            -1774.688232421875,
+            4.76837158203125e-7,
+            4383.638671875
+          ],
+          "speed": 64.2105484008789,
+          "lap": 0,
+          "distance": 28,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1979.5380697529808,
+              0,
+              3952.030357751893
+            ],
+            "headingError": -0.4464711263290016,
+            "targetSpeed": 89.8072826898401,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2048.94140625,
+          "yawRate": -0.8024687767028809,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.32269416965707665,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.32269416965707665
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 8000,
+          "sector": 37,
+          "position": [
+            -1710.56689453125,
+            4.76837158203125e-7,
+            3738.372802734375
+          ],
+          "speed": 66.34424591064453,
+          "lap": 0,
+          "distance": 34,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1513.6537311969068,
+              0,
+              3271.540872158439
+            ],
+            "headingError": 0.09309594262549936,
+            "targetSpeed": 143.31576713157833,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1844.81787109375,
+          "yawRate": 0.3233646750450134,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.0006446059210649391,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.0006446059210649391
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 9000,
+          "sector": 41,
+          "position": [
+            -1540.144287109375,
+            -25.51571273803711,
+            3089.86181640625
+          ],
+          "speed": 68.02468872070312,
+          "lap": 0,
+          "distance": 38,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1677.2655923342172,
+              0,
+              2605.9179085231335
+            ],
+            "headingError": -0.3144666706533885,
+            "targetSpeed": 104.36277267406236,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2023.4158935546875,
+          "yawRate": -0.49814262986183167,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.27182077691132667,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.27182077691132667
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 10000,
+          "sector": 44,
+          "position": [
+            -1714.4715576171875,
+            -37.82392883300781,
+            2450.896728515625
+          ],
+          "speed": 67.71295166015625,
+          "lap": 0,
+          "distance": 41,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2117.324159895056,
+              0,
+              2254.3295745919504
+            ],
+            "headingError": -0.3707059328500846,
+            "targetSpeed": 97.62193731903172,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2535.812255859375,
+          "yawRate": -0.6702418327331543,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.26160909306174795,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.26160909306174795
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 11000,
+          "sector": 47,
+          "position": [
+            -2271.090087890625,
+            4.76837158203125e-7,
+            2093.19091796875
+          ],
+          "speed": 66.9669189453125,
+          "lap": 0,
+          "distance": 44,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2808.4035369490016,
+              0,
+              2235.799071055971
+            ],
+            "headingError": -0.44658406975116743,
+            "targetSpeed": 89.7965671684548,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2951.744384765625,
+          "yawRate": -0.690706193447113,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.3987629235125544,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.3987629235125544
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 12000,
+          "sector": 50,
+          "position": [
+            -2937.70947265625,
+            -3.9330592155456543,
+            2130.842041015625
+          ],
+          "speed": 68.09341430664062,
+          "lap": 0,
+          "distance": 46,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -3523.3534775148537,
+              0,
+              2259.624930957014
+            ],
+            "headingError": 0.0275911151503043,
+            "targetSpeed": 161.10961227196657,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3231.29931640625,
+          "yawRate": 0.03227376565337181,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.03796840576596806,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.03796840576596806
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 13000,
+          "sector": 59,
+          "position": [
+            -3616.43701171875,
+            4.76837158203125e-7,
+            2208.806884765625
+          ],
+          "speed": 69.08191680908203,
+          "lap": 0,
+          "distance": 56,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4280.51547632414,
+              0,
+              2196.6140678038773
+            ],
+            "headingError": 0.011567677207183746,
+            "targetSpeed": 166.15592381450477,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3066.629638671875,
+          "yawRate": 0.0596969798207283,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.028468231637191907,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.028468231637191907
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 14000,
+          "sector": 63,
+          "position": [
+            -4303.0849609375,
+            4.76837158203125e-7,
+            2285.750732421875
+          ],
+          "speed": 69.5470199584961,
+          "lap": 0,
+          "distance": 60,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4789.826640936644,
+              0,
+              2653.288308336153
+            ],
+            "headingError": -0.292273720761773,
+            "targetSpeed": 107.28615347518067,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3306.602294921875,
+          "yawRate": -0.5065265893936157,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.04588617184853111,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.04588617184853111
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 15000,
+          "sector": 67,
+          "position": [
+            -4845.16455078125,
+            4.76837158203125e-7,
+            2692.475830078125
+          ],
+          "speed": 68.4876708984375,
+          "lap": 0,
+          "distance": 64,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4753.660342582818,
+              0,
+              3318.776671104555
+            ],
+            "headingError": -0.6199815323926183,
+            "targetSpeed": 75.89410855589232,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3790.56689453125,
+          "yawRate": -0.9125150442123413,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.36908455654638606,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.36908455654638606
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 16000,
+          "sector": 71,
+          "position": [
+            -4827.560546875,
+            9.499992370605469,
+            3195.388427734375
+          ],
+          "speed": 15,
+          "lap": 0,
+          "distance": 68,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4929.65346627605,
+              0,
+              3572.4449853473193
+            ],
+            "headingError": 1.01035701201409,
+            "targetSpeed": 56.278084799732795,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -4566.54443359375,
+          "yawRate": 0.754892110824585,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.4521987164922041,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.4521987164922041
+            }
+          },
+          "groundCount": 0
+        },
+        {
+          "timeMs": 17000,
+          "sector": 72,
+          "position": [
+            -4765.58984375,
+            4.76837158203125e-7,
+            3333.908447265625
+          ],
+          "speed": 15,
+          "lap": 0,
+          "distance": 69,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4831.349839616742,
+              0,
+              3486.2400918083054
+            ],
+            "headingError": 0.5256269894505754,
+            "targetSpeed": 82.8761341835731,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -4167.87451171875,
+          "yawRate": 0.7392622828483582,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.34475265182036385,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.34475265182036385
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 18000,
+          "sector": 74,
+          "position": [
+            -4806.615234375,
+            4.76837158203125e-7,
+            3480.1572265625
+          ],
+          "speed": 15,
+          "lap": 0,
+          "distance": 70,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4950.705737118282,
+              0,
+              3584.431346120831
+            ],
+            "headingError": 0.3991217792303521,
+            "targetSpeed": 94.53669343073857,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3736.71826171875,
+          "yawRate": 0.5428377985954285,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.2690309197114644,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.2690309197114644
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 19000,
+          "sector": 75,
+          "position": [
+            -4919.81103515625,
+            4.76837158203125e-7,
+            3582.98046875
+          ],
+          "speed": 16.024593353271484,
+          "lap": 0,
+          "distance": 72,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -5097.6013532071065,
+              0,
+              3620.9417407510746
+            ],
+            "headingError": 0.3190133660426795,
+            "targetSpeed": 103.7834100445811,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3412.9287109375,
+          "yawRate": 0.4856628477573395,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.18171886941657356,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.18171886941657356
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 20000,
+          "sector": 77,
+          "position": [
+            -5192.5185546875,
+            4.76837158203125e-7,
+            3651.437255859375
+          ],
+          "speed": 36.8924674987793,
+          "lap": 0,
+          "distance": 74,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -5546.659020441748,
+              0,
+              3545.2118389847833
+            ],
+            "headingError": 0.3282972672585209,
+            "targetSpeed": 102.6201623015503,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3093.24560546875,
+          "yawRate": 0.5033607482910156,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.20321450516634576,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.20321450516634576
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 21000,
+          "sector": 80,
+          "position": [
+            -5592.35888671875,
+            21.91571044921875,
+            3564.147216796875
+          ],
+          "speed": 45.853904724121094,
+          "lap": 0,
+          "distance": 77,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -5934.699504825154,
+              0,
+              3264.3739631578264
+            ],
+            "headingError": 0.2622741299045665,
+            "targetSpeed": 111.5084412095182,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2770.22998046875,
+          "yawRate": 0.49543049931526184,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.09448148566075903,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.09448148566075903
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 22000,
+          "sector": 84,
+          "position": [
+            -6007.8203125,
+            71.7536849975586,
+            3301.398193359375
+          ],
+          "speed": 52.65925979614258,
+          "lap": 0,
+          "distance": 81,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -6412.214167168406,
+              0,
+              3027.048775651783
+            ],
+            "headingError": -0.012777902438532851,
+            "targetSpeed": 165.76377335251695,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2675.61865234375,
+          "yawRate": -0.03532601147890091,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.011485202976626838,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.011485202976626838
+            }
+          },
+          "groundCount": 0
+        },
+        {
+          "timeMs": 23000,
+          "sector": 88,
+          "position": [
+            -6270.7568359375,
+            4.76837158203125e-7,
+            2979.058837890625
+          ],
+          "speed": 39.461421966552734,
+          "lap": 0,
+          "distance": 84,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -6616.92146893033,
+              0,
+              2822.967918037282
+            ],
+            "headingError": -0.43103099232762987,
+            "targetSpeed": 91.29663856569933,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2514.599365234375,
+          "yawRate": -0.4348616302013397,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.3473640436805775,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.3473640436805775
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 24000,
+          "sector": 90,
+          "position": [
+            -6633.025390625,
+            4.76837158203125e-7,
+            2741.701904296875
+          ],
+          "speed": 47.96639633178711,
+          "lap": 0,
+          "distance": 87,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -7086.373893145459,
+              0,
+              2809.978417085581
+            ],
+            "headingError": -0.42388877295434857,
+            "targetSpeed": 92.00241683659905,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2895.3837890625,
+          "yawRate": -0.5952214598655701,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.279758003696507,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.279758003696507
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 25000,
+          "sector": 93,
+          "position": [
+            -7140.158203125,
+            -51.290626525878906,
+            2750.98583984375
+          ],
+          "speed": 55.127113342285156,
+          "lap": 0,
+          "distance": 90,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -7519.256141614735,
+              0,
+              3158.7161122317902
+            ],
+            "headingError": -0.45850785950031653,
+            "targetSpeed": 88.67950237185502,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3311.6923828125,
+          "yawRate": -0.647615373134613,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.30177721350203124,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.30177721350203124
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 26000,
+          "sector": 97,
+          "position": [
+            -7611.71337890625,
+            -105.63842010498047,
+            3078.562255859375
+          ],
+          "speed": 60.315956115722656,
+          "lap": 0,
+          "distance": 94,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -7731.155686324334,
+              0,
+              3628.664209820803
+            ],
+            "headingError": -0.4450932980702718,
+            "targetSpeed": 89.93821051694717,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3668.041015625,
+          "yawRate": -0.5974355340003967,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.30827225463485725,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.30827225463485725
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 27000,
+          "sector": 99,
+          "position": [
+            -7817.93359375,
+            -84.96265411376953,
+            3642.1513671875
+          ],
+          "speed": 62.47073745727539,
+          "lap": 0,
+          "distance": 96,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -7623.8000397407895,
+              0,
+              4151.4918349321
+            ],
+            "headingError": -0.31213204642613435,
+            "targetSpeed": 104.66278282460435,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -4130.94287109375,
+          "yawRate": -0.4335504174232483,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.18943311841010607,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.18943311841010607
+            }
+          },
+          "groundCount": 0
+        },
+        {
+          "timeMs": 28000,
+          "sector": 107,
+          "position": [
+            -7653.8564453125,
+            -5.145672798156738,
+            4224.16015625
+          ],
+          "speed": 57.89933776855469,
+          "lap": 0,
+          "distance": 104,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -7981.428672256795,
+              0,
+              4685.911555135334
+            ],
+            "headingError": 0.8592986560979037,
+            "targetSpeed": 62.5322475077014,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -4244.5703125,
+          "yawRate": 1.3128077983856201,
+          "input": {
+            "throttle": 0.9215488362570767,
+            "brake": 0,
+            "steer": -0.40549685614087394,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 0.9215488362570767,
+              "brake": 0,
+              "steer": -0.40549685614087394
+            }
+          },
+          "groundCount": 0
+        },
+        {
+          "timeMs": 29000,
+          "sector": 110,
+          "position": [
+            -7723.013671875,
+            -43.486534118652344,
+            4800.33984375
+          ],
+          "speed": 60.948917388916016,
+          "lap": 0,
+          "distance": 107,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -8009.22969379032,
+              0,
+              5271.481021234911
+            ],
+            "headingError": 0.10081339705455125,
+            "targetSpeed": 141.47487458952645,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3802.558837890625,
+          "yawRate": 0.2881641387939453,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.04477070527571708,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.04477070527571708
+            }
+          },
+          "groundCount": 2
+        }
+      ],
+      "lapEvents": [],
+      "pickupEvents": [],
+      "gateEvents": [
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 13000,
+          "sound": "CHECKPOINT",
+          "now": 13975
+        }
+      ],
+      "rescue": {
+        "entries": 0,
+        "environmentEntries": 0,
+        "blockedTicks": 0,
+        "maxBlockedMs": 0,
+        "relocations": [],
+        "safetyFallbacks": 0
+      },
+      "starApproaches": [
+        {
+          "index": 1,
+          "position": [
+            -2397.047119140625,
+            35,
+            5360.08056640625
+          ],
+          "minDistance": 145.93338209566906,
+          "heightDifference": -34.99999952316284,
+          "now": 5025,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 6,
+          "position": [
+            -2998.710693359375,
+            25,
+            2488.7001953125
+          ],
+          "minDistance": 333.73211415947276,
+          "heightDifference": -24.948562145233154,
+          "now": 12200,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 7,
+          "position": [
+            -2902.388671875,
+            40,
+            3014.963623046875
+          ],
+          "minDistance": 868.3734202316698,
+          "heightDifference": -39.99999952316284,
+          "now": 12225,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 9,
+          "position": [
+            -5075.34619140625,
+            30,
+            3302.22314453125
+          ],
+          "minDistance": 244.2079744808769,
+          "heightDifference": -15.386343002319336,
+          "now": 15775,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 12,
+          "position": [
+            -6819.2509765625,
+            40,
+            4118.70849609375
+          ],
+          "minDistance": 834.7453922411322,
+          "heightDifference": -52.01693916320801,
+          "now": 28100,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 14,
+          "position": [
+            -7855.580078125,
+            -60,
+            5587.91650390625
+          ],
+          "minDistance": 798.6556502579277,
+          "heightDifference": 16.513465881347656,
+          "now": 29000,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 16,
+          "position": [
+            -6342.4228515625,
+            25,
+            7199.12744140625
+          ],
+          "minDistance": 2767.708971658795,
+          "heightDifference": -68.48653411865234,
+          "now": 29000,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 18,
+          "position": [
+            -4531.0888671875,
+            -45,
+            7168.123046875
+          ],
+          "minDistance": 2169.2550250819295,
+          "heightDifference": 31.070194244384766,
+          "now": 875,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 22,
+          "position": [
+            -3818.105224609375,
+            25,
+            7986.71533203125
+          ],
+          "minDistance": 1600.478164525708,
+          "heightDifference": -25.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 24,
+          "position": [
+            -2824.503173828125,
+            30,
+            8565.0712890625
+          ],
+          "minDistance": 1311.429195675116,
+          "heightDifference": -30.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 25,
+          "position": [
+            -2548.27001953125,
+            75,
+            8122.15625
+          ],
+          "minDistance": 804.9501474387881,
+          "heightDifference": -75.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 27,
+          "position": [
+            -2341.3427734375,
+            75,
+            8537.3447265625
+          ],
+          "minDistance": 1196.3135340738809,
+          "heightDifference": -75.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        }
+      ],
+      "durationMs": 29000,
+      "inputSha256": "f94e99621337d74c34b0725063b25eca6f42c2753d055463dffd8ae915b9d7dd",
+      "recoveries": 0,
+      "race": {
+        "phase": 6,
+        "finishArmed": true,
+        "finished": false,
+        "lapCount": 0,
+        "lapLimit": 5,
+        "lapTimes": [],
+        "sessionBestLapMs": 0,
+        "bestLapMs": 268435455,
+        "bestRaceMs": 268435455,
+        "raceTimeMs": null,
+        "elapsedMs": 29000,
+        "distance": 107,
+        "gateIndex": 1,
+        "gateDistance": 61,
+        "remainingMs": 0,
+        "zeroSectorPassed": false,
+        "events": [
+          {
+            "type": "time-expired"
+          }
+        ]
+      },
+      "rank": 1,
+      "stars": 0,
+      "qualification": {
+        "qualified": false,
+        "reason": "time",
+        "maximumRank": 2
+      },
+      "finalPosition": [
+        -7723.013671875,
+        -43.486534118652344,
+        4800.33984375
+      ],
+      "finalDiagnostics": {
+        "player": {
+          "position": [
+            -7723.013671875,
+            -43.486534118652344,
+            4800.33984375
+          ],
+          "yaw": -3802.558837890625,
+          "matrix": [
+            0.6917461156845093,
+            0.6397325992584229,
+            0.33500659465789795,
+            -0.5685884356498718,
+            1,
+            -0.2934652268886566,
+            -0.43575918674468994,
+            0.02120547741651535,
+            0.8998134136199951
+          ],
+          "lateralSpeed": -0.002096313051879406,
+          "verticalSpeed": 38.266544342041016,
+          "forwardSpeed": 60.948917388916016,
+          "yawRate": 0.2881641387939453,
+          "rpm": 7921.57568359375,
+          "gear": 4,
+          "controls": {
+            "throttle": 100,
+            "brake": 0,
+            "steering": 4,
+            "handbrake": false
+          },
+          "sector": 110,
+          "groundCount": 2,
+          "wheels": [
+            {
+              "local": [
+                -21,
+                5.692605972290039,
+                18
+              ],
+              "spin": -1023412.3125,
+              "steeringAngle": -13.65333366394043,
+              "verticalSpeed": -6.589648246765137,
+              "position": [
+                -7756.40087890625,
+                -54.65790557861328,
+                4821.1005859375
+              ]
+            },
+            {
+              "local": [
+                21,
+                5.644832611083984,
+                18
+              ],
+              "spin": -1023412.3125,
+              "steeringAngle": -13.65333366394043,
+              "verticalSpeed": -6.270934104919434,
+              "position": [
+                -7718.6005859375,
+                -19.6707820892334,
+                4839.40673828125
+              ]
+            },
+            {
+              "local": [
+                -12,
+                4.798590183258057,
+                -21
+              ],
+              "spin": -1023412.3125,
+              "steeringAngle": 0,
+              "verticalSpeed": 11.166754722595215,
+              "position": [
+                -7731.30224609375,
+                -47.9649772644043,
+                4789.92236328125
+              ]
+            },
+            {
+              "local": [
+                12,
+                4.798590183258057,
+                -21
+              ],
+              "spin": -1023412.3125,
+              "steeringAngle": 0,
+              "verticalSpeed": 11.166716575622559,
+              "position": [
+                -7709.7021484375,
+                -28.01811981201172,
+                4800.38330078125
+              ]
+            }
+          ],
+          "updates": 1160
+        },
+        "waypoint": 617,
+        "phase": 0,
+        "rescue": [],
+        "opponents": [
+          {
+            "id": 0,
+            "position": [
+              -7342.85595703125,
+              5.5248260498046875,
+              5082.0517578125
+            ],
+            "sector": 111,
+            "waypoint": 626,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                2,
+                1,
+                0
+              ],
+              "waypoint": 631,
+              "previousSector": 111,
+              "sectorTime": 0.05000000447034836,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -7493.41162109375,
+                1.4933798042853894e-37,
+                5133.78369140625
+              ],
+              "speedTarget": [
+                -7471.5859375,
+                1.4827322901379409e-37,
+                5330.634765625
+              ]
+            },
+            "forwardSpeed": 64.12090301513672,
+            "distance": 107
+          },
+          {
+            "id": 1,
+            "position": [
+              -7944.8154296875,
+              -114.59339141845703,
+              5587.14111328125
+            ],
+            "sector": 115,
+            "waypoint": 647,
+            "state": {
+              "mode": 0,
+              "gear": 1,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 655,
+              "previousSector": 115,
+              "sectorTime": 0.2250000387430191,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -7733.68994140625,
+                1.0891260486488289e-37,
+                5697.64306640625
+              ],
+              "speedTarget": [
+                -7269.55419921875,
+                1.8846630292322823e-37,
+                5591.5126953125
+              ]
+            },
+            "forwardSpeed": 57.488468170166016,
+            "distance": 111
+          },
+          {
+            "id": 2,
+            "position": [
+              -7363.2998046875,
+              13.786252975463867,
+              4904.4052734375
+            ],
+            "sector": 110,
+            "waypoint": 618,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                0,
+                1,
+                2
+              ],
+              "waypoint": 625,
+              "previousSector": 110,
+              "sectorTime": 0.02500000223517418,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -7361.71728515625,
+                2.2704449806159903e-37,
+                5089.9013671875
+              ],
+              "speedTarget": [
+                -7311.6103515625,
+                2.6396380244673897e-37,
+                5208.37060546875
+              ]
+            },
+            "forwardSpeed": 61.40214920043945,
+            "distance": 106
+          }
+        ]
+      }
+    },
+    {
+      "track": 0,
+      "difficulty": 2,
+      "raceMode": 1,
+      "opponents": 3,
+      "status": "time-expired",
+      "events": {
+        "overtake": 15,
+        "time-tick": 11,
+        "time-gate": 1,
+        "time-expired": 1
+      },
+      "samples": [
+        {
+          "timeMs": 1000,
+          "sector": 4,
+          "position": [
+            -2360.59765625,
+            -16.319068908691406,
+            7135.63037109375
+          ],
+          "speed": 26.681455612182617,
+          "lap": 0,
+          "distance": 1,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2284.486344737927,
+              0,
+              6926.471046372792
+            ],
+            "headingError": 0.2831280428199787,
+            "targetSpeed": 108.5390834606332,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2000.9139404296875,
+          "yawRate": 0.5618361830711365,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.188100176755908,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.188100176755908
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 2000,
+          "sector": 7,
+          "position": [
+            -2283.1611328125,
+            -44.583526611328125,
+            6795.5107421875
+          ],
+          "speed": 41.379371643066406,
+          "lap": 0,
+          "distance": 4,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2265.208647790784,
+              0,
+              6473.926286952728
+            ],
+            "headingError": -0.13852169285144988,
+            "targetSpeed": 133.11998785885413,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1924.683837890625,
+          "yawRate": -0.36603260040283203,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.0645891036082295,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.0645891036082295
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 3000,
+          "sector": 11,
+          "position": [
+            -2294.967529296875,
+            -60,
+            6337.3623046875
+          ],
+          "speed": 50.32076644897461,
+          "lap": 0,
+          "distance": 8,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2470.6533302324588,
+              0,
+              6000.5020656016595
+            ],
+            "headingError": -0.2444044958095051,
+            "targetSpeed": 114.18523192497176,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2205.020263671875,
+          "yawRate": -0.5154602527618408,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.16595433511440413,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.16595433511440413
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 4000,
+          "sector": 15,
+          "position": [
+            -2510.9794921875,
+            -34.11892318725586,
+            5845.9482421875
+          ],
+          "speed": 57.23636245727539,
+          "lap": 0,
+          "distance": 12,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2512.3287203173836,
+              0,
+              5451.527765267013
+            ],
+            "headingError": 0.4300096229030321,
+            "targetSpeed": 91.39690375963193,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2326.543701171875,
+          "yawRate": 0.8998612761497498,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.3292256169488474,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.3292256169488474
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 5000,
+          "sector": 20,
+          "position": [
+            -2518.553466796875,
+            4.76837158203125e-7,
+            5288.54541015625
+          ],
+          "speed": 58.32309341430664,
+          "lap": 0,
+          "distance": 17,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2120.3246205813857,
+              0,
+              5087.7468711480515
+            ],
+            "headingError": 0.5749796262748572,
+            "targetSpeed": 79.07126602440992,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1700.62890625,
+          "yawRate": 0.9264705181121826,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.4787510441791315,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.4787510441791315
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 6000,
+          "sector": 25,
+          "position": [
+            -2110.986083984375,
+            20.000001907348633,
+            4851.02587890625
+          ],
+          "speed": 62.08650588989258,
+          "lap": 0,
+          "distance": 22,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1872.0957911961068,
+              0,
+              4528.680828994467
+            ],
+            "headingError": -0.16583086496483102,
+            "targetSpeed": 127.66004772772088,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -1527.6851806640625,
+          "yawRate": -0.4648376703262329,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.07414355048374555,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.07414355048374555
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 7000,
+          "sector": 32,
+          "position": [
+            -1841.78515625,
+            3.124990463256836,
+            4300.40087890625
+          ],
+          "speed": 63.73445129394531,
+          "lap": 0,
+          "distance": 29,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -1999.9967537345328,
+              0,
+              3842.5453465674746
+            ],
+            "headingError": -0.3128757476947863,
+            "targetSpeed": 104.56702668402808,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2063.52392578125,
+          "yawRate": -0.5722638368606567,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.20096888544293628,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.20096888544293628
+            }
+          },
+          "groundCount": 2
+        },
+        {
+          "timeMs": 8000,
+          "sector": 37,
+          "position": [
+            -1934.4490966796875,
+            4.76837158203125e-7,
+            3657.955810546875
+          ],
+          "speed": 66.23654174804688,
+          "lap": 0,
+          "distance": 34,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2035.8115618331108,
+              0,
+              3135.976230108243
+            ],
+            "headingError": 0.02326978900067875,
+            "targetSpeed": 162.44010601554095,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2188.356201171875,
+          "yawRate": 0.02620256133377552,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.029240512967599473,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.029240512967599473
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 9000,
+          "sector": 43,
+          "position": [
+            -2141.068115234375,
+            4.76837158203125e-7,
+            3024.944091796875
+          ],
+          "speed": 66.96354675292969,
+          "lap": 0,
+          "distance": 40,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -2584.185728582705,
+              0,
+              2906.4698409146245
+            ],
+            "headingError": -0.6541401826891902,
+            "targetSpeed": 73.6478993409161,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2476.630615234375,
+          "yawRate": -1.0504525899887085,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.5512548392345908,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.5512548392345908
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 10000,
+          "sector": 49,
+          "position": [
+            -2655.97265625,
+            8.933809280395508,
+            2760.732421875
+          ],
+          "speed": 52.12150573730469,
+          "lap": 0,
+          "distance": 46,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -3088.3860277667013,
+              0,
+              3027.3841629776443
+            ],
+            "headingError": -0.1586831132040081,
+            "targetSpeed": 129.04536080564995,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3371.85693359375,
+          "yawRate": -2.369018077850342,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -1
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 11000,
+          "sector": 53,
+          "position": [
+            -3134.642333984375,
+            26.00855255126953,
+            3010.508544921875
+          ],
+          "speed": 56.62998580932617,
+          "lap": 0,
+          "distance": 50,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -3662.922441222091,
+              0,
+              2969.2020774281305
+            ],
+            "headingError": 0.37125276251560435,
+            "targetSpeed": 97.56066626931083,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3261.93896484375,
+          "yawRate": 0.4963976740837097,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.2586249757398067,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.2586249757398067
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 12000,
+          "sector": 56,
+          "position": [
+            -3710.0439453125,
+            26.562501907348633,
+            3027.345947265625
+          ],
+          "speed": 60.287044525146484,
+          "lap": 0,
+          "distance": 53,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4135.927557877447,
+              0,
+              2590.443526324046
+            ],
+            "headingError": 0.46503566995376894,
+            "targetSpeed": 88.07964580632756,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2852.68115234375,
+          "yawRate": 0.6080007553100586,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.3259157791005753,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": -0.3259157791005753
+            }
+          },
+          "groundCount": 2
+        },
+        {
+          "timeMs": 13000,
+          "sector": 63,
+          "position": [
+            -4261.2099609375,
+            2.9834651947021484,
+            2741.506103515625
+          ],
+          "speed": 63.231258392333984,
+          "lap": 0,
+          "distance": 60,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4671.746635941117,
+              0,
+              2989.3367332688435
+            ],
+            "headingError": -0.8430749706567122,
+            "targetSpeed": 63.28760631913069,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -2878,
+          "yawRate": -1.1389528512954712,
+          "input": {
+            "throttle": 0,
+            "brake": 0,
+            "steer": 0.5768107372732154,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 0,
+              "brake": 0,
+              "steer": 0.5768107372732154
+            }
+          },
+          "groundCount": 0
+        },
+        {
+          "timeMs": 14000,
+          "sector": 68,
+          "position": [
+            -4771.865234375,
+            4.76837158203125e-7,
+            2803.28759765625
+          ],
+          "speed": 50.70112991333008,
+          "lap": 0,
+          "distance": 65,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4753.820705119131,
+              0,
+              3281.979084186609
+            ],
+            "headingError": -0.7861930146161458,
+            "targetSpeed": 66.08650415145318,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3613.476806640625,
+          "yawRate": -1.0761743783950806,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.46723376726265875,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 0.46723376726265875
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 15000,
+          "sector": 70,
+          "position": [
+            -4933.67822265625,
+            10.653579711914062,
+            3081.4541015625
+          ],
+          "speed": 6.831752300262451,
+          "lap": 0,
+          "distance": 67,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4783.545543376429,
+              0,
+              3130.322808356352
+            ],
+            "headingError": -1.9514326398664557,
+            "targetSpeed": 34.67360212868442,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3626.15185546875,
+          "yawRate": 0.6884320974349976,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 2
+        },
+        {
+          "timeMs": 16000,
+          "sector": 70,
+          "position": [
+            -4946.34375,
+            7.972541809082031,
+            3083.592041015625
+          ],
+          "speed": 2.6777071952819824,
+          "lap": 0,
+          "distance": 67,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4806.880238139823,
+              0,
+              3102.573398649264
+            ],
+            "headingError": -2.437491976079441,
+            "targetSpeed": 28.936249253503078,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3461.161865234375,
+          "yawRate": -1.1757175922393799,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 17000,
+          "sector": 70,
+          "position": [
+            -4949.02392578125,
+            7.947206497192383,
+            3076.658935546875
+          ],
+          "speed": -1.919782280921936,
+          "lap": 0,
+          "distance": 67,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4801.110711357804,
+              0,
+              3109.4344681474363
+            ],
+            "headingError": -2.3320608268141205,
+            "targetSpeed": 30.013479652419516,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3448.926513671875,
+          "yawRate": 0.6848225593566895,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 18000,
+          "sector": 70,
+          "position": [
+            -4952.89697265625,
+            7.298709869384766,
+            3070.4521484375
+          ],
+          "speed": 0.5061187148094177,
+          "lap": 0,
+          "distance": 67,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4820.493124031664,
+              0,
+              3086.3850768503817
+            ],
+            "headingError": -2.5542297093326756,
+            "targetSpeed": 27.830257737415504,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3371.96044921875,
+          "yawRate": 0.370543897151947,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 19000,
+          "sector": 70,
+          "position": [
+            -4960.1572265625,
+            5.908638000488281,
+            3061.028564453125
+          ],
+          "speed": -3.4390783309936523,
+          "lap": 0,
+          "distance": 67,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4802.917865504723,
+              0,
+              3107.2854166455763
+            ],
+            "headingError": -2.259608887833484,
+            "targetSpeed": 30.801466242099206,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3448.6826171875,
+          "yawRate": 0.9587013721466064,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 20000,
+          "sector": 70,
+          "position": [
+            -4965.7978515625,
+            4.628137588500977,
+            3053.847900390625
+          ],
+          "speed": 0.8596697449684143,
+          "lap": 0,
+          "distance": 67,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4827.770027647319,
+              0,
+              3077.73144834239
+            ],
+            "headingError": -2.4480800085475165,
+            "targetSpeed": 28.83232468371117,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3394.24609375,
+          "yawRate": 1.5370302200317383,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 21000,
+          "sector": 69,
+          "position": [
+            -4972.689453125,
+            3.1164379119873047,
+            3045.3359375
+          ],
+          "speed": -4.404201984405518,
+          "lap": 0,
+          "distance": 66,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4814.128153124636,
+              0,
+              3093.95424316105
+            ],
+            "headingError": -2.243403542805537,
+            "targetSpeed": 30.98341118021408,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3474.18603515625,
+          "yawRate": 1.2100481986999512,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 22000,
+          "sector": 69,
+          "position": [
+            -4977.791015625,
+            1.8903069496154785,
+            3036.141845703125
+          ],
+          "speed": 2.8479256629943848,
+          "lap": 0,
+          "distance": 66,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4824.880211829704,
+              0,
+              3081.1679913918756
+            ],
+            "headingError": -2.3654479066205747,
+            "targetSpeed": 29.663774310329902,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3408.418701171875,
+          "yawRate": -1.095725178718567,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 3
+        },
+        {
+          "timeMs": 23000,
+          "sector": 69,
+          "position": [
+            -4983.666015625,
+            1.008758544921875,
+            3028.859619140625
+          ],
+          "speed": -0.796446681022644,
+          "lap": 0,
+          "distance": 66,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4827.925929960565,
+              0,
+              3077.5460507098765
+            ],
+            "headingError": -2.21108876735231,
+            "targetSpeed": 31.35271741139346,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3488.196533203125,
+          "yawRate": -0.34376055002212524,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 24000,
+          "sector": 69,
+          "position": [
+            -4985.25830078125,
+            0.8579216003417969,
+            3027.970703125
+          ],
+          "speed": -0.744309663772583,
+          "lap": 0,
+          "distance": 66,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4830.686039068295,
+              0,
+              3074.2637537163537
+            ],
+            "headingError": -2.2340107017889146,
+            "targetSpeed": 31.089856358054085,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3476.781494140625,
+          "yawRate": 0.4241429269313812,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 4
+        },
+        {
+          "timeMs": 25000,
+          "sector": 69,
+          "position": [
+            -4985.767578125,
+            0.7850089073181152,
+            3027.435791015625
+          ],
+          "speed": 1.6233015060424805,
+          "lap": 0,
+          "distance": 66,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 0,
+          "driver": {
+            "target": [
+              -4839.729173888043,
+              0,
+              3063.509738903043
+            ],
+            "headingError": -2.267495593819791,
+            "targetSpeed": 30.713689369485184,
+            "reversing": false,
+            "detourReplans": 0,
+            "pickupTarget": null
+          },
+          "yaw": -3472.2421875,
+          "yawRate": 0.6729156970977783,
+          "input": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 1,
+            "handbrake": 0,
+            "bonus": 0,
+            "analog": {
+              "throttle": 1,
+              "brake": 0,
+              "steer": 1
+            }
+          },
+          "groundCount": 3
+        }
+      ],
+      "lapEvents": [],
+      "pickupEvents": [],
+      "gateEvents": [
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 12975
+        }
+      ],
+      "rescue": {
+        "entries": 0,
+        "environmentEntries": 0,
+        "blockedTicks": 0,
+        "maxBlockedMs": 0,
+        "relocations": [],
+        "safetyFallbacks": 0
+      },
+      "starApproaches": [
+        {
+          "index": 1,
+          "position": [
+            -2397.047119140625,
+            35,
+            5360.08056640625
+          ],
+          "minDistance": 140.47890427478308,
+          "heightDifference": -34.99999952316284,
+          "now": 4975,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 6,
+          "position": [
+            -2998.710693359375,
+            25,
+            2488.7001953125
+          ],
+          "minDistance": 402.8061330474845,
+          "heightDifference": -11.944463729858398,
+          "now": 10225,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 7,
+          "position": [
+            -2902.388671875,
+            40,
+            3014.963623046875
+          ],
+          "minDistance": 95.50372040077657,
+          "heightDifference": -25.6129093170166,
+          "now": 10625,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 9,
+          "position": [
+            -5075.34619140625,
+            30,
+            3302.22314453125
+          ],
+          "minDistance": 251.0483259769418,
+          "heightDifference": -21.3949031829834,
+          "now": 15400,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 12,
+          "position": [
+            -6819.2509765625,
+            40,
+            4118.70849609375
+          ],
+          "minDistance": 2133.341672210621,
+          "heightDifference": -39.264501094818115,
+          "now": 25275,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 14,
+          "position": [
+            -7855.580078125,
+            -60,
+            5587.91650390625
+          ],
+          "minDistance": 3837.8599785117713,
+          "heightDifference": 67.96245574951172,
+          "now": 15750,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 16,
+          "position": [
+            -6342.4228515625,
+            25,
+            7199.12744140625
+          ],
+          "minDistance": 3980.6914518513195,
+          "heightDifference": -38.49888515472412,
+          "now": 850,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 18,
+          "position": [
+            -4531.0888671875,
+            -45,
+            7168.123046875
+          ],
+          "minDistance": 2169.2550250819295,
+          "heightDifference": 31.070194244384766,
+          "now": 875,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 22,
+          "position": [
+            -3818.105224609375,
+            25,
+            7986.71533203125
+          ],
+          "minDistance": 1600.478164525708,
+          "heightDifference": -25.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 24,
+          "position": [
+            -2824.503173828125,
+            30,
+            8565.0712890625
+          ],
+          "minDistance": 1311.429195675116,
+          "heightDifference": -30.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 25,
+          "position": [
+            -2548.27001953125,
+            75,
+            8122.15625
+          ],
+          "minDistance": 804.9501474387881,
+          "heightDifference": -75.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 27,
+          "position": [
+            -2341.3427734375,
+            75,
+            8537.3447265625
+          ],
+          "minDistance": 1196.3135340738809,
+          "heightDifference": -75.98645257949829,
+          "now": 25,
+          "eligibleAfter": 0,
+          "state": 1
+        }
+      ],
+      "durationMs": 25500,
+      "inputSha256": "8acc586d39358e66e813ff9051b0ff5a9ee5b27db23f88543ed824fe48a93e3c",
+      "recoveries": 0,
+      "race": {
+        "phase": 6,
+        "finishArmed": true,
+        "finished": false,
+        "lapCount": 0,
+        "lapLimit": 5,
+        "lapTimes": [],
+        "sessionBestLapMs": 0,
+        "bestLapMs": 268435455,
+        "bestRaceMs": 268435455,
+        "raceTimeMs": null,
+        "elapsedMs": 25500,
+        "distance": 66,
+        "gateIndex": 1,
+        "gateDistance": 61,
+        "remainingMs": 0,
+        "zeroSectorPassed": false,
+        "events": [
+          {
+            "type": "time-expired"
+          }
+        ]
+      },
+      "rank": 3,
+      "stars": 0,
+      "qualification": {
+        "qualified": false,
+        "reason": "rank",
+        "maximumRank": 0
+      },
+      "finalPosition": [
+        -4985.9326171875,
+        0.7751674652099609,
+        3027.339599609375
+      ],
+      "finalDiagnostics": {
+        "player": {
+          "position": [
+            -4985.9326171875,
+            0.7751674652099609,
+            3027.339599609375
+          ],
+          "yaw": -3469.4033203125,
+          "matrix": [
+            0.5714082717895508,
+            0.04692821577191353,
+            0.8193231821060181,
+            -0.059367645531892776,
+            1,
+            -0.015764767304062843,
+            -0.819580078125,
+            -0.03972062095999718,
+            0.5715862512588501
+          ],
+          "lateralSpeed": -0.03529665991663933,
+          "verticalSpeed": 3.976039409637451,
+          "forwardSpeed": 0.12958574295043945,
+          "yawRate": 0.9493613243103027,
+          "rpm": 902.7301025390625,
+          "gear": 0,
+          "controls": {
+            "throttle": 100,
+            "brake": 0,
+            "steering": 100,
+            "handbrake": false
+          },
+          "sector": 69,
+          "groundCount": 4,
+          "wheels": [
+            {
+              "local": [
+                -21,
+                6.408590316772461,
+                18
+              ],
+              "spin": -552904,
+              "steeringAngle": -341.3333435058594,
+              "verticalSpeed": 0,
+              "position": [
+                -5012.7412109375,
+                5.908590316772461,
+                3020.4228515625
+              ]
+            },
+            {
+              "local": [
+                21,
+                4.892210483551025,
+                18
+              ],
+              "spin": -552904,
+              "steeringAngle": -341.3333435058594,
+              "verticalSpeed": 0,
+              "position": [
+                -4988.7158203125,
+                5.908590316772461,
+                3054.872314453125
+              ]
+            },
+            {
+              "local": [
+                -12,
+                4.891765117645264,
+                -21
+              ],
+              "spin": -552904,
+              "steeringAngle": 0,
+              "verticalSpeed": 0,
+              "position": [
+                -4975.60400390625,
+                5.9085917472839355,
+                3005.495361328125
+              ]
+            },
+            {
+              "local": [
+                12,
+                6.408590316772461,
+                -21
+              ],
+              "spin": -552904,
+              "steeringAngle": 0,
+              "verticalSpeed": -0.4706474542617798,
+              "position": [
+                -4961.875,
+                9.009258270263672,
+                3025.1806640625
+              ]
+            }
+          ],
+          "updates": 1020
+        },
+        "waypoint": 395,
+        "phase": 0,
+        "rescue": [],
+        "opponents": [
+          {
+            "id": 0,
+            "position": [
+              -7774.73828125,
+              -21.21957015991211,
+              4522.3193359375
+            ],
+            "sector": 109,
+            "waypoint": 611,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 616,
+              "previousSector": 109,
+              "sectorTime": 0.02500000223517418,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -7976.15771484375,
+                6.669151016074543e-38,
+                4673.8046875
+              ],
+              "speedTarget": [
+                -8115.2939453125,
+                6.074706755042698e-38,
+                5078.2451171875
+              ]
+            },
+            "forwardSpeed": 63.7963981628418,
+            "distance": 105
+          },
+          {
+            "id": 1,
+            "position": [
+              -8042.91552734375,
+              -111.00868225097656,
+              5258.697265625
+            ],
+            "sector": 113,
+            "waypoint": 635,
+            "state": {
+              "mode": 0,
+              "gear": 1,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                2,
+                1,
+                0
+              ],
+              "waypoint": 640,
+              "previousSector": 113,
+              "sectorTime": 0.27500003576278687,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -8057.96875,
+                6.477017302072811e-38,
+                5463.71337890625
+              ],
+              "speedTarget": [
+                -7912.6767578125,
+                6.625004509254454e-38,
+                5789.00390625
+              ]
+            },
+            "forwardSpeed": 58.75566482543945,
+            "distance": 109
+          },
+          {
+            "id": 2,
+            "position": [
+              -8059.00927734375,
+              -97.45452117919922,
+              4907.6943359375
+            ],
+            "sector": 112,
+            "waypoint": 628,
+            "state": {
+              "mode": 0,
+              "gear": 1,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                2,
+                1,
+                0
+              ],
+              "waypoint": 634,
+              "previousSector": 112,
+              "sectorTime": 0.05000000447034836,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -8008.57275390625,
+                7.03174876462569e-38,
+                5279.5146484375
+              ],
+              "speedTarget": [
+                -7815.40673828125,
+                1.0874549161522137e-37,
+                5563.90576171875
+              ]
+            },
+            "forwardSpeed": 52.30699920654297,
+            "distance": 108
+          }
+        ]
+      }
+    }
+  ],
+  "status": "incomplete",
+  "sourceChangedDuringRun": [],
+  "executionSourceChangedDuringRun": [],
+  "assetsChangedDuringRun": [],
+  "completedAt": "2026-10-20T19:13:13.844Z"
+}

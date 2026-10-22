@@ -1,0 +1,35 @@
+{
+  "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
+  "appId": "org.redcat.superkarts.port",
+  "productName": "RedCat SuperKarts",
+  "directories": { "output": "release", "buildResources": "desktop" },
+  "artifactName": "RedCat-SuperKarts-${version}-${os}-${arch}.${ext}",
+  "asar": true,
+  "npmRebuild": false,
+  "afterPack": "tools/verify-desktop-package.mjs",
+  "files": ["electron/**/*", "desktop/icons/icon.png", "package.json", "!node_modules/**"],
+  "extraResources": [
+    { "from": "dist", "to": "game", "filter": ["**/*", "!node_modules/**"] },
+    { "from": "dist/node_modules/three", "to": "game/node_modules/three", "filter": ["**/*"] }
+  ],
+  "linux": {
+    "executableName": "redcat-superkarts",
+    "target": ["AppImage", "tar.gz"],
+    "icon": "desktop/icons/icon.png",
+    "category": "Game",
+    "syncDesktopName": true,
+    "desktop": { "entry": { "Categories": "Game;ArcadeGame;" } }
+  },
+  "win": { "target": ["nsis", "zip"], "icon": "desktop/icons/icon.ico", "executableName": "redcat-superkarts" },
+  "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true, "perMachine": false },
+  "mac": {
+    "target": ["dmg", "zip"],
+    "icon": "desktop/icons/icon.icns",
+    "category": "public.app-category.racing-games",
+    "identity": "-",
+    "hardenedRuntime": true,
+    "entitlements": "desktop/entitlements.mac.plist",
+    "entitlementsInherit": "desktop/entitlements.mac.plist",
+    "notarize": false
+  }
+}

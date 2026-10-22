@@ -1,0 +1,210 @@
+Create a faithful WebGL/Three.js port of the Windows game RedCat SuperKarts (2000).
+
+The target is complete original gameplay and content, with the modern platform features specified below. Prioritize verified behavior, visual accuracy, and working functionality.
+
+Work autonomously through investigation, implementation, testing, and corrections. Continue beyond the plan, prototype, and first playable race. Do not ask whether to proceed between milestones.
+
+## 1. Project locations
+
+Create the new project and its generated files in:
+
+`/home/rick/Documents/Rebuilds/RedCat Superkarts/`
+
+Original game installation in the Wine prefix, installed through Lutris:
+
+`/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/`
+
+Unpacked game ISO:
+
+`/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/`
+
+Inspect existing contents before making changes. Preserve the original game files, unpacked ISO, and Spookkasteel project. Perform extraction, conversion, and development in the new project directory. If reference testing needs to modify game files or saved data, use a working copy.
+
+## 2. Original startup sequence
+
+The observed startup sequence is:
+
+1. Launcher:
+   `/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/RCSK.exe`
+
+2. Intro video:
+   `/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/Media/movies/Intro.mpg`
+
+3. Menu:
+   `/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskmenu.dat`
+
+4. Starting a race launches the Direct3D game:
+   `/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskspel.dat`
+
+Verify this sequence. Inspect the actual file types, command-line arguments, working directories, configuration files, and transfer of selected settings between the launcher, menu, and race.
+
+Reproduce the player-facing startup and menu flow in the port, including the original intro and its observed skip behavior. Convert media when necessary while preserving its content, proportions, sound, and timing.
+
+## 3. Establish the original behavior
+
+First identify the actual engine, asset formats, scripting system, and simulation timing.
+
+SuperKarts may share technology with RedCat Spookkasteel, including Genesis3D, but this is a hypothesis to verify. Do not assume that shared technology means identical physics, scripts, cameras, or rendering behavior.
+
+Use the Spookkasteel project to accelerate investigation and reuse compatible tools or code where appropriate. Verify relevant compatibility before reuse. The original SuperKarts files and observed behavior are the authority.
+
+Use available reverse engineering tools to inspect scripts, data, executable code, and runtime behavior. Combine static analysis with reproducible observations of the original game wherever possible.
+
+For every significant system, record:
+
+- The original behavior and relevant numerical values.
+- The supporting evidence: file, script, executable function/address, runtime trace, or reproducible observation.
+- Whether the finding is confirmed, inferred, or unresolved.
+- Where and how the port implements it.
+- How the implementation was compared with the original.
+
+Hypotheses are allowed during investigation. Unverified hypotheses must not silently become accepted original behavior. Do not invent gameplay rules, physics constants, or visual effects to fill gaps.
+
+If the original cannot be run or a behavior cannot be established, document the specific limitation and continue with work that does not depend on it. Identify the environment used for reference testing, including Wine where applicable.
+
+If useful, inspect [Gymnasiast/Davitools](https://github.com/Gymnasiast/Davitools) for extracting Davilex IMG archives. Verify that it supports the archives actually present. Keep asset extraction and conversion reproducible.
+
+## 4. Full game functionality and fidelity
+
+Build an inventory of the original game's content and features before treating the implementation scope as complete. Maintain it as discoveries are made.
+
+Include every track, vehicle or character, game mode, difficulty setting, menu flow, opponent AI system, item, race rule, progression feature, and save/settings mechanism actually present in the original.
+
+Reproduce and verify:
+
+- Kart acceleration, braking, reverse, steering, grip, collision response, and other handling behavior.
+- Opponent movement, racing behavior, and interactions.
+- Checkpoints, laps, race timing, positions, results, restarts, and progression.
+- Camera positioning, movement, smoothing, field of view, and transitions.
+- Geometry, textures, lighting, transparency, fog, skybox behavior, and object visibility.
+- Model animation, wheels and other moving parts, and visual effect timing.
+- Item pickup conditions, effects, durations, and interactions.
+- Original menu artwork, fonts, navigation, and in-game HUD.
+- Music selection and looping, sound effects, engine sounds, audio triggers, and volume behavior.
+
+Apply these requirements to features that actually exist; do not add invented mechanics.
+
+Use original assets wherever available. Preserve the original appearance while making the explicit adaptations requested below.
+
+Recreate the original menu. Grey out only options that genuinely do not apply to the target platform, and explain why they are unavailable. Do not grey out gameplay features simply because they remain unimplemented.
+
+## 5. Frame-rate-independent behavior
+
+The original appears to have a rendering cap around 31–32 FPS. Measure and verify this, and separately determine how its simulation timing works. Do not assume the rendering cap equals the simulation update rate.
+
+Remove the port's artificial 31–32 FPS rendering limit. Support smooth rendering at the rate available from the browser and display.
+
+Decouple simulation from rendering. Choose simulation timing and update rules based on the original behavior, with interpolation where appropriate. Do not arbitrarily change the simulation to 60 Hz or blindly multiply every original calculation by delta time.
+
+Physics, AI, race clocks, cameras, animations, pickups, effect durations, and audio triggers must remain consistent as rendering frame rate changes.
+
+Use repeatable input sequences to compare behavior at the measured original rate, 60, 120, 144, and 240 FPS, plus fluctuating frame times and temporary stalls. Where hardware cannot display a requested rate, use controlled timing tests and distinguish them from actual display testing.
+
+Explicitly test:
+
+- Reversing from a standstill.
+- Sustained reverse movement.
+- Steering while reversing.
+- Braking from forward movement and entering reverse, according to the original control behavior.
+- Returning from reverse to forward movement.
+
+Compare movement, speed, handling, and timing over equal durations. A kart merely appearing to move backward is insufficient.
+
+Handle focus loss, suspension, and resumption without uncontrolled simulation jumps or stuck inputs.
+
+## 6. Platforms and controls
+
+Target desktop browsers on Linux, Windows, and macOS, plus mobile browsers on Android and iOS. Cover the relevant Chrome/Chromium, Firefox, and Safari environments where available.
+
+Support:
+
+- Keyboard controls.
+- Controllers through the Gamepad API, including menu navigation, racing, appropriate analog input and deadzones, and connection/disconnection handling.
+- Touch controls with simultaneous inputs, so steering can be combined with acceleration, braking/reverse, and item use.
+
+Document the controls. Keep original control behavior where applicable and make platform adaptations explicit.
+
+Implement responsive menus and HUD layouts for desktop, tablet, and phone screens.
+
+Support both landscape and portrait orientation. In portrait mode, rearrange original artwork, menus, HUD elements, and touch controls into a usable vertical layout. Preserve artwork proportions and keep essential information and controls visible without obscuring critical gameplay.
+
+Handle orientation changes and screen safe areas.
+
+## 7. Widescreen, resolution, and settings
+
+Support widescreen and high-resolution rendering without stretching the scene or original interface artwork.
+
+Preserve the original camera framing at its original aspect ratio. Adapt wider views deliberately and document the field-of-view behavior.
+
+Add persistent settings for:
+
+- Resolution selection, including Auto/native and suitable explicit presets.
+- Render scale from 25% to 200%.
+- Audio and control settings relevant to the port.
+
+For the browser build, the resolution selector controls the base 3D render resolution. Define 100% render scale as that selected base resolution; the percentage scales both its width and height.
+
+Display the effective rendering dimensions. Account for device pixel ratio without applying scaling twice. Keep menu and HUD readability independent of the 3D render scale, and preserve the viewport's correct aspect ratio.
+
+## 8. Workflow and documentation
+
+Create and maintain:
+
+- `PLAN.md`: milestones, current progress, blockers, and next actions.
+- `docs/original-behavior.md`: reverse engineering findings and supporting evidence.
+- `docs/feature-parity.md`: the original feature inventory, implementation status, and verification status.
+- `docs/validation.md`: test procedures, results, comparison evidence, and known discrepancies.
+- `README.md`: exact commands for asset preparation, installation, development, building, and running.
+
+Use meaningful automated tests for simulation, timing, and race logic, alongside visual, audio, and gameplay comparisons.
+
+Define measurable comparison criteria and justified tolerances before judging a system verified. Do not loosen criteria simply to make a failing implementation pass.
+
+Keep implemented and verified status separate. Record remaining differences and uncertainty accurately. Update documentation during the work so it can be resumed without relying on chat history.
+
+Continue through milestones without requesting routine approval. If blocked, investigate alternatives and continue independent work. Ask for input only when a concrete missing fact, access requirement, or consequential scope decision prevents further progress.
+
+If the session is interrupted or reaches an execution limit, leave a precise checkpoint with completed work, unresolved issues, evidence locations, and the next steps.
+
+## 9. Completion criteria
+
+Do not declare the project complete solely because it builds or one race is playable.
+
+Completion requires evidence that:
+
+- The intro, menu, race selection, racing, results, and return-to-menu flow work.
+- Every discovered track and applicable game mode can be completed.
+- Original gameplay systems and content have been implemented and compared against their recorded evidence.
+- Higher rendering rates preserve handling and timing, including all reverse-driving cases.
+- Keyboard, controller, and touch controls work throughout the relevant flows.
+- Landscape, portrait, widescreen, resolution selection, and 25%/100%/200% render scale work correctly.
+- Settings and original persistence features survive restarting where applicable.
+- The project can be prepared, built, and launched using the documented commands.
+- The feature inventory has no silently omitted requirements.
+
+Report which browsers, operating systems, devices, and controllers were actually tested. Distinguish real-device tests from emulation and automated checks. Mark unavailable testing as unverified.
+
+Do not count placeholders, approximations, disabled unfinished features, or untested claims as verified parity. If anything remains incomplete, state exactly what it is and what is needed to finish it.
+
+Begin by inspecting the supplied files, verifying the engine and startup interfaces, and creating the feature inventory. Then continue directly into implementation and validation.
+
+
+### Relationship to the RedCat Spookkasteel port
+
+The previous RedCat Spookkasteel port, including its source code, tools, and reverse engineering documentation, is located at:
+
+`/home/rick/Documents/Rebuilds/RedCat Spookkasteel/RCSPOOK_NEW/`
+
+Both games are from 2000, and SuperKarts is expected to use the same scripting system and much of the same underlying game logic and engine technology as Spookkasteel. **Use the Spookkasteel project as a primary technical reference from the beginning.** Its existing research and implementation may already solve substantial parts of this port.
+
+Before implementing equivalent systems from scratch:
+
+- Read the Spookkasteel project's reverse engineering notes, architecture documentation, and relevant source code.
+- Compare the games' file formats, script structures, function names, entity definitions, and executable code to establish which systems they share.
+- Investigate reuse of asset extraction and loading, script parsing and execution, entity management, events and triggers, movement and collision handling, cameras, animation, effects, audio, and interface behavior.
+- Reuse or adapt compatible tools, code, and verified findings instead of repeating work already completed for Spookkasteel.
+- Where the Spookkasteel documentation identifies unresolved behavior or earlier approximations, use those findings to guide further investigation.
+
+Verify which systems actually match and distinguish shared logic from SuperKarts-specific behavior, particularly kart handling, opponent racing AI, and race rules. Shared technology is a strong starting hypothesis, but the original SuperKarts files and observed behavior remain the authority when differences appear.
+
+Document what was reused, the evidence supporting compatibility, and any adaptations required. Keep the Spookkasteel reference project unchanged.

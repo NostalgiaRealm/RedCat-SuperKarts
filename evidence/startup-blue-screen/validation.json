@@ -1,0 +1,41 @@
+{
+  "status": "passed",
+  "createdAt": "2026-10-20T21:41:35.959Z",
+  "cause": "Missing installed Three.js files returned404 and prevented the main browser module from evaluating.",
+  "changes": [
+    "Restored dependencies with npm ci using the existing lockfile.",
+    "Added server dependency preflight with install instructions.",
+    "Made the autoplay status notice noninteractive so it cannot block Start.",
+    "Clarified first-run source-server instructions."
+  ],
+  "tests": {
+    "serverPreflight": 3,
+    "chromium": 5,
+    "firefox": 3
+  },
+  "browserScope": {
+    "chromium": "Plain source-server startup with a single explicitly rejected autoplay attempt, then real Start click/playback, original menu artwork and one actual race render. The rejection fixture makes the blocked-autoplay branch reproducible on Chromium builds that allow autoplay under automation.",
+    "firefox": "Plain root URL in a disposable Firefox profile, Xvfb and software OpenGL. Intro playback may require its normal Start button under default autoplay policy. No production edits; existing game server remains untouched."
+  },
+  "runtimeResponses": {
+    "node_modules/three/build/three.module.js": 200,
+    "node_modules/three/build/three.core.js": 200,
+    "node_modules/three/examples/jsm/controls/OrbitControls.js": 200
+  },
+  "existingUserServerKeptRunning": true,
+  "staticBuildRefreshed": false,
+  "retainedInitialResults": [
+    "firefox-initial.json",
+    "chromium-policy-initial.json"
+  ],
+  "limits": "Source startup fix. No full-race rerun; prior race/build reports retain their historical checkpoints.",
+  "sha256": {
+    "tools/serve.mjs": "5be6f11fbd9ebb30cf7eb796a17f55abd94c03889a1bfd9580bac98f00b24a34",
+    "tools/server-runtime.mjs": "191a0f77a23210765578c9c45bf67c5f37501783c8223c0e8523bcdc2b04be2d",
+    "src/style.css": "a8a241c3ded9f89040db66980863b6dcd06e371d33158d4838ecfadb9cf4d673",
+    "README.md": "9e856f9f0f69340b1d324591f0a2767c2b8b9317ae93c53667630e050053c53d",
+    "tests/server-runtime.test.mjs": "e511842229fa080249c7d13c88deeeb03cdd4a2825008962ec1f263d300ccb12",
+    "tests/startup-browser.mjs": "577b5f15ffdd59008b33b74d3865bd66681a8b51324467fa1c63af515f1728f6",
+    "package-lock.json": "36964f77df3357777b21e371a0374463f97f1c3c8727dfadbf4d80a178bb4de4"
+  }
+}

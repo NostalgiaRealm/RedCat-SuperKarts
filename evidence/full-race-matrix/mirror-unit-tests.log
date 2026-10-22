@@ -1,0 +1,39 @@
+✔ 1200 original analog-input calls match exactly, including midpoint, clamp and mirrored steering (2.734537ms)
+✔ Browser proportional input preserves native two-percent steps and single pedal axis (0.314169ms)
+✔ race routing reads independent British/direction INI integers, not the map mirror flag (1.236274ms)
+✔ fallback grid setup consumes configured lane settings independently of mirrored artwork (22.09288ms)
+✔ race composition passes the same explicit route settings to projectile, rescue and weather direction (75.776034ms)
+✔ shipped MAPS flags and executed native projection calls identify the same mirrored countries (1.288363ms)
+✔ world and camera reflection match a horizontal projection flip at arbitrary camera roll and interpolation (3.464503ms)
+✖ assembled native mirroring reverses input without changing road selection or physical trajectories (681.13235ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 835.597744
+
+✖ failing tests:
+
+test at tests/native-track-mirror.test.mjs:66:1
+✖ assembled native mirroring reverses input without changing road selection or physical trajectories (681.13235ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== -1
+  
+      at TestContext.<anonymous> (file:///home/rick/Documents/Rebuilds/RedCat%20Superkarts/tests/native-track-mirror.test.mjs:86:12)
+      at Test.runInAsyncScope (node:async_hooks:214:14)
+      at Test.run (node:internal/test_runner/test:1103:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:785:18)
+      at Test.postRun (node:internal/test_runner/test:1232:19)
+      at Test.run (node:internal/test_runner/test:1160:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:785:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: -1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

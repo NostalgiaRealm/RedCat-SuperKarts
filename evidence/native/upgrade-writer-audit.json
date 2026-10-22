@@ -1,0 +1,406 @@
+{
+  "scope": "Independent static writer/caller/consumer audit of retained original exports; no production or original input changes. Execution fixtures are separately owned in startup-upgrades.json.",
+  "sourceSha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "conclusion": {
+    "activeDefault": {
+      "motor": 0,
+      "banden": 0,
+      "versnellingsbak": 0
+    },
+    "loadedRaceIniValuesSurvivePlayerConstruction": false,
+    "restorationByDifficultyQuickRaceOrAdventureFound": false,
+    "exception": "Explicit developer tuning through Tab and helpdesk/tweak_mode=1 can toggle flags after initialization; shipped active game.ini has tweak_mode=0."
+  },
+  "startupOrder": [
+    {
+      "caller": "0042d7d0",
+      "callSite": "0042d801",
+      "callee": "0042ad70",
+      "meaning": "Load race configuration"
+    },
+    {
+      "caller": "0042ad70",
+      "callSite": "0042aea0",
+      "callee": "0042b870",
+      "meaning": "Read Race.INI PLAYER upgrades"
+    },
+    {
+      "caller": "0042d7d0",
+      "callSite": "0042db3d",
+      "callee": "00415d70",
+      "meaning": "Initialize racers"
+    },
+    {
+      "caller": "00415d70",
+      "callSite": "00415db5",
+      "callee": "004319f0",
+      "meaning": "Construct player and clear all six upgrade flags"
+    },
+    {
+      "caller": "00415d70",
+      "callSite": "00415dba",
+      "callee": "00417640",
+      "meaning": "Initialize opponents after player clear"
+    },
+    {
+      "caller": "0042d7d0",
+      "callSite": "0042dd80",
+      "callee": "0042d360",
+      "meaning": "Set timer8 using cleared motor/gearbox flags; timer18 uses independent time-gate budget"
+    }
+  ],
+  "reset": {
+    "zeroRegisterInstruction": "00431a0f XOR ESI,ESI",
+    "stores": {
+      "00431ecd": "0053bef0",
+      "00431ed3": "0053bef4",
+      "00431ed9": "0053bef8",
+      "00431edf": "0053befc",
+      "00431ee5": "0053bf00",
+      "00431eeb": "0053bf04"
+    },
+    "conditionality": "Phys-file success/failure converge before unconditional stores; no difficulty or race mode branch around them."
+  },
+  "directWrites": [
+    {
+      "address": "0041a30c",
+      "bytes": "892df4be5300",
+      "instruction": "MOV dword ptr [0x0053bef4],EBP",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a31b",
+      "bytes": "c705f4be530001000000",
+      "instruction": "MOV dword ptr [0x0053bef4],0x1",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a336",
+      "bytes": "892d00bf5300",
+      "instruction": "MOV dword ptr [0x0053bf00],EBP",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a345",
+      "bytes": "c70500bf530001000000",
+      "instruction": "MOV dword ptr [0x0053bf00],0x1",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a35b",
+      "bytes": "892df0be5300",
+      "instruction": "MOV dword ptr [0x0053bef0],EBP",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a368",
+      "bytes": "c705f0be530001000000",
+      "instruction": "MOV dword ptr [0x0053bef0],0x1",
+      "function": "0041a200"
+    },
+    {
+      "address": "0042b893",
+      "bytes": "a3f0be5300",
+      "instruction": "MOV [0x0053bef0],EAX",
+      "function": "0042b870"
+    },
+    {
+      "address": "0042b8a7",
+      "bytes": "a3f4be5300",
+      "instruction": "MOV [0x0053bef4],EAX",
+      "function": "0042b870"
+    },
+    {
+      "address": "0042b8e3",
+      "bytes": "a300bf5300",
+      "instruction": "MOV [0x0053bf00],EAX",
+      "function": "0042b870"
+    },
+    {
+      "address": "00431ecd",
+      "bytes": "8935f0be5300",
+      "instruction": "MOV dword ptr [0x0053bef0],ESI",
+      "function": "004319f0"
+    },
+    {
+      "address": "00431ed3",
+      "bytes": "8935f4be5300",
+      "instruction": "MOV dword ptr [0x0053bef4],ESI",
+      "function": "004319f0"
+    },
+    {
+      "address": "00431ee5",
+      "bytes": "893500bf5300",
+      "instruction": "MOV dword ptr [0x0053bf00],ESI",
+      "function": "004319f0"
+    }
+  ],
+  "readReferences": [
+    {
+      "address": "004147d9",
+      "instruction": "MOV ECX,dword ptr [0x0053bef4]",
+      "function": "00414750"
+    },
+    {
+      "address": "00414c2a",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "00414750"
+    },
+    {
+      "address": "00415186",
+      "instruction": "MOV ESI,dword ptr [0x0053bef4]",
+      "function": "00415160"
+    },
+    {
+      "address": "004151c1",
+      "instruction": "MOV ESI,dword ptr [0x0053bef4]",
+      "function": "00415160"
+    },
+    {
+      "address": "00415416",
+      "instruction": "MOV EDX,dword ptr [0x0053bef0]",
+      "function": "00415410"
+    },
+    {
+      "address": "0041547d",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00415450"
+    },
+    {
+      "address": "00415531",
+      "instruction": "MOV ESI,dword ptr [0x0053bef4]",
+      "function": "00415520"
+    },
+    {
+      "address": "00415842",
+      "instruction": "MOV EDI,dword ptr [0x0053bf00]",
+      "function": "00415840"
+    },
+    {
+      "address": "0041589c",
+      "instruction": "MOV EDI,dword ptr [0x0053bef0]",
+      "function": "00415840"
+    },
+    {
+      "address": "00415d16",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00415cf0"
+    },
+    {
+      "address": "00415d3d",
+      "instruction": "MOV EAX,[0x0053bef0]",
+      "function": "00415cf0"
+    },
+    {
+      "address": "00419795",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "004197d0",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "0041980d",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "0041984a",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "00419887",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "004198c1",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "00419901",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419790"
+    },
+    {
+      "address": "00419a11",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419950"
+    },
+    {
+      "address": "00419a99",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419950"
+    },
+    {
+      "address": "00419b06",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "00419950"
+    },
+    {
+      "address": "00419c2d",
+      "instruction": "MOV EDX,dword ptr [0x0053bef0]",
+      "function": "00419c00"
+    },
+    {
+      "address": "00419c8b",
+      "instruction": "MOV EAX,[0x0053bef0]",
+      "function": "00419c00"
+    },
+    {
+      "address": "00419ca4",
+      "instruction": "MOV EDX,dword ptr [0x0053bef0]",
+      "function": "00419c00"
+    },
+    {
+      "address": "00419d06",
+      "instruction": "MOV EAX,[0x0053bef0]",
+      "function": "00419c00"
+    },
+    {
+      "address": "00419e5d",
+      "instruction": "MOV EDX,dword ptr [0x0053bef4]",
+      "function": "00419e30"
+    },
+    {
+      "address": "00419ebb",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "00419e30"
+    },
+    {
+      "address": "00419ed4",
+      "instruction": "MOV EDX,dword ptr [0x0053bef4]",
+      "function": "00419e30"
+    },
+    {
+      "address": "00419f2f",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "00419e30"
+    },
+    {
+      "address": "00419fad",
+      "instruction": "MOV EDX,dword ptr [0x0053bef4]",
+      "function": "00419f80"
+    },
+    {
+      "address": "0041a00b",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "00419f80"
+    },
+    {
+      "address": "0041a024",
+      "instruction": "MOV EDX,dword ptr [0x0053bef4]",
+      "function": "00419f80"
+    },
+    {
+      "address": "0041a07f",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "00419f80"
+    },
+    {
+      "address": "0041a0f5",
+      "instruction": "MOV EAX,[0x0053bef0]",
+      "function": "0041a0d0"
+    },
+    {
+      "address": "0041a12e",
+      "instruction": "MOV EAX,[0x0053bf00]",
+      "function": "0041a0d0"
+    },
+    {
+      "address": "0041a167",
+      "instruction": "MOV EAX,[0x0053bef4]",
+      "function": "0041a0d0"
+    },
+    {
+      "address": "0041a2ff",
+      "instruction": "CMP dword ptr [0x0053bef4],EBP",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a329",
+      "instruction": "CMP dword ptr [0x0053bf00],EBP",
+      "function": "0041a200"
+    },
+    {
+      "address": "0041a353",
+      "instruction": "CMP dword ptr [0x0053bef0],EBP",
+      "function": "0041a200"
+    }
+  ],
+  "activeConsumers": [
+    {
+      "function": "00415160",
+      "meaning": "Player lateral-force bank indexed by tire flag"
+    },
+    {
+      "function": "00415410",
+      "meaning": "Player motor power bank"
+    },
+    {
+      "function": "00415450",
+      "meaning": "Player drive-force gearbox bank"
+    },
+    {
+      "function": "00415520",
+      "meaning": "Player tire resistance bank"
+    },
+    {
+      "function": "00415840",
+      "meaning": "Gear selection and motor maximum RPM"
+    },
+    {
+      "function": "00414750",
+      "meaning": "AI grip shares player tire flag. Zero selects lateral damping coefficient5 instead of10, and later multiplies transformed lateral velocity by0.8 instead of1."
+    },
+    {
+      "function": "00415cf0",
+      "meaning": "Timer8 speed estimate reads racer table+0x40 (00506910+car*0x7c) with gearbox0; motor0 omits +4."
+    }
+  ],
+  "modeAndDifficulty": {
+    "function": "004350d0",
+    "callSite": "00431d6a",
+    "meaning": "Race type3 scales car-table fields by difficulty before the reset; does not write upgrade globals. Remaining original-code direct writer inventory contains no race mode/difficulty/Adventure restoration."
+  },
+  "debugException": {
+    "chain": [
+      "004325b0",
+      "00414160",
+      "0041a5d0",
+      "0041a200"
+    ],
+    "gates": [
+      "Player wrapper call when0053ba34==0",
+      "Tab key9 held",
+      "0053ba6c==1 from game.ini/helpdesk/tweak_mode"
+    ],
+    "loader": "0042af40",
+    "activeGameIni": {
+      "debugon": "0",
+      "tweak_mode": "0",
+      "enable_rrm": "0"
+    },
+    "legacyNestedGameIni": {
+      "debugon": "0",
+      "tweak_mode": "1",
+      "enable_rrm": "0"
+    }
+  },
+  "timerScope": {
+    "timer8": "Affected by normal-versus-upgraded speed estimate; created after reset. This is separate from time-trial checkpoint allowance.",
+    "timer18": "Race type1 only: 0042d3ff initializes directly from0053d2b0. No upgrade reference in this path; original time-gate budgets stay unchanged."
+  },
+  "coverageLimit": "Whole retained assembly.tsv direct operands plus full decompilation references and outside-function instruction references were inspected. No additional direct writer or address-taking operand was found. This static audit is not a full original process execution; startup-upgrades.json supplies bounded original-instruction loader/reset/timer execution proof.",
+  "evidenceFiles": {
+    "evidence/native/rcskspel.dat/assembly.tsv": "1b0106988362ea8c89e6e70d01798013197e952c775070eade5dafc7294e1a24",
+    "evidence/native/rcskspel.dat/calls.tsv": "be4e243ad669b361a1f3a18b89ec3f7f7f2f7785cb8226ce141e4c9dbcccb0d5",
+    "evidence/native/rcskspel.dat/full_decompilation.c": "a383571633bb5a0dc0215a6c6a33862adc8024f71cf0ec7fba478da674339f37",
+    "evidence/native/rcskspel.dat/instructions_outside_functions.tsv": "8e6af16cea3f5ddbc5efcbe65eb9bfaef0b55bd1fa4a611965da229d18fadf5c",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae"
+  }
+}

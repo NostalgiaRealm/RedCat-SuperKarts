@@ -1,0 +1,36 @@
+{
+  "reviewedAt": "2026-10-20T16:59:57.776036+00:00",
+  "scope": "Independent read-only render integration review after HUD sampler correction; not a native framebuffer or whole-game completeness claim.",
+  "sourceSha256": {
+    "src/simulation/native-hud-sampler.js": "fb055011cf32eb95e282ce0bb9abbb3c069a81a671dec564c5c9a672e32b6139",
+    "src/driving-view.js": "826cbde4805d85b4b24ca1209ea134728cbcdcea8ff678e584ffb204a70669fb",
+    "src/race-hud-meshes.js": "d04f93932712e3ceafd8427659baa1da9cc5e0204650d7d4c9030b3a7e3b2bb3",
+    "src/race-hud.js": "c006cf42457db10e724fb8ebce215565ed05cd22d2325efd5c0af25538c79701",
+    "src/native-blend-state.js": "d4f1031a2defe2da38659c0c970e4c1fbecc7762cb398881e2915dec5332d941",
+    "src/race-visuals.js": "5dff28754496b3ce19840e228256accba381498878c080fd35180ae981092ae4",
+    "src/bubble-visuals.js": "2fb8035ff823121e994a62f92b5e5f992acfaa469d7747b3f4357c25e0a02ae7",
+    "src/kart-shadow.js": "564d385a8488909cf7d739e8fabe35300929d14b5706c0277441ea1bfac4c871",
+    "src/render-order.js": "df7d7bca5091ba67c5629aafb970011c6765cebc23901906e24460d09e1246f2",
+    "src/world.js": "59e802e19eccfe6ec45861c32b93174cce4d3e6446ab624ea98f6726997ea425",
+    "src/asset-materials.js": "d23bda2a186dc457f794a932254a7af271a9b5d15fd6175a48675edbada28b2f"
+  },
+  "nativeBinarySha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "findings": [],
+  "checks": [
+    "HUD cache capture occurs once in beforeBonuses per logical render, never during additional browser redraws or per HUD layer.",
+    "Private HUD sampler clones retain processed image/key/gamma and leave world samplers unchanged; all resources finish loading before ticking.",
+    "Nearest configuration uses first-frame linear then nearest; linear configuration remains linear. Original MIN queried twice and independent cache restoration behavior retained.",
+    "Constructor sentinel tests retain unspecified byte+88; explicit zero host policy has identical visible sequence for active FILTER0/2 startup states.",
+    "Rescue color and sky use current logical position; kart draw retains matrix; shadow combines new height sampling with retained XZ translation.",
+    "Bubble shell active submission ranks are bounded, independent of hidden first-person kart; complete native object-pool wrap is explicitly outside the relative-order proof.",
+    "Actual draw callbacks preserve source blend factors through opaque draws; hardware HUD applies5/6.",
+    "Road group batches, kart shadow/child slots and late effect pass ordering preserve recovered submission relationships."
+  ],
+  "verification": {
+    "nativeHudEnterLeavePairs": 144,
+    "nativeConstructorProjectionCases": 4,
+    "unitTestLog": "evidence/native/hud-sampler-tests.log",
+    "fixture": "evidence/native/hud-sampler-fixtures.json"
+  },
+  "productionEditsDuringReview": false
+}

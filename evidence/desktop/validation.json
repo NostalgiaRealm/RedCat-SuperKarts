@@ -1,0 +1,133 @@
+{
+  "status": "passed within stated platform scope",
+  "checkedAt": "2026-10-20T21:59:15.548033+00:00",
+  "toolchain": {
+    "node": "24.13.1",
+    "npm": "11.8.0",
+    "electron": "44.9.2",
+    "electronBuilder": "26.15.3"
+  },
+  "unit": {
+    "passed": 513,
+    "failed": 0,
+    "log": "evidence/desktop/unit.log"
+  },
+  "desktop": {
+    "source": {
+      "status": "passed",
+      "checks": 12,
+      "normalSandbox": true,
+      "report": "evidence/desktop/source/report.json"
+    },
+    "packaged": {
+      "status": "passed",
+      "checks": 12,
+      "normalSandbox": true,
+      "report": "evidence/desktop/packaged/report.json"
+    }
+  },
+  "builds": {
+    "linux": {
+      "command": "npm run dist:linux",
+      "exitCode": 0,
+      "payload": {
+        "status": "passed",
+        "gameFiles": 6844,
+        "gameTreeSha256": "6dd713718869e112946f14bcc98a6826ad47e7a0f28e6fc2679e214bea10b2ac",
+        "wrapperFiles": 5,
+        "checks": [
+          "All game files match dist byte-for-byte, including Three.js and original media",
+          "Wrapper matches source; no research, tests, development dependencies or unrelated project files in app.asar"
+        ],
+        "platform": "linux",
+        "arch": "x64"
+      },
+      "archiveCheck": "gzip -t passed; actual AppImage ran12 checks"
+    },
+    "windows": {
+      "command": "npm run dist:win",
+      "host": "Linux cross-build",
+      "exitCode": 0,
+      "payload": {
+        "status": "passed",
+        "gameFiles": 6844,
+        "gameTreeSha256": "6dd713718869e112946f14bcc98a6826ad47e7a0f28e6fc2679e214bea10b2ac",
+        "wrapperFiles": 5,
+        "checks": [
+          "All game files match dist byte-for-byte, including Three.js and original media",
+          "Wrapper matches source; no research, tests, development dependencies or unrelated project files in app.asar"
+        ],
+        "platform": "win32",
+        "arch": "x64"
+      },
+      "archiveCheck": "unzip -t passed",
+      "publisherSignature": false,
+      "peCertificateTables": {
+        "release/win-unpacked/redcat-superkarts.exe": [
+          0,
+          0
+        ],
+        "release/RedCat-SuperKarts-0.1.0-win-x64.exe": [
+          0,
+          0
+        ]
+      }
+    },
+    "macOS": {
+      "configured": true,
+      "targets": [
+        "x64 dmg/zip",
+        "arm64 dmg/zip"
+      ],
+      "built": false,
+      "nativeRuntimeTested": false
+    }
+  },
+  "artifacts": [
+    {
+      "path": "release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage",
+      "bytes": 413333668,
+      "sha256": "26210468180cb4c30f86a01d7d8115766db13132f5a84094e3e1db2bce97f5c1"
+    },
+    {
+      "path": "release/RedCat-SuperKarts-0.1.0-linux-x64.tar.gz",
+      "bytes": 428184095,
+      "sha256": "eee841d9a5a2eeb6ab9e479af35dff7a395e905cdb4852ca3f180b6e40db1b19"
+    },
+    {
+      "path": "release/RedCat-SuperKarts-0.1.0-win-x64.exe",
+      "bytes": 397126851,
+      "sha256": "ccd27ecdd9c278a4892fe6778fa969f59aa7f1158cbb32de0b382d60f4424a90"
+    },
+    {
+      "path": "release/RedCat-SuperKarts-0.1.0-win-x64.zip",
+      "bytes": 473000090,
+      "sha256": "024244025e341909fcf9d34a18ffe5a7d49d02b2ce3ba5528b6df3e19777343c"
+    }
+  ],
+  "sourceSha256": {
+    "package.json": "7f6d2de18e59ad72b0f5d6f8f6955b7dca4ea047e172305f9f91202e0153c621",
+    "package-lock.json": "9e939f51e3cec7ead3df475687e42b3adc443fd47d7b7d7e795ed727298afbd6",
+    "electron-builder.json": "d83ac8c2fea0c7c8d06890390cf375555c04ef9608d4e9c4d6e0e5e52f4052a1",
+    "electron/main.mjs": "6e77f2717dfd0886cb353a454dfc83862efbe141d97f1bc732abef976a51b391",
+    "electron/runtime.mjs": "c0da3bf4a8c0b2a7dfa1a550bad1f213de89bb668ec7352e0898c387b7985d45",
+    "electron/game-protocol.mjs": "01c771ed7933b6f8820d0d2027855d80f0ef1e16bb9cc3a048523c25d1cf04b6",
+    "desktop/entitlements.mac.plist": "542b5eeaa97a2995c007d2783105be34676e8c994d4723358d44a17c52f4c5eb",
+    "tools/prepare-desktop-icons.mjs": "7904d836afb0c437003e2c9d5811e773e6a138095218d0a2db89f3531bd0a303",
+    "tools/verify-desktop-package.mjs": "f6faa79f3f45b46e4c5630be792fe1c76383a4e9a84b4d266512f001e7e624fd",
+    "tools/run-desktop-test-linux.sh": "9dc412965ede35300c6b750eef4f731dd4788f78ae9ba219c93adb8e81a1d09a",
+    "tests/electron-runtime.test.mjs": "dfdc7b6567cd10a35ee4bb0825a8986e487b1c4e502deaeaf34cdcf342c85c5b",
+    "tests/desktop.mjs": "bf9bdf1cef026a44be9ed3efb8498eea89c6b11248e658140e0acbf48d690ef0",
+    "docs/desktop.md": "c6022ae867b343014fd776b3f7d2b65be71d8a9bbba8878f4138decd46226948",
+    "README.md": "8d1c182a90dd9213d4b511d01fbc77026003df82be0d52423984ee46d3259b99",
+    "docs/validation.md": "e32dddfdf659bdba7a0dd2e3023c66f6423dc0520e7441391453fa3d02cdf48a",
+    "PLAN.md": "8ad18a71739f0de70c11bef5646451a823a12eef95a308325adc041cfe286fba"
+  },
+  "scope": [
+    "Original game code and assets are shared between browser and desktop. Static dist refreshed.",
+    "Source and delivered AppImage tested using Linux Xvfb/KWin/SwiftShader with normal Chromium sandbox.",
+    "No native Windows/macOS execution, macOS package build, publisher signing, notarization, physical controller/GPU/speaker validation or new full-race matrix.",
+    "Initial fullscreen harness failures are retained: no window manager, unforced X11, and CDP rather than Electron native input. Runtime fullscreen did not need a fix.",
+    "Development dependency audit reports8 moderate transitive build-tool advisories; development dependencies are absent from delivered app.asar."
+  ]
+}

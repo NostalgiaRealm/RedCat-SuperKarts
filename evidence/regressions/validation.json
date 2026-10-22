@@ -1,0 +1,90 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-20T16:25:25.977689+00:00",
+  "scope": "Four reported regressions and complete texture-key inventory checkpoint, before the subsequently requested broader parity audit.",
+  "unitTests": {
+    "passed": 384,
+    "failed": 0,
+    "log": "evidence/regressions/unit-tests.log"
+  },
+  "pythonTests": {
+    "passed": 6,
+    "failed": 0,
+    "log": "evidence/regressions/parsers.log"
+  },
+  "assetValidation": "docs/evidence/asset-validation.json",
+  "textureInventory": "evidence/assets/texture-key-audit.json",
+  "nativeEvidence": {
+    "greeting": "evidence/native/menu-greeting-fixtures.json",
+    "starter": "evidence/native/engine-start-fixtures.json",
+    "recovery": "evidence/regressions/environment-rescue-fixtures.json",
+    "textureKey": "evidence/native/texture-key-fixtures.json"
+  },
+  "browserChecks": {
+    "menuGreeting": {
+      "status": "passed",
+      "report": "evidence/audio/menu-greeting-playback.json",
+      "checks": 10,
+      "errors": []
+    },
+    "menuAudio": {
+      "status": "passed",
+      "report": "evidence/audio/menu-playback.json",
+      "checks": 57,
+      "errors": []
+    },
+    "engineStart": {
+      "status": "passed",
+      "report": "evidence/audio/browser-engine-start.json",
+      "checks": 4,
+      "errors": []
+    },
+    "environmentRecovery": {
+      "status": "passed",
+      "report": "evidence/regressions/environment-rescue-browser.json",
+      "checks": 3,
+      "errors": []
+    },
+    "streams": {
+      "status": "passed",
+      "report": "evidence/streams-regression/browser.json",
+      "checks": 0,
+      "errors": []
+    },
+    "textureEffects": {
+      "status": "passed",
+      "report": "evidence/texture-key-effects/browser.json",
+      "checks": 15,
+      "errors": []
+    },
+    "allTracksChromium": {
+      "status": "passed",
+      "report": "evidence/browser/report.json",
+      "checks": 13,
+      "errors": []
+    },
+    "builtQuickRace": {
+      "status": "passed",
+      "report": "evidence/quickrace/report.json",
+      "checks": 3,
+      "errors": []
+    },
+    "builtFirefox": {
+      "status": "passed",
+      "report": "evidence/firefox/report.json",
+      "checks": 5,
+      "errors": []
+    }
+  },
+  "build": {
+    "verification": "evidence/regressions/build-verification.json",
+    "comparedFiles": 6820,
+    "mismatches": []
+  },
+  "limitations": [
+    "Original race cannot be reliably rendered with WineD3D on this host; full native visual/audio/trajectory parity is not established.",
+    "Native texture conversion is verified; exact device-specific filtered-key acceptance, framebuffer quantization and display gamma remain unmeasured.",
+    "The earlier36 control-only race cases and18 five-minute opponent runs are historical source checkpoint results, not rerun for this correction set.",
+    "No physical controller/mobile/240Hz or Windows/macOS host validation in this checkpoint."
+  ]
+}

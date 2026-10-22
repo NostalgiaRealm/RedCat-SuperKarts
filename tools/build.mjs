@@ -1,0 +1,11 @@
+import {cp,mkdir,rm,access} from 'node:fs/promises';
+for(const f of ['index.html','src/main.js','public/assets/menu/manifest.json'])await access(f);
+await rm('dist',{recursive:true,force:true});
+await mkdir('dist',{recursive:true});
+await cp('index.html','dist/index.html');
+await cp('src','dist/src',{recursive:true});
+await cp('public/assets','dist/assets',{recursive:true});
+await mkdir('dist/node_modules/three/build',{recursive:true});
+for(const f of ['three.module.js','three.core.js'])await cp(`node_modules/three/build/${f}`,`dist/node_modules/three/build/${f}`);
+await cp('node_modules/three/examples/jsm/controls','dist/node_modules/three/examples/jsm/controls',{recursive:true});
+console.log('Static browser build ready in dist/. Imported original assets are included.');

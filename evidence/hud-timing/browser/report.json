@@ -1,0 +1,662 @@
+{
+  "status": "passed",
+  "scope": "Source-only Chromium software-WebGL integration. Lap boundary cases supply disclosed race/absolute-clock snapshots to the real RaceHud; pause and requester cases use actual keyboard, pointer, and emulated standard Gamepad API input in the running game. The lap event in the pause case is controlled; no completed race is claimed. Audio observation calls through the original HTMLMediaElement.play. No packaged app or existing user session is accessed.",
+  "checks": [
+    {
+      "case": "retained rendered lap text, integer absolute clock, one clearing capture",
+      "rows": [
+        {
+          "name": "previous displayed value",
+          "nowSeconds": 100.7,
+          "text": "00:12:34",
+          "holdStampSeconds": -1
+        },
+        {
+          "name": "lap event uses integer absolute engine stamp",
+          "nowSeconds": 100.975,
+          "text": "00:12:34",
+          "holdStampSeconds": 100
+        },
+        {
+          "name": "same event is not repeated",
+          "nowSeconds": 101.5,
+          "text": "00:12:34",
+          "holdStampSeconds": 100
+        },
+        {
+          "name": "before absolute threshold",
+          "nowSeconds": 102.999,
+          "text": "00:12:34",
+          "holdStampSeconds": 100
+        },
+        {
+          "name": "threshold clears stamp but keeps old text",
+          "nowSeconds": 103,
+          "text": "00:12:34",
+          "holdStampSeconds": -1
+        },
+        {
+          "name": "following capture reads live lap timer",
+          "nowSeconds": 103.025,
+          "text": "00:02:05",
+          "holdStampSeconds": -1
+        }
+      ]
+    },
+    {
+      "case": "actual pause freezes capture and resumed absolute clock clears hold before refreshing",
+      "beforePause": {
+        "text": "00:00:05",
+        "hold": {
+          "holdStampSeconds": 1,
+          "text": "00:00:05"
+        },
+        "updates": 1,
+        "raceMs": 75
+      },
+      "duringPause": {
+        "text": "00:00:05",
+        "hold": {
+          "holdStampSeconds": 1,
+          "text": "00:00:05"
+        },
+        "updates": 1,
+        "raceMs": 75
+      },
+      "before": [
+        {
+          "time": 4651.89999999851,
+          "nowSeconds": 4.410500000007451,
+          "before": {
+            "holdStampSeconds": 1,
+            "text": "00:00:05"
+          },
+          "after": {
+            "holdStampSeconds": -1,
+            "text": "00:00:05"
+          },
+          "text": "00:00:05"
+        },
+        {
+          "time": 4684.5,
+          "nowSeconds": 4.43550000000745,
+          "before": {
+            "holdStampSeconds": -1,
+            "text": "00:00:05"
+          },
+          "after": {
+            "holdStampSeconds": -1,
+            "text": "00:00:12"
+          },
+          "text": "00:00:12"
+        },
+        {
+          "time": 4700.80000000447,
+          "nowSeconds": 4.460500000007451,
+          "before": {
+            "holdStampSeconds": -1,
+            "text": "00:00:12"
+          },
+          "after": {
+            "holdStampSeconds": -1,
+            "text": "00:00:15"
+          },
+          "text": "00:00:15"
+        }
+      ],
+      "notices": [
+        8,
+        1,
+        2
+      ],
+      "resumes": [
+        {
+          "time": 4617.10000000149,
+          "nowSeconds": 1.2292000000029801
+        }
+      ]
+    },
+    {
+      "case": "opening Escape waits for release and preserves existing notice",
+      "opening": {
+        "mode": "paused",
+        "shown": false,
+        "stage": "initial-release",
+        "notices": [],
+        "text": "Laatste ronde!",
+        "prior": "Laatste ronde!",
+        "media": []
+      }
+    },
+    {
+      "case": "pointer down commits No after pressed interval, before pointer release; repeats ignored",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 5330,
+        "pressed": "no",
+        "done": false,
+        "time": 5330.30000000447,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_i.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 5330,
+        "pressed": null,
+        "done": true,
+        "time": 5445.89999999851,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 5330.30000000447,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 5350.39999999851,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [
+        {
+          "time": 5446.39999999851,
+          "nowSeconds": 4.76050000000745
+        }
+      ],
+      "notices": [],
+      "finalMode": "race",
+      "minimumDelayMs": 115,
+      "notice": "Laatste ronde!"
+    },
+    {
+      "case": "keyboard N waits release, then pressed art and delayed No",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 1,
+        "startedMs": 5922,
+        "pressed": "no",
+        "done": false,
+        "time": 5922.10000000149,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_i.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 1,
+        "startedMs": 5922,
+        "pressed": null,
+        "done": true,
+        "time": 6029.20000000298,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 5922.10000000149,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 5932,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [
+        {
+          "time": 6029.39999999851,
+          "nowSeconds": 5.336400000005961
+        }
+      ],
+      "notices": [],
+      "finalMode": "race",
+      "minimumDelayMs": 107,
+      "notice": "Laatste ronde!",
+      "held": {
+        "state": "key-release",
+        "media": 0,
+        "resumes": 0
+      }
+    },
+    {
+      "case": "keyboard Escape waits release, then pressed art and delayed No",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 1,
+        "startedMs": 6504,
+        "pressed": "no",
+        "done": false,
+        "time": 6505,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_i.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 1,
+        "startedMs": 6504,
+        "pressed": null,
+        "done": true,
+        "time": 6612.5,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 6504.89999999851,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 6515.39999999851,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [
+        {
+          "time": 6612.70000000298,
+          "nowSeconds": 5.9074000000059605
+        }
+      ],
+      "notices": [],
+      "finalMode": "race",
+      "minimumDelayMs": 108,
+      "notice": "Laatste ronde!",
+      "held": {
+        "state": "key-release",
+        "media": 0,
+        "resumes": 0
+      }
+    },
+    {
+      "case": "standard gamepad A focused No activates once while held",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 6912,
+        "pressed": "no",
+        "done": false,
+        "time": 6912.89999999851,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_i.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 6912,
+        "pressed": null,
+        "done": true,
+        "time": 7012.39999999851,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 6912.89999999851,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 6915.80000000447,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [
+        {
+          "time": 7012.70000000298,
+          "nowSeconds": 6.478800000004471
+        }
+      ],
+      "notices": [],
+      "finalMode": "race",
+      "minimumDelayMs": 100,
+      "notice": "Laatste ronde!",
+      "emulatedStandardGamepad": true
+    },
+    {
+      "case": "standard gamepad Back No activates once while held",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 7462,
+        "pressed": "no",
+        "done": false,
+        "time": 7462.70000000298,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_i.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 3,
+        "startedMs": 7462,
+        "pressed": null,
+        "done": true,
+        "time": 7562.5,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 7462.70000000298,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 7465.60000000149,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [
+        {
+          "time": 7562.70000000298,
+          "nowSeconds": 7.01880000000447
+        }
+      ],
+      "notices": [],
+      "finalMode": "race",
+      "minimumDelayMs": 100,
+      "notice": "Laatste ronde!",
+      "emulatedStandardGamepad": true
+    },
+    {
+      "case": "keyboard J release selects original Ja pressed art before delayed quit",
+      "pressed": {
+        "stage": "pressed",
+        "heldKey": null,
+        "code": 0,
+        "startedMs": 8182,
+        "pressed": "yes",
+        "done": false,
+        "time": 8182.60000000149,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "true",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_i.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "done": {
+        "stage": "done",
+        "heldKey": null,
+        "code": 0,
+        "startedMs": 8182,
+        "pressed": null,
+        "done": true,
+        "time": 8295.70000000298,
+        "mode": "paused",
+        "images": {
+          "yes": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/ja_u.tga.png\")"
+          },
+          "no": {
+            "pressed": "false",
+            "image": "url(\"http://127.0.0.1:4174/assets/textures/nee_f.tga.png\")"
+          }
+        }
+      },
+      "media": [
+        {
+          "event": "play",
+          "time": 8182.60000000149,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        },
+        {
+          "event": "playing",
+          "time": 8198.60000000149,
+          "src": "http://127.0.0.1:4174/assets/audio/click4.wav"
+        }
+      ],
+      "resumes": [],
+      "notices": [],
+      "finalMode": "menu",
+      "minimumDelayMs": 113,
+      "notice": "Laatste ronde!",
+      "held": {
+        "state": "key-release",
+        "media": 0,
+        "mode": "paused"
+      }
+    }
+  ],
+  "errors": [],
+  "hashesBefore": {
+    "src/main.js": "0285eb22b5cd07eef57aa31353565d93167a985eccddc29a0d850a9df97fc422",
+    "src/input.js": "f1c73e4ef48d56e5f46833ba072b81a9fec42af92f5638c6ff6ef4bfa255b90e",
+    "src/driving-view.js": "a43d0b688beda8c72aa1405dc0ea24755cd0358a57e61b2caf1c7082e1322f23",
+    "src/race-hud.js": "5796cffe6992ea87002bc40edaede95da73ce2ce30fb545fccbf1b461b1c78d2",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/hud-notifications.js": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+    "src/hud-gameplay-events.js": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+    "src/race-requester.js": "f3599509503910fdf35bd21f0235d9b8ef54d86ef829630fb30d786673b86764",
+    "src/native-quit-requester.js": "cdfd4381b625bc37781cb727e51e04f140cfc2b03ece74fb09fc8706fe18304c",
+    "src/style.css": "83d6e96cbfcd68920523098817910311c8280aeb2bb84299ced0772b5b0454c7",
+    "src/simulation/native-lap-display.js": "78a78cf486cd2e21603a564b8b4d7a179e71f68c76da593908772c81c934debe",
+    "src/simulation/native-race-lifecycle.js": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "tests/hud-timing-browser.mjs": "f10ca84bc48cd5bbb94189a3138f16c3af2cbd6943951ab68b4cd9ea511b4b04"
+  },
+  "firstUseArtwork": {
+    "startedMs": 5152.89999999851,
+    "images": [
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/esc_hi.tga.png",
+        "width": 640,
+        "height": 480,
+        "readyMs": 5166.10000000149
+      },
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/ja_u.tga.png",
+        "width": 115,
+        "height": 38,
+        "readyMs": 5166.10000000149
+      },
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/nee_f.tga.png",
+        "width": 115,
+        "height": 38,
+        "readyMs": 5166.20000000298
+      }
+    ],
+    "resourceBeforePress": [
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/esc_hi.tga.png",
+        "start": 5149.70000000298,
+        "finished": 5152
+      },
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/ja_u.tga.png",
+        "start": 5150,
+        "finished": 5151.70000000298
+      },
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/nee_u.tga.png",
+        "start": 5150.10000000149,
+        "finished": 5151.80000000447
+      },
+      {
+        "url": "http://127.0.0.1:4174/assets/textures/nee_f.tga.png",
+        "start": 5150.39999999851,
+        "finished": 5151.89999999851
+      }
+    ]
+  },
+  "artworkResources": [
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/esc_hi.tga.png",
+      "start": 5149.70000000298,
+      "finished": 5152,
+      "duration": 2.2999999970197678
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/ja_u.tga.png",
+      "start": 5150,
+      "finished": 5151.70000000298,
+      "duration": 1.7000000029802322
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/nee_u.tga.png",
+      "start": 5150.10000000149,
+      "finished": 5151.80000000447,
+      "duration": 1.7000000029802322
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/nee_f.tga.png",
+      "start": 5150.39999999851,
+      "finished": 5151.89999999851,
+      "duration": 1.5
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/nee_i.tga.png",
+      "start": 5330.5,
+      "finished": 5331.5,
+      "duration": 1
+    },
+    {
+      "url": "http://127.0.0.1:4174/assets/textures/ja_i.tga.png",
+      "start": 8182.80000000447,
+      "finished": 8183.80000000447,
+      "duration": 1
+    }
+  ],
+  "hashesAfter": {
+    "src/main.js": "0285eb22b5cd07eef57aa31353565d93167a985eccddc29a0d850a9df97fc422",
+    "src/input.js": "f1c73e4ef48d56e5f46833ba072b81a9fec42af92f5638c6ff6ef4bfa255b90e",
+    "src/driving-view.js": "a43d0b688beda8c72aa1405dc0ea24755cd0358a57e61b2caf1c7082e1322f23",
+    "src/race-hud.js": "5796cffe6992ea87002bc40edaede95da73ce2ce30fb545fccbf1b461b1c78d2",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/hud-notifications.js": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+    "src/hud-gameplay-events.js": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+    "src/race-requester.js": "f3599509503910fdf35bd21f0235d9b8ef54d86ef829630fb30d786673b86764",
+    "src/native-quit-requester.js": "cdfd4381b625bc37781cb727e51e04f140cfc2b03ece74fb09fc8706fe18304c",
+    "src/style.css": "83d6e96cbfcd68920523098817910311c8280aeb2bb84299ced0772b5b0454c7",
+    "src/simulation/native-lap-display.js": "78a78cf486cd2e21603a564b8b4d7a179e71f68c76da593908772c81c934debe",
+    "src/simulation/native-race-lifecycle.js": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "tests/hud-timing-browser.mjs": "f10ca84bc48cd5bbb94189a3138f16c3af2cbd6943951ab68b4cd9ea511b4b04"
+  },
+  "changedDuringRun": [],
+  "visualReview": {
+    "inspected": [
+      "original-stoppen.png",
+      "pointer-pressed.png",
+      "race-after-lap-hold.png",
+      "after-original-quit.png"
+    ],
+    "result": "Original requester background and normal/focused/pressed Nee artwork visible; original race HUD and return to main menu clean.",
+    "firstUseScope": "The screenshot waits for decoding only currently displayed artwork. Pressed images are not preloaded by the test. Nee_i and Ja_i each transferred in 1 ms after first selection; observed pressed-state commit occurred 100–115 ms after integer start. This establishes local-host loading and visible pressed art, not arbitrary-network decode latency.",
+    "retainedEarlierAttempts": "attempt-1 preserves the premature first screenshot; attempt-2 preserves the corrected screenshot before the Resource Timing buffer was enlarged. These are harness evidence limitations, not failed timing assertions."
+  }
+}

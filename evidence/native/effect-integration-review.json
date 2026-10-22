@@ -1,0 +1,81 @@
+{
+  "format": "superkarts-effect-integration-review-v1",
+  "reviewedAt": "2026-10-20T15:22:53.942223+00:00",
+  "sourceSha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "scope": "Read-only source/geometry/RNG/order review of effect integration. Does not establish complete campaign or reference-rendering parity.",
+  "checks": [
+    {
+      "name": "Update order",
+      "result": "camera/listener \u2192 explosion list \u2192 weather \u2192 voice/skid audio \u2192 tyre-mark emission \u2192 squash \u2192 rescue \u2192 ribbons/jets \u2192 homing arm",
+      "source": "42f4c0"
+    },
+    {
+      "name": "Draw order",
+      "result": "Source strips/fans and original geometry retained; tyre marks before streams/smoke, weather before explosion rings. Renderer phase ownership reviewed separately.",
+      "source": "430020/482190"
+    },
+    {
+      "name": "Squash registration",
+      "result": "Lazy48e480 reserves player19 and NPC20+ records;43f250 appends props;42e910 only rebinds reserved body IDs. Shipped props: Nederland6,Duitsland1;32-slot capacity is sufficient.",
+      "source": "48e210/48e480/43f250/48e560/42e910/48e540"
+    },
+    {
+      "name": "Streams after rescue",
+      "result": "Corrected renderer binding uses rescue renderPosition/matrix while preserving original body identity.",
+      "source": "42f4c0/48a4f0/488b00"
+    },
+    {
+      "name": "Construction RNG",
+      "result": "Browser passes already-created rotation states; headless initializes before NPC construction. Six Nederland and three Spain rotations exist in every active mode. Weather constructor draws occur after NPCs and before gameplay reseed.",
+      "source": "42d7d0/497070/4818c0"
+    },
+    {
+      "name": "Optional fog",
+      "result": "Shipped game.ini OPTIONS.FOG=0;422ed0 adds no RNG draw. Custom nonzero fog is outside the reviewed active configuration.",
+      "source": "42b810/422ed0"
+    },
+    {
+      "name": "Dormant effect scope",
+      "result": "Generic/halo empty-manager fixtures and mapped-image reference scan retained; grass/spray literal no-ops and legacy spark path remain documented rather than synthesized.",
+      "evidence": "evidence/native/effect-coverage.json"
+    }
+  ],
+  "verification": [
+    {
+      "command": "node --test tests/native-weather.test.mjs tests/native-skidmarks.test.mjs tests/native-explosions.test.mjs tests/native-squash.test.mjs tests/native-squash-activation.test.mjs tests/native-streams.test.mjs tests/native-bonus-visual.test.mjs tests/weather-visuals.test.mjs tests/race-weather.test.mjs",
+      "passed": 21,
+      "failed": 0
+    },
+    {
+      "command": "node --test tests/race-weather.test.mjs tests/native-squash.test.mjs tests/native-squash-activation.test.mjs tests/native-streams.test.mjs tests/weather-visuals.test.mjs tests/race-simulation.test.mjs",
+      "passed": 26,
+      "failed": 0
+    },
+    {
+      "command": "/home/rick/.local/bin/re-python tools/audit-native-effects.py",
+      "nativeEmptyManagerFrames": 120,
+      "draws": 0,
+      "weatherSectorTriggers": 28
+    }
+  ],
+  "knownActiveDefectsFoundInThisReview": [],
+  "limits": [
+    "Original undefined particle UVs and stream storage use documented explicit zero initialization.",
+    "No reliable original race screenshot exists for pixel comparison.",
+    "Source helper/controller coverage is not a mathematical whole-program reachability proof."
+  ],
+  "reviewedFiles": {
+    "src/race-simulation.js": "88b7fd54abde93a18de2a6e72ef46c142e556bd2104c7b8157d6d401aa64970a",
+    "src/driving-view.js": "2791a6ed28ec3be66e9201c616c393c2bbacf40116ace43686afbcf3280b5992",
+    "src/world.js": "a8fd366930de06e4869f50c764ee81ed0bfa0e6dd2c5fa2742a8088300032d9d",
+    "src/race-visuals.js": "09a52d18efb2419e6f44fdd4b6acdeb264a8106f1c7eaa2a61d42eb7960d43d1",
+    "src/render-order.js": "adbec91588669bb25815ba102ad589ed2490f9018abf6506140ab4cb41efaaf3",
+    "src/simulation/native-scenery-hazards.js": "a4eef6a41df12cb9c83e7e09121e17ccbd6fba8868c2ba63a6bc9a5f837dea65",
+    "src/simulation/native-squash.js": "a47854d777833421bc81188ba7e4ebe0d26be5489e6bea1daba606242c23cbaa",
+    "src/simulation/native-squash-activation.js": "f5595ec89b66ac13149fce4b003fef0f4e24cc95c0bcb4aa5dae13cde29ef47a",
+    "src/simulation/native-weather.js": "36f751b5e7654bc47d00736b99726d8dfb4b55bcf8f7312f6e97e6bc65a4012b",
+    "src/simulation/native-skidmarks.js": "ca6b943d1f45df9e86eb225e103db2c37a5d4ee74614761759b0496ef0b11b99",
+    "src/simulation/native-explosions.js": "56de8b200814b20ded1f363158f7198d41845bde2752dee31baeebf2903c73ef",
+    "src/simulation/native-streams.js": "b75d1c0e460074e404272680eaf8b6565a49dfb4a9a9b3d5cf9ba773ef7256f6"
+  }
+}

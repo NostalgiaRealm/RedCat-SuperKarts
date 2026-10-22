@@ -1,0 +1,110 @@
+{
+  "format": "superkarts-cadence-diagnostic-scope-v1",
+  "scope": "Diagnostic cadence sensitivity only. These reports are excluded from the production-default72-race matrix. Successful120Hz runs do not establish a native or browser-reference completion.",
+  "nativeEvidence": [
+    {
+      "address": "0x4432a0",
+      "file": "evidence/native/rcskspel.dat/functions/004432a0_FUN_004432a0.c",
+      "finding": "GetTickCount busy wait requires elapsed>=0x19 milliseconds BEFORE calling0x42f4c0."
+    },
+    {
+      "address": "0x42f4c0",
+      "file": "evidence/native/rcskspel.dat/functions/0042f4c0_FUN_0042f4c0.c",
+      "finding": "The same capped frame calls timer update0x48f3e0 and object simulation0x491530; simulation does not independently run faster than render."
+    }
+  ],
+  "production": "src/world.js creates SimulationClock with intervalMs25. No runtime changes were made.",
+  "candidateSensitivity": "Original Euler0x4911a0 advances yaw continuously but truncates the per-substep delta yaw before lookup-table rotation of local velocity. Smaller nonnative frame intervals change that quantization; this is a source-backed candidate mechanism, not an isolated causal proof.",
+  "reports": [
+    {
+      "report": "timed-france-hard-real-cadence0.json",
+      "sha256": "e0ae481629e28ef24f638facecd297ea0d18e8768995b9a1d9013237a99e5358",
+      "cadenceMs": 33.333333333333336,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 40000,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence1.json",
+      "sha256": "73a140af577f5199070c68cbf8d5e50c9e478277ad015b5ea2e4acf41e576ef0",
+      "cadenceMs": 33.333333333333336,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 40000,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence2.json",
+      "sha256": "fab0e2474703e90299d4ac2a526375426cd6cd42c65a603b46159938fa45ff48",
+      "cadenceMs": 20,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 40000,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence3.json",
+      "sha256": "42f247df25c866bb32fba03c4d001d1dce7cb80d250c120ccfb6696358435dae",
+      "cadenceMs": 20,
+      "status": "time-expired",
+      "laps": 1,
+      "activeElapsedMs": 51500,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence4.json",
+      "sha256": "161671b7b9fe1721d3626e5116103bdc06db4218e29551487700402a405097bb",
+      "cadenceMs": 16.666666666666668,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 40000,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence5.json",
+      "sha256": "b9cfe069d5687f1183ad4d1f3243802122b55d5cb127d13bc6fa3878ba22644d",
+      "cadenceMs": 16.666666666666668,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 40000,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence6.json",
+      "sha256": "ba29e0af91dd456ae253f3503cdf37051ca616afb7bd6483f6c7948c99113737",
+      "cadenceMs": 13.333333333333334,
+      "status": "time-expired",
+      "laps": 0,
+      "activeElapsedMs": 15506,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence7.json",
+      "sha256": "11effac86e11b6188b04ecf327ff88efac6bdd40301a3d5f6cff4a00089c92e6",
+      "cadenceMs": 13.333333333333334,
+      "status": "time-expired",
+      "laps": 3,
+      "activeElapsedMs": 123506,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence8.json",
+      "sha256": "8ac6ee516b60ceb0560e2552321bbc2460a1da6f995f46d69564803ff5080f67",
+      "cadenceMs": 8.333333333333334,
+      "status": "finished",
+      "laps": 5,
+      "activeElapsedMs": 176400,
+      "productionMatrixEligible": false
+    },
+    {
+      "report": "timed-france-hard-real-cadence9.json",
+      "sha256": "3cb15874e425fe9270840939168fe56cfc3eeace6446fc92fccdc20be8261cc7",
+      "cadenceMs": 8.333333333333334,
+      "status": "finished",
+      "laps": 5,
+      "activeElapsedMs": 178025,
+      "productionMatrixEligible": false
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "browser": "155.0.8059.84",
+  "checks": [
+    {
+      "case": "samples preloaded while engine stays silent at race load",
+      "panStage": 0,
+      "panDone": false,
+      "countdownStarted": false,
+      "movementActive": false,
+      "active": false,
+      "gear": -1,
+      "starter": false,
+      "layers": [
+        {
+          "event": "cvrpmm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvrpmhm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvstatm",
+          "playing": false,
+          "loop": false
+        }
+      ],
+      "starts": []
+    },
+    {
+      "case": "authored opening pan remains silent",
+      "panStage": 1,
+      "panDone": false,
+      "countdownStarted": false,
+      "movementActive": false,
+      "active": false,
+      "gear": -1,
+      "starter": false,
+      "layers": [
+        {
+          "event": "cvrpmm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvrpmhm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvstatm",
+          "playing": false,
+          "loop": false
+        }
+      ],
+      "starts": []
+    },
+    {
+      "case": "one original starter source begins after pan at countdown START",
+      "panStage": 2,
+      "panDone": true,
+      "countdownStarted": true,
+      "movementActive": false,
+      "active": true,
+      "gear": -1,
+      "starter": true,
+      "layers": [
+        {
+          "event": "cvrpmm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvrpmhm",
+          "playing": false,
+          "loop": false
+        },
+        {
+          "event": "cvstatm",
+          "playing": false,
+          "loop": false
+        }
+      ],
+      "starts": [
+        {
+          "event": "cmstartm",
+          "loop": false,
+          "panDone": true,
+          "countdownStarted": true,
+          "movementActive": false,
+          "phase": 1,
+          "engineActive": true,
+          "playing": true,
+          "contextState": "running",
+          "sourceStartTime": 5.013333333333334
+        }
+      ]
+    },
+    {
+      "case": "three engine loops wait for the starter PCM to end",
+      "panStage": 2,
+      "panDone": true,
+      "countdownStarted": true,
+      "movementActive": false,
+      "active": true,
+      "gear": 0,
+      "starter": false,
+      "layers": [
+        {
+          "event": "cvrpmm",
+          "playing": true,
+          "loop": true
+        },
+        {
+          "event": "cvrpmhm",
+          "playing": true,
+          "loop": true
+        },
+        {
+          "event": "cvstatm",
+          "playing": true,
+          "loop": true
+        }
+      ],
+      "starts": [
+        {
+          "event": "cmstartm",
+          "loop": false,
+          "panDone": true,
+          "countdownStarted": true,
+          "movementActive": false,
+          "phase": 1,
+          "engineActive": true,
+          "playing": true,
+          "contextState": "running",
+          "sourceStartTime": 5.013333333333334
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "status": "passed",
+  "sourceHashes": {
+    "src/engine-audio.js": "1535161cb9c6117b2f412d2c191fe6c0b401a1a9982cc5088d5ae173b091cdf6",
+    "src/native-race-audio.js": "246ea97bfdf3859e65d53a02397078cb956f9cfdefd6d012cad7f913e73ccee1",
+    "src/driving-view.js": "8d637e7b5ebd4c7977db21290ea2c05cdcbf673f44952cec864f4c030e2b078d",
+    "src/race-simulation.js": "9a2be0b95edae1359624e22191d12a6cabd30e3e99f316b933cc8c6505c28303"
+  },
+  "scope": "Actual menu launch, authored opening camera, countdown and WebAudio playback. No native Wine race rendering comparison; source timing is established by original instruction fixtures."
+}

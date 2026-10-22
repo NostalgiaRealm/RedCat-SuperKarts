@@ -1,0 +1,122 @@
+{
+  "date": "2026-10-22",
+  "status": "passed",
+  "scope": "Source-only native texture precision, keyed edge filtering and RGB565 scene writes. Focused checks only; no full race matrix, full test suite or builds.",
+  "nativeSourceSHA256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "implementation": {
+    "textureProfile": "RGB565 runtime; RGB555 converter additionally checked",
+    "texturePacking": "Original exact key before integer gamma, bit truncation and protected black",
+    "keyFilter": "Reject only zero sampled key coverage; documented historical NVIDIA Direct3D profile",
+    "sceneTarget": "Actual RGB565 for every write, with MSAA enabled or disabled; opaque byte-space resolve",
+    "renderTiming": "Unchanged uncapped presentation and independent simulation"
+  },
+  "unitChecks": [
+    {
+      "command": "node --test tests/native-texture-upload.test.mjs tests/asset-materials.test.mjs tests/native-display-runtime.test.mjs",
+      "passed": 14
+    },
+    {
+      "command": "node --test tests/multisample-settings.test.mjs",
+      "passed": 2
+    }
+  ],
+  "originalInstructionChecks": {
+    "retainedUploadPixelsCompared": 3168,
+    "newFixtureCommand": "re-python tools/native-texture-format-fixtures.py",
+    "newFixture": "evidence/native/texture-format-fixtures.json",
+    "enumerationCallbacks": 12,
+    "enumerationSequences": 6,
+    "acceleratedDisplaySelections": 3,
+    "deviceAndGameStateCapture": true
+  },
+  "browserCommands": [
+    "RCSK_URL=http://127.0.0.1:4174 node tests/native-texture-precision-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/streams-render-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/texture-key-effects-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/display-runtime-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/multisample-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/kart-shadow-browser.mjs",
+    "RCSK_URL=http://127.0.0.1:4174 node tests/hud-texture-lifecycle-browser.mjs"
+  ],
+  "results": {
+    "gpuPixelSamples": 197,
+    "pixelToleranceBytes": 1,
+    "effectHudComparisons": 15,
+    "streamAtlasTexels": 16384,
+    "streamAtlasMismatches": 0,
+    "sceneAttachmentBits": [
+      5,
+      6,
+      5,
+      0
+    ],
+    "displayReloads": 3,
+    "shadowChecks": 5,
+    "hudDisposalChecks": 4
+  },
+  "reports": {
+    "texture_pixels": {
+      "path": "evidence/texture-precision/browser.json",
+      "status": "passed",
+      "sha256": "0734cb743631f8d8ee183677947d6a97170765e1f4ebbbf02cf0caf715297d51"
+    },
+    "stream_atlas": {
+      "path": "evidence/streams-regression/browser.json",
+      "status": "passed",
+      "sha256": "5376cd77792fec018fa24d337955a275720ffd2834390d6f30b7feaa9437ebf4"
+    },
+    "effects_and_hud": {
+      "path": "evidence/texture-key-effects/browser.json",
+      "status": "passed",
+      "sha256": "9e6417f5a319d035097d0e25e8ef9caccf255bd019d4e711e8941233dadefb91"
+    },
+    "display_reload": {
+      "path": "evidence/display/runtime-browser.json",
+      "status": "passed",
+      "sha256": "1110cf4930a97b6cb8eea01c4edfddd0845b08a0a9b3996e222e75c5416b030f"
+    },
+    "framebuffer_and_msaa": {
+      "path": "evidence/more-settings/msaa-validation.json",
+      "status": "passed",
+      "sha256": "c76da7f741032ce4b853ebb8f07bf11c5a85025f7c8b6efe8d3948f4f9e773b5"
+    },
+    "kart_shadows": {
+      "path": "evidence/shadow-audit/browser.json",
+      "status": "passed",
+      "sha256": "f3c0443270c0bf86d111c840f43182085deeb79a1e066d234c9509ea9da414e8"
+    },
+    "hud_texture_disposal": {
+      "path": "evidence/followup/hud-texture-lifecycle-browser.json",
+      "status": "passed",
+      "sha256": "43829a453c3d9ecd74099365f80d3be1238f7ada246a36db171fb5117c46efba"
+    }
+  },
+  "sourceSHA256AtCompletion": {
+    "src/native-texture-upload.js": "d5e5a69b70a3b564d4e5bcc77325b001eed0a77b5a3f7de5972607af6ce96e4b",
+    "src/asset-materials.js": "1fc7adc31a4ccfaa5ca87df4a23463a76a36ade2ea6a22ae5ad616e8c2ecec46",
+    "src/world.js": "6280a9ecb001e94f609f1fbeecb6da5fda82e761dbcc0c8cd0b0e9304a7247a5",
+    "src/driving-view.js": "318bee55973e703237273db5e7ae9b7f1a3be2753440be23d2074a44a9075087",
+    "src/simulation/native-display-settings.js": "a415e6eab37d60e6662d8d5a55c8808217e98b567e88ac653d90455625c02c01",
+    "src/multisample-renderer.js": "7c8eb2e2c9d3acaceaaf6e8eb4c4f4b488bf4046612445cec07946ed16656cd5",
+    "tests/native-texture-upload.test.mjs": "d9d3deb0f3618ee994188c279dc49a9e2f943222d9d3b9200e877c9c10604746",
+    "tests/asset-materials.test.mjs": "a466fb678f8f7b51f47177a810980d301eabb9a6bd02c136d825205b415e0813",
+    "tests/native-display-runtime.test.mjs": "67ed8bfa86753ce4a6c4e1fdee49ae8b3477f4711546c1ee4715eb01ff04e0a5",
+    "tests/multisample-settings.test.mjs": "bd4d6e621ec7895f53c5bab4b20f40058fa18d8245eefd78c7579d524ce67ce7",
+    "tests/native-texture-precision-browser.mjs": "32213dee7875922bcb97f06fe4fe11aa3f2b1728f60a6f74b8ac86011257fb93",
+    "tests/streams-render-browser.mjs": "58560e319485e9674b723ad51a2c03d81fd06f754577b7d488f3abb6f9fecfbd",
+    "tests/texture-key-effects-browser.mjs": "5ef395057dd026e5872b76654ea295912a43db8e9c8a9bee11157b0ee80c23f7",
+    "tests/display-runtime-browser.mjs": "b23f59f9190349553e83d5ac343d0fa896d498dc669dcf8f084d970a5e60b197",
+    "tests/multisample-browser.mjs": "281a2f9a7b06849372707c6a4f292cff779484a3253a9f222f51cf0212570e77",
+    "tests/kart-shadow-browser.mjs": "7f1b4a6a757d76c6acab7a2205a2dc1e2776710af67070062ac6180320df384a",
+    "tests/hud-texture-lifecycle-browser.mjs": "1c1cfb5cdc0e0a38c41a761cd636b1909859b06c588059294a97d3b80367819e",
+    "tools/native-texture-format-fixtures.py": "5b97b3c3c52b2e7b76ec851369683a6993a590d9d2f92a2fa821673a0099adeb"
+  },
+  "limitations": [
+    "RGB565 is one original device profile; RGB555 displays were also supported by the source.",
+    "Historical GPU filtering/rasterization/conversion precision is not universally reproduced.",
+    "Canvas/HTML HUD and menus remain separately composed; no complete native framebuffer equivalence is claimed.",
+    "Browser checks use Chromium SwiftShader, not physical legacy GPUs."
+  ],
+  "buildsCreated": false,
+  "fullSuiteRun": false
+}

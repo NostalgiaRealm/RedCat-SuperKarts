@@ -1,0 +1,5073 @@
+{
+  "format": "superkarts-control-only-races-v1",
+  "scope": "Composed JavaScript race with original physics, AI, contacts, bonuses and timers. A test-only route follower supplies ordinary analog controls. No poses, velocities, triggers, pickups, timers, or physics tables are changed. This is not an original Windows full-process comparison or a full-campaign UI run.",
+  "startedAt": "2026-10-20T18:04:05.786Z",
+  "sourceAtStart": {
+    "src/arm-audio.js": "50a4e7848d441449e66b1d61e55bb205e7b2050d5714205e66c557820ce0e474",
+    "src/asset-animation.js": "0f47660a069ca25811db1e52874f6b1cecaff8d767030f3a331b3dfc5846c99d",
+    "src/asset-materials.js": "d23bda2a186dc457f794a932254a7af271a9b5d15fd6175a48675edbada28b2f",
+    "src/audio-mixing.js": "e643893d232e87b8f23d465cd447e339da16f514346f1f297d21ba24ee868434",
+    "src/bonus-audio.js": "d3a18547691988a15b9cc0230162847d97833e1862ac8fdf860cca3f5945a06b",
+    "src/bubble-visuals.js": "2fb8035ff823121e994a62f92b5e5f992acfaa469d7747b3f4357c25e0a02ae7",
+    "src/driving-view.js": "84a87effc210c19ca816b44bfcd2e940a15ce6aa9c14896adeeb2443c0d11552",
+    "src/engine-audio.js": "1535161cb9c6117b2f412d2c191fe6c0b401a1a9982cc5088d5ae173b091cdf6",
+    "src/finish-flag.js": "3150bccdd8226a2f2b5b3a236bbdd0703def554ff61aab8ce589441b094409d5",
+    "src/game-audio.js": "9f4c47ca08468d5941dff26497cc47e87148e514d53381b91fba828d0d6bac9e",
+    "src/hud-mesh.js": "0237ab735d353f9e43164c664a67d54a89ecc3153083b104c8bb9d0e3f1e7c9b",
+    "src/hud-notifications.js": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+    "src/hud-portraits.js": "9d577ef6b58bf77147b9e080141d047f733ffa96494ded02d78f799bc98c4dfc",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/input.js": "dfd512b614ccbdd6999bbae96691ebad3958a84254705e19ecb0fa6f8de8a12b",
+    "src/kart-shadow.js": "564d385a8488909cf7d739e8fabe35300929d14b5706c0277441ea1bfac4c871",
+    "src/loading-screen.js": "8e98c1c4152b783841d17783eb3704b618a2c623b091e711ceb4ad15d06ccfab",
+    "src/main.js": "115d16fb8f67cb48b9d89aa55e7ee4d85b10f01b8f43de73d198b37eaf046349",
+    "src/menu-audio.js": "2e9618b813b790e2480c2936a4a7bfeb9238ce9448ed5f1bb6d0155b167d09b8",
+    "src/menu-regions.js": "54d5f616a966313ff104fd0405d4ef911988eb9169a12fc246a46cd93fe4ba77",
+    "src/menu-sound-events.js": "7235a2437166efcc1f44191e16c43494bf4a617db4ddc99f4015ccbabf9ae811",
+    "src/native-blend-state.js": "d4f1031a2defe2da38659c0c970e4c1fbecc7762cb398881e2915dec5332d941",
+    "src/native-control-settings.js": "40254dbc99776bb784044f4eca52139823763b8a2dbd4530bbd7a952c34a59b3",
+    "src/native-crash-audio.js": "1924aca759e5c4f30ccf32cedd7f502387c4114fe95e8b67845b8327f6ac5d41",
+    "src/native-display-settings.js": "2a66b1ca069b55273076698e687a1f142f155eecc9676f38a95019a644197de2",
+    "src/native-key-audio.js": "f894c02d565c53fbafc3568e816acb8ac82f1ca04c86eadca14ee59a9e9f0bc8",
+    "src/native-menu.js": "b841b05d731dd52fd98548d3f604e9f86e4a4079d6d1b494cf7dc136e6c91265",
+    "src/native-portrait.js": "445c1e9be2a44f4b6a137024887d4d74ab923d5e68b3b4787a9c584b671f9997",
+    "src/native-race-audio.js": "246ea97bfdf3859e65d53a02397078cb956f9cfdefd6d012cad7f913e73ccee1",
+    "src/native-tab-order.js": "f7a281ab1165028833d2f404a56a8eb1d77ab99e17f5606deb7b5bfa3fd83917",
+    "src/native-voice-controller.js": "e76556a912202116fe666a1be89055a79f1a2f456e832c3ead3904a14240e313",
+    "src/player-assets.js": "d48d7358267213f406c29d035199f42759f476d97eff907365a21437ae1bc093",
+    "src/race-hud-layout.js": "7472e765e521066434bae60c02f04fba053267b83042df3abb613bef515d999b",
+    "src/race-hud-meshes.js": "84f42c189e6f6aac818a0cef9f43476fc8ca49c814295a9e05277379d0a44eba",
+    "src/race-hud.js": "c006cf42457db10e724fb8ebce215565ed05cd22d2325efd5c0af25538c79701",
+    "src/race-requester.js": "3c8693ada810ed43cfdde17677b82be4a2a1f3d5702604ba55a7d2b6062bdb4e",
+    "src/race-save.js": "a6942cf021a8345f110744e0d20971818a48136ac13c2f5f41b3cdbe66e0f220",
+    "src/race-simulation.js": "cd24ea6b7be610478ed06d0bd5bf7a651e5ee70f1c0adea2f87dc6374e17127d",
+    "src/race-visuals.js": "5dff28754496b3ce19840e228256accba381498878c080fd35180ae981092ae4",
+    "src/render-order.js": "df7d7bca5091ba67c5629aafb970011c6765cebc23901906e24460d09e1246f2",
+    "src/render-transforms.js": "bac6824132b7f0509c7c18f77a960dd318adc4807108b4824930d90126dba547",
+    "src/rescue-assets.js": "0afcc47d953e925219b2109b33731556524ae9fa37074efd3810d7e810aeb244",
+    "src/scenery-paths.js": "4d141521caa83fa0e93291d344dec6e6ab06038156ea4591d985f17f70a57353",
+    "src/settings.js": "d85dbb3c2cebc073bbf9eeb3cef15f8715dda0820197c8c141313806346f82ef",
+    "src/simulation/clock.js": "aade0e63fae8ef5e54dce4ac97f5ef2818ae4d21b7a767737e33827a300be929",
+    "src/simulation/native-adventure.js": "de2fcf64afb03cdb39b1e6c56cce70fbf6938a3b211c07b838d2421e6064b57f",
+    "src/simulation/native-ai-driver.js": "d3a8a498548b4d507ed1d856fff8e1ce0b66aac1230e461150fd973776009057",
+    "src/simulation/native-ai-items.js": "0239e7e8896efaff47fc14a7a08d609dc5011cebf97a7fe7bc8eaa8af854066e",
+    "src/simulation/native-ai-range.js": "b7ee558c101d7351ebe44984426839ad7640fc64d1488cf7d7b979befa2d5a9a",
+    "src/simulation/native-ai.js": "0fe56f773b759dfd1a23f10e4291f6406f815e07ed8ec2207882f662c0b789e9",
+    "src/simulation/native-bonus-effects.js": "38d46156b11fe47b1fc503ed6c5559f7e9c66b9fd5066d1dd7919b3d54c5e152",
+    "src/simulation/native-bonus-hud.js": "cdd4f8e1fadf4f5f8ea87c91401b9d0fbd2d1d0d58940fe4a9cc69964e9e77b8",
+    "src/simulation/native-bonus.js": "197120cabd17871542c7fb12b46521674a0bbac30d2c85b6e0974a73118a74fd",
+    "src/simulation/native-bubble-attachments.js": "4c74e4da78382b130f2472c8a4c7dce217211bf89aab372e750092700116cd31",
+    "src/simulation/native-camera-matrix.js": "43d93b5f1b80dfcaf20b4104552c241ff9e36a694525d36410e73151045552b3",
+    "src/simulation/native-camera.js": "b0b28d4e907665b290e1cce08b7d0b0429d55498faed5c6c3f220fb1360d70f9",
+    "src/simulation/native-character-voice.js": "f8ff4ff3428214463bf04c330199aab8f2156886c9b54de228ceb0184fb21ac1",
+    "src/simulation/native-collision.js": "b0c31b1fc3265ed73fcbdbf483d98d2437d73a23c4a4dc65b6024ff3eb4f357b",
+    "src/simulation/native-combat.js": "244ff374df1373a96f2714223508bf4ce2599d00895c7a1d654d3f28eb1738a3",
+    "src/simulation/native-countdown.js": "d86173ecc11e3aad9530d1b88b390c93941e12ad7d8a4053274b0ece0e55758c",
+    "src/simulation/native-display-settings.js": "20dc1b53374d5be94bec6af1c254f0327268ed056e164509744f05b54d12736e",
+    "src/simulation/native-explosions.js": "56de8b200814b20ded1f363158f7198d41845bde2752dee31baeebf2903c73ef",
+    "src/simulation/native-forces.js": "c54c1ef342a811d5d0a45fda6d66ac8aa7aa2c69e74db3ac6e00f1641e24c5ab",
+    "src/simulation/native-game-timers.js": "9a77fc6bc40d97165aaf9a1b5462bca33792b90cb34cf8472293b47b295ee05c",
+    "src/simulation/native-ground.js": "81509b6e31c7beadab94a8657669a548f8356c3e1a58b0317dd72e96e69a64f9",
+    "src/simulation/native-homing-arm.js": "4b780cfa2c1b7f7e6a9d168a6819b4a18f65eebb804a0396e6929eeb522f56f8",
+    "src/simulation/native-hud-sampler.js": "fb055011cf32eb95e282ce0bb9abbb3c069a81a671dec564c5c9a672e32b6139",
+    "src/simulation/native-input.js": "0f87768e140625295143480a76309924b7341b5411358d11f014b0c84c4bc4cc",
+    "src/simulation/native-integrator.js": "dccb39d1567bb0eea0fc9e65ccc34380ae23ea227ff9f3ec16c7ee0d3a6200f4",
+    "src/simulation/native-jump.js": "94c42ff6657b307991350289c749723922bbe996a48c29c659a62c6df43dac0d",
+    "src/simulation/native-kart-color.js": "ec78a402a8ba3e5fb3f9b8bc540d9b9fb130adfe895241244936d2df4270be50",
+    "src/simulation/native-kart-contact.js": "a23d2ef6f71561f36a1c79ddd906ae34c4a01e1d6bd1e75521abfb0ad7faab40",
+    "src/simulation/native-menu-random.js": "53bdc41ad401223e5d6ad577ca12da7f428d02e2d20703cb26fe58b8d34b431c",
+    "src/simulation/native-minimap.js": "59d6dcdd05e556954e44cf9c6d397415dccd1967b77cdbe15ca79460b88b4207",
+    "src/simulation/native-motion.js": "a6e71091a63f7aaaaed420837620b7a3e5f9ab5fa827f874b09cb2e60af329e0",
+    "src/simulation/native-player.js": "f01084d23ff4e018d2f9cfc24fa5eba0a97cea94734d9ce68f23f4c5da58a147",
+    "src/simulation/native-projectile.js": "20b56de54faa0a11f3e8cc9e620f8f0cd079e873b99444ce8c28f7a169b3d420",
+    "src/simulation/native-race-lifecycle.js": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+    "src/simulation/native-race-options.js": "ef8e21b16e3bc2d034d2cb36f28a5d122fa22bd703e1c1d08805439888173345",
+    "src/simulation/native-race-setup.js": "b3370dab9fc672873a9f445e77ae770c34d4d4adc9cea7dffe302e1afb6837a8",
+    "src/simulation/native-race.js": "d959bb036a04cd0b28bfbb571293589d23c93fb6ebf09070f579fb4b43946365",
+    "src/simulation/native-random.js": "3b48183445a61d648668edef1a6e28f21af75dea0b3868997ff0840eea24222e",
+    "src/simulation/native-rank.js": "6ad847379732a10b946e02ab797ef1e5149b49429588b9c86a645103a287a4a1",
+    "src/simulation/native-render.js": "04fd89992d788eda788bdcfc1dc8ac99bab54d3191f64bf87548c866bfbab5ec",
+    "src/simulation/native-rescue.js": "4e62d5ab6f224461a94f419e4a15e2e80dc4dcf3539c9cb5e3a1a7a82e8f4bb5",
+    "src/simulation/native-results.js": "bcc63a5be5174182d704d4464dfe81f21b4d5f0ffac3210f8670a7d2a53275f8",
+    "src/simulation/native-scenery-contact.js": "829a880d6807eb9929fa6532a06c5af48af1573a4e8bf114660a5df83ff7ca6e",
+    "src/simulation/native-scenery-hazards.js": "a4eef6a41df12cb9c83e7e09121e17ccbd6fba8868c2ba63a6bc9a5f837dea65",
+    "src/simulation/native-scenery-reactions.js": "ac3818577b1a28e17381619647f7369a8d2647ce4b2162a5af3248858ded0f0b",
+    "src/simulation/native-skidmarks.js": "ca6b943d1f45df9e86eb225e103db2c37a5d4ee74614761759b0496ef0b11b99",
+    "src/simulation/native-smoke.js": "01208ca8764ed903ecd13471a61087aff76b9df110d9fa4334d7f21990c31359",
+    "src/simulation/native-squash-activation.js": "f5595ec89b66ac13149fce4b003fef0f4e24cc95c0bcb4aa5dae13cde29ef47a",
+    "src/simulation/native-squash.js": "a47854d777833421bc81188ba7e4ebe0d26be5489e6bea1daba606242c23cbaa",
+    "src/simulation/native-start-camera.js": "99b1ba35593f26069de45891e331686e9988a06743c9fbe5d5743cf9ef89e171",
+    "src/simulation/native-start.js": "878cb672d8bc15e9902834fe419ae625fee9e7ac82d9101d7366aefa009ad33b",
+    "src/simulation/native-streams.js": "b75d1c0e460074e404272680eaf8b6565a49dfb4a9a9b3d5cf9ba773ef7256f6",
+    "src/simulation/native-tables.js": "d2b5f412b60ab099a6422652ee8aba2b2cabf31ec1c820668c26a931bb050dbf",
+    "src/simulation/native-track.js": "c86c29355caaded4eeb6b34d617deb261f5da54419ab1bcec5c59fdeaacc70f5",
+    "src/simulation/native-transform.js": "d73b56e15c253c7cff001ab59822e81b100ed1070711a066454d8fe576a5aaec",
+    "src/simulation/native-weather.js": "36f751b5e7654bc47d00736b99726d8dfb4b55bcf8f7312f6e97e6bc65a4012b",
+    "src/simulation/rescue-safety.js": "42ceb67e8c0095354d1aecc9e36bc82e33e4f8a59d40e87b927955ca30b3f1e5",
+    "src/skid-audio.js": "d29faabaefbc9127999b8c3dc56cdc5e02ad8d11fb05c39f72578b9f5e3aa2f0",
+    "src/spatial-audio.js": "b5e89fd2d3138d80314fcb46747b618bcef93a04f51ff3ec8e3384ade2f83bf3",
+    "src/style.css": "2b4bad769a052dbaf760f6f44444ada72d883b9870d5759c8c33d81c0e79b9a5",
+    "src/world.js": "59e802e19eccfe6ec45861c32b93174cce4d3e6446ab624ea98f6726997ea425",
+    "tests/helpers/private-timed-lane-driver.mjs": "62cc4ac91d1f9c11a8fb85e8ed1eca40acdbf29e2538989a983d730f757f3b5f",
+    "tests/helpers/route-test-driver.mjs": "32799e63d38c5b75acd4a66194ef4d8a1d450be8d384105110ebd4afcb81e48d",
+    "tests/helpers/star-approach-planner.mjs": "d7269de055a6cc29cc0eb1edbb86d3b9ce49a2ed28ca318d189dd8306c69678e",
+    "tools/native-blockage-timed-character.mjs": "f3393fb91776b48a964dc3c5b8288ca57fe30e99207045bab1bf020f5d651599",
+    "tools/native-blockage-timed-lane.mjs": "dad63a443c2c267894b59dcfb3f072aae2ba92374b3efe1653113d54b5ab3739",
+    "tools/native-blockage-timed-probe.mjs": "06fc28930ffd202fd8741cedbe9fc016ea53562f5a7d296f6989867d32347816",
+    "tools/native-blockage-timed-seeded-lane.mjs": "cf37b7ac5e7da256c612a35f3bbe566fc3df58b28488ec0f57e54292593196ad",
+    "tools/validate-driven-races.mjs": "349ba99144d958128bb260aa8d09a93c14802cad6bef7aa3716aeb9891f6004c",
+    "tools/validation-source-dependencies.mjs": "faffe4832c1d4110fd703f084057665f80d2d9aee5d0a0205c500f564552fdf3"
+  },
+  "sourceGuard": "all-source",
+  "executionDependencies": [
+    "src/arm-audio.js",
+    "src/asset-animation.js",
+    "src/audio-mixing.js",
+    "src/bonus-audio.js",
+    "src/native-crash-audio.js",
+    "src/native-key-audio.js",
+    "src/player-assets.js",
+    "src/race-simulation.js",
+    "src/scenery-paths.js",
+    "src/simulation/clock.js",
+    "src/simulation/native-adventure.js",
+    "src/simulation/native-ai-driver.js",
+    "src/simulation/native-ai-items.js",
+    "src/simulation/native-ai.js",
+    "src/simulation/native-bonus-effects.js",
+    "src/simulation/native-bonus.js",
+    "src/simulation/native-bubble-attachments.js",
+    "src/simulation/native-camera-matrix.js",
+    "src/simulation/native-camera.js",
+    "src/simulation/native-character-voice.js",
+    "src/simulation/native-collision.js",
+    "src/simulation/native-combat.js",
+    "src/simulation/native-countdown.js",
+    "src/simulation/native-explosions.js",
+    "src/simulation/native-forces.js",
+    "src/simulation/native-game-timers.js",
+    "src/simulation/native-ground.js",
+    "src/simulation/native-homing-arm.js",
+    "src/simulation/native-input.js",
+    "src/simulation/native-integrator.js",
+    "src/simulation/native-jump.js",
+    "src/simulation/native-kart-contact.js",
+    "src/simulation/native-motion.js",
+    "src/simulation/native-player.js",
+    "src/simulation/native-projectile.js",
+    "src/simulation/native-race-lifecycle.js",
+    "src/simulation/native-race-options.js",
+    "src/simulation/native-race-setup.js",
+    "src/simulation/native-race.js",
+    "src/simulation/native-random.js",
+    "src/simulation/native-rank.js",
+    "src/simulation/native-render.js",
+    "src/simulation/native-rescue.js",
+    "src/simulation/native-results.js",
+    "src/simulation/native-scenery-contact.js",
+    "src/simulation/native-scenery-hazards.js",
+    "src/simulation/native-scenery-reactions.js",
+    "src/simulation/native-skidmarks.js",
+    "src/simulation/native-smoke.js",
+    "src/simulation/native-squash-activation.js",
+    "src/simulation/native-squash.js",
+    "src/simulation/native-start-camera.js",
+    "src/simulation/native-start.js",
+    "src/simulation/native-streams.js",
+    "src/simulation/native-tables.js",
+    "src/simulation/native-track.js",
+    "src/simulation/native-transform.js",
+    "src/simulation/native-weather.js",
+    "src/simulation/rescue-safety.js",
+    "src/spatial-audio.js",
+    "tests/helpers/private-timed-lane-driver.mjs",
+    "tests/helpers/star-approach-planner.mjs",
+    "tools/native-blockage-timed-seeded-lane.mjs",
+    "tools/validation-source-dependencies.mjs"
+  ],
+  "assetSha256": {
+    "config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "cars.json": "95d18e77938c03738ae02eff1ed2dce92cb535e81d7947c37949d55950f05402",
+    "manifest.json": "7a0e7b731abee33d6752cc65c05fba25357d0cf8afcc34fc019abc2064f7e8cc",
+    "physics/phys1.dat": "850c5f8a708dff59cad168943fff2c374e91c294198449f502cbd6b975acae58",
+    "racer-tables/cars1.dat": "216ce4b367bc7a367bf85b012c8cba9507881b91b9e6f0782fd92936450b7233",
+    "tracks/etappe4.json": "9232f0f09ca277476a158f5689e11d5bd59159f03db3b266607e1532a798daaf",
+    "physics/phys2.dat": "850c5f8a708dff59cad168943fff2c374e91c294198449f502cbd6b975acae58",
+    "racer-tables/cars2.dat": "216ce4b367bc7a367bf85b012c8cba9507881b91b9e6f0782fd92936450b7233"
+  },
+  "testDriverPolicy": "Fixed authored-link direction priority (laneOrder recorded); original linked-road follower with its optional detour planner disabled; production obstacles and collision responses remain active. Ordinary inputs only.",
+  "cadenceMs": 25,
+  "constructionSeed": 0,
+  "gameplaySeed": 0,
+  "character": 1,
+  "driverOptions": {
+    "speed": 150,
+    "lookAheadSeconds": 1,
+    "steeringGain": 1,
+    "dampingGain": 0.4
+  },
+  "laneOrder": [
+    1,
+    0,
+    2
+  ],
+  "seekStars": false,
+  "fireHeld": false,
+  "maxMs": 1800000,
+  "runs": [
+    {
+      "track": 4,
+      "difficulty": 1,
+      "raceMode": 1,
+      "opponents": 3,
+      "status": "finished",
+      "events": {
+        "time-tick": 8,
+        "overtake": 32,
+        "time-gate": 15,
+        "lap": 5,
+        "lap-record": 3,
+        "native-notification": 5,
+        "last-lap": 1,
+        "finish": 2,
+        "finished": 1
+      },
+      "samples": [
+        {
+          "timeMs": 1000,
+          "sector": 169,
+          "position": [
+            -2236.20703125,
+            4.76837158203125e-7,
+            6680.3232421875
+          ],
+          "speed": 24.995351791381836,
+          "lap": 0,
+          "distance": 1,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 2000,
+          "sector": 171,
+          "position": [
+            -2413.229736328125,
+            10.69276237487793,
+            6937.62353515625
+          ],
+          "speed": 39.115234375,
+          "lap": 0,
+          "distance": 3,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 3000,
+          "sector": 176,
+          "position": [
+            -2689.64404296875,
+            22.66347312927246,
+            7288.16943359375
+          ],
+          "speed": 48.96501541137695,
+          "lap": 0,
+          "distance": 8,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 4000,
+          "sector": 180,
+          "position": [
+            -3082.671875,
+            4.76837158203125e-7,
+            7645.1025390625
+          ],
+          "speed": 57.64889144897461,
+          "lap": 0,
+          "distance": 12,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 5000,
+          "sector": 4,
+          "position": [
+            -3607.1123046875,
+            -0.47531604766845703,
+            7915.3076171875
+          ],
+          "speed": 61.71598815917969,
+          "lap": 0,
+          "distance": 17,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 6000,
+          "sector": 10,
+          "position": [
+            -4204.02392578125,
+            -0.36730480194091797,
+            8158.98974609375
+          ],
+          "speed": 57.76034927368164,
+          "lap": 0,
+          "distance": 22,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 7000,
+          "sector": 13,
+          "position": [
+            -4549.54931640625,
+            0.48680925369262695,
+            8364.2744140625
+          ],
+          "speed": 38.11121368408203,
+          "lap": 0,
+          "distance": 26,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 8000,
+          "sector": 16,
+          "position": [
+            -4986.8505859375,
+            4.76837158203125e-7,
+            8375.1142578125
+          ],
+          "speed": 49.30670166015625,
+          "lap": 0,
+          "distance": 29,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 9000,
+          "sector": 20,
+          "position": [
+            -5494.51611328125,
+            4.76837158203125e-7,
+            8209.8955078125
+          ],
+          "speed": 57.387725830078125,
+          "lap": 0,
+          "distance": 33,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 10000,
+          "sector": 25,
+          "position": [
+            -6058.8681640625,
+            3.3792495727539062,
+            7981.37939453125
+          ],
+          "speed": 64.20767211914062,
+          "lap": 0,
+          "distance": 38,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 11000,
+          "sector": 32,
+          "position": [
+            -6586.3623046875,
+            13.618000030517578,
+            7581.68994140625
+          ],
+          "speed": 68.1645736694336,
+          "lap": 0,
+          "distance": 45,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 12000,
+          "sector": 38,
+          "position": [
+            -6858.39794921875,
+            2.8517465591430664,
+            6960.03466796875
+          ],
+          "speed": 68.45510864257812,
+          "lap": 0,
+          "distance": 51,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 13000,
+          "sector": 43,
+          "position": [
+            -6653.03759765625,
+            63.575775146484375,
+            6313.76953125
+          ],
+          "speed": 70.69599914550781,
+          "lap": 0,
+          "distance": 56,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 14000,
+          "sector": 49,
+          "position": [
+            -6437.60693359375,
+            101.51760864257812,
+            5623.79296875
+          ],
+          "speed": 74.48681640625,
+          "lap": 0,
+          "distance": 62,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 15000,
+          "sector": 55,
+          "position": [
+            -6483.71923828125,
+            83.38199615478516,
+            4866.955078125
+          ],
+          "speed": 78.02149963378906,
+          "lap": 0,
+          "distance": 67,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 16000,
+          "sector": 60,
+          "position": [
+            -6783.31982421875,
+            0.6845355033874512,
+            4129.4912109375
+          ],
+          "speed": 81.30582427978516,
+          "lap": 0,
+          "distance": 73,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 17000,
+          "sector": 65,
+          "position": [
+            -7229.591796875,
+            4.76837158203125e-7,
+            3604.252197265625
+          ],
+          "speed": 60.1646614074707,
+          "lap": 0,
+          "distance": 77,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 18000,
+          "sector": 67,
+          "position": [
+            -7260.69580078125,
+            4.76837158203125e-7,
+            3240.731201171875
+          ],
+          "speed": 41.85591125488281,
+          "lap": 0,
+          "distance": 80,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 19000,
+          "sector": 71,
+          "position": [
+            -7383.73974609375,
+            4.76837158203125e-7,
+            2785.20263671875
+          ],
+          "speed": 51.69728088378906,
+          "lap": 0,
+          "distance": 84,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 20000,
+          "sector": 75,
+          "position": [
+            -7531.71875,
+            0.7936124801635742,
+            2249.416015625
+          ],
+          "speed": 59.44596862792969,
+          "lap": 0,
+          "distance": 88,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 21000,
+          "sector": 81,
+          "position": [
+            -7501.22314453125,
+            -48.31864929199219,
+            1634.759033203125
+          ],
+          "speed": 63.85015869140625,
+          "lap": 0,
+          "distance": 93,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 22000,
+          "sector": 86,
+          "position": [
+            -7070.09716796875,
+            -51.223838806152344,
+            1164.3720703125
+          ],
+          "speed": 68.44977569580078,
+          "lap": 0,
+          "distance": 98,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 23000,
+          "sector": 91,
+          "position": [
+            -6384.404296875,
+            0.05977916717529297,
+            1029.964111328125
+          ],
+          "speed": 72.29998016357422,
+          "lap": 0,
+          "distance": 104,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 24000,
+          "sector": 97,
+          "position": [
+            -5643.615234375,
+            4.76837158203125e-7,
+            1087.4451904296875
+          ],
+          "speed": 76.16536712646484,
+          "lap": 0,
+          "distance": 109,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 25000,
+          "sector": 103,
+          "position": [
+            -4868.77294921875,
+            32.56163024902344,
+            1060.7850341796875
+          ],
+          "speed": 78.65504455566406,
+          "lap": 0,
+          "distance": 116,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 26000,
+          "sector": 110,
+          "position": [
+            -4074.70703125,
+            9.311389923095703,
+            1125.762939453125
+          ],
+          "speed": 80.94025421142578,
+          "lap": 0,
+          "distance": 122,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 27000,
+          "sector": 116,
+          "position": [
+            -3322.123779296875,
+            28.363527297973633,
+            1378.743408203125
+          ],
+          "speed": 79.33246612548828,
+          "lap": 0,
+          "distance": 129,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 28000,
+          "sector": 123,
+          "position": [
+            -2532.87255859375,
+            4.76837158203125e-7,
+            1489.4908447265625
+          ],
+          "speed": 78.5416259765625,
+          "lap": 0,
+          "distance": 135,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 29000,
+          "sector": 128,
+          "position": [
+            -1905.3150634765625,
+            4.76837158203125e-7,
+            1901.721435546875
+          ],
+          "speed": 73.28004455566406,
+          "lap": 0,
+          "distance": 141,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 30000,
+          "sector": 128,
+          "position": [
+            -1931.90869140625,
+            4.76837158203125e-7,
+            1928.5220947265625
+          ],
+          "speed": 20.154756546020508,
+          "lap": 0,
+          "distance": 141,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 31000,
+          "sector": 130,
+          "position": [
+            -2062.009765625,
+            4.76837158203125e-7,
+            2177.29150390625
+          ],
+          "speed": 37.064544677734375,
+          "lap": 0,
+          "distance": 143,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 32000,
+          "sector": 131,
+          "position": [
+            -2018.602294921875,
+            4.76837158203125e-7,
+            2315.73876953125
+          ],
+          "speed": 1.5889195203781128,
+          "lap": 0,
+          "distance": 144,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 33000,
+          "sector": 131,
+          "position": [
+            -1962.603271484375,
+            4.76837158203125e-7,
+            2328.98095703125
+          ],
+          "speed": 9.573887825012207,
+          "lap": 0,
+          "distance": 144,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 34000,
+          "sector": 133,
+          "position": [
+            -1869.482666015625,
+            4.76837158203125e-7,
+            2537.572265625
+          ],
+          "speed": 33.087860107421875,
+          "lap": 0,
+          "distance": 146,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 35000,
+          "sector": 136,
+          "position": [
+            -1960.043701171875,
+            4.76837158203125e-7,
+            2922.448486328125
+          ],
+          "speed": 46.26879119873047,
+          "lap": 0,
+          "distance": 149,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 36000,
+          "sector": 140,
+          "position": [
+            -2279.77392578125,
+            4.76837158203125e-7,
+            3312.619873046875
+          ],
+          "speed": 54.629150390625,
+          "lap": 0,
+          "distance": 153,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 37000,
+          "sector": 144,
+          "position": [
+            -2525.77099609375,
+            1.38368558883667,
+            3829.301513671875
+          ],
+          "speed": 59.81741714477539,
+          "lap": 0,
+          "distance": 157,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 38000,
+          "sector": 149,
+          "position": [
+            -2331.0234375,
+            6.566417694091797,
+            4370.7353515625
+          ],
+          "speed": 61.326416015625,
+          "lap": 0,
+          "distance": 161,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 39000,
+          "sector": 154,
+          "position": [
+            -2139.749755859375,
+            15.82901382446289,
+            4974.87548828125
+          ],
+          "speed": 64.99764251708984,
+          "lap": 0,
+          "distance": 167,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 40000,
+          "sector": 159,
+          "position": [
+            -2345.122802734375,
+            7.299568176269531,
+            5588.0439453125
+          ],
+          "speed": 67.57439422607422,
+          "lap": 0,
+          "distance": 172,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 41000,
+          "sector": 164,
+          "position": [
+            -2564.5009765625,
+            8.098569869995117,
+            6217.53125
+          ],
+          "speed": 56.20037078857422,
+          "lap": 0,
+          "distance": 177,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 42000,
+          "sector": 169,
+          "position": [
+            -2339.9580078125,
+            1.428603172302246,
+            6778.8271484375
+          ],
+          "speed": 61.91579055786133,
+          "lap": 0,
+          "distance": 182,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 43000,
+          "sector": 175,
+          "position": [
+            -2519.208251953125,
+            4.76837158203125e-7,
+            7373.7470703125
+          ],
+          "speed": 63.619075775146484,
+          "lap": 1,
+          "distance": 188,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 44000,
+          "sector": 180,
+          "position": [
+            -3018.73681640625,
+            4.76837158203125e-7,
+            7660.05029296875
+          ],
+          "speed": 44.558963775634766,
+          "lap": 1,
+          "distance": 193,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 45000,
+          "sector": 2,
+          "position": [
+            -3369.54443359375,
+            0.5680007934570312,
+            7783.44140625
+          ],
+          "speed": 41.57572937011719,
+          "lap": 1,
+          "distance": 196,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 46000,
+          "sector": 6,
+          "position": [
+            -3810.27392578125,
+            0.39929723739624023,
+            7947.79638671875
+          ],
+          "speed": 51.530113220214844,
+          "lap": 1,
+          "distance": 200,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 47000,
+          "sector": 10,
+          "position": [
+            -4315.00927734375,
+            -1.6875019073486328,
+            8154.05712890625
+          ],
+          "speed": 55.15904998779297,
+          "lap": 1,
+          "distance": 204,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 48000,
+          "sector": 15,
+          "position": [
+            -4867.9384765625,
+            4.76837158203125e-7,
+            8341.94921875
+          ],
+          "speed": 61.75764846801758,
+          "lap": 1,
+          "distance": 209,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 49000,
+          "sector": 20,
+          "position": [
+            -5504.1494140625,
+            4.76837158203125e-7,
+            8255.01953125
+          ],
+          "speed": 67.74988555908203,
+          "lap": 1,
+          "distance": 214,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 50000,
+          "sector": 26,
+          "position": [
+            -6138.7353515625,
+            1.6618504524230957,
+            7957.31591796875
+          ],
+          "speed": 72.65091705322266,
+          "lap": 1,
+          "distance": 220,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 51000,
+          "sector": 33,
+          "position": [
+            -6676.39794921875,
+            3.3730039596557617,
+            7458.353515625
+          ],
+          "speed": 72.42796325683594,
+          "lap": 1,
+          "distance": 227,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 52000,
+          "sector": 39,
+          "position": [
+            -6868.44921875,
+            15.650461196899414,
+            6783.2646484375
+          ],
+          "speed": 69.59288787841797,
+          "lap": 1,
+          "distance": 233,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 53000,
+          "sector": 44,
+          "position": [
+            -6584.44384765625,
+            65.98164367675781,
+            6148.8984375
+          ],
+          "speed": 71.75228118896484,
+          "lap": 1,
+          "distance": 238,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 54000,
+          "sector": 50,
+          "position": [
+            -6432.07080078125,
+            105,
+            5433.416015625
+          ],
+          "speed": 75.2989273071289,
+          "lap": 1,
+          "distance": 244,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 55000,
+          "sector": 56,
+          "position": [
+            -6540.1630859375,
+            55.54999542236328,
+            4674.3984375
+          ],
+          "speed": 78.98770904541016,
+          "lap": 1,
+          "distance": 250,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 56000,
+          "sector": 62,
+          "position": [
+            -6880.2861328125,
+            4.76837158203125e-7,
+            3945.375732421875
+          ],
+          "speed": 81.7089614868164,
+          "lap": 1,
+          "distance": 256,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 57000,
+          "sector": 65,
+          "position": [
+            -7249.34375,
+            4.76837158203125e-7,
+            3511.83740234375
+          ],
+          "speed": 29.31822967529297,
+          "lap": 1,
+          "distance": 259,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 58000,
+          "sector": 68,
+          "position": [
+            -7278.8359375,
+            4.76837158203125e-7,
+            3132.703369140625
+          ],
+          "speed": 45.32509231567383,
+          "lap": 1,
+          "distance": 262,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 59000,
+          "sector": 72,
+          "position": [
+            -7425.83984375,
+            4.76837158203125e-7,
+            2658.802490234375
+          ],
+          "speed": 53.850406646728516,
+          "lap": 1,
+          "distance": 266,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 60000,
+          "sector": 77,
+          "position": [
+            -7546.86572265625,
+            3.45919132232666,
+            2096.96923828125
+          ],
+          "speed": 61.05177688598633,
+          "lap": 1,
+          "distance": 271,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 61000,
+          "sector": 82,
+          "position": [
+            -7469.94287109375,
+            -63.47491455078125,
+            1482.7728271484375
+          ],
+          "speed": 64.42922973632812,
+          "lap": 1,
+          "distance": 276,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 62000,
+          "sector": 87,
+          "position": [
+            -6930.25146484375,
+            -57.92511749267578,
+            1161.1011962890625
+          ],
+          "speed": 66.33346557617188,
+          "lap": 1,
+          "distance": 280,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 63000,
+          "sector": 92,
+          "position": [
+            -6248.50830078125,
+            0.04463529586791992,
+            1111.7093505859375
+          ],
+          "speed": 70.74360656738281,
+          "lap": 1,
+          "distance": 286,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 64000,
+          "sector": 98,
+          "position": [
+            -5521.49951171875,
+            4.76837158203125e-7,
+            1112.1904296875
+          ],
+          "speed": 74.685302734375,
+          "lap": 1,
+          "distance": 291,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 65000,
+          "sector": 104,
+          "position": [
+            -4761.68115234375,
+            30.821725845336914,
+            1056.7325439453125
+          ],
+          "speed": 77.57577514648438,
+          "lap": 1,
+          "distance": 298,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 66000,
+          "sector": 110,
+          "position": [
+            -3978.56591796875,
+            4.76837158203125e-7,
+            1142.4117431640625
+          ],
+          "speed": 80.0935287475586,
+          "lap": 1,
+          "distance": 304,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 67000,
+          "sector": 117,
+          "position": [
+            -3237.0400390625,
+            32.39778137207031,
+            1393.8980712890625
+          ],
+          "speed": 78.91844177246094,
+          "lap": 1,
+          "distance": 311,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 68000,
+          "sector": 123,
+          "position": [
+            -2454.199462890625,
+            4.76837158203125e-7,
+            1516.658447265625
+          ],
+          "speed": 77.19216918945312,
+          "lap": 1,
+          "distance": 317,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 69000,
+          "sector": 129,
+          "position": [
+            -1874.953857421875,
+            4.76837158203125e-7,
+            1932.8165283203125
+          ],
+          "speed": -13.211677551269531,
+          "lap": 1,
+          "distance": 323,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 70000,
+          "sector": 128,
+          "position": [
+            -1949.39013671875,
+            4.76837158203125e-7,
+            1938.340087890625
+          ],
+          "speed": 22.267881393432617,
+          "lap": 1,
+          "distance": 322,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 71000,
+          "sector": 130,
+          "position": [
+            -2060.934326171875,
+            4.76837158203125e-7,
+            2213.134521484375
+          ],
+          "speed": 38.31821823120117,
+          "lap": 1,
+          "distance": 324,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 72000,
+          "sector": 131,
+          "position": [
+            -2015.076171875,
+            4.76837158203125e-7,
+            2316.515625
+          ],
+          "speed": 3.114193916320801,
+          "lap": 1,
+          "distance": 325,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 73000,
+          "sector": 131,
+          "position": [
+            -1912.5113525390625,
+            4.76837158203125e-7,
+            2298.995849609375
+          ],
+          "speed": -12.680837631225586,
+          "lap": 1,
+          "distance": 325,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 74000,
+          "sector": 132,
+          "position": [
+            -1866.6217041015625,
+            4.76837158203125e-7,
+            2407.052001953125
+          ],
+          "speed": 4.658328533172607,
+          "lap": 1,
+          "distance": 326,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 75000,
+          "sector": 133,
+          "position": [
+            -1893.2152099609375,
+            4.76837158203125e-7,
+            2482.890625
+          ],
+          "speed": 13.643533706665039,
+          "lap": 1,
+          "distance": 327,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 76000,
+          "sector": 134,
+          "position": [
+            -1988.7650146484375,
+            4.76837158203125e-7,
+            2715.04638671875
+          ],
+          "speed": 34.82143020629883,
+          "lap": 1,
+          "distance": 328,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 77000,
+          "sector": 138,
+          "position": [
+            -2185.8359375,
+            4.76837158203125e-7,
+            3084.099365234375
+          ],
+          "speed": 47.6450309753418,
+          "lap": 1,
+          "distance": 332,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 78000,
+          "sector": 142,
+          "position": [
+            -2438.345947265625,
+            4.76837158203125e-7,
+            3535.66015625
+          ],
+          "speed": 55.74558639526367,
+          "lap": 1,
+          "distance": 336,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 79000,
+          "sector": 146,
+          "position": [
+            -2486.32470703125,
+            7.898737907409668,
+            4096.62158203125
+          ],
+          "speed": 56.87324523925781,
+          "lap": 1,
+          "distance": 340,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 80000,
+          "sector": 151,
+          "position": [
+            -2214.636962890625,
+            9.659954071044922,
+            4636.0703125
+          ],
+          "speed": 63.54140090942383,
+          "lap": 1,
+          "distance": 345,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 81000,
+          "sector": 156,
+          "position": [
+            -2174.625,
+            3.3124685287475586,
+            5278.67431640625
+          ],
+          "speed": 66.41655731201172,
+          "lap": 1,
+          "distance": 350,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 82000,
+          "sector": 162,
+          "position": [
+            -2500.629638671875,
+            26.99443244934082,
+            5870.181640625
+          ],
+          "speed": 69.23351287841797,
+          "lap": 1,
+          "distance": 356,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 83000,
+          "sector": 166,
+          "position": [
+            -2439.90087890625,
+            5.457494735717773,
+            6470.4990234375
+          ],
+          "speed": 60.43388748168945,
+          "lap": 1,
+          "distance": 360,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 84000,
+          "sector": 172,
+          "position": [
+            -2366.884521484375,
+            4.76837158203125e-7,
+            7072.84619140625
+          ],
+          "speed": 62.66275405883789,
+          "lap": 2,
+          "distance": 366,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 85000,
+          "sector": 178,
+          "position": [
+            -2729.654296875,
+            4.76837158203125e-7,
+            7591.1513671875
+          ],
+          "speed": 65.7296142578125,
+          "lap": 2,
+          "distance": 372,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 86000,
+          "sector": 2,
+          "position": [
+            -3356.977783203125,
+            0.2887701988220215,
+            7857.2607421875
+          ],
+          "speed": 71.1625747680664,
+          "lap": 2,
+          "distance": 377,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 87000,
+          "sector": 8,
+          "position": [
+            -4064.5654296875,
+            2.5364131927490234,
+            8046.9296875
+          ],
+          "speed": 75.23287200927734,
+          "lap": 2,
+          "distance": 383,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 88000,
+          "sector": 14,
+          "position": [
+            -4720.1787109375,
+            4.76837158203125e-7,
+            8354.8291015625
+          ],
+          "speed": 72.41155242919922,
+          "lap": 2,
+          "distance": 389,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 89000,
+          "sector": 20,
+          "position": [
+            -5440.86962890625,
+            4.76837158203125e-7,
+            8366.4970703125
+          ],
+          "speed": 74.34632110595703,
+          "lap": 2,
+          "distance": 394,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 90000,
+          "sector": 26,
+          "position": [
+            -6115.15185546875,
+            4.76837158203125e-7,
+            8021.31787109375
+          ],
+          "speed": 77.70791625976562,
+          "lap": 2,
+          "distance": 400,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 91000,
+          "sector": 33,
+          "position": [
+            -6651.83154296875,
+            16.5163631439209,
+            7454.8115234375
+          ],
+          "speed": 77.0255126953125,
+          "lap": 2,
+          "distance": 408,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 92000,
+          "sector": 40,
+          "position": [
+            -6856.85791015625,
+            19.29119300842285,
+            6750.18994140625
+          ],
+          "speed": 71.86734008789062,
+          "lap": 2,
+          "distance": 414,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 93000,
+          "sector": 45,
+          "position": [
+            -6555.91162109375,
+            68.93682861328125,
+            6106.65576171875
+          ],
+          "speed": 73.17826080322266,
+          "lap": 2,
+          "distance": 420,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 94000,
+          "sector": 51,
+          "position": [
+            -6423.60693359375,
+            105,
+            5374.96875
+          ],
+          "speed": 76.42747497558594,
+          "lap": 2,
+          "distance": 426,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 95000,
+          "sector": 57,
+          "position": [
+            -6560.734375,
+            45.37953186035156,
+            4610.0859375
+          ],
+          "speed": 79.93148803710938,
+          "lap": 2,
+          "distance": 431,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 96000,
+          "sector": 62,
+          "position": [
+            -6913.9755859375,
+            4.76837158203125e-7,
+            3878.558837890625
+          ],
+          "speed": 82.28396606445312,
+          "lap": 2,
+          "distance": 437,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 97000,
+          "sector": 65,
+          "position": [
+            -7246.39892578125,
+            4.76837158203125e-7,
+            3481.1328125
+          ],
+          "speed": 31.547609329223633,
+          "lap": 2,
+          "distance": 440,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 98000,
+          "sector": 69,
+          "position": [
+            -7260.1826171875,
+            3.817941665649414,
+            3008.061767578125
+          ],
+          "speed": 49.571529388427734,
+          "lap": 2,
+          "distance": 444,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 99000,
+          "sector": 73,
+          "position": [
+            -7430.9423828125,
+            2.1468849182128906,
+            2540.974853515625
+          ],
+          "speed": 43.33202362060547,
+          "lap": 2,
+          "distance": 448,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 100000,
+          "sector": 77,
+          "position": [
+            -7548.0107421875,
+            4.07438850402832,
+            2053.887451171875
+          ],
+          "speed": 53.72360610961914,
+          "lap": 2,
+          "distance": 452,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 101000,
+          "sector": 82,
+          "position": [
+            -7459.73291015625,
+            -63.444129943847656,
+            1501.6236572265625
+          ],
+          "speed": 59.111839294433594,
+          "lap": 2,
+          "distance": 457,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 102000,
+          "sector": 86,
+          "position": [
+            -6977.69873046875,
+            -55.52416229248047,
+            1160.9273681640625
+          ],
+          "speed": 61.24319076538086,
+          "lap": 2,
+          "distance": 461,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 103000,
+          "sector": 91,
+          "position": [
+            -6344.91015625,
+            0.034471988677978516,
+            1108.0384521484375
+          ],
+          "speed": 66.30563354492188,
+          "lap": 2,
+          "distance": 466,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 104000,
+          "sector": 96,
+          "position": [
+            -5656.7529296875,
+            4.76837158203125e-7,
+            1121.1300048828125
+          ],
+          "speed": 71.21141052246094,
+          "lap": 2,
+          "distance": 471,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 105000,
+          "sector": 102,
+          "position": [
+            -4926.763671875,
+            32.927734375,
+            1063.3218994140625
+          ],
+          "speed": 74.88495635986328,
+          "lap": 2,
+          "distance": 477,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 106000,
+          "sector": 109,
+          "position": [
+            -4164.66259765625,
+            20.024715423583984,
+            1111.4752197265625
+          ],
+          "speed": 77.94505310058594,
+          "lap": 2,
+          "distance": 484,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 107000,
+          "sector": 115,
+          "position": [
+            -3429.90283203125,
+            8.527424812316895,
+            1347.047607421875
+          ],
+          "speed": 77.6008071899414,
+          "lap": 2,
+          "distance": 490,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 108000,
+          "sector": 122,
+          "position": [
+            -2654.1904296875,
+            4.76837158203125e-7,
+            1461.80908203125
+          ],
+          "speed": 79.3425064086914,
+          "lap": 2,
+          "distance": 496,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 109000,
+          "sector": 127,
+          "position": [
+            -1985.9501953125,
+            4.76837158203125e-7,
+            1815.3770751953125
+          ],
+          "speed": 73.67960357666016,
+          "lap": 2,
+          "distance": 502,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 110000,
+          "sector": 128,
+          "position": [
+            -1897.8536376953125,
+            4.76837158203125e-7,
+            1932.284423828125
+          ],
+          "speed": 14.079399108886719,
+          "lap": 2,
+          "distance": 503,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 111000,
+          "sector": 130,
+          "position": [
+            -1998.6868896484375,
+            4.76837158203125e-7,
+            2166.354248046875
+          ],
+          "speed": 35.30557632446289,
+          "lap": 2,
+          "distance": 505,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 112000,
+          "sector": 131,
+          "position": [
+            -1974.570556640625,
+            4.76837158203125e-7,
+            2326.505126953125
+          ],
+          "speed": 0.704814076423645,
+          "lap": 2,
+          "distance": 506,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 113000,
+          "sector": 131,
+          "position": [
+            -1972.5694580078125,
+            4.76837158203125e-7,
+            2323.549560546875
+          ],
+          "speed": 0.3978220224380493,
+          "lap": 2,
+          "distance": 506,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 114000,
+          "sector": 131,
+          "position": [
+            -1981.5093994140625,
+            4.76837158203125e-7,
+            2326.654052734375
+          ],
+          "speed": 0.7429773211479187,
+          "lap": 2,
+          "distance": 506,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 115000,
+          "sector": 131,
+          "position": [
+            -1983.0445556640625,
+            4.76837158203125e-7,
+            2326.558837890625
+          ],
+          "speed": 0.341513454914093,
+          "lap": 2,
+          "distance": 506,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 116000,
+          "sector": 130,
+          "position": [
+            -2006.2633056640625,
+            4.76837158203125e-7,
+            2186.371826171875
+          ],
+          "speed": -18.54095458984375,
+          "lap": 2,
+          "distance": 505,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 117000,
+          "sector": 129,
+          "position": [
+            -2091.917236328125,
+            4.76837158203125e-7,
+            2044.8074951171875
+          ],
+          "speed": -18.54095458984375,
+          "lap": 2,
+          "distance": 504,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 118000,
+          "sector": 128,
+          "position": [
+            -2159.44970703125,
+            4.76837158203125e-7,
+            1946.2559814453125
+          ],
+          "speed": 1.882136583328247,
+          "lap": 2,
+          "distance": 503,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 119000,
+          "sector": 129,
+          "position": [
+            -2066.39990234375,
+            4.76837158203125e-7,
+            2089.761962890625
+          ],
+          "speed": 29.092660903930664,
+          "lap": 2,
+          "distance": 504,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 120000,
+          "sector": 132,
+          "position": [
+            -1903.8118896484375,
+            4.76837158203125e-7,
+            2424.2119140625
+          ],
+          "speed": 44.50188064575195,
+          "lap": 2,
+          "distance": 507,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 121000,
+          "sector": 136,
+          "position": [
+            -1942.1783447265625,
+            4.76837158203125e-7,
+            2896.8994140625
+          ],
+          "speed": 51.31550979614258,
+          "lap": 2,
+          "distance": 511,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 122000,
+          "sector": 140,
+          "position": [
+            -2266.796142578125,
+            1.1622991561889648,
+            3341.668701171875
+          ],
+          "speed": 59.010135650634766,
+          "lap": 2,
+          "distance": 515,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 123000,
+          "sector": 145,
+          "position": [
+            -2518.341796875,
+            2.138829231262207,
+            3897.384521484375
+          ],
+          "speed": 63.168540954589844,
+          "lap": 2,
+          "distance": 520,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 124000,
+          "sector": 149,
+          "position": [
+            -2296.054443359375,
+            8.395829200744629,
+            4455.34326171875
+          ],
+          "speed": 63.47231674194336,
+          "lap": 2,
+          "distance": 524,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 125000,
+          "sector": 155,
+          "position": [
+            -2148.078857421875,
+            0.8881778717041016,
+            5087.80029296875
+          ],
+          "speed": 66.8451156616211,
+          "lap": 2,
+          "distance": 530,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 126000,
+          "sector": 160,
+          "position": [
+            -2411.84765625,
+            14.301740646362305,
+            5698.25048828125
+          ],
+          "speed": 69.05887603759766,
+          "lap": 2,
+          "distance": 535,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 127000,
+          "sector": 165,
+          "position": [
+            -2516.261962890625,
+            7.966590881347656,
+            6326.79638671875
+          ],
+          "speed": 59.91167449951172,
+          "lap": 2,
+          "distance": 540,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 128000,
+          "sector": 171,
+          "position": [
+            -2344.865234375,
+            0.7228193283081055,
+            6908.77490234375
+          ],
+          "speed": 62.59512710571289,
+          "lap": 3,
+          "distance": 546,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 129000,
+          "sector": 176,
+          "position": [
+            -2608.29052734375,
+            4.76837158203125e-7,
+            7482.2412109375
+          ],
+          "speed": 64.41357421875,
+          "lap": 3,
+          "distance": 551,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 130000,
+          "sector": 1,
+          "position": [
+            -3186.863037109375,
+            4.76837158203125e-7,
+            7814.33740234375
+          ],
+          "speed": 70.13652801513672,
+          "lap": 3,
+          "distance": 557,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 131000,
+          "sector": 7,
+          "position": [
+            -3886.802490234375,
+            0.6616811752319336,
+            7998.1044921875
+          ],
+          "speed": 74.44999694824219,
+          "lap": 3,
+          "distance": 562,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 132000,
+          "sector": 13,
+          "position": [
+            -4553.955078125,
+            1.0461959838867188,
+            8290.4052734375
+          ],
+          "speed": 72.37818908691406,
+          "lap": 3,
+          "distance": 568,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 133000,
+          "sector": 18,
+          "position": [
+            -5264.95263671875,
+            4.76837158203125e-7,
+            8407.9501953125
+          ],
+          "speed": 73.47954559326172,
+          "lap": 3,
+          "distance": 574,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 134000,
+          "sector": 24,
+          "position": [
+            -5959.6650390625,
+            4.76837158203125e-7,
+            8127.23828125
+          ],
+          "speed": 77.05459594726562,
+          "lap": 3,
+          "distance": 580,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 135000,
+          "sector": 31,
+          "position": [
+            -6537.07373046875,
+            33.203125,
+            7606.0341796875
+          ],
+          "speed": 78.64525604248047,
+          "lap": 3,
+          "distance": 587,
+          "rank": 3,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 136000,
+          "sector": 38,
+          "position": [
+            -6846.14306640625,
+            4.3419952392578125,
+            6924.23388671875
+          ],
+          "speed": 72.59210968017578,
+          "lap": 3,
+          "distance": 594,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 137000,
+          "sector": 44,
+          "position": [
+            -6632.11962890625,
+            64.97735595703125,
+            6259.33154296875
+          ],
+          "speed": 72.28849029541016,
+          "lap": 3,
+          "distance": 599,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 138000,
+          "sector": 49,
+          "position": [
+            -6435.47998046875,
+            104.36577606201172,
+            5549.447265625
+          ],
+          "speed": 75.70073699951172,
+          "lap": 3,
+          "distance": 605,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 139000,
+          "sector": 55,
+          "position": [
+            -6506.59130859375,
+            71.5431900024414,
+            4783.50634765625
+          ],
+          "speed": 79.11026763916016,
+          "lap": 3,
+          "distance": 611,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 140000,
+          "sector": 61,
+          "position": [
+            -6828.18212890625,
+            4.76837158203125e-7,
+            4045.157470703125
+          ],
+          "speed": 81.95475006103516,
+          "lap": 3,
+          "distance": 617,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 141000,
+          "sector": 65,
+          "position": [
+            -7261.72998046875,
+            0.2963848114013672,
+            3549.30859375
+          ],
+          "speed": 21.6949462890625,
+          "lap": 3,
+          "distance": 621,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 142000,
+          "sector": 68,
+          "position": [
+            -7262.25390625,
+            4.76837158203125e-7,
+            3180.470703125
+          ],
+          "speed": 44.16352462768555,
+          "lap": 3,
+          "distance": 624,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 143000,
+          "sector": 72,
+          "position": [
+            -7405.31298828125,
+            4.76837158203125e-7,
+            2713.70166015625
+          ],
+          "speed": 53.12488555908203,
+          "lap": 3,
+          "distance": 628,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 144000,
+          "sector": 76,
+          "position": [
+            -7540.99658203125,
+            2.465932846069336,
+            2161.7890625
+          ],
+          "speed": 60.59065246582031,
+          "lap": 3,
+          "distance": 632,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 145000,
+          "sector": 81,
+          "position": [
+            -7505.50537109375,
+            -56.27367401123047,
+            1545.693603515625
+          ],
+          "speed": 63.879478454589844,
+          "lap": 3,
+          "distance": 637,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 146000,
+          "sector": 86,
+          "position": [
+            -7009.8720703125,
+            -56.20524597167969,
+            1184.2718505859375
+          ],
+          "speed": 63.48978805541992,
+          "lap": 3,
+          "distance": 642,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 147000,
+          "sector": 91,
+          "position": [
+            -6359.62890625,
+            4.76837158203125e-7,
+            1123.00341796875
+          ],
+          "speed": 67.90966796875,
+          "lap": 3,
+          "distance": 647,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 148000,
+          "sector": 96,
+          "position": [
+            -5657.39501953125,
+            4.76837158203125e-7,
+            1122.8785400390625
+          ],
+          "speed": 72.44304656982422,
+          "lap": 3,
+          "distance": 652,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 149000,
+          "sector": 103,
+          "position": [
+            -4916.77783203125,
+            32.962188720703125,
+            1061.77587890625
+          ],
+          "speed": 75.83060455322266,
+          "lap": 3,
+          "distance": 658,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 150000,
+          "sector": 109,
+          "position": [
+            -4146.505859375,
+            17.248807907104492,
+            1113.5472412109375
+          ],
+          "speed": 78.709716796875,
+          "lap": 3,
+          "distance": 665,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 151000,
+          "sector": 115,
+          "position": [
+            -3406.4697265625,
+            11.917547225952148,
+            1350.6168212890625
+          ],
+          "speed": 77.98563385009766,
+          "lap": 3,
+          "distance": 671,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 152000,
+          "sector": 122,
+          "position": [
+            -2632.32373046875,
+            4.76837158203125e-7,
+            1510.973388671875
+          ],
+          "speed": 80.12715911865234,
+          "lap": 3,
+          "distance": 678,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 153000,
+          "sector": 125,
+          "position": [
+            -2163.636962890625,
+            4.76837158203125e-7,
+            1579.958740234375
+          ],
+          "speed": 34.74837875366211,
+          "lap": 3,
+          "distance": 681,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 154000,
+          "sector": 126,
+          "position": [
+            -2103.732666015625,
+            4.76837158203125e-7,
+            1689.9580078125
+          ],
+          "speed": 24.067167282104492,
+          "lap": 3,
+          "distance": 682,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 155000,
+          "sector": 129,
+          "position": [
+            -2008.1859130859375,
+            4.76837158203125e-7,
+            2017.44140625
+          ],
+          "speed": 49.784423828125,
+          "lap": 3,
+          "distance": 685,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 156000,
+          "sector": 133,
+          "position": [
+            -1863.6197509765625,
+            4.76837158203125e-7,
+            2535.954833984375
+          ],
+          "speed": 56.91775894165039,
+          "lap": 3,
+          "distance": 689,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 157000,
+          "sector": 137,
+          "position": [
+            -2029.7532958984375,
+            7.348573684692383,
+            3096.452392578125
+          ],
+          "speed": 61.8098258972168,
+          "lap": 3,
+          "distance": 693,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 158000,
+          "sector": 143,
+          "position": [
+            -2403.660888671875,
+            3.349536895751953,
+            3626.580078125
+          ],
+          "speed": 67.38330841064453,
+          "lap": 3,
+          "distance": 698,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 159000,
+          "sector": 147,
+          "position": [
+            -2409.59521484375,
+            8.16207504272461,
+            4247.82080078125
+          ],
+          "speed": 62.931278228759766,
+          "lap": 3,
+          "distance": 703,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 160000,
+          "sector": 153,
+          "position": [
+            -2155.719482421875,
+            28.733423233032227,
+            4851.71435546875
+          ],
+          "speed": 67.33303833007812,
+          "lap": 3,
+          "distance": 709,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 161000,
+          "sector": 158,
+          "position": [
+            -2287.6640625,
+            7.8500261306762695,
+            5502.48388671875
+          ],
+          "speed": 68.30815124511719,
+          "lap": 3,
+          "distance": 714,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 162000,
+          "sector": 164,
+          "position": [
+            -2577.299072265625,
+            4.5078935623168945,
+            6135.36279296875
+          ],
+          "speed": 70.5823745727539,
+          "lap": 3,
+          "distance": 720,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 163000,
+          "sector": 168,
+          "position": [
+            -2358.12744140625,
+            4.76837158203125e-7,
+            6702.97900390625
+          ],
+          "speed": 62.19731140136719,
+          "lap": 3,
+          "distance": 724,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 164000,
+          "sector": 175,
+          "position": [
+            -2482.13818359375,
+            4.76837158203125e-7,
+            7312.36962890625
+          ],
+          "speed": 63.810794830322266,
+          "lap": 4,
+          "distance": 731,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 165000,
+          "sector": 180,
+          "position": [
+            -2976.356201171875,
+            2.515270233154297,
+            7733.15966796875
+          ],
+          "speed": 68.42597961425781,
+          "lap": 4,
+          "distance": 736,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 166000,
+          "sector": 5,
+          "position": [
+            -3655.662841796875,
+            0.006946086883544922,
+            7934.123046875
+          ],
+          "speed": 73.21221923828125,
+          "lap": 4,
+          "distance": 741,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 167000,
+          "sector": 11,
+          "position": [
+            -4348.52734375,
+            -1.7438745498657227,
+            8179.224609375
+          ],
+          "speed": 71.41797637939453,
+          "lap": 4,
+          "distance": 748,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 168000,
+          "sector": 16,
+          "position": [
+            -5029.349609375,
+            4.76837158203125e-7,
+            8417.9658203125
+          ],
+          "speed": 72.12995910644531,
+          "lap": 4,
+          "distance": 753,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 169000,
+          "sector": 22,
+          "position": [
+            -5743.45361328125,
+            0.016554832458496094,
+            8246.44921875
+          ],
+          "speed": 76.03548431396484,
+          "lap": 4,
+          "distance": 759,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 170000,
+          "sector": 29,
+          "position": [
+            -6370.00439453125,
+            17.900239944458008,
+            7796.693359375
+          ],
+          "speed": 78.55648040771484,
+          "lap": 4,
+          "distance": 765,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 171000,
+          "sector": 36,
+          "position": [
+            -6795.32568359375,
+            4.76837158203125e-7,
+            7155.66943359375
+          ],
+          "speed": 73.36412811279297,
+          "lap": 4,
+          "distance": 773,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 172000,
+          "sector": 42,
+          "position": [
+            -6733.95703125,
+            55.10127258300781,
+            6465.1103515625
+          ],
+          "speed": 70.99452209472656,
+          "lap": 4,
+          "distance": 779,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 173000,
+          "sector": 47,
+          "position": [
+            -6471.779296875,
+            94.54364776611328,
+            5786.9306640625
+          ],
+          "speed": 74.69432067871094,
+          "lap": 4,
+          "distance": 784,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 174000,
+          "sector": 53,
+          "position": [
+            -6454.716796875,
+            99.94932556152344,
+            5028.11279296875
+          ],
+          "speed": 77.91526794433594,
+          "lap": 4,
+          "distance": 790,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 175000,
+          "sector": 59,
+          "position": [
+            -6707.3759765625,
+            7.265512466430664,
+            4275.50927734375
+          ],
+          "speed": 81.3381576538086,
+          "lap": 4,
+          "distance": 796,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 176000,
+          "sector": 64,
+          "position": [
+            -7143.6904296875,
+            4.76837158203125e-7,
+            3688.849609375
+          ],
+          "speed": 59.66499710083008,
+          "lap": 4,
+          "distance": 801,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 177000,
+          "sector": 67,
+          "position": [
+            -7249.333984375,
+            4.76837158203125e-7,
+            3321.36572265625
+          ],
+          "speed": 39.139015197753906,
+          "lap": 4,
+          "distance": 804,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 178000,
+          "sector": 70,
+          "position": [
+            -7350.5029296875,
+            4.76837158203125e-7,
+            2880.944580078125
+          ],
+          "speed": 50.131038665771484,
+          "lap": 4,
+          "distance": 807,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 179000,
+          "sector": 74,
+          "position": [
+            -7509.62353515625,
+            4.76837158203125e-7,
+            2363.19140625
+          ],
+          "speed": 58.10852813720703,
+          "lap": 4,
+          "distance": 811,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 180000,
+          "sector": 79,
+          "position": [
+            -7559.27490234375,
+            -29.473249435424805,
+            1757.33642578125
+          ],
+          "speed": 63.02830505371094,
+          "lap": 4,
+          "distance": 816,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 181000,
+          "sector": 84,
+          "position": [
+            -7206.04443359375,
+            -85.90953826904297,
+            1260.796875
+          ],
+          "speed": 64.17650604248047,
+          "lap": 4,
+          "distance": 821,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 182000,
+          "sector": 89,
+          "position": [
+            -6559.70263671875,
+            -10.321216583251953,
+            1118.90087890625
+          ],
+          "speed": 68.74344635009766,
+          "lap": 4,
+          "distance": 826,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 183000,
+          "sector": 95,
+          "position": [
+            -5850.45947265625,
+            3.6941232681274414,
+            1120.0567626953125
+          ],
+          "speed": 72.99848175048828,
+          "lap": 4,
+          "distance": 832,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 184000,
+          "sector": 101,
+          "position": [
+            -5103.5263671875,
+            16.20538902282715,
+            1076.249755859375
+          ],
+          "speed": 76.4288330078125,
+          "lap": 4,
+          "distance": 838,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 185000,
+          "sector": 108,
+          "position": [
+            -4328.75927734375,
+            31.159929275512695,
+            1093.7340087890625
+          ],
+          "speed": 78.89144134521484,
+          "lap": 4,
+          "distance": 844,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 186000,
+          "sector": 114,
+          "position": [
+            -3571.8388671875,
+            4.76837158203125e-7,
+            1295.5655517578125
+          ],
+          "speed": 77.99237823486328,
+          "lap": 4,
+          "distance": 851,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 187000,
+          "sector": 120,
+          "position": [
+            -2800.46142578125,
+            1.9215197563171387,
+            1437.4674072265625
+          ],
+          "speed": 79.99390411376953,
+          "lap": 4,
+          "distance": 857,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 188000,
+          "sector": 127,
+          "position": [
+            -2087.2451171875,
+            4.76837158203125e-7,
+            1725.7208251953125
+          ],
+          "speed": 74.46039581298828,
+          "lap": 4,
+          "distance": 863,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 189000,
+          "sector": 128,
+          "position": [
+            -1875.823486328125,
+            4.76837158203125e-7,
+            1923.871826171875
+          ],
+          "speed": 7.426535129547119,
+          "lap": 4,
+          "distance": 865,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 190000,
+          "sector": 130,
+          "position": [
+            -1957.894287109375,
+            4.76837158203125e-7,
+            2111.85400390625
+          ],
+          "speed": 31.082496643066406,
+          "lap": 4,
+          "distance": 867,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 191000,
+          "sector": 131,
+          "position": [
+            -1960.8985595703125,
+            4.76837158203125e-7,
+            2323.160400390625
+          ],
+          "speed": 5.83908224105835,
+          "lap": 4,
+          "distance": 868,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 192000,
+          "sector": 131,
+          "position": [
+            -1959.6934814453125,
+            4.76837158203125e-7,
+            2330.799072265625
+          ],
+          "speed": 1.105271816253662,
+          "lap": 4,
+          "distance": 868,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 193000,
+          "sector": 131,
+          "position": [
+            -1943.416259765625,
+            4.76837158203125e-7,
+            2304.3642578125
+          ],
+          "speed": -18.410734176635742,
+          "lap": 4,
+          "distance": 868,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 194000,
+          "sector": 130,
+          "position": [
+            -1961.2340087890625,
+            4.76837158203125e-7,
+            2146.40234375
+          ],
+          "speed": -18.54095458984375,
+          "lap": 4,
+          "distance": 867,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 195000,
+          "sector": 129,
+          "position": [
+            -2003.7884521484375,
+            4.76837158203125e-7,
+            1986.53857421875
+          ],
+          "speed": -18.54095458984375,
+          "lap": 4,
+          "distance": 866,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 196000,
+          "sector": 129,
+          "position": [
+            -1944.7353515625,
+            4.76837158203125e-7,
+            2036.453857421875
+          ],
+          "speed": 39.625083923339844,
+          "lap": 4,
+          "distance": 866,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 197000,
+          "sector": 131,
+          "position": [
+            -1841.7218017578125,
+            4.76837158203125e-7,
+            2327.098388671875
+          ],
+          "speed": 23.613651275634766,
+          "lap": 4,
+          "distance": 868,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 198000,
+          "sector": 134,
+          "position": [
+            -1828.463134765625,
+            4.76837158203125e-7,
+            2655.354248046875
+          ],
+          "speed": 40.68134689331055,
+          "lap": 4,
+          "distance": 871,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 199000,
+          "sector": 137,
+          "position": [
+            -2059.9423828125,
+            0.4649815559387207,
+            3048.646240234375
+          ],
+          "speed": 50.68361282348633,
+          "lap": 4,
+          "distance": 874,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 200000,
+          "sector": 141,
+          "position": [
+            -2400.52587890625,
+            4.76837158203125e-7,
+            3475.239990234375
+          ],
+          "speed": 58.31476593017578,
+          "lap": 4,
+          "distance": 878,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 201000,
+          "sector": 146,
+          "position": [
+            -2514.532470703125,
+            9.104615211486816,
+            4048.567138671875
+          ],
+          "speed": 59.92765808105469,
+          "lap": 4,
+          "distance": 883,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 202000,
+          "sector": 151,
+          "position": [
+            -2224.700927734375,
+            8.846725463867188,
+            4608.404296875
+          ],
+          "speed": 66.00080108642578,
+          "lap": 4,
+          "distance": 888,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 203000,
+          "sector": 156,
+          "position": [
+            -2216.15625,
+            4.76837158203125e-7,
+            5234.40966796875
+          ],
+          "speed": 47.76765823364258,
+          "lap": 4,
+          "distance": 893,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 204000,
+          "sector": 160,
+          "position": [
+            -2555.366455078125,
+            0.2543659210205078,
+            5687.08056640625
+          ],
+          "speed": 61.19302749633789,
+          "lap": 4,
+          "distance": 897,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 205000,
+          "sector": 165,
+          "position": [
+            -2555.267333984375,
+            9.162342071533203,
+            6271.013671875
+          ],
+          "speed": 61.506004333496094,
+          "lap": 4,
+          "distance": 902,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 2
+        },
+        {
+          "timeMs": 206000,
+          "sector": 170,
+          "position": [
+            -2328.941162109375,
+            0.7148551940917969,
+            6860.13818359375
+          ],
+          "speed": 63.76653289794922,
+          "lap": 4,
+          "distance": 907,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 2
+        }
+      ],
+      "lapEvents": [
+        {
+          "type": "lap",
+          "lap": 1,
+          "timeMs": 42225,
+          "now": 42225
+        },
+        {
+          "type": "lap",
+          "lap": 2,
+          "timeMs": 41525,
+          "now": 83750
+        },
+        {
+          "type": "lap",
+          "lap": 3,
+          "timeMs": 44250,
+          "now": 128000
+        },
+        {
+          "type": "lap",
+          "lap": 4,
+          "timeMs": 35325,
+          "now": 163325
+        },
+        {
+          "type": "lap",
+          "lap": 5,
+          "timeMs": 42750,
+          "now": 206075
+        }
+      ],
+      "pickupEvents": [],
+      "gateEvents": [
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 17000,
+          "sound": "CHECKPOINT",
+          "now": 17025
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 14000,
+          "sound": "CHECKPOINT",
+          "now": 28325
+        },
+        {
+          "type": "time-gate",
+          "index": 3,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 41725
+        },
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 17000,
+          "sound": "CHECKPOINT",
+          "now": 56775
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 14000,
+          "sound": "CHECKPOINT",
+          "now": 68225
+        },
+        {
+          "type": "time-gate",
+          "index": 3,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 83250
+        },
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 17000,
+          "sound": "CHECKPOINT",
+          "now": 96675
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 14000,
+          "sound": "CHECKPOINT",
+          "now": 108500
+        },
+        {
+          "type": "time-gate",
+          "index": 3,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 127525
+        },
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 17000,
+          "sound": "CHECKPOINT",
+          "now": 140900
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 14000,
+          "sound": "CHECKPOINT",
+          "now": 152575
+        },
+        {
+          "type": "time-gate",
+          "index": 3,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 162850
+        },
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 17000,
+          "sound": "CHECKPOINT",
+          "now": 176225
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 14000,
+          "sound": "CHECKPOINT",
+          "now": 187675
+        },
+        {
+          "type": "time-gate",
+          "index": 3,
+          "additionalMs": 11000,
+          "sound": "CHECKPOINT",
+          "now": 205600
+        }
+      ],
+      "rescue": {
+        "entries": 0,
+        "environmentEntries": 0,
+        "blockedTicks": 0,
+        "maxBlockedMs": 0,
+        "relocations": [],
+        "safetyFallbacks": 0
+      },
+      "starApproaches": [
+        {
+          "index": 0,
+          "position": [
+            -3895.826416015625,
+            27,
+            7961.01220703125
+          ],
+          "minDistance": 16.91289508305955,
+          "heightDifference": -26.462637424468994,
+          "now": 46175,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 1,
+          "position": [
+            -3776.886474609375,
+            27,
+            8521.8330078125
+          ],
+          "minDistance": 508.80933332945557,
+          "heightDifference": -24.72191333770752,
+          "now": 5550,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 9,
+          "position": [
+            -7646.6943359375,
+            23,
+            6401.412109375
+          ],
+          "minDistance": 855.4017515463129,
+          "heightDifference": 1.7041511535644531,
+          "now": 12375,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 10,
+          "position": [
+            -6412.10107421875,
+            128,
+            5513.91015625
+          ],
+          "minDistance": 15.647077793691281,
+          "heightDifference": -22.995376586914062,
+          "now": 14150,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 13,
+          "position": [
+            -6937.45263671875,
+            -30,
+            1172.466552734375
+          ],
+          "minDistance": 7.671778576316808,
+          "heightDifference": -24.109031677246094,
+          "now": 146125,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 15,
+          "position": [
+            -5742.7314453125,
+            65,
+            1194.8250732421875
+          ],
+          "minDistance": 69.79425274229419,
+          "heightDifference": -61.87548637390137,
+          "now": 147875,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 16,
+          "position": [
+            -5701.5146484375,
+            25,
+            460.2109375
+          ],
+          "minDistance": 623.3350006131592,
+          "heightDifference": -24.999999523162842,
+          "now": 23875,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 20,
+          "position": [
+            -4010.2236328125,
+            55,
+            1207.152099609375
+          ],
+          "minDistance": 67.29662567548176,
+          "heightDifference": -53.71811771392822,
+          "now": 26100,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 21,
+          "position": [
+            -3884.96826171875,
+            25,
+            485.3525390625
+          ],
+          "minDistance": 662.0050549086918,
+          "heightDifference": -23.71762704849243,
+          "now": 150175,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 25,
+          "position": [
+            -2071.407470703125,
+            25,
+            2806.08154296875
+          ],
+          "minDistance": 39.81565664838182,
+          "heightDifference": -24.999999523162842,
+          "now": 76325,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 27,
+          "position": [
+            -1892.1287841796875,
+            34,
+            7125.4541015625
+          ],
+          "minDistance": 472.9423785591495,
+          "heightDifference": -33.99999952316284,
+          "now": 83925,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 28,
+          "position": [
+            -2515.916748046875,
+            45,
+            7024.01318359375
+          ],
+          "minDistance": 19.264127533903675,
+          "heightDifference": -29.109941482543945,
+          "now": 2325,
+          "eligibleAfter": 0,
+          "state": 1
+        }
+      ],
+      "durationMs": 206075,
+      "inputSha256": "a2d5648aeec5d40f3008573d15af92ea7bd9e78f28b1c1121359a1f69323c6ea",
+      "recoveries": 2,
+      "race": {
+        "phase": 3,
+        "finishArmed": true,
+        "finished": true,
+        "lapCount": 5,
+        "lapLimit": 5,
+        "lapTimes": [
+          42225,
+          41525,
+          44250,
+          35325,
+          42750
+        ],
+        "sessionBestLapMs": 35325,
+        "bestLapMs": 35325,
+        "bestRaceMs": 206075,
+        "raceTimeMs": 206075,
+        "elapsedMs": 206075,
+        "distance": 908,
+        "gateIndex": 3,
+        "gateDistance": 906,
+        "remainingMs": 22925,
+        "zeroSectorPassed": true,
+        "events": [
+          {
+            "type": "lap",
+            "lap": 5,
+            "timeMs": 42750
+          },
+          {
+            "type": "finished",
+            "timeMs": 206075
+          },
+          {
+            "type": "native-notification",
+            "id": 8
+          }
+        ]
+      },
+      "rank": 2,
+      "stars": 0,
+      "qualification": {
+        "qualified": true,
+        "reason": null,
+        "maximumRank": 2
+      },
+      "finalPosition": [
+        -2329.628662109375,
+        4.76837158203125e-7,
+        6908.5029296875
+      ],
+      "finalDiagnostics": {
+        "player": {
+          "position": [
+            -2329.628662109375,
+            4.76837158203125e-7,
+            6908.5029296875
+          ],
+          "yaw": 20624.099609375,
+          "matrix": [
+            0.9757011532783508,
+            0,
+            0.21910524368286133,
+            -8.036757037643838e-9,
+            1,
+            3.578861296205105e-8,
+            -0.2191043347120285,
+            -3.6679889348079087e-8,
+            0.9757014513015747
+          ],
+          "lateralSpeed": 11.001590728759766,
+          "verticalSpeed": 9.700657844543457,
+          "forwardSpeed": 62.29977798461914,
+          "yawRate": 0.9833955764770508,
+          "rpm": 6643.5126953125,
+          "gear": 5,
+          "controls": {
+            "throttle": 100,
+            "brake": 0,
+            "steering": -20,
+            "handbrake": true
+          },
+          "sector": 171,
+          "groundCount": 4,
+          "wheels": [
+            {
+              "local": [
+                -21,
+                5.432261943817139,
+                18
+              ],
+              "spin": -7946756.5,
+              "steeringAngle": 68.26667022705078,
+              "verticalSpeed": 0,
+              "position": [
+                -2354.791259765625,
+                5.908590316772461,
+                6937.263671875
+              ]
+            },
+            {
+              "local": [
+                21,
+                5.811649799346924,
+                18
+              ],
+              "spin": -7946756.5,
+              "steeringAngle": 68.26667022705078,
+              "verticalSpeed": 0,
+              "position": [
+                -2313.811767578125,
+                5.908590316772461,
+                6946.4658203125
+              ]
+            },
+            {
+              "local": [
+                -12,
+                5.811654090881348,
+                -21
+              ],
+              "spin": -7946756.5,
+              "steeringAngle": 0,
+              "verticalSpeed": 0,
+              "position": [
+                -2337.46484375,
+                5.9085917472839355,
+                6901.18310546875
+              ]
+            },
+            {
+              "local": [
+                12,
+                6.028447151184082,
+                -21
+              ],
+              "spin": -7946756.5,
+              "steeringAngle": 0,
+              "verticalSpeed": 0,
+              "position": [
+                -2314.048095703125,
+                5.9085917472839355,
+                6906.44189453125
+              ]
+            }
+          ],
+          "updates": 8243
+        },
+        "waypoint": 739,
+        "phase": 0,
+        "rescue": [],
+        "opponents": [
+          {
+            "id": 0,
+            "position": [
+              -2249.18505859375,
+              4.76837158203125e-7,
+              6642.9599609375
+            ],
+            "sector": 168,
+            "waypoint": 730,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": true,
+              "specialTime": 0,
+              "priorities": [
+                2,
+                1,
+                0
+              ],
+              "waypoint": 732,
+              "previousSector": 168,
+              "sectorTime": 0.15000002086162567,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 179.6750030517578,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 4,
+              "finishMarker": 15,
+              "lastFinishTime": 163.875,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -2375.238037109375,
+                -0.4328140616416931,
+                6811.6416015625
+              ],
+              "speedTarget": [
+                -2424.89501953125,
+                -0.43107303977012634,
+                6958.845703125
+              ]
+            },
+            "forwardSpeed": 63.510887145996094,
+            "distance": 902
+          },
+          {
+            "id": 1,
+            "position": [
+              -2334.19287109375,
+              13.100797653198242,
+              7422.03271484375
+            ],
+            "sector": 175,
+            "waypoint": 756,
+            "state": {
+              "mode": 9,
+              "gear": 1,
+              "reverseLatch": false,
+              "disabled": true,
+              "turnTime": 1,
+              "turnIntegral": -3.719125986099243,
+              "turnStartHeading": 0.08897088468074799,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 741,
+              "previousSector": 175,
+              "sectorTime": 2.4750003814697266,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0.02500000223517418,
+              "lastRecoveryTime": 22.875,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": true,
+              "slippery": false,
+              "laps": 5,
+              "finishMarker": 15,
+              "lastFinishTime": 201,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -2473.706298828125,
+                -0.4304232597351074,
+                7042.26806640625
+              ],
+              "speedTarget": [
+                -2597.398193359375,
+                -0.42989200353622437,
+                7202.2294921875
+              ]
+            },
+            "forwardSpeed": 0,
+            "distance": 909
+          },
+          {
+            "id": 2,
+            "position": [
+              -2262.05224609375,
+              1.1302490234375,
+              7207.232421875
+            ],
+            "sector": 173,
+            "waypoint": 748,
+            "state": {
+              "mode": 9,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": true,
+              "turnTime": 0.6499999165534973,
+              "turnIntegral": 0.14937038719654083,
+              "turnStartHeading": 0.06596117466688156,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                0,
+                1,
+                2
+              ],
+              "waypoint": 743,
+              "previousSector": 173,
+              "sectorTime": 0.17500002682209015,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0.02500000223517418,
+              "lastRecoveryTime": 60.099998474121094,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": true,
+              "slippery": false,
+              "laps": 5,
+              "finishMarker": 15,
+              "lastFinishTime": 205.4250030517578,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -2222.287109375,
+                -0.4304232597351074,
+                7151.03466796875
+              ],
+              "speedTarget": [
+                -2409.73828125,
+                -0.42989200353622437,
+                7335.12255859375
+              ]
+            },
+            "forwardSpeed": 31.25459861755371,
+            "distance": 907
+          }
+        ]
+      }
+    },
+    {
+      "track": 4,
+      "difficulty": 2,
+      "raceMode": 1,
+      "opponents": 3,
+      "status": "time-expired",
+      "events": {
+        "overtake": 6,
+        "time-tick": 17,
+        "time-gate": 2,
+        "time-expired": 1
+      },
+      "samples": [
+        {
+          "timeMs": 1000,
+          "sector": 169,
+          "position": [
+            -2236.20703125,
+            4.76837158203125e-7,
+            6680.3232421875
+          ],
+          "speed": 24.995351791381836,
+          "lap": 0,
+          "distance": 1,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 2000,
+          "sector": 171,
+          "position": [
+            -2413.229736328125,
+            10.69276237487793,
+            6937.62353515625
+          ],
+          "speed": 39.15772247314453,
+          "lap": 0,
+          "distance": 3,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 3000,
+          "sector": 176,
+          "position": [
+            -2678.51123046875,
+            21.62270164489746,
+            7287.15966796875
+          ],
+          "speed": 48.398983001708984,
+          "lap": 0,
+          "distance": 8,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 4000,
+          "sector": 180,
+          "position": [
+            -3072.145263671875,
+            4.76837158203125e-7,
+            7635.89111328125
+          ],
+          "speed": 57.17965316772461,
+          "lap": 0,
+          "distance": 12,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 5000,
+          "sector": 3,
+          "position": [
+            -3524.03564453125,
+            -2.7009894847869873,
+            7857.18017578125
+          ],
+          "speed": 42.499820709228516,
+          "lap": 0,
+          "distance": 16,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 6000,
+          "sector": 7,
+          "position": [
+            -3987.855712890625,
+            4.76837158203125e-7,
+            7920.85791015625
+          ],
+          "speed": 51.10890579223633,
+          "lap": 0,
+          "distance": 20,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 7000,
+          "sector": 11,
+          "position": [
+            -4424.7255859375,
+            2.2351598739624023,
+            8216.5537109375
+          ],
+          "speed": 56.254974365234375,
+          "lap": 0,
+          "distance": 24,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 8000,
+          "sector": 16,
+          "position": [
+            -5005.15869140625,
+            4.76837158203125e-7,
+            8342.66796875
+          ],
+          "speed": 62.80900192260742,
+          "lap": 0,
+          "distance": 29,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 9000,
+          "sector": 21,
+          "position": [
+            -5644.1845703125,
+            0.056574344635009766,
+            8195.7626953125
+          ],
+          "speed": 68.73800659179688,
+          "lap": 0,
+          "distance": 34,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 10000,
+          "sector": 27,
+          "position": [
+            -6268.11865234375,
+            16.527816772460938,
+            7860.62255859375
+          ],
+          "speed": 72.95500183105469,
+          "lap": 0,
+          "distance": 40,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 11000,
+          "sector": 35,
+          "position": [
+            -6760.15087890625,
+            4.76837158203125e-7,
+            7323.3037109375
+          ],
+          "speed": 70.68704223632812,
+          "lap": 0,
+          "distance": 48,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 12000,
+          "sector": 40,
+          "position": [
+            -6818.3193359375,
+            32.12999725341797,
+            6643.576171875
+          ],
+          "speed": 68.38658905029297,
+          "lap": 0,
+          "distance": 53,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 13000,
+          "sector": 46,
+          "position": [
+            -6531.8212890625,
+            77.62651824951172,
+            5999.82666015625
+          ],
+          "speed": 72.5992431640625,
+          "lap": 0,
+          "distance": 58,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 14000,
+          "sector": 52,
+          "position": [
+            -6433.42138671875,
+            105,
+            5266.798828125
+          ],
+          "speed": 76.08661651611328,
+          "lap": 0,
+          "distance": 64,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 15000,
+          "sector": 57,
+          "position": [
+            -6600.1875,
+            30.442262649536133,
+            4509.765625
+          ],
+          "speed": 79.84403228759766,
+          "lap": 0,
+          "distance": 70,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 16000,
+          "sector": 63,
+          "position": [
+            -6964.90771484375,
+            4.76837158203125e-7,
+            3791.82421875
+          ],
+          "speed": 51.915443420410156,
+          "lap": 0,
+          "distance": 76,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 17000,
+          "sector": 66,
+          "position": [
+            -7245.6689453125,
+            4.76837158203125e-7,
+            3441.109130859375
+          ],
+          "speed": 33.90669250488281,
+          "lap": 0,
+          "distance": 79,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 18000,
+          "sector": 69,
+          "position": [
+            -7304.4482421875,
+            4.76837158203125e-7,
+            3034.3349609375
+          ],
+          "speed": 47.187137603759766,
+          "lap": 0,
+          "distance": 82,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 19000,
+          "sector": 73,
+          "position": [
+            -7462.03759765625,
+            4.76837158203125e-7,
+            2544.99365234375
+          ],
+          "speed": 55.51640701293945,
+          "lap": 0,
+          "distance": 86,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 20000,
+          "sector": 78,
+          "position": [
+            -7561.87353515625,
+            1.703873634338379,
+            1964.301025390625
+          ],
+          "speed": 61.331817626953125,
+          "lap": 0,
+          "distance": 91,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 21000,
+          "sector": 83,
+          "position": [
+            -7384.478515625,
+            -73.45903778076172,
+            1373.53076171875
+          ],
+          "speed": 62.94758987426758,
+          "lap": 0,
+          "distance": 96,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 22000,
+          "sector": 88,
+          "position": [
+            -6774.37939453125,
+            -39.866424560546875,
+            1137.51806640625
+          ],
+          "speed": 70.16779327392578,
+          "lap": 0,
+          "distance": 101,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 23000,
+          "sector": 93,
+          "position": [
+            -6055.43017578125,
+            2.8988475799560547,
+            1117.6214599609375
+          ],
+          "speed": 73.85245513916016,
+          "lap": 0,
+          "distance": 106,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 24000,
+          "sector": 99,
+          "position": [
+            -5301.00439453125,
+            4.76837158203125e-7,
+            1092.99267578125
+          ],
+          "speed": 77.19265747070312,
+          "lap": 0,
+          "distance": 112,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 25000,
+          "sector": 106,
+          "position": [
+            -4520.20263671875,
+            31.616270065307617,
+            1071.641357421875
+          ],
+          "speed": 79.4908218383789,
+          "lap": 0,
+          "distance": 119,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 26000,
+          "sector": 113,
+          "position": [
+            -3736.442626953125,
+            4.76837158203125e-7,
+            1216.88037109375
+          ],
+          "speed": 77.76798248291016,
+          "lap": 0,
+          "distance": 125,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 27000,
+          "sector": 119,
+          "position": [
+            -2980.62744140625,
+            18.813161849975586,
+            1415.0533447265625
+          ],
+          "speed": 79.77871704101562,
+          "lap": 0,
+          "distance": 132,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 28000,
+          "sector": 125,
+          "position": [
+            -2226.526611328125,
+            4.76837158203125e-7,
+            1626.6837158203125
+          ],
+          "speed": 75.13092041015625,
+          "lap": 0,
+          "distance": 138,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 29000,
+          "sector": 128,
+          "position": [
+            -1876.963134765625,
+            4.76837158203125e-7,
+            1912.927734375
+          ],
+          "speed": 1.1241289377212524,
+          "lap": 0,
+          "distance": 141,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 30000,
+          "sector": 129,
+          "position": [
+            -1981.0908203125,
+            4.76837158203125e-7,
+            2036.4248046875
+          ],
+          "speed": 28.404682159423828,
+          "lap": 0,
+          "distance": 142,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 31000,
+          "sector": 131,
+          "position": [
+            -1996.9024658203125,
+            4.76837158203125e-7,
+            2313.026611328125
+          ],
+          "speed": 1.047366738319397,
+          "lap": 0,
+          "distance": 144,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 32000,
+          "sector": 131,
+          "position": [
+            -1982.921142578125,
+            4.76837158203125e-7,
+            2325.96533203125
+          ],
+          "speed": 1.2833666801452637,
+          "lap": 0,
+          "distance": 144,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 0
+        },
+        {
+          "timeMs": 33000,
+          "sector": 131,
+          "position": [
+            -1981.54833984375,
+            4.76837158203125e-7,
+            2319.090576171875
+          ],
+          "speed": -13.966609001159668,
+          "lap": 0,
+          "distance": 144,
+          "rank": 0,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 34000,
+          "sector": 130,
+          "position": [
+            -2023.2076416015625,
+            4.76837158203125e-7,
+            2164.83056640625
+          ],
+          "speed": -18.54095458984375,
+          "lap": 0,
+          "distance": 143,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 35000,
+          "sector": 129,
+          "position": [
+            -2111.2900390625,
+            4.76837158203125e-7,
+            2024.7960205078125
+          ],
+          "speed": -18.54095458984375,
+          "lap": 0,
+          "distance": 142,
+          "rank": 1,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 36000,
+          "sector": 128,
+          "position": [
+            -2164.146240234375,
+            4.76837158203125e-7,
+            1953.473876953125
+          ],
+          "speed": 6.4234089851379395,
+          "lap": 0,
+          "distance": 141,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 37000,
+          "sector": 130,
+          "position": [
+            -2045.4080810546875,
+            4.76837158203125e-7,
+            2127.634765625
+          ],
+          "speed": 31.791229248046875,
+          "lap": 0,
+          "distance": 143,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        },
+        {
+          "timeMs": 38000,
+          "sector": 133,
+          "position": [
+            -1887.7703857421875,
+            4.76837158203125e-7,
+            2488.00927734375
+          ],
+          "speed": 45.83789825439453,
+          "lap": 0,
+          "distance": 145,
+          "rank": 2,
+          "stars": 0,
+          "recoveries": 1
+        }
+      ],
+      "lapEvents": [],
+      "pickupEvents": [],
+      "gateEvents": [
+        {
+          "type": "time-gate",
+          "index": 1,
+          "additionalMs": 12000,
+          "sound": "CHECKPOINT",
+          "now": 16550
+        },
+        {
+          "type": "time-gate",
+          "index": 2,
+          "additionalMs": 9000,
+          "sound": "CHECKPOINT",
+          "now": 27900
+        }
+      ],
+      "rescue": {
+        "entries": 0,
+        "environmentEntries": 0,
+        "blockedTicks": 0,
+        "maxBlockedMs": 0,
+        "relocations": [],
+        "safetyFallbacks": 0
+      },
+      "starApproaches": [
+        {
+          "index": 0,
+          "position": [
+            -3895.826416015625,
+            27,
+            7961.01220703125
+          ],
+          "minDistance": 65.89197915205217,
+          "heightDifference": -26.999999523162842,
+          "now": 5825,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 1,
+          "position": [
+            -3776.886474609375,
+            27,
+            8521.8330078125
+          ],
+          "minDistance": 615.985775243454,
+          "heightDifference": -25.68538808822632,
+          "now": 6450,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 9,
+          "position": [
+            -7646.6943359375,
+            23,
+            6401.412109375
+          ],
+          "minDistance": 858.5550280296733,
+          "heightDifference": -0.7706718444824219,
+          "now": 11875,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 10,
+          "position": [
+            -6412.10107421875,
+            128,
+            5513.91015625
+          ],
+          "minDistance": 25.882721366226765,
+          "heightDifference": -22.994552612304688,
+          "now": 13675,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 13,
+          "position": [
+            -6937.45263671875,
+            -30,
+            1172.466552734375
+          ],
+          "minDistance": 11.180143697562412,
+          "heightDifference": -19.98540496826172,
+          "now": 21750,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 15,
+          "position": [
+            -5742.7314453125,
+            65,
+            1194.8250732421875
+          ],
+          "minDistance": 75.27762431857062,
+          "heightDifference": -63.2705135345459,
+          "now": 23425,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 16,
+          "position": [
+            -5701.5146484375,
+            25,
+            460.2109375
+          ],
+          "minDistance": 658.5087129904241,
+          "heightDifference": -24.999999523162842,
+          "now": 23500,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 20,
+          "position": [
+            -4010.2236328125,
+            55,
+            1207.152099609375
+          ],
+          "minDistance": 68.8162616122568,
+          "heightDifference": -53.508644580841064,
+          "now": 25650,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 21,
+          "position": [
+            -3884.96826171875,
+            25,
+            485.3525390625
+          ],
+          "minDistance": 664.0146475314665,
+          "heightDifference": -23.508644580841064,
+          "now": 25650,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 25,
+          "position": [
+            -2071.407470703125,
+            25,
+            2806.08154296875
+          ],
+          "minDistance": 198.53835466126836,
+          "heightDifference": -24.999999523162842,
+          "now": 38500,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 27,
+          "position": [
+            -1892.1287841796875,
+            34,
+            7125.4541015625
+          ],
+          "minDistance": 515.3341042992015,
+          "heightDifference": -33.99999952316284,
+          "now": 1550,
+          "eligibleAfter": 0,
+          "state": 1
+        },
+        {
+          "index": 28,
+          "position": [
+            -2515.916748046875,
+            45,
+            7024.01318359375
+          ],
+          "minDistance": 11.253124875950833,
+          "heightDifference": -28.238710403442383,
+          "now": 2325,
+          "eligibleAfter": 0,
+          "state": 1
+        }
+      ],
+      "durationMs": 38500,
+      "inputSha256": "cfaf45bb0626c23a181660c5cfa715be6670ebf43fc58d7cda9f700da7bf6d13",
+      "recoveries": 1,
+      "race": {
+        "phase": 6,
+        "finishArmed": true,
+        "finished": false,
+        "lapCount": 0,
+        "lapLimit": 5,
+        "lapTimes": [],
+        "sessionBestLapMs": 0,
+        "bestLapMs": 268435455,
+        "bestRaceMs": 268435455,
+        "raceTimeMs": null,
+        "elapsedMs": 38500,
+        "distance": 147,
+        "gateIndex": 2,
+        "gateDistance": 139,
+        "remainingMs": 0,
+        "zeroSectorPassed": true,
+        "events": [
+          {
+            "type": "time-expired"
+          }
+        ]
+      },
+      "rank": 2,
+      "stars": 0,
+      "qualification": {
+        "qualified": false,
+        "reason": "rank",
+        "maximumRank": 0
+      },
+      "finalPosition": [
+        -1890.07275390625,
+        4.76837158203125e-7,
+        2725.240966796875
+      ],
+      "finalDiagnostics": {
+        "player": {
+          "position": [
+            -1890.07275390625,
+            4.76837158203125e-7,
+            2725.240966796875
+          ],
+          "yaw": 4284.7080078125,
+          "matrix": [
+            0.9587039947509766,
+            0,
+            0.28440555930137634,
+            -1.0431908670227585e-8,
+            1,
+            3.516496960287441e-8,
+            -0.28440749645233154,
+            -3.6679690396113074e-8,
+            0.9587034583091736
+          ],
+          "lateralSpeed": 5.049875736236572,
+          "verticalSpeed": 5.2901082038879395,
+          "forwardSpeed": 49.151084899902344,
+          "yawRate": 0.6759467124938965,
+          "rpm": 5102.23388671875,
+          "gear": 5,
+          "controls": {
+            "throttle": 100,
+            "brake": 0,
+            "steering": -14,
+            "handbrake": false
+          },
+          "sector": 134,
+          "groundCount": 4,
+          "wheels": [
+            {
+              "local": [
+                -21,
+                5.908590316772461,
+                18
+              ],
+              "spin": -1293278.625,
+              "steeringAngle": 47.78666687011719,
+              "verticalSpeed": 0,
+              "position": [
+                -1917.6092529296875,
+                5.908590316772461,
+                2748.66455078125
+              ]
+            },
+            {
+              "local": [
+                21,
+                5.908590316772461,
+                18
+              ],
+              "spin": -1293278.625,
+              "steeringAngle": 47.78666687011719,
+              "verticalSpeed": 0,
+              "position": [
+                -1877.34375,
+                5.908590316772461,
+                2760.609619140625
+              ]
+            },
+            {
+              "local": [
+                -12,
+                5.908588886260986,
+                -21
+              ],
+              "spin": -1293278.625,
+              "steeringAngle": 0,
+              "verticalSpeed": 0,
+              "position": [
+                -1897.8890380859375,
+                5.9085917472839355,
+                2713.834716796875
+              ]
+            },
+            {
+              "local": [
+                12,
+                5.908588886260986,
+                -21
+              ],
+              "spin": -1293278.625,
+              "steeringAngle": 0,
+              "verticalSpeed": 0,
+              "position": [
+                -1874.880126953125,
+                5.9085917472839355,
+                2720.660400390625
+              ]
+            }
+          ],
+          "updates": 1540
+        },
+        "waypoint": 627,
+        "phase": 0,
+        "rescue": [],
+        "opponents": [
+          {
+            "id": 0,
+            "position": [
+              -2268.528564453125,
+              3.3824310302734375,
+              4296.66259765625
+            ],
+            "sector": 148,
+            "waypoint": 670,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 672,
+              "previousSector": 148,
+              "sectorTime": 0.10000000894069672,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 20.549999237060547,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -2223.29443359375,
+                -0.4328225255012512,
+                4453.72509765625
+              ],
+              "speedTarget": [
+                -2198.78564453125,
+                -0.4342508018016815,
+                4698.4912109375
+              ]
+            },
+            "forwardSpeed": 68.50847625732422,
+            "distance": 158
+          },
+          {
+            "id": 1,
+            "position": [
+              -3201.506591796875,
+              7.301081657409668,
+              7966.6845703125
+            ],
+            "sector": 1,
+            "waypoint": 7,
+            "state": {
+              "mode": 10,
+              "gear": 0,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 1,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 14,
+              "previousSector": 1,
+              "sectorTime": 1.1499994993209839,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 1.1249995231628418,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -3252.019775390625,
+                -0.4536423087120056,
+                8187.939453125
+              ],
+              "speedTarget": [
+                -3462.171142578125,
+                -0.4533368945121765,
+                8368.82421875
+              ]
+            },
+            "forwardSpeed": -3.2287755012512207,
+            "distance": 11
+          },
+          {
+            "id": 2,
+            "position": [
+              -2443.4267578125,
+              4.76837158203125e-7,
+              5514.30419921875
+            ],
+            "sector": 159,
+            "waypoint": 703,
+            "state": {
+              "mode": 0,
+              "gear": 2,
+              "reverseLatch": false,
+              "disabled": false,
+              "turnTime": 0,
+              "turnIntegral": 0,
+              "turnStartHeading": 0,
+              "special": false,
+              "specialTime": 0,
+              "priorities": [
+                1,
+                0,
+                2
+              ],
+              "waypoint": 706,
+              "previousSector": 159,
+              "sectorTime": 0.05000000447034836,
+              "chaseTime": 0,
+              "targetId": -1,
+              "blockRecovery": false,
+              "recoveryTime": 0,
+              "lastRecoveryTime": 0,
+              "recoveryCounter": 0,
+              "forcedRoute": false,
+              "reactionMode": -1,
+              "reactionDeadline": 0,
+              "lastBonusTime": 0,
+              "lastRank": -1,
+              "rankTime": 0,
+              "finished": false,
+              "slippery": false,
+              "laps": 0,
+              "finishMarker": 15,
+              "lastFinishTime": 0,
+              "speedLimit": 0,
+              "turboVisible": false,
+              "turboTime": 0,
+              "steeringTarget": [
+                -2517.2509765625,
+                -0.43297237157821655,
+                5705.3974609375
+              ],
+              "speedTarget": [
+                -2545.15576171875,
+                -0.4343792200088501,
+                5955.572265625
+              ]
+            },
+            "forwardSpeed": 65.86425018310547,
+            "distance": 169
+          }
+        ]
+      }
+    }
+  ],
+  "status": "incomplete",
+  "sourceChangedDuringRun": [],
+  "executionSourceChangedDuringRun": [],
+  "assetsChangedDuringRun": [],
+  "completedAt": "2026-10-20T18:04:22.686Z"
+}
