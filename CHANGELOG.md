@@ -3,7 +3,8 @@
 ## 0.9.0 — 2026-10-25
 
 Source update since the published 0.1.0 release. All prepared assets needed
-to run locally remain included. No desktop packages were rebuilt or published.
+to run locally remain included. Desktop packages are available for Linux x64,
+Windows x64, and macOS Intel and Apple Silicon.
 
 ### Added
 
@@ -39,6 +40,13 @@ to run locally remain included. No desktop packages were rebuilt or published.
 
 ### Documentation and verification
 
+- Eight desktop packages are published with this changelog and SHA-256
+  checksums. Linux/Windows packaging runs on Linux; macOS DMG and ZIP creation
+  runs on a Mac through a manually dispatched GitHub workflow. The existing
+  `v0.9.0` game-source tag remains unchanged.
+- All four platform payload checks pass with the same 6,868 game files.
+  The packaged Linux app opens with the normal sandbox and shows version 0.9.0
+  in Meer instellingen. Windows and macOS gameplay have not been runtime-tested.
 - Reorganised the README for beginners while retaining its technical content;
   clarified local launch, desktop packaging and subdomain hosting instructions.
 - Updated outdated research notes and separated current source changes from
@@ -56,7 +64,8 @@ to run locally remain included. No desktop packages were rebuilt or published.
 
 Complete original Windows race parity, a fresh full race matrix on the current
 source, historical GPU precision and physical target-device validation remain
-open. Existing desktop builds predate this source update. See
+open. Windows packages have no publisher signature; macOS packages use ad-hoc
+signing without notarization. See
 [remaining work](docs/remaining-work.md) and [validation](docs/validation.md).
 
 ## 0.1.0 — previous source release

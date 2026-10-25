@@ -3,7 +3,9 @@
 A reconstruction of the original Windows game using **Three.js**, **Electron**
 and the original supplied assets. Play in a browser or in a desktop window.
 
-**Version 0.9.0** · [Changelog](CHANGELOG.md)
+**Version 0.9.0** · [Changelog](CHANGELOG.md) ·
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v0.9.0) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v0.9.0)
 
 - **Six circuits**, **four playable characters**, **four active race modes** and
   **three difficulty levels**, with the original menus.
@@ -31,10 +33,15 @@ separates confirmed improvements from validation gaps and optional work.
 
 ## Run the game
 
+For a ready-to-run desktop app, download a package from the release links above.
+Choose the Linux AppImage or archive, Windows installer or ZIP, or the macOS
+DMG or ZIP for your Mac's processor. These packages include the game and do
+not require Node.js. See [desktop instructions](docs/desktop.md) for details.
+
 The published source release includes the prepared game assets. Download and
 extract the source archive, or clone the repository, then follow the commands
 below. You do not need to import the original disc files for this release.
-Desktop installers and other prebuilt game packages are not included.
+The source archive is separate from the ready-to-run desktop downloads.
 
 Install **Node.js 24 and npm**, then open a terminal in this project folder.
 The instructions below assume the original assets have already been prepared

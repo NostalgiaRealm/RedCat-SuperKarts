@@ -55,9 +55,12 @@ npm run desktop -- --skip-intro
 
 ## Build packages
 
-The [v0.9.0 source update](releases/v0.9.0.md) contains source and prepared
-assets, with no installers or other prebuilt desktop packages. The commands
-below create packages locally when you choose to build them.
+Ready-to-run [v0.9.0 packages](releases/v0.9.0.md) are available on
+[GitHub](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v0.9.0)
+and [GitLab](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v0.9.0):
+Linux x64 AppImage/archive, Windows x64 installer/ZIP, and separate macOS
+Intel and Apple Silicon DMG/ZIP packages. The release includes its changelog,
+build metadata and checksums. The commands below create packages locally.
 
 Run the commands from the project root after installing dependencies. They use
 the included prepared assets. Outputs go to `release/`. The scripts explicitly
@@ -255,6 +258,24 @@ publish the resulting files.
 
 ## Validation scope
 
+### Version 0.9.0 packages — 25 October 2026
+
+All eight packages use the existing `v0.9.0` game-source tag. Linux and Windows
+packages are built on Linux. Both Mac architectures are packaged and ad-hoc
+signed on a GitHub-hosted Mac using the manual
+[macOS release workflow](../.github/workflows/macos-release.yml). It accepts an
+existing version tag and draft GitHub release; it uploads the DMGs, ZIPs and
+payload reports. It does not create or move version tags or publish the draft.
+
+All four payload reports confirm the same 6,868 game files, byte-for-byte.
+The packaged Linux app passes a focused launch and version-menu check under
+Xvfb/SwiftShader with the normal sandbox. Windows/macOS gameplay, physical
+devices, publisher signatures and notarization are outside this check. No
+full suite or full races were rerun. The release's build metadata and checksums
+record the packages separately from the historical tests below.
+
+### Earlier checkpoints
+
 The 23 October HUD follow-up reran the **source** Electron check: all 12 checks
 passed under Linux/Xvfb/KWin/SwiftShader with the normal sandbox enabled. Its
 world/HUD/presentation assertions now cover the RGB565 composition path. No
@@ -273,17 +294,17 @@ The AppImage ran directly, without an extraction or FUSE fallback.
 These results describe that source and package checkpoint. Later source fixes
 have separate focused checks in [the validation record](validation.md); existing
 packages do not automatically include them. The historical AppImage and Windows
-packages are not included in the published source-only release, and this
-record does not claim that current source has been repackaged or retested on
-every platform.
+packages were not attached to the initial source-only publication. Version
+0.9.0 packaging coverage is listed above; this older record does not establish
+current gameplay validation on every platform.
 
 These automated runs used Linux/Xvfb, KWin and SwiftShader. They do not establish
 physical GPU performance, speaker output, physical controller operation, full
 race completion or new original-game parity. The earlier browser and native
 research records remain separate. The Windows x64 installer and ZIP were
 cross-built on Linux; native Windows execution remains untested. macOS package
-creation/execution, publisher signing and notarization require separate
-validation on their target systems.
+creation and ad-hoc signing now pass in the 0.9.0 follow-up above; gameplay,
+publisher signing and notarization still require separate validation.
 
 See [the consolidated record](../evidence/desktop/validation.json),
 [source launch checks](../evidence/desktop/source/report.json) and

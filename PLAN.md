@@ -3,7 +3,8 @@
 Status: the `v0.9.0` source update includes the runnable browser/Electron game,
 prepared assets, movie/HUD corrections, Help navigation, redesigned touch
 controls, menu speech/flow fixes and power-up audio audit. See `CHANGELOG.md`.
-Existing builds and broad validation reports describe earlier checkpoints.
+Version 0.9.0 desktop packages cover Linux x64, Windows x64 and both Mac
+architectures. Broad race-validation reports still describe earlier checkpoints.
 Complete native-process parity and unavailable platforms remain unverified.
 The current [remaining-work audit](docs/remaining-work.md) separates source
 improvements, validation gaps and deliberately deferred distribution work.
@@ -24,8 +25,9 @@ source checks. These changes did not refresh the full-race matrix or packages.
 The England tyre soft-lock now has automatic player recovery after sustained
 attempted driving without travel. Returns use revalidated road positions and
 the original rescue animation/audio, with no teleport awards. This is a
-source-only change with focused regression checks; the running AppImage,
-`dist/` and `release/` are unchanged. See `docs/player-stuck-recovery.md` and
+change with focused regression checks and is included in the 0.9.0 packages.
+An already running older AppImage is unchanged until the new package is launched.
+See `docs/player-stuck-recovery.md` and
 `evidence/player-recovery/validation.json`.
 
 Electron now launches the source game without a server and packages the same

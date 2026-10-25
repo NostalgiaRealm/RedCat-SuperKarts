@@ -32,8 +32,10 @@ audio audit and test/documentation updates for GitHub and GitLab.
 See the [changelog](../CHANGELOG.md) and [source release notes](releases/v0.9.0.md).
 The [movie CSS](../src/style.css) preserves the complete original 4:3 image;
 its earlier check covered all 11 movies at six viewport shapes plus pixel checks
-and intro skipping. Desktop packages remain at their historical checkpoints;
-this source update does not rebuild or publish them.
+and intro skipping. The subsequent 0.9.0 packaging follow-up publishes Linux,
+Windows and both Mac architectures, with matching payloads, a focused Linux
+launch check, the changelog and checksums. It retains the existing game-source
+tag and does not refresh full-race or target-device gameplay validation.
 
 The stale setup, settings-location and rendering notes found during this audit
 are corrected in the documentation update accompanying this file. Their
@@ -47,14 +49,14 @@ superseded implementation claims are not additional open gameplay defects.
 | High | Complete France, hard difficulty, timed mode over five laps. | The historical matrix is 71/72 completed. The final documented attempt completes three laps and expires while still moving. This does not prove an impossible deadline or justify weakening original rules. See [full-race research](research-full-race-matrix.md) and [retained matrix](../evidence/full-race-matrix/race-matrix.json). |
 | Medium | Drive all 24 Adventure events consecutively through the normal UI, saving, unlocks and movies. | Existing consecutive checks inject final-lap/star outcomes; they verify transitions, not a naturally driven campaign. Only 40/72 historical matrix cases qualify for Adventure; legitimate losses are separate from finishing. See [campaign check scope](research-followup-audit.md#consecutive-adventure-integration). |
 | Medium | Compare against a functioning original Windows race. | Full framebuffer, audible mix, trajectories, cameras and animation comparisons remain unavailable under WineD3D. Live x87 precision also needs observation: isolated routines cover 24/53-bit modes, while the connected driver uses 24-bit arithmetic. Historical GPU filtering, rounding and dithering need a defined reference device. See [AI precision](research-ai.md#validation-and-precision) and [validation limits](validation.md#platform-and-device-limits). |
-| Medium | Check target platforms and real devices. | Native Windows, macOS Intel/Apple Silicon, Safari, real Android/iOS, physical controllers, GPU/audio hardware and high-refresh displays remain outside the recorded Linux software-rendered scope. macOS package creation is also unverified. See [desktop scope](desktop.md#validation-scope) and [platform matrix](validation.md#platform-and-device-limits). |
+| Medium | Check target platforms and real devices. | Native Windows/macOS gameplay, Safari, real Android/iOS, physical controllers, GPU/audio hardware and high-refresh displays remain outside the recorded Linux software-rendered scope. Both Mac package architectures are now built on macOS, with ad-hoc signing; that does not establish gameplay validation. See [desktop scope](desktop.md#validation-scope) and [platform matrix](validation.md#platform-and-device-limits). |
 | Lower | Broaden recovery coverage during those playthroughs. | The England tyre case is fixed in all four modes. Initial-node coverage does not guarantee a safe destination with arbitrary moving occupancy, every character or at a new lap. No new broken recovery case was established by this audit. See [recovery limits](research-player-recovery-regressions.md#all-course-candidate-audit). |
 
 ## Optional or intentionally deferred
 
-- New installers, signing and notarization remain deferred under the source-only
-  instruction. Existing local packages are historical; the public source
-  release contains no desktop builds.
+- Publisher signing and notarization remain separate work. Version 0.9.0 now
+  includes desktop downloads; the source-only restriction was superseded by
+  the explicit request to build and publish this version.
 - Original Help navigation is implemented and the obsolete browse-chain note
   is resolved: the source has no authored sequence or popup links. Native
   Windows window placement and non-scrolling header rendering remain browser

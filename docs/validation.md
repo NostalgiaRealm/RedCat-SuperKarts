@@ -4,6 +4,24 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Version 0.9.0 desktop publication — 25 October 2026
+
+The source-only publication below is supplemented by eight packages: Linux
+x64 AppImage/archive, Windows x64 installer/ZIP and Intel/Apple Silicon Mac
+DMG/ZIP pairs. All four payload reports confirm the same 6,868 game files and
+five wrapper files. Linux/Windows packages are created on Linux; Mac packages
+are created and ad-hoc signed on a Mac through the manual GitHub workflow.
+
+The packaged Linux app passes a focused launch, sandbox and version-menu
+check. The release includes the changelog, build metadata and SHA-256 checksums;
+both hosts' uploaded sizes and digests are verified independently. The existing
+`v0.9.0` tag is retained. No full suite or full races were repeated. Native
+Windows/macOS gameplay, publisher signing and notarization remain separate.
+
+The local packaging/publication record is under
+`evidence/publication/0.9.0/` (ignored); the downloadable build metadata records
+the source, payloads and validation limits.
+
 ## Version 0.9.0 source update — 25 October 2026
 
 The [0.9.0 changelog](../CHANGELOG.md) collects the source changes since the
