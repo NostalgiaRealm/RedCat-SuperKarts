@@ -20,11 +20,16 @@ domain, upload account and hosting directory.
 Check the host's file-count, individual-file-size and bandwidth limits as well
 as its storage allowance; players also download original movies and audio.
 
-A fresh Git checkout does not contain `public/assets/` or `node_modules/`.
-Follow [Prepare and run](../README.md#prepare-and-run) to extract the original
-assets, including the menu fonts and converted movies, or copy a complete
-prepared `public/assets/` from your existing checkout. Python, Pillow, pefile,
-ffmpeg and helpdeco are needed for asset preparation, not on the web host.
+The Git repository and published source release include the complete prepared
+`public/assets/` folder, including menu fonts and converted movies. A fresh
+checkout or extracted source archive needs `npm ci` to install dependencies;
+it does not need original-disc extraction before building the website.
+`node_modules/` and the generated `dist/` are excluded from Git.
+
+To regenerate assets from original game/CD/font files, follow
+[Prepare original assets](../README.md#prepare-original-assets). Python, Pillow,
+pefile, ffmpeg and helpdeco are only needed for that optional preparation step,
+not for building with the included assets or on the web host.
 
 Use HTTPS for the public site, including controller support: the browser
 Gamepad API is restricted to secure contexts. [Gamepad API requirements](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getGamepads)

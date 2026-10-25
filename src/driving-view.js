@@ -43,7 +43,7 @@ export class DrivingView extends TrackViewer{
     const previousHudMeshes=this.hudMeshes;
     // Inactive browser frames still paint the HUD (for pause). Detach it
     // before awaiting cleanup so a loading frame cannot re-upload old maps.
-    this.hud=null;this.hudMeshes=null;
+    this.hud?.dispose();this.hud=null;this.hudMeshes=null;
     await previousHudMeshes?.dispose();
     this.finishFlag?.dispose();
     this.weatherVisuals?.dispose();
@@ -84,10 +84,11 @@ export class DrivingView extends TrackViewer{
       .map(mesh=>[mesh.userData.placementIndex,mesh]));
     this.pickupEvents=[];
     this.hud=new RaceHud(this.hudCanvas,config,manifest);
-    await this.hud.load(file=>this.textureImage(file));
-    this.hud.update(this.race,0,{nowSeconds:this.simulation.engineMs/1000});
     this.hudMeshes=new RaceHudMeshes(this,config,manifest,this.simulation);
     await this.hudMeshes.load();this.hud.meshes=this.hudMeshes;
+    await this.hud.load(file=>this.hudMeshes.texture(file));
+    this.hud.present=(draw,width,height)=>this.multisampling.compose(draw,width,height);
+    this.hud.update(this.race,0,{nowSeconds:this.simulation.engineMs/1000});
     this.hudSampler=new NativeHudSamplerState({filter:Number(config['game.ini'].options.filter)});
     // Reuse the scene tracker across reloads, avoiding stacked callbacks.
     this.nativeBlendState??=new NativeBlendState();
@@ -162,7 +163,7 @@ export class DrivingView extends TrackViewer{
       engineMs=this.engineEpochMs+wallMs}={})=>{
       this.previousCamera=this.currentCamera;
       const input=this.input.snapshot();
-      // Keyboard/touch use native button ramps; the pad uses4341d0 axes.
+      // Keyboard/buttons use native ramps; pad and touch wheel use4341d0 axes.
       // 0042f4c0 renders after movement and before CBonusController::Handle.
       // Keep discrete pickup visibility from before this tick's bonus update.
       this.pickupEvents=this.simulation.step(input,dt,now,{
@@ -348,12 +349,13 @@ export class DrivingView extends TrackViewer{
     this.camera.fov=adaptVerticalFov(NATIVE_CAMERA_PROJECTION.verticalDegrees,this.camera.aspect);
     this.camera.updateProjectionMatrix();return result;
   }
+  renderScene(options){this.multisampling.render(this.scene,this.camera,options);}
   render(time){
     if(!this.active){this.hud?.render();return;}
     // A RAF timestamp can precede a timer callback that ran earlier in this
     // browser frame. Read the same live monotonic clock as the update loop.
     const clock=this.clock.snapshot(performance.now());this.updatePresentation(clock.alpha);
-    this.renderScene();
+    this.renderScene({present:!this.hud});
     this.hud?.render();
   }
   playSound(name){this.audio?.playEvent(name).catch(error=>this.errors.push({sound:name,reason:String(error)}));}

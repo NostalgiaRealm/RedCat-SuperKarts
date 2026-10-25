@@ -38,8 +38,11 @@ nested `46b828` call does.
 
 `showSettings`, `showControlSettings`, the source start-info predicate and input
 capture in `src/main.js` use the pure `src/native-control-settings.js` model.
-Browser settings remain additive; they have their own entry inside the restored
-display dialog.
+At this audit's original checkpoint, browser settings had an additional entry
+inside the restored display dialog. The later requested
+[Meer instellingen change](more-settings.md) supersedes that placement: the
+button is now on the main **Instellingen** page, below music and sound effects.
+The original **Geavanceerd** dialog remains separate.
 
 ## Original advanced display dialog
 
@@ -80,10 +83,13 @@ audit.
 The original driver selection, system-memory rendering and VBlank controls
 remain visible and unavailable with explanations: the browser chooses the GPU,
 manages render storage and schedules display presentation. The port does not
-save changes to controls that cannot take effect. The separate
-**Browserinstellingen** entry keeps the requested resolution/render-scale,
-controller deadzone, touch and fullscreen additions accessible. Changes made
-there remain in the outer Options draft until its OK.
+save changes to controls that cannot take effect. The former
+**Browserinstellingen** entry has been moved and renamed **Meer instellingen**
+as requested. That page contains resolution/render scale, controller deadzone,
+touch, fullscreen and the added MSAA and cheat controls. Its **OK** returns a
+nested draft to the main settings page; the main **OK** saves it. **Terug** or
+Escape cancels the corresponding draft. The explicit **Alles ontgrendelen**
+action saves immediately. See [the current controls and evidence](more-settings.md).
 
 ## Validation and limits
 

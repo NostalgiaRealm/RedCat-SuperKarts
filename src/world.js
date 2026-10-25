@@ -307,6 +307,7 @@ export class TrackViewer{
     this.camera.fov=adaptVerticalFov(60,this.camera.aspect);this.camera.updateProjectionMatrix();return size;
   }
   get msaaStatus(){return this.multisampling.status;}
+  get renderStats(){return this.multisampling.stats;}
   renderScene(){this.multisampling.render(this.scene,this.camera);}
   disposeRenderer(){this.updateLoop?.stop();this.multisampling.dispose();this.renderer.dispose();}
   render(time){if(this.active){this.controls.update();this.renderScene();}}

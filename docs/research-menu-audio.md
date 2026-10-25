@@ -1,5 +1,79 @@
 # Original menu sound dispatch
 
+## Adventure speech and menu flow follow-up — 25 October 2026
+
+The Adventure briefing previously displayed its text but never requested its
+recording. Original phase initializer `004783b8`, lookup `004784b5..004784d1`
+and byte table `0047c5a4` select generic sample `56 + country * 4 + eventType`
+for the four offered event types. All 24 original WAVs already exist in the
+prepared assets. Difficulty changes the briefing text, not its recording.
+There is no FIRSTTIME condition: each actual briefing entry plays its sample
+asynchronously. The unused fifth event aliases the country's normal-race
+sample; this does not add a playable mode.
+
+Original accept handler `004786a4` calls `0045c7c0` →
+`sndPlaySoundA(NULL,0)` before race setup, optional start information and
+closing the form. The port now follows that order, so starting a race can
+interrupt the briefing instead of waiting for the whole recording.
+
+The wider direct-call audit found and corrected these additional differences:
+
+| Trigger | Original evidence | Correction |
+| --- | --- | --- |
+| Main Options | `0045d038`, `00474aa4` | Common generic46 and character23 wait, then Main's own generic46 async |
+| Delete Adventure profile | `00475fec..0047601f` | Selected character26 before confirmation |
+| Confirm Quit | Shell shutdown `00479242..0047925a` | Wait for selected character27 farewell before closing |
+| Browse Adventure profiles | `00475ab4 → 00475d6c → 0045792c` | Update active saved-profile fields so Help/Quit use the selected character |
+| Cancel Quit, delete or name entry; dismiss full-slot notice | Original modal requester/name handlers | Restore caller controls and focus without a new greeting |
+| Landinfo Overview | `00478df6` | Generic46 before country introduction |
+| Landinfo OK | `00477aa8`, modal caller `00478e39` | Stop narration and restore the existing briefing without replaying it |
+| Landinfo Help notice | `00477a60` | Return to the same Landinfo controls without restarting the country introduction |
+| Back from Adventure character selection | `00473cdc`, `trans.dat` | Return to Adventure profile list, keeping the new save |
+| Adventure character entrance | `004742d4` and its Adventure branch | Generic53 without consuming Quickrace's FIRSTTIME flag |
+
+The audit inventories 65 direct calls to the original generic, character and
+stop wrappers. Profile arrows are intentionally silent. Settings generic8
+and Highscore generic41 have no active callsite or authored FormShow handler;
+their presence in the sound bank is not a reason to invent a greeting.
+The five previously documented missing source samples remain source omissions.
+
+Evidence: [menu callsite/flow audit](evidence/menu-flow-sound-audit.json),
+[original briefing instruction probe](../tools/native-adventure-briefing-audio-fixtures.py)
+and [72 selections plus four accept paths](../evidence/native/adventure-briefing-audio-fixtures.json).
+REA reported Ghidra unconfigured on this host; retained original disassembly
+and isolated execution of the unchanged original instruction bytes supply the
+native evidence. This is not a live Windows menu/audio capture.
+
+The independent menu asset audit checked all 403 configured sample entries:
+398 supplied WAVs have valid PCM frames and match the original bytes. The
+65 wrapper calls, including their dynamic country/type/character tables,
+select 315 configured references: 311 are supplied, and four are known
+source omissions. The fifth missing configured sample, generic49, has no
+active callsite in this audit. All five original sound-bank configurations
+match the prepared configuration. See
+[menu assets](../evidence/audio/menu-flow/assets.json).
+
+The existing browser Escape exit from the read-only start-information screen
+is a host adaptation. The original starts the race after its modal information
+form returns; no native Cancel branch is established. Likewise, Landinfo's
+browser Escape exit is not claimed as an authored native key binding.
+
+Focused source checks passed: 72 original briefing lookups and four accept
+sequences, five JavaScript tests over the briefing/dispatch/greeting fixtures,
+all 24 briefing recordings through actual profile UI, 12 menu-flow browser
+groups and the existing 57 menu-playback cases. The existing profile-bank
+browser check also passed three groups after its obsolete Adventure Back
+expectation was corrected. The browser uses accelerated WAV playback for
+testing, with the farewell at normal speed to inspect its wait. One Netherlands
+race opening verifies the menu channel is quiet after entry; no full race,
+full suite, build or publication was run.
+
+Reports: [flow/playback](../evidence/audio/menu-flow/browser.json),
+[existing playback regression](../evidence/audio/menu-playback.json) and
+[final source validation](../evidence/audio/menu-flow/validation.json).
+
+## Earlier dispatch and playback checks
+
 The menu uses its own `sndPlaySoundA` channel. Generic wrappers `45c668` and
 `45c720` read `ini/soundset.dat`; character wrappers `45c518` and `45c5cc` read
 the selected character's original sample bank. Flags2 wait for completion;

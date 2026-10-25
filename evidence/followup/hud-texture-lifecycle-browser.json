@@ -1,9 +1,10 @@
 {
-  "origin": "http://127.0.0.1:4174",
+  "origin": "http://127.0.0.1:4184",
   "browser": "156.0.8078.47",
   "checks": [
     {
       "nextTrack": 2,
+      "sharedRenderer": true,
       "sources": [
         {
           "file": "textures/overlay1.tga.png",
@@ -34,21 +35,26 @@
         }
       ],
       "before": {
-        "uploaded": 2,
-        "live": 2,
-        "memory": 2,
+        "uploaded": 3,
+        "live": 3,
+        "exclusive": 2,
+        "shared": 1,
+        "memory": 24,
         "worldLive": 20
       },
       "after": {
-        "deletes": 2,
-        "live": 0,
-        "memory": 0,
+        "retiredProperties": true,
+        "exclusiveDeleted": 2,
+        "exclusiveLive": 0,
+        "sharedLive": 1,
+        "memory": 24,
         "worldLive": 20
       },
       "viewerErrors": []
     },
     {
       "nextTrack": 3,
+      "sharedRenderer": true,
       "sources": [
         {
           "file": "textures/overlay1.tga.png",
@@ -79,21 +85,26 @@
         }
       ],
       "before": {
-        "uploaded": 2,
-        "live": 2,
-        "memory": 2,
+        "uploaded": 3,
+        "live": 3,
+        "exclusive": 2,
+        "shared": 1,
+        "memory": 35,
         "worldLive": 31
       },
       "after": {
-        "deletes": 2,
-        "live": 0,
-        "memory": 0,
+        "retiredProperties": true,
+        "exclusiveDeleted": 2,
+        "exclusiveLive": 0,
+        "sharedLive": 1,
+        "memory": 35,
         "worldLive": 31
       },
       "viewerErrors": []
     },
     {
       "nextTrack": 1,
+      "sharedRenderer": true,
       "sources": [
         {
           "file": "textures/overlay1.tga.png",
@@ -124,21 +135,26 @@
         }
       ],
       "before": {
-        "uploaded": 2,
-        "live": 2,
-        "memory": 2,
+        "uploaded": 3,
+        "live": 3,
+        "exclusive": 2,
+        "shared": 1,
+        "memory": 46,
         "worldLive": 42
       },
       "after": {
-        "deletes": 2,
-        "live": 0,
-        "memory": 0,
+        "retiredProperties": true,
+        "exclusiveDeleted": 2,
+        "exclusiveLive": 0,
+        "sharedLive": 1,
+        "memory": 46,
         "worldLive": 42
       },
       "viewerErrors": []
     },
     {
       "nextTrack": null,
+      "sharedRenderer": true,
       "sources": [
         {
           "file": "textures/overlay1.tga.png",
@@ -169,21 +185,25 @@
         }
       ],
       "before": {
-        "uploaded": 2,
-        "live": 2,
-        "memory": 2,
+        "uploaded": 3,
+        "live": 3,
+        "exclusive": 2,
+        "shared": 1,
+        "memory": 46,
         "worldLive": 42
       },
       "after": {
-        "deletes": 2,
-        "live": 0,
-        "memory": 0,
+        "retiredProperties": true,
+        "exclusiveDeleted": 2,
+        "exclusiveLive": 0,
+        "sharedLive": 1,
+        "memory": 44,
         "worldLive": 42
       },
       "viewerErrors": []
     }
   ],
   "errors": [],
-  "scope": "Actual DrivingView HUD texture allocation/deletion over three reloads and final disposal. Checks GL handles and deletion calls; does not infer GPU process memory from renderer counters.",
+  "scope": "Actual DrivingView shared-renderer HUD texture ownership over three reloads and final disposal. Checks clone properties, exclusive GL handles and preservation of world-owned handles; does not infer GPU process memory from renderer counters.",
   "status": "passed"
 }

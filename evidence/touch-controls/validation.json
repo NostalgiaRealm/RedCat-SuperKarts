@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-23",
+  "status": "passed",
+  "scope": "Source-only touch control replacement. Focused tests only; no full races, full suite, desktop builds or publication. Browser contacts are emulated in Chromium/SwiftShader; physical phone ergonomics and Safari are unverified.",
+  "checks": [
+    {
+      "command": "node --test tests/touch-input.test.mjs tests/platform.test.mjs tests/native-input-key-gates.test.mjs",
+      "passed": 19
+    },
+    {
+      "command": "node --test tests/touch-hud-layout.test.mjs tests/star-hud-layout.test.mjs",
+      "passed": 4
+    },
+    {
+      "command": "node --test --test-name-pattern='SVG touch controls' tests/electron-runtime.test.mjs",
+      "passed": 1
+    },
+    {
+      "command": "node --test tests/touch-input.test.mjs",
+      "passed": 9,
+      "scope": "Only touch tests repeated after final direct InputState.clear ownership fix; included in the19 unique input/platform tests above."
+    },
+    {
+      "command": "RCSK_URL=http://127.0.0.1:4184 node tests/touch-controls-browser.mjs (with scoped follow-ups recorded in browser.json)",
+      "passedUniqueGroups": 12,
+      "scope": "Seven input/gameplay checks passed before the Stoppen pointer and landscape HUD layout fixes. Only the four affected or remaining lifecycle/layout groups were then run. The input.js hash is identical across both segments. No all-track test or package build was run. A later race-time readability adjustment was checked by rerunning only the layout group via the direct driving route; final screenshots and glyph measurements come from that last segment. Final review then added an ownership callback to InputState.clear so DrivingView-owned suspension also releases pointer captures and pressed artwork. Only the new direct suspend/resume group12 was run against that final input source; earlier input/gameplay and layout evidence remains attributed to its own source snapshots."
+    },
+    {
+      "case": "Generated bonus asset inspection",
+      "size": [
+        1254,
+        1254
+      ],
+      "format": "RGBA PNG",
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "case": "Syntax and git diff whitespace checks",
+      "status": "passed"
+    }
+  ],
+  "assets": {
+    "svgSource": "https://opengameart.org/content/car-controls",
+    "svgLicense": "CC0-1.0",
+    "behaviorSource": "https://github.com/supertuxkart/stk-code/blob/2997f192e6876047909d909498dbb4810e5dbb8d/src/input/multitouch_device.cpp",
+    "bonusGeneration": "built-in image_gen; full prompt saved in public/assets/touch/bonus-prompt.txt"
+  },
+  "reports": [
+    {
+      "file": "evidence/touch-controls/browser.json",
+      "sha256": "e8a1b39631969301d382f08837c1626c654449539f5e7c0a5d0a0603fc13e485"
+    },
+    {
+      "file": "public/assets/touch/sources/manifest.json",
+      "sha256": "bd166349131db6812477ffc3a6e7ac8db1d92a7b2a6d2c9b283dea7468d219d0"
+    }
+  ],
+  "sha256": {
+    "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+    "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+    "src/input.js": "d7d02908b86f2b059563081e4fdcc8a47bf4d028cbe4bbdfe20eed9c844d3713",
+    "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+    "src/driving-view.js": "e8ab74acfafb97e3567165ac3e13320f9ee206ebbe3f1de3012de34a5f954a54",
+    "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+    "src/hud-text-renderer.js": "b6cbba4095408f9ca0ee1877a95b44b585a98f76bcf69b84279e178ca052f9fe",
+    "tools/serve.mjs": "dea3e408ff80af56ed708d7bd6440c007a2d60025a99cf8b8490ceabe89bd116",
+    "electron/game-protocol.mjs": "baa89adcdcac0d60f32c858d3eb210106d95acc6d58571aa9d2bd62b652efc88",
+    "tests/touch-input.test.mjs": "5b6ba80229440698253e3e71e9e8823236d82e4cd241c6dce4b5b592bcfee851",
+    "tests/touch-hud-layout.test.mjs": "472705cda4e34da975a3eecd983c32685ea56795347381ed99ad6ecf35196ba0",
+    "tests/touch-controls-browser.mjs": "b5da6d1723782c2b602abab9e99d2f706d6c35cc02fe7c410a1be56518a55850",
+    "tests/electron-runtime.test.mjs": "db7b67448cea8977bb7063c5584f76dd512c2a6a9cd287a14fedd69351975257",
+    "tests/driving-browser.mjs": "c2f359c5c68b448bfeb181951297f982c69491cab5c921649b279f66b1caf03f",
+    "public/assets/touch/steering-wheel.svg": "574cda7834dd8d4a76b8761df3f0552c8a61e9121b0b050dba577981ea01ab89",
+    "public/assets/touch/brake-pedal.svg": "16e3458f35b57134aa71c2d4e9a355e52cca8e40166b49a4b6946c5fca897b87",
+    "public/assets/touch/bonus.png": "2573c6f0f6a00c295fd08f725877015bdd4c1cdb7aa1150cdf528d33b7ef8697",
+    "public/assets/touch/bonus-prompt.txt": "718a35358841b2c5d1ef7e5846552d18c5982e5a0e72652b474abc1ef9597ec6"
+  }
+}

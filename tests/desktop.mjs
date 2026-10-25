@@ -188,7 +188,8 @@ try{
       &&rcsk.viewer.music.audio.currentTime>0&&!rcsk.viewer.music.audio.paused,null,{timeout:30000});
     const race=await page.evaluate(()=>{
       const v=rcsk.viewer,gl=v.renderer.getContext(),extension=gl.getExtension('WEBGL_debug_renderer_info');
-      return {position:[...v.motion.body.position],speed:v.motion.body.forwardSpeed,triangles:v.renderer.info.render.triangles,
+      return {position:[...v.motion.body.position],speed:v.motion.body.forwardSpeed,triangles:v.renderStats.world.triangles,
+        presentationTriangles:v.renderStats.presentation.triangles,hud:v.renderStats.hud,
         errors:v.errors,canvas:[v.renderer.domElement.width,v.renderer.domElement.height],engineActive:v.audio.engine.active,
         audioState:v.audio.context.state,bufferStarts:desktopPlayback.buffers,music:{url:v.music.audio.currentSrc,
           currentTime:v.music.audio.currentTime,decodedBytes:v.music.audio.webkitAudioDecodedByteCount,volume:v.music.audio.volume},
@@ -196,6 +197,7 @@ try{
     });
     assert.ok(Math.hypot(...race.position.map((value,index)=>value-before[index]))>1);
     assert.ok(race.triangles>1000&&race.canvas.every(size=>size>0));assert.deepEqual(race.errors,[]);
+    assert.equal(race.presentationTriangles,1);assert.ok(race.hud.glyphs>0);
     assert.equal(race.engineActive,true);assert.equal(race.audioState,'running');assert.ok(race.music.decodedBytes>0);
     assert.match(race.music.url,/^rcsk:\/\/game\/assets\/.*\.mp3$/);assert.match(race.renderer,/SwiftShader/i);
     await shot('race-driving');return race;

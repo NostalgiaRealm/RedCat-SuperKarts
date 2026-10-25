@@ -35,7 +35,9 @@ try{
     const input={throttle:0,brake:0,steer:0,bonus:0,handbrake:0};
     const originalSnapshot=view.input.snapshot;
     view.input.snapshot=()=>input;
-    let now=view.clock.tick*view.clock.intervalMs||0;
+    // The live host uses variable admitted intervals; begin controlled ticks
+    // from its current elapsed simulation time rather than a fixed-step count.
+    let now=view.clock.snapshot().simulationMs;
     // Each fixture drives the actual DrivingView tick, including the listener,
     // FIFO service, render capture and post-render bonus handlers.
     const tick=()=>view.onTick(.025,now+=25);

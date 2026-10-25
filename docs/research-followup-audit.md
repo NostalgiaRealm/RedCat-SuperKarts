@@ -6,12 +6,23 @@ original configuration and art. The earlier `evidence/final/validation.json`
 remains a historical checkpoint; `evidence/regressions/validation.json` records
 the subsequent greeting, starter, environment-recovery and texture checkpoint.
 
+The findings and test counts below retain those original checkpoints. Later
+source changes are recorded separately in [variable update timing](research-variable-update-timing.md),
+[HUD timing](research-hud-notice-audit.md#resolved-timing-differences),
+[native texture/framebuffer precision](research-native-texture-precision.md),
+and [Meer instellingen](more-settings.md). They supersede the earlier fixed
+simulation host, filtered-key cutoff and browser-settings placement without
+re-labeling the historical race or browser results as tests of current source.
+
 ## Texture and reported-regression checkpoint
 
-The shared texture loader now replaces transparent key RGB before linear
-filtering, following the original RGB texture path. This applies to every
-keyed 3D texture, including effects and HUD meshes. It preserves opaque source
-RGB, UVs and existing blend rules. The exhaustive audit compares all 817 source
+At this checkpoint the shared texture loader replaced transparent key RGB
+before linear filtering, following the original RGB texture path. This applied
+to every keyed 3D texture, including effects and HUD meshes, while preserving
+opaque source RGB, UVs and existing blend rules. The later precision change
+also packs opaque texels to RGB565, applies protected-black conversion and
+replaces the filtered-mask cutoff; source PNGs remain unchanged. The exhaustive
+asset audit compares all 817 source
 texture records and 587 convenience aliases with their originals: 1,404 PNGs,
 zero mismatches. It also corrects ignored source alpha in two French textures
 and stale alpha in convenience aliases. See `research-texture-key.md`,
@@ -116,9 +127,15 @@ framebuffer, whole-race audio and trajectory comparisons therefore remain
 unverified. Instruction execution, source-pixel comparisons, browser playback
 and driven port tests are reported separately.
 
-The browser uses an explicit reference update host and documented policies for
-uninitialized native fields. Exact original hardware color-key acceptance,
-framebuffer quantization and the graphics driver's x87 precision state are not
-established by source-file or software-rendered browser checks. Real mobile
-devices, controllers, Windows and macOS remain outside the available test host.
-These boundaries are not evidence that an active feature is absent.
+The live browser now uses measured variable updates behind the original 25 ms
+minimum gate, independently of uncapped rendering; deterministic fixed-step
+hosting remains available for historical replay. Its clock epoch and policies
+for uninitialized native fields remain explicit host choices. The renderer now
+implements original texture packing and a real RGB565 scene framebuffer, using
+a documented historical color-key profile. Exact original hardware filtering,
+rasterization and the graphics driver's x87 precision state are not established
+by source-file or software-rendered browser checks. The later
+[HUD framebuffer follow-up](research-hud-framebuffer.md) closes the separate
+Canvas composition gap with native glyph/mesh draws into RGB565. Real mobile devices,
+controllers, Windows and macOS remain outside the available test host. These
+verification boundaries are distinct from absent active features.

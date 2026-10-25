@@ -6,6 +6,7 @@ import {createHash} from 'node:crypto';
 const output=process.env.RCSK_HUD_MODE_OUTPUT||'evidence/hud-mode-audit/browser';
 await mkdir(output,{recursive:true});
 const files=['src/race-hud.js','src/race-hud-meshes.js','src/hud-text.js',
+  'src/hud-text-renderer.js','src/hud-draw-order.js','src/multisample-renderer.js',
   'src/race-hud-layout.js','src/hud-gameplay-events.js','src/driving-view.js',
   'src/simulation/native-combat.js','src/simulation/native-star-hud.js',
   'src/simulation/native-hud-arrows.js','src/simulation/native-race.js',
@@ -90,7 +91,7 @@ try{
       const fades=[];
       for(let i=0;i<40;i++){tick();fades.push(snap());}
       v.updatePresentation(1);v.renderScene();h.viewer.hud.render();
-      const wrongwayImage=v.hud.canvas.toDataURL();
+      const wrongwayImage=v.renderer.domElement.toDataURL();
       b.yaw=yaw;b.matrix=nativeRotationMatrix([b.pitch,b.yaw,b.roll]);tick();
       const restored=snap();
       // The marker event is emitted through the original race dispatcher at
@@ -103,7 +104,7 @@ try{
       const junctionStart=snap();
       for(let i=0;i<12;i++)tick();const junctionVisible=snap();
       v.updatePresentation(1);v.renderScene();h.viewer.hud.render();
-      const junctionImage=v.hud.canvas.toDataURL();
+      const junctionImage=v.renderer.domElement.toDataURL();
       for(let i=0;i<32;i++)tick();const junctionEnd=snap();
       return {initial,reversingWhileFacingForward,fades,restored,junctionStart,junctionVisible,junctionEnd,wrongwayImage,junctionImage};
     }finally{v.input.snapshot=originalSnapshot;}
@@ -153,7 +154,7 @@ try{
         if(shooter===player){
           for(let i=0;i<12;i++)tick();
           v.updatePresentation(1);v.renderScene();h.render();
-          rows.at(-1).hudImage=h.canvas.toDataURL();
+          rows.at(-1).hudImage=v.renderer.domElement.toDataURL();
         }
       }
     }finally{v.input.snapshot=originalSnapshot;}

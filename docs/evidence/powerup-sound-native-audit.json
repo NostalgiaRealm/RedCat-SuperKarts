@@ -1,0 +1,494 @@
+{
+  "date": "2026-10-25",
+  "status": "all-audited-logical-powerup-paths-match",
+  "originalCopies": [
+    {
+      "path": "/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskspel.dat",
+      "sha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f"
+    },
+    {
+      "path": "/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/data/Game/rcskspel.dat",
+      "sha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f"
+    }
+  ],
+  "originalCopiesIdentical": true,
+  "rea": {
+    "provider": "Hopper",
+    "bundle": "docs/evidence/powerup-sound-rea.json",
+    "sha256": "6308c1a2457ef2709614eda7c05ef678678148292bdbb15299211d268ac7edd8",
+    "functions": [
+      {
+        "procedure": "0x455ce0",
+        "evidenceId": "ev_0596392ca728efe4ff3f3b2dee3d8f42dcc7243ed84c435443c7b6671bd6335e"
+      },
+      {
+        "procedure": "0x436760",
+        "evidenceId": "ev_26548f0cb96ebf4e1c20909d060dfdb4d81f83a64311755bd8b74f9fe038322f"
+      },
+      {
+        "procedure": "0x4540c0",
+        "evidenceId": "ev_5399ebfde3eca4cbd1798b3fda9e7c89294c74ccdd373db1a75cbf247584dbbd"
+      },
+      {
+        "procedure": "0x4542c0",
+        "evidenceId": "ev_5b2a206f8876e5eb495bd07cad15731883c22b66aab6afaa9e2e0d1cfb07c223"
+      },
+      {
+        "procedure": "0x412090",
+        "evidenceId": "ev_5d588c34966b677ee1c199233b14b8209ee2c9ef36389a5eda632ac63475d006"
+      },
+      {
+        "procedure": "0x411830",
+        "evidenceId": "ev_73eebddacfaaf8fda6c862e9605acc1e70df575582bdeb8da814ba8db67a348d"
+      },
+      {
+        "procedure": "0x411e50",
+        "evidenceId": "ev_bc89a5f987a0b081188ea7c9012d10e3fe3aaab81cd0aaf2aaf078fd7301c345"
+      },
+      {
+        "procedure": "0x436b10",
+        "evidenceId": "ev_c425c5ac3158562abce2b72f5b41d799dcf8685fe835396bf03f56a73d254d9d"
+      },
+      {
+        "procedure": "0x455490",
+        "evidenceId": "ev_c5768aa92414b23c3df13d8117779d5908b651c770379913ad5f209377f401d8"
+      },
+      {
+        "procedure": "0x4537f0",
+        "evidenceId": "ev_cbc9d8476db99e549fc24dd69f7dc1d317bd93f8d3022674704784d0d9238531"
+      },
+      {
+        "procedure": "0x411b40",
+        "evidenceId": "ev_d8db2ce86edad2de09761cf3a1bde8e86b0d51b25a2c323b011542e87f100b00"
+      },
+      {
+        "procedure": "0x486ea0",
+        "evidenceId": "ev_e3a5834f199cbfdbeace6b8cc16a76ad3bfe53d4af5bf55acf72a11f6596e103"
+      },
+      {
+        "procedure": "0x451640",
+        "evidenceId": "ev_e610da44efd6d2ce0850b151828d9813403136e01743d264eaefca0543128fa6"
+      },
+      {
+        "procedure": "0x436d70",
+        "evidenceId": "ev_fb12349283c688e1dbf79c4d6aa2b39c1707bf3de2294e2d1be7d584fb62eace"
+      }
+    ],
+    "sessionClosed": true
+  },
+  "findings": [
+    {
+      "id": "pickup-static-type",
+      "status": "matches",
+      "original": [
+        "0x4514e0",
+        "0x4106b0",
+        "0x4540c0",
+        "0x4542c0"
+      ],
+      "port": [
+        "src/simulation/native-bonus.js",
+        "src/bonus-audio.js"
+      ],
+      "observed": "Collection selects a BONUS character line before random-type/NPC-upgrade draws. Player collection then queues the static pickup GOT_* effect and a second BONUS character line. NPC collection has no GOT_* effect. Star6 requests GOT_EURO; random7 requests GOT_BONUS, never the resolved item name.",
+      "pickupNames": {
+        "1": "GOT_ROCKET",
+        "2": "GOT_SOAP",
+        "3": "GOT_OIL",
+        "4": "GOT_GUM",
+        "5": "GOT_TURBO",
+        "6": "GOT_EURO",
+        "7": "GOT_BONUS"
+      },
+      "evidence": "140 complete original collections, plus 11 standalone name mappings"
+    },
+    {
+      "id": "shoot-player-only-level",
+      "status": "matches",
+      "original": [
+        "0x451640",
+        "0x455490"
+      ],
+      "port": [
+        "src/bonus-audio.js",
+        "src/simulation/native-combat.js"
+      ],
+      "observed": "Only player firing requests an effects sample on voice10. Rocket/soap/oil/gum requests FIRE_*+level1..3 before target selection, launch pose or bubble hatching. One burst requests one effect, including three/five bubble bursts. No shot effect is added for NPC firing.",
+      "evidence": "30 original firing preambles cover five types, three levels and both player flags"
+    },
+    {
+      "id": "turbo-complete-dispatch-order",
+      "status": "matches",
+      "original": [
+        "0x451640",
+        "0x4537f0",
+        "0x438310",
+        "0x4387a0"
+      ],
+      "port": [
+        "src/simulation/native-combat.js",
+        "src/simulation/native-character-voice.js"
+      ],
+      "observed": "Turbo multiplies current signed speed, performs player TURBO selection/chance/replacement, then queues FIRE_TURBO+level on voice10 and retires the owned bonus. NPC turbo performs neither sound request. Shared RNG is consumed only by the original character selector/chance.",
+      "evidence": "180 complete original turbo calls compared with NativeBonusCombat.fire; 10 available-player indices, three levels, 30 seeds per player flag/level combination"
+    },
+    {
+      "id": "hit-effects",
+      "status": "matches",
+      "original": [
+        "0x411830",
+        "0x411b40",
+        "0x411e50",
+        "0x412090"
+      ],
+      "port": [
+        "src/simulation/native-character-voice.js",
+        "src/simulation/native-combat.js"
+      ],
+      "observed": "Player hit replaces effects queue with HIT_BY_ROCKET/SOAP/OIL/GUM; rocket, soap and oil then queue IMR+level, SOAP_UP+level and IMO+level respectively. NPC initializers do not issue these effects. Original player AMHIT follows effect initialization; NPC AMHIT requires a literal shooter index of -1. No plausible missing-name substitution is permitted.",
+      "evidence": "120 original hit initializer cases and retained/freshly analyzed call sites"
+    },
+    {
+      "id": "queue-and-missing-names",
+      "status": "matches",
+      "original": [
+        "0x436b10",
+        "0x436d70",
+        "0x436760"
+      ],
+      "port": [
+        "src/native-voice-controller.js",
+        "src/native-race-audio.js"
+      ],
+      "observed": "Append preserves FIFO. Replacement clears current playback and pending queue before lookup, including a missing name. Effects-disabled requests return success without queueing after gameplay random draws have already occurred. Missing symbolic names stay absent.",
+      "evidence": "Fresh Hopper static analysis and current transport inspection; runtime asset/transport validation is a separate audit scope"
+    },
+    {
+      "id": "homing-warning",
+      "status": "matches",
+      "original": [
+        "0x486ea0",
+        "0x4873f8"
+      ],
+      "port": [
+        "src/arm-audio.js",
+        "src/simulation/native-homing-arm.js"
+      ],
+      "observed": "Target-player homing warning admits at most one ARMBEEP per callback after a strict float32 .1-second threshold, choosing3 above .7,2 above .4 and1 otherwise, without RNG. It uses the targeted player's character voice bank (437ea0), not effects voice10, and queues after that frame voice service, so starts next update. NaN reaches ARMBEEP1 before retirement.",
+      "evidence": "1200 original timer/ratio/player/precision cases"
+    },
+    {
+      "id": "no-extra-explosion-sample",
+      "status": "matches",
+      "original": [
+        "0x411830",
+        "0x455ce0",
+        "0x481ec0",
+        "0x483de0"
+      ],
+      "port": [
+        "src/simulation/native-combat.js",
+        "src/simulation/native-projectile.js",
+        "src/simulation/native-explosions.js"
+      ],
+      "observed": "The active rocket ring creation path is visual-only. Qualifying terrain retirement creates a ring but does not add a projectile impact/BOOM sample. Do not infer sound triggers from available WAV names.",
+      "evidence": "Retained original decompilation and newly analyzed hit/terrain call sites"
+    },
+    {
+      "id": "bubble-pop-and-unnumbered-up-dormant",
+      "status": "no-native-request-found-within-audited-boundary",
+      "original": [
+        "0x411b40",
+        "0x412560",
+        "0x4126b0",
+        "0x457780",
+        "0x457ab0",
+        "0x457b60"
+      ],
+      "observed": "SOAP_PLOPS1..3 and unnumbered SOAP_UP are enumerated bank records, but no corresponding gameplay request was found. The sole SOAP_UP literal is used as a prefix concatenated with level in 411b40, yielding absent SOAP_UP1..3. Bubble attachment, update, natural expiry and replacement cleanup contain no sound queue or direct sound call. Do not invent a pop or loop trigger from the bank entry alone.",
+      "searchBoundary": {
+        "artifact": "rcskspel.dat, identical installed/CD input",
+        "rawByteSearch": {
+          "SOAP_PLOPS": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "SOAP_UP": {
+            "asciiOccurrences": 1,
+            "utf16leOccurrences": 0
+          },
+          "PLOPS": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "PLOP": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "ZBP1": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "ZBP2": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "ZBP3": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          },
+          "ZBO": {
+            "asciiOccurrences": 0,
+            "utf16leOccurrences": 0
+          }
+        },
+        "soapUpLiteralReferences": [
+          "00411c74\t68b4ff4d00\tPUSH 0x4dffb4\t00411b40"
+        ],
+        "queueCallSites": [
+          {
+            "function": "0040d9c0",
+            "call_site": "0040da8e",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0040d9c0",
+            "call_site": "0040db32",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411830",
+            "call_site": "004119a0",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411830",
+            "call_site": "00411a0b",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411b40",
+            "call_site": "00411c49",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411b40",
+            "call_site": "00411c99",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411e50",
+            "call_site": "00411fa9",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00411e50",
+            "call_site": "00412010",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00412090",
+            "call_site": "00412231",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0042f9c0",
+            "call_site": "0042fcf2",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00430610",
+            "call_site": "00430909",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00430610",
+            "call_site": "004309e9",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00438760",
+            "call_site": "0043878d",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "004387a0",
+            "call_site": "004387cb",
+            "target": "00437b40",
+            "target_name": "FUN_00437b40",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "004387e0",
+            "call_site": "00438835",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00440a90",
+            "call_site": "00440b59",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00451640",
+            "call_site": "00451703",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "004540c0",
+            "call_site": "004541d0",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00455490",
+            "call_site": "0045551d",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00455490",
+            "call_site": "0045558d",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00455490",
+            "call_site": "004555fe",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00455490",
+            "call_site": "00455671",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00486ea0",
+            "call_site": "004874d8",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00486ea0",
+            "call_site": "004875ee",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "00486ea0",
+            "call_site": "004876cd",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0048ca60",
+            "call_site": "0048cb62",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0048ca60",
+            "call_site": "0048cbfb",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0048ca60",
+            "call_site": "0048cf20",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          },
+          {
+            "function": "0048ca60",
+            "call_site": "0048d3f7",
+            "target": "00437b10",
+            "target_name": "FUN_00437b10",
+            "flow_type": "UNCONDITIONAL_CALL"
+          }
+        ],
+        "queueCallSiteCount": 29,
+        "reviewedBubblePaths": [
+          "evidence/native/rcskspel.dat/functions/00411b40_FUN_00411b40.c",
+          "evidence/native/rcskspel.dat/functions/00412560_FUN_00412560.c",
+          "evidence/native/rcskspel.dat/functions/004126b0_FUN_004126b0.c",
+          "evidence/native/rcskspel.dat/functions/00457730_FUN_00457730.c",
+          "evidence/native/rcskspel.dat/functions/00457780_FUN_00457780.c",
+          "evidence/native/rcskspel.dat/functions/00457ab0_FUN_00457ab0.c",
+          "evidence/native/rcskspel.dat/functions/00457b60_FUN_00457b60.c",
+          "evidence/native/rcskspel.dat/functions/00457630_FUN_00457630.c",
+          "evidence/native/rcskspel.dat/functions/00457d10_FUN_00457d10.c"
+        ]
+      },
+      "limitation": "A bounded static negative search, not a universal proof against runtime-generated names outside the audited gameplay paths."
+    }
+  ],
+  "instructionReplay": {
+    "commands": [
+      "re-python tools/native-bonus-audio-fixtures.py",
+      "re-python tools/native-character-voice-fixtures.py",
+      "re-python tools/native-arm-audio-fixtures.py",
+      "re-python tools/native-powerup-sound-flow-fixtures.py"
+    ],
+    "cases": {
+      "bonus": 41,
+      "characterVoice": 1580,
+      "armAudio": 1200,
+      "completeTurbo": 180
+    },
+    "totalCases": 3001,
+    "existingFixtureOutputsUnchanged": true,
+    "comparisonCommand": "node --test tests/bonus-audio.test.mjs tests/native-character-voice.test.mjs tests/arm-audio.test.mjs tests/powerup-sound-flow.test.mjs",
+    "comparisonTests": 11,
+    "comparisonStatus": "passed"
+  },
+  "limitations": [
+    "Static decompilation and isolated original x86 instruction execution establish logical triggers, exact requests and bounded random/timing branches; they are not a full Windows game or sound-card observation.",
+    "CString memory, visual/device submission and clock boundaries are explicitly stubbed in probes. Native turbo selectors, RNG, chance gate, dispatch ordering, speed multiplication and inventory transition execute original instructions.",
+    "This report does not establish recorded speaker-output parity or native audio-driver scheduling. Asset bytes, Sound.ini mappings and live port playback are covered by companion audit work.",
+    "No runtime source fix was necessary for the logical paths audited here. Source-only evidence and focused test changes; no build, release or full-race run."
+  ]
+}

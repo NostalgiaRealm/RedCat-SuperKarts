@@ -17,7 +17,11 @@ See [the precision follow-up](research-native-texture-precision.md).
 
 Every listed effect uses `createNativeMeshMaterial`, with the source blend
 and depth overrides listed below. These settings were not changed for the
-key correction.
+key correction. The table describes the shipped default display settings;
+world filtering, alpha-effect gates and the HUD sampler's state cache are
+covered separately by [the active render audit](research-render-audit.md).
+In particular, disabling alpha effects makes the shadow inherit blend factors,
+and nearest world filtering gives the HUD a first-render-only linear override.
 
 | Path | Original texture | RGB blend | Depth writes | Sampling |
 | --- | --- | --- | --- | --- |
@@ -37,8 +41,9 @@ Relevant source paths are `0x48a170`/`0x4888b0` (streams), `0x48d460`
 (rescue), `0x428a00` (smoke), `0x483350` (weather), `0x4844e0`
 (explosion), `0x426e50` (skidmarks), `0x487780` (arm), `0x423280`
 (finish flag), `0x4260c0` (shadow), and the `0x490d40`/`0x48f600`
-object drawing paths. The HUD retains its own WebGL renderer; the shared
-texture object's upload configuration also applies in that second context.
+object drawing paths. The [later HUD renderer](research-hud-framebuffer.md)
+uses the world's WebGL context and an RGB565 composition target. Its cloned
+textures retain independent native sampler state and shared packed source pixels.
 
 The finish flag clones the shared texture only to select its original nearest
 filter. The old stream-specific clone has been removed; all active effects

@@ -23,9 +23,21 @@
       <div id="viewer-caption"><b>Circuit bekijken</b><span>Sleep om rond te kijken · scroll of knijp om te zoomen</span></div>
       <output id="render-size"></output>
     </section>
-    <div id="touch-controls" hidden>
-      <div><button data-input="left">Links</button><button data-input="right">Rechts</button></div>
-      <div><button data-input="bonus">Gebruik bonus</button><button data-input="handbrake">Handrem</button><button data-input="brake">Remmen</button><button data-input="accelerate">Gas geven</button></div>
+    <div id="touch-controls" aria-label="Aanraakbediening" hidden>
+      <div id="touch-wheel" role="group" aria-label="Stuur: links en rechts sturen, boven gas geven, onder achteruit" aria-describedby="touch-wheel-help" tabindex="0">
+        <img src="/assets/touch/steering-wheel.svg" alt="" draggable="false">
+        <span class="touch-wheel-forward" aria-hidden="true">▲ Gas</span>
+        <span class="touch-wheel-reverse" aria-hidden="true">Achteruit ▼</span>
+      </div>
+      <span id="touch-wheel-help" class="visually-hidden">Houd het stuur vast. Beweeg je vinger naar links of rechts om te sturen, naar boven om gas te geven en naar beneden om te remmen en achteruit te rijden.</span>
+      <div class="touch-actions">
+        <button id="touch-brake" data-input="handbrake" aria-label="Rem (Alt)" title="Rem — dezelfde handrem als Alt">
+          <img src="/assets/touch/brake-pedal.svg" alt="" draggable="false"><span aria-hidden="true">Rem</span>
+        </button>
+        <button id="touch-bonus" data-input="bonus" aria-label="Gebruik bonus (Ctrl)" title="Gebruik bonus">
+          <img src="/assets/touch/bonus.png" alt="" draggable="false"><span aria-hidden="true">Bonus</span>
+        </button>
+      </div>
       <button id="touch-stop">Stoppen</button>
     </div>
     <div id="message" role="status" hidden></div>

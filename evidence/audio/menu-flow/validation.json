@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-25",
+  "status": "passed",
+  "scope": "Source-only menu speech/flow audit and corrections using original sound calls/configuration, byte-identical WAVs, isolated original instructions and browser menu playback. One race opening only; no full race, full suite, build or publication. No claim of native Windows UI/audio capture.",
+  "checks": [
+    {
+      "command": "re-python tools/native-adventure-briefing-audio-fixtures.py",
+      "originalSelections": 72,
+      "originalAcceptSequences": 4
+    },
+    {
+      "command": "node --test tests/adventure-briefing-audio.test.mjs tests/menu-sound-events.test.mjs tests/menu-greeting.test.mjs",
+      "passed": 5
+    },
+    {
+      "command": "RCSK_URL=http://127.0.0.1:4184 node tests/menu-flow-audio-browser.mjs",
+      "passedGroups": 12,
+      "briefingRecordings": 24,
+      "unexpectedErrors": []
+    },
+    {
+      "command": "RCSK_URL=http://127.0.0.1:4184 node tests/menu-audio-browser.mjs",
+      "passedPlaybackCases": 57,
+      "unexpectedErrors": []
+    },
+    {
+      "command": "RCSK_URL=http://127.0.0.1:4184 node tests/adventure-profile-bank-browser.mjs",
+      "passedGroups": 3
+    },
+    {
+      "case": "Original menu asset/configuration identity",
+      "summary": {
+        "wrapperCallsCovered": 65,
+        "stopCalls": 2,
+        "activeGenericIndices": 79,
+        "activeCharacterIndicesPerBank": 59,
+        "activeConfiguredReferences": 315,
+        "activePresentReferences": 311,
+        "allConfiguredReferences": 403,
+        "allPresentByteIdenticalReferences": 398,
+        "allKnownMissingReferences": 5,
+        "unexpectedErrors": 0
+      }
+    },
+    {
+      "case": "Syntax checks, local research-document links, git diff whitespace",
+      "status": "passed"
+    }
+  ],
+  "limits": [
+    "Accelerated WAV transport in menu checks; farewell uses normal speed. Browser playing/ended/pause events confirm playback sequencing, not human listening or native sound-card capture.",
+    "Original default menu sample omissions are retained; unused archived sounds are not treated as disconnected features.",
+    "Read-only Start-info Escape return and Landinfo Escape close are documented browser adaptations, not established native Cancel branches.",
+    "REA reports Ghidra unconfigured; retained original disassembly and bounded instruction emulation are used instead."
+  ],
+  "reports": [
+    {
+      "file": "evidence/audio/menu-flow/browser.json",
+      "sha256": "c82d2b8f791a22dba2b31511bdb82093b6bf6a7ffa980f40b1973adf744b4484"
+    },
+    {
+      "file": "evidence/audio/menu-playback.json",
+      "sha256": "a2fa35e176328d0f6bbefcc90552ff1e5a7663d1d1650aace1d4a1ab74df9fd8"
+    },
+    {
+      "file": "evidence/adventure/profile-bank-report.json",
+      "sha256": "b8a26396a032116faf81cdab5182039f11f3427731ed4294cb262077afb0f97e"
+    },
+    {
+      "file": "evidence/audio/menu-flow/assets.json",
+      "sha256": "75e3cde49c2d862e78d9295395632d57043a8953fcf871d4d5dc1dc056e1cd02"
+    },
+    {
+      "file": "docs/evidence/menu-flow-sound-audit.json",
+      "sha256": "737d149c3d18d709365e4392cc38a6ed6fa225a80d8be54fae1bb6b11bca7d51"
+    },
+    {
+      "file": "evidence/native/adventure-briefing-audio-fixtures.json",
+      "sha256": "30cde74368b83f20b5e72baadf584c09147be73c4f70b22646c134e3b2830694"
+    }
+  ],
+  "sourceSHA256": {
+    "src/main.js": "b6a16d78bca8a89cf74887669108a6b9c55f364192085219767c68898aac2a9f",
+    "src/menu-sound-events.js": "79ec4130967b61f59bd3f2a415c36cf9a0d3ccb1350e081b632a91c5b38650c4",
+    "src/menu-audio.js": "2e9618b813b790e2480c2936a4a7bfeb9238ce9448ed5f1bb6d0155b167d09b8",
+    "src/native-menu.js": "b841b05d731dd52fd98548d3f604e9f86e4a4079d6d1b494cf7dc136e6c91265",
+    "tests/adventure-briefing-audio.test.mjs": "9bd021c1883d5d88a6873969aae2bf35006efc221aefed434351a1971302331d",
+    "tests/menu-flow-audio-browser.mjs": "6940145e4bf005b7e7da7923d84cf90040fd55ee6ed63504a4b6a7031b09a292",
+    "tests/menu-audio-browser.mjs": "7ccb1766135aa7847c0e46f92e5cd6159859f74ad7c9adba883302f522663965",
+    "tests/adventure-profile-bank-browser.mjs": "d6ae16463baa8b72aabd91ac464ab12eaf22a66eba94634245bbe7f0f1525ba7",
+    "tools/native-adventure-briefing-audio-fixtures.py": "bad2bca7cfaf2dcbd1419268c17b4339f92bc7d5b3ba9787eeb47c84b3d24eca"
+  }
+}

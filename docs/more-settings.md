@@ -61,6 +61,19 @@ Profiles, Adventure progress, high scores and records are preserved; it does
 not fabricate completed Adventure events. The page reports whether saving
 succeeded. Cancelling a settings draft does not undo this explicit action.
 
+## Version
+
+The bottom of **Meer instellingen** shows **Versie 0.9.0**. The version belongs
+to this reconstruction, separately from the original game's release year.
+`package.json` is the authoritative version metadata for npm and Electron.
+The checked-in `src/version.js` module supplies the same value to browser and
+desktop menus; static builds already copy it with the rest of `src/`.
+
+For a future source version, run `npm version <version> --no-git-tag-version`.
+The npm version hook refreshes the menu module automatically. Commit
+`package.json`, `package-lock.json`, `src/version.js` and the changelog together.
+If editing package metadata manually, run `node tools/sync-version.mjs` too.
+
 ## Evidence and scope
 
 The shadow correction and original-code/asset comparisons are recorded in

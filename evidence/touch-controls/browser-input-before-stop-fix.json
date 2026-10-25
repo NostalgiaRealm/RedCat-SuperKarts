@@ -1,0 +1,98 @@
+{
+  "browser": "156.0.8078.47",
+  "scope": "Focused source-only mobile Chromium check. Real Quickrace menu launch and browser-dispatched multi-touch feed the running original motion simulation. Viewport, blur and visibility lifecycle checks are explicitly controlled. No full races, package builds or releases.",
+  "checks": [
+    {
+      "name": "Touch auto detects a mobile browser and loads all three control images",
+      "detail": [
+        {
+          "src": "/assets/touch/steering-wheel.svg",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "src": "/assets/touch/brake-pedal.svg",
+          "width": 91,
+          "height": 129
+        },
+        {
+          "src": "/assets/touch/bonus.png",
+          "width": 1254,
+          "height": 1254
+        }
+      ]
+    },
+    {
+      "name": "The lower wheel feeds the original brake/reverse action and moves the kart backwards",
+      "detail": {
+        "reverseSpeed": -0.8231499195098877
+      }
+    },
+    {
+      "name": "The upper wheel accelerates and a held drag gives proportional left and right steering",
+      "detail": {
+        "forwardSpeed": 0.36455023288726807,
+        "left": -0.27777772837559944,
+        "right": 0.27777772837559944,
+        "nativeLeft": {
+          "throttle": 100,
+          "brake": 0,
+          "steering": -28,
+          "handbrake": false
+        }
+      }
+    },
+    {
+      "name": "The separate brake pedal enters the same native handbrake path as Alt",
+      "detail": {
+        "keyboard": {
+          "throttle": 0,
+          "brake": 0,
+          "steer": 0,
+          "handbrake": 1,
+          "bonus": 0
+        },
+        "pedal": {
+          "throttle": 0,
+          "brake": 0,
+          "steer": 0,
+          "handbrake": 1,
+          "bonus": 0
+        }
+      }
+    },
+    {
+      "name": "Three simultaneous contacts combine wheel, brake pedal and power-up without releasing each other",
+      "detail": {
+        "throttle": 1,
+        "brake": 0,
+        "steer": -0.4166666419655775,
+        "handbrake": 1,
+        "bonus": 1,
+        "analog": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": -0.4166666419655775,
+          "handbrake": 1,
+          "bonus": 1
+        }
+      }
+    },
+    {
+      "name": "Wheel capture continues outside its hitbox and release/cancel cannot leave a held input"
+    },
+    {
+      "name": "Resizing a held wheel clears it until a fresh touch begins"
+    }
+  ],
+  "errors": [],
+  "status": "failed",
+  "failure": "page.waitForSelector: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-form=RACE_STOPPEN]') to be visible\u001b[22m\n\n    at /home/rick/Documents/Rebuilds/RedCat Superkarts/tests/touch-controls-browser.mjs:112:16\n    at async check (/home/rick/Documents/Rebuilds/RedCat Superkarts/tests/touch-controls-browser.mjs:21:49)\n    at async file:///home/rick/Documents/Rebuilds/RedCat%20Superkarts/tests/touch-controls-browser.mjs:110:3",
+  "sourceHashes": {
+    "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+    "src/input.js": "d6f9c233d38c81ae3240339339770f8352a937764c84aeb06346306abe0dc399",
+    "src/main.js": "01d3c1a2d85a45416d730abe74acbdc7a7208f64619fd6ecdf15e84d2823f218",
+    "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+    "tests/touch-controls-browser.mjs": "2bcb55d50e00476887f59cae47b7bb3c16ec41801785edd932d2fad740d8d94a"
+  }
+}

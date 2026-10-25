@@ -122,9 +122,9 @@ GPU textures store the exact native channel counts in RGBA8. The shader scales
 them by `255/31, 255/63, 255/31`, avoiding an intermediate rounded 8-bit RGB
 expansion. Key texels already contain black; no upload premultiplication is
 needed. The generated alpha remains a separate key mask, never authored TGA
-opacity or a replacement for vertex alpha. Canvas HUD glyphs receive a lazily
-expanded image from the same processed pixels. Non-race images retain their
-own alpha semantics.
+opacity or a replacement for vertex alpha. The [HUD framebuffer follow-up](research-hud-framebuffer.md)
+draws original glyph quads from the same packed pixels, replacing the earlier
+expanded Canvas images. Non-race images retain their own alpha semantics.
 
 The former `.5` filtered-mask cutoff is removed. The shader rejects only zero
 coverage, before vertex-alpha modulation, following the documented default

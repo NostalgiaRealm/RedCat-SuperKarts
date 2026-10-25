@@ -26,17 +26,20 @@ pinned Electron runtime if it is not cached. Subsequent starts only need `npm ru
 dependencies were removed or changed. Do not omit development dependencies:
 Electron and the packager are development tools used by these commands.
 
-The prepared `public/assets/` folder is already present in this working copy.
-It is excluded from Git, as are `node_modules/` and generated packages. A clean
-checkout therefore needs the original local game/CD/font files and
-`npm run prepare:assets` before desktop launch or packaging. Follow the
-[asset preparation instructions](../README.md#prepare-and-run) for Python, Pillow,
-pefile, ffmpeg, helpdeco and source paths. These extraction tools are not needed
-on a computer that only runs a completed desktop package.
-For building on another OS, you can also copy the complete prepared
-`public/assets/` tree from an existing working checkout; keep its directory
-structure unchanged. Windows extraction can select its installed Python with
-`$env:PYTHON = 'python'` before running the preparation command in PowerShell.
+The Git repository and published source release include the complete prepared
+`public/assets/` folder, including fonts and converted movies. A fresh checkout
+or extracted source archive can run the commands above without the original
+disc files or an asset preparation step. Keep the asset directory structure
+unchanged. Dependencies in `node_modules/` and generated packages are excluded
+from Git; install dependencies with `npm ci` on each build computer.
+
+Asset preparation is optional when you want to regenerate those files from
+the original game/CD/font inputs. Follow the
+[asset preparation instructions](../README.md#prepare-original-assets) for
+Python, Pillow, pefile, ffmpeg, helpdeco and source paths. These extraction tools
+are not required to run or package the included prepared assets. Windows
+extraction can select its installed Python with `$env:PYTHON = 'python'` before
+running the preparation command in PowerShell.
 
 Both the source application and packaged application use `rcsk://game/` for
 their local content. No port is opened and an existing browser server on 4173
@@ -52,9 +55,13 @@ npm run desktop -- --skip-intro
 
 ## Build packages
 
-Run the commands from the project root after preparing assets and installing
-dependencies. Outputs go to `release/`. The scripts explicitly use
-`--publish never`: packaging does not upload a release or publish anything.
+The [v0.9.0 source update](releases/v0.9.0.md) contains source and prepared
+assets, with no installers or other prebuilt desktop packages. The commands
+below create packages locally when you choose to build them.
+
+Run the commands from the project root after installing dependencies. They use
+the included prepared assets. Outputs go to `release/`. The scripts explicitly
+use `--publish never`: packaging does not upload a release or publish anything.
 This matters because builder v26 also supports implicit CI publishing when no
 explicit policy is supplied. [Publishing reference](https://www.electron.build/v26/docs/publish/)
 
@@ -74,7 +81,7 @@ Before archiving, the build verifies every staged game file byte-for-byte and
 checks the wrapper's contents. Missing Three.js modules or media stop the build.
 The resulting `release/integrity-<platform>-<arch>.json` records this check.
 Artifact names include version, OS and architecture, for example
-`RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage`.
+`RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage`.
 
 ### Linux
 
@@ -94,8 +101,8 @@ Use the equivalent package for another distribution if the build requests it.
 Launch the generated AppImage after making it executable:
 
 ```sh
-chmod +x release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage
-./release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage
+chmod +x release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage
+./release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage
 ```
 
 Adjust the version in the filename after a version change. The unpacked test
@@ -248,13 +255,27 @@ publish the resulting files.
 
 ## Validation scope
 
-The integration passed **513 JavaScript tests**, including six desktop protocol
-and startup tests. Both the source launcher and the actual Linux AppImage passed
+The 23 October HUD follow-up reran the **source** Electron check: all 12 checks
+passed under Linux/Xvfb/KWin/SwiftShader with the normal sandbox enabled. Its
+world/HUD/presentation assertions now cover the RGB565 composition path. No
+package was rebuilt or retested; the package results below remain historical.
+See [the focused follow-up](research-hud-framebuffer.md).
+
+At the 20 October 2026 integration checkpoint, **513 JavaScript tests** passed,
+including six desktop protocol and startup tests. Both the source launcher and
+the actual Linux AppImage passed
 **12 desktop checks**: intro decoding/playback, movie byte ranges, renderer
 isolation, original menu imagery/greeting, fullscreen, single-instance focus,
 QuickRace opening/countdown, keyboard movement and race audio, save persistence,
 and the original quit requester. The normal Chromium sandbox remained enabled.
 The AppImage ran directly, without an extraction or FUSE fallback.
+
+These results describe that source and package checkpoint. Later source fixes
+have separate focused checks in [the validation record](validation.md); existing
+packages do not automatically include them. The historical AppImage and Windows
+packages are not included in the published source-only release, and this
+record does not claim that current source has been repackaged or retested on
+every platform.
 
 These automated runs used Linux/Xvfb, KWin and SwiftShader. They do not establish
 physical GPU performance, speaker output, physical controller operation, full
@@ -276,7 +297,7 @@ To repeat the Linux checks in an isolated display, install `xvfb-run`,
 ```sh
 npm test
 bash tools/run-desktop-test-linux.sh
-RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-0.1.0-linux-x86_64.AppImage" \
+RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage" \
   bash tools/run-desktop-test-linux.sh
 ```
 

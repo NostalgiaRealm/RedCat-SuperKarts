@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
-import {mkdtemp,mkdir,writeFile,symlink,rm} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,symlink,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {createHash} from 'node:crypto';
 import {byteRange,createGameProtocolHandler,gameContentSecurityPolicy,assertGameRuntime} from '../electron/game-protocol.mjs';
@@ -40,6 +40,19 @@ test('desktop source and packaged paths share origin but resolve their own asset
     }
     const binary=await handle(request('/assets/data/cars0.dat'));
     assert.deepEqual([...new Uint8Array(await binary.arrayBuffer())],[0,255,1,254]);
+  }
+});
+
+test('SVG touch controls load with an image MIME type in both desktop layouts',async t=>{
+  for(const packaged of [false,true]){
+    const files=await fixture(t,packaged),handle=await createGameProtocolHandler(files);
+    for(const name of ['steering-wheel.svg','brake-pedal.svg']){
+      const source=await readFile(new URL('../public/assets/touch/'+name,import.meta.url),'utf8');
+      await files.put(path.join(files.assetsRoot,'touch',name),source);
+      const response=await handle(request('/assets/touch/'+name));
+      assert.equal(response.status,200);assert.equal(response.headers.get('content-type'),'image/svg+xml');
+      assert.equal(await response.text(),source);
+    }
   }
 });
 

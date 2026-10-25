@@ -18,6 +18,16 @@ export function nativeMainMenuGreeting(firstTime) { return firstTime ? 0 : 1; }
 /** 46fefc/46ff20/46ff44: the selected character names the race mode. */
 export function nativeMenuRaceModeSound(mode) { return 10 + mode; }
 
+/** Briefing initializer4783b8, byte table47c5a4: one country/event recording.
+ * Difficulty selects text only; the unused fifth event aliases normal race.
+ */
+export function nativeAdventureBriefingSound(country, raceType) {
+  if (!Number.isInteger(country) || country < 0 || country > 5 ||
+      !Number.isInteger(raceType) || raceType < 0 || raceType > 4)
+    throw new RangeError('Invalid original Adventure briefing');
+  return 56 + country * 4 + (raceType === 4 ? 0 : raceType);
+}
+
 /** 477d30..477d80, byte tables at47c584 and47c59c.
  * Country order is the shell's Netherlands/Germany/England/France/Spain/Italy. */
 export function nativeCountryInfoSound(country, photo = null) {

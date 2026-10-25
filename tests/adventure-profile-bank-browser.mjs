@@ -65,7 +65,7 @@ try {
   await form(page, 'TFRMSELECTCHAR');
   assert.equal((await saved(page)).profiles[29].name, 'Herstelde laatste');
   await control(page, 'btnBack').click();
-  await form(page, 'TFRMMAIN');
+  await form(page, 'TFRMADVENTUREMAIN');
   await page.reload();
   await control(page, 'btnAdventure').click();
   await expectName(page, 'Herstelde laatste');

@@ -15,9 +15,10 @@ try{
   for(const id of [2,3,5,0]){
     await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+`/?drive=${id}`);
     await page.waitForFunction(()=>rcsk.state.page==='driving',null,{timeout:60000});
-    const frame=await page.evaluate(()=>{
+    const frame=await page.evaluate(async()=>{
+      const THREE=await import('three');
       const view=rcsk.viewer,track=view.track;
-      view.clock.pause();
+      view.suspend({notifyPause:false});
       const original=track.mirrored;
       const canvas=view.renderer.domElement,gl=view.renderer.getContext();
       const width=canvas.width,height=canvas.height;
@@ -44,11 +45,14 @@ try{
         if(max<=3)matching++;
         if(ordinary[a]!==21||ordinary[a+1]!==29||ordinary[a+2]!==43)nonBackground++;
       }
-      const hud=view.hudCanvas.getContext('2d');
+      const hudBackdrop=new THREE.Scene();
       function captureHud(orientation){
-        capture(orientation);view.hud.render();
-        return {bytes:hud.getImageData(0,0,view.hudCanvas.width,view.hudCanvas.height).data,
-          png:view.hudCanvas.toDataURL('image/png')};
+        capture(orientation);
+        // Use the same opaque backdrop to isolate the HUD from the mirrored
+        // world, while retaining its real RGB565 blend/presentation path.
+        view.multisampling.render(hudBackdrop,view.camera,{present:false});view.hud.render();
+        const bytes=new Uint8Array(width*height*4);gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,bytes);
+        return {bytes,png:canvas.toDataURL('image/png')};
       }
       function compareHud(a,b){
         let differences=0,maxChannelError=0,alphaDifferences=0,opaqueDifferences=0;
@@ -59,9 +63,8 @@ try{
         }
         return {differences,maxChannelError,alphaDifferences,opaqueDifferences};
       }
-      // The first Canvas2D readback can change translucent RGB rounding by one
-      // byte on the next identical render. Record that unchanged-orientation
-      // control, then require exact equality for the actual mirror comparison.
+      // Both unchanged and mirrored world orientations must preserve the
+      // actual HUD pixels against the identical RGB565 backdrop.
       const beforeHud=captureHud(original),repeatHud=captureHud(original);
       const afterHud=captureHud(!original),repeatMirroredHud=captureHud(!original);
       const hudBaseline=compareHud(beforeHud.bytes,repeatHud.bytes);
@@ -69,7 +72,7 @@ try{
       const hudMirroredBaseline=compareHud(afterHud.bytes,repeatMirroredHud.bytes);
       const hudEqual=hudMirror.differences===0;
       const hudDifferences=hudMirror.differences;
-      capture(original);view.hud.render();
+      capture(original);view.renderScene();view.hud.render();
       return {id:track.id,authoredMirrored:original,motionMirrored:view.motion.mirrored,
         sceneX:view.scene.scale.x,groupX:view.group.scale.x,cameraParentIsScene:view.camera.parent===view.scene,
         width,height,matchingFraction:matching/(width*height),
@@ -93,7 +96,7 @@ try{
     assert.ok(frame.hudSceneScales.every(scale=>scale.every(value=>value===1)));
     await page.screenshot({path:`${directory}/track${id}.png`});
     const before=await page.evaluate(()=>{
-      const view=rcsk.viewer;view.clock.resume();return view.clock.tick;
+      const view=rcsk.viewer;view.resume();return view.clock.tick;
     });
     await page.keyboard.down('ArrowLeft');
     await page.waitForFunction(tick=>rcsk.viewer.clock.tick>=tick+4,before);

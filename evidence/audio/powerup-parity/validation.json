@@ -1,0 +1,137 @@
+{
+  "format": "redcat-superkarts-powerup-audio-validation-v1",
+  "date": "2026-10-25",
+  "recordedAt": "2026-10-25T11:28:53.602593+00:00",
+  "status": "passed",
+  "runtimeAudioChangeRequired": false,
+  "conclusion": "The audited original pickup and firing mappings, recordings, gates, queue ordering and mixing agree with the source port. No substitute samples or new playback triggers were added.",
+  "originalCopies": [
+    {
+      "path": "/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskspel.dat",
+      "sha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f"
+    },
+    {
+      "path": "/home/rick/Games/UnpackedISO/RedCat Superkarts/RedCat Superkarts/data/Game/rcskspel.dat",
+      "sha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f"
+    }
+  ],
+  "nativeInstructionReplay": {
+    "commands": [
+      "re-python tools/native-bonus-audio-fixtures.py",
+      "re-python tools/native-character-voice-fixtures.py",
+      "re-python tools/native-arm-audio-fixtures.py",
+      "re-python tools/native-powerup-sound-flow-fixtures.py"
+    ],
+    "cases": {
+      "bonus": 41,
+      "characterVoice": 1580,
+      "armAudio": 1200,
+      "completeTurbo": 180
+    },
+    "totalCases": 3001,
+    "existingFixtureOutputsUnchanged": true,
+    "comparisonCommand": "node --test tests/bonus-audio.test.mjs tests/native-character-voice.test.mjs tests/arm-audio.test.mjs tests/powerup-sound-flow.test.mjs",
+    "comparisonTests": 11,
+    "comparisonStatus": "passed"
+  },
+  "rea": {
+    "provider": "Hopper",
+    "functionCount": 14,
+    "report": "docs/evidence/powerup-sound-rea.json",
+    "sessionClosed": true
+  },
+  "focusedTests": [
+    {
+      "command": "node --test tests/bonus-audio.test.mjs tests/native-character-voice.test.mjs tests/arm-audio.test.mjs tests/powerup-sound-flow.test.mjs",
+      "testsPassed": 11,
+      "status": "passed"
+    },
+    {
+      "command": "node --test tests/voice-controller.test.mjs tests/audio-mixing.test.mjs tests/spatial-audio.test.mjs",
+      "testsPassed": 9,
+      "status": "passed"
+    }
+  ],
+  "focusedTestsPassed": 20,
+  "assetsAndMixing": {
+    "report": "evidence/audio/powerup-parity/assets.json",
+    "banks": 11,
+    "bankEntries": 327,
+    "uniqueSoundEvents": 314,
+    "uniqueWavFiles": 314,
+    "originalComparisons": 628,
+    "configsMatch": true,
+    "allWaveBytesMatch": true,
+    "silentFiles": [],
+    "missingFiles": [],
+    "nativeMixFixtureComparisons": 3768,
+    "voiceBankResolutionCases": 1200,
+    "playerCountryRosterCombinations": 24
+  },
+  "browser": {
+    "command": "RCSK_URL=http://127.0.0.1:4184 node tests/powerup-audio-browser.mjs",
+    "report": "evidence/audio/powerup-playback.json",
+    "status": "passed",
+    "controlledCasesPassed": 118,
+    "playableCharacters": 4,
+    "normalPickupRecordingsPerCharacter": 5,
+    "firingRecordingsPerCharacter": 15,
+    "pageAndNetworkErrors": []
+  },
+  "changes": [
+    "Added a complete original-instruction turbo dispatch probe and JS comparison test.",
+    "Added a browser regression harness and original asset/mixing/native evidence.",
+    "Updated the older race-sound validation tool to initialize from current simulationMs; its unrelated cases were not repeated.",
+    "Updated research, parity and validation documentation."
+  ],
+  "scopeAndLimits": [
+    "Source only; no full suite, full race, package build or publication.",
+    "Original instruction execution uses the documented isolated device/visual/string/queue boundaries, not a full native process.",
+    "The browser check uses controlled pickup contacts and inventory/RNG/cooldown setup through real DrivingView ticks on the Netherlands item-race route.",
+    "Random pickup type 7 is supported by original code but absent from authored track layouts; its browser state is explicitly injected.",
+    "The item-race browser rosters are separate from the static 24 player/country bank-admission audit.",
+    "Actual decoded original WebAudio buffers start with recorded gain/pan/pitch and one-shot state; native sound-card/speaker capture and identical hardware resampling are not claimed.",
+    "Missing original bank names and dormant bubble-pop recordings remain silent."
+  ],
+  "sha256": {
+    "src/bonus-audio.js": "d3a18547691988a15b9cc0230162847d97833e1862ac8fdf860cca3f5945a06b",
+    "src/arm-audio.js": "50a4e7848d441449e66b1d61e55bb205e7b2050d5714205e66c557820ce0e474",
+    "src/native-voice-controller.js": "e76556a912202116fe666a1be89055a79f1a2f456e832c3ead3904a14240e313",
+    "src/native-race-audio.js": "246ea97bfdf3859e65d53a02397078cb956f9cfdefd6d012cad7f913e73ccee1",
+    "src/audio-mixing.js": "e643893d232e87b8f23d465cd447e339da16f514346f1f297d21ba24ee868434",
+    "src/spatial-audio.js": "b5e89fd2d3138d80314fcb46747b618bcef93a04f51ff3ec8e3384ade2f83bf3",
+    "src/engine-audio.js": "1535161cb9c6117b2f412d2c191fe6c0b401a1a9982cc5088d5ae173b091cdf6",
+    "src/driving-view.js": "e8ab74acfafb97e3567165ac3e13320f9ee206ebbe3f1de3012de34a5f954a54",
+    "src/simulation/native-bonus.js": "a366f0f8e6dc543173cf1e3157c5b651ed189ee3673fc6df341bd0313aa69213",
+    "src/simulation/native-combat.js": "244ff374df1373a96f2714223508bf4ce2599d00895c7a1d654d3f28eb1738a3",
+    "src/simulation/native-character-voice.js": "f8ff4ff3428214463bf04c330199aab8f2156886c9b54de228ceb0184fb21ac1",
+    "tests/bonus-audio.test.mjs": "b92c9c247060ffdb5a0d57345b435c0fa8aced669fff8e148a23c6a5958b21f6",
+    "tests/native-character-voice.test.mjs": "b59778dd0c7a281dbbf971c6d7e143c206e7209ce6723f0060337e3596e48d2d",
+    "tests/arm-audio.test.mjs": "ed304ad810f132561bd29fadc3786cb3ee98086c0f1fe9cfedccdec6286f5fa5",
+    "tests/powerup-sound-flow.test.mjs": "16f03155ab387d8d8a47ef67b8cb40751abc84512369c586df9f08223fd47b1e",
+    "tests/voice-controller.test.mjs": "b8cc8445be5426cf567ccc552bac355def60266552d9519c92ca0ea04c06ac11",
+    "tests/audio-mixing.test.mjs": "1b5ddf60f15f11592ecafdd2c56003eeff7355f7bf119f894de40a5a255fa648",
+    "tests/spatial-audio.test.mjs": "294e0f189b2dd0d01d17d3a201a5d1e42012d40de99e89c2ea65070d93d820b2",
+    "tests/powerup-audio-browser.mjs": "f6fa4dd5a7e50c64d43e4bec2b869437b8e4a365b13d8eeab8d23341bca1fbe9",
+    "tools/native-bonus-audio-fixtures.py": "b3e7e646311186fb6ca223ec6c8b368604ea33a6512af664937011583d931ac5",
+    "tools/native-character-voice-fixtures.py": "f1d62756ec09d91e3c6d8e9479b6c4c47a5c7d1fc11ca7a815e798d6f71895a2",
+    "tools/native-arm-audio-fixtures.py": "790d399b2c40778fee32832cc6017fab858e3abeb179408582fbeee00c186045",
+    "tools/native-powerup-sound-flow-fixtures.py": "ccb07f1d7aed8761487dbe860319261752ff486483cf014edcb0605350934579",
+    "tools/validate-race-sound-triggers.mjs": "1f00b0cd31ddf446ee80e957ff8e419e6678a4454f32a1e382e7632ba1928ffe",
+    "evidence/native/bonus-audio-fixtures.json": "2eeeaf2004192477c862eba5c6634bf4c6c5bc1fc05cfc83dd08b6c22c1db841",
+    "evidence/native/character-voice-fixtures.json": "97f1eef03e82a1c09e8c3144aef9166c1560debf2bd41173e06b9c2ecd22302f",
+    "evidence/native/arm-audio-fixtures.json": "1a5c6658dcb830bbf3fc4a7e94edf9306f18c27830b2daaf0463a5c9c472f670",
+    "evidence/native/powerup-sound-flow-fixtures.json": "50498a2df8079c7a88fbaaf52d624ebfc208b3eb13f925f2a88b269245b08342",
+    "evidence/native/audio-mixing-fixtures.json": "a4f76d31583d653b9be022a35bbdf43951c13b178ad4fa0ea09de49737eab50c",
+    "evidence/native/voice-queue-fixtures.json": "94344bc83fa6bbe1014ec20ba9833bb9791b72c58cc8e06e69330459f752dc63",
+    "evidence/native/spatial-audio-fixtures.json": "61e9cd993b53a826824665cfdd5aec25ba68f62de789e989d71590b41dd81876",
+    "docs/evidence/powerup-sound-native-audit.json": "10d9df4a1b229640e783cbf695796774b9838fca01086206b342c066babf3dfe",
+    "docs/evidence/powerup-sound-rea.json": "6308c1a2457ef2709614eda7c05ef678678148292bdbb15299211d268ac7edd8",
+    "evidence/audio/powerup-parity/assets.json": "1b9db048640d21365d620af6f7607b5e92261d5a741897b1a0c401ab5970765f",
+    "evidence/audio/powerup-playback.json": "9b54fc4678bba6b8f3928192598383b90ec201d867ae380cd73f72ac1ce5e8d4",
+    "docs/research-powerup-audio.md": "1d2363d60a772d642eb1036638a8a3fb9f8d80df13a58035aad18791481dd65a",
+    "docs/research-race-sound-coverage.md": "d6cd144e6c2764c3fe486c695bc71d2cb4f77afe2e884cf06491a4299fb7c789",
+    "docs/validation.md": "64da2fb94724f919014ec9e8d5ab234d05d9b8921893563195d4d0214b1d778a",
+    "docs/feature-parity.md": "af34c7b646a59633ee91ec979ab1dc4c62c5328d000d87bb90e2248e96e91cd9"
+  }
+}

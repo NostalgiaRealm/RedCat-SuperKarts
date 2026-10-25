@@ -3,6 +3,8 @@
 A reconstruction of the original Windows game using **Three.js**, **Electron**
 and the original supplied assets. Play in a browser or in a desktop window.
 
+**Version 0.9.0** · [Changelog](CHANGELOG.md)
+
 - **Six circuits**, **four playable characters**, **four active race modes** and
   **three difficulty levels**, with the original menus.
 - **QuickRace:** character and race selection, countdown, racing, results,
@@ -18,7 +20,8 @@ original behavior are recorded separately. Full visual, audio and handling
 parity has not been established: WineD3D does not provide a reliable original
 race baseline here. See [feature status](docs/feature-parity.md) and
 [validation](docs/validation.md) for the tested scope, rendering adaptations and
-unavailable platforms.
+unavailable platforms. The [remaining-work audit](docs/remaining-work.md)
+separates confirmed improvements from validation gaps and optional work.
 
 [Run the game](#run-the-game) · [Controls](#controls) ·
 [Settings and saves](#settings-and-saves) ·
@@ -100,6 +103,19 @@ The original restrictions on camera changes during different race phases are
 retained. In menus, use the mouse, touch, arrow keys or Enter. In the separate
 track-inspection views, drag to orbit and use the wheel or pinch to zoom.
 
+On a touchscreen, hold the **steering wheel on the left** and slide your finger:
+
+- Left/right steers; the distance from the centre controls how sharply you turn.
+- The upper half gives gas; the lower half brakes and then reverses. A small
+  neutral area around the centre helps avoid accidental input.
+- The **pedal on the right** operates the same handbrake as **Alt**. The orange
+  lightning **Bonus** button uses your power-up, like **Ctrl**.
+
+You can hold the wheel and an action button together. Sliding outside the wheel
+keeps control until you lift your finger. Enable or hide these controls under
+**Instellingen → Meer instellingen → Aanraakbediening**. Their layout adapts to
+portrait and landscape screens.
+
 ### Controllers
 
 Controllers using the browser's standard Gamepad API mapping support:
@@ -111,10 +127,13 @@ Controllers using the browser's standard Gamepad API mapping support:
 | Right face button | Go back. |
 | Analog throttle, brake and steering | Drive, with a steering deadzone. |
 
-Keyboard and touch input use the original digital ramps; controller input uses
-the recovered proportional joystick routine. Independent touch pointers are
-supported. Simulated controller tests cover partial throttle, steering and
-braking. Physical controllers and mobile devices remain unverified.
+Keyboard input uses the original digital ramps; controllers and the touch
+steering wheel use the recovered proportional joystick routine. The wheel's
+finger-position response follows SuperTuxKart's touch controls. Independent
+touch pointers are supported. Simulated controller and browser touch tests
+cover partial throttle, steering and braking. Physical controllers and mobile
+devices remain unverified. [Touch-control sources and artwork licenses](docs/research-touch-controls.md)
+are documented separately from the original game's assets.
 
 ## Settings and saves
 
@@ -130,6 +149,7 @@ display and input settings are presented separately.
 | **Alles ontgrendelen** | Unlock all tracks/countries while preserving profiles and scores. |
 
 See [extra settings](docs/more-settings.md) for more information.
+The current version is shown at the bottom of **Meer instellingen**.
 
 ### Resolution and render scale
 
@@ -324,6 +344,11 @@ the full menu, countdown and results path. See the
 These are development checks. They are not needed each time you launch the
 game. Choose checks relevant to the behavior you change.
 
+The rendering smoke tests now check the world and HUD separately from the
+final screen copy. The [HUD rendering follow-up](docs/research-hud-framebuffer.md)
+records the relevant source checks; older results below retain their original
+checkpoint and platform scope.
+
 ### Unit, parser and asset checks
 
 ```sh
@@ -433,10 +458,12 @@ verification from that checkpoint are in `docs/research-race-completion.md` and
 
 ### Full race matrix
 
-The earlier full-race audit covers all 72 track/difficulty/mode combinations;
-its completion and qualification results are recorded separately in
-`evidence/full-race-matrix/race-matrix.json`. The report rejects stale runtime
-hashes and lists unfinished cases explicitly. This audit corrected the native
+The earlier full-race audit targeted all 72 track/difficulty/mode combinations:
+71 finished, and 40 also qualified for Adventure. France on hard difficulty in
+timed mode remains incomplete. Those historical fixed-25-ms results are recorded
+in `evidence/full-race-matrix/race-matrix.json`; the verifier checked matching
+source/asset hashes at that checkpoint. They do not establish full-race coverage
+for the later variable update host and recovery changes. This audit corrected the native
 race constructor's upgrade reset and mirrored rendering/input composition,
 and added narrowly scoped recovery and nonfinite-opponent safeguards for
 captured stuck cases. It retains the original physics, deadlines and gate

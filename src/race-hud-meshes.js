@@ -27,10 +27,7 @@ const mergeOverrides=(base={},extra={})=>{
 export class RaceHudMeshes {
   constructor(viewer,config,manifest,simulation) {
     Object.assign(this,{viewer,config:createNativeStarHudConfig(config),manifest,simulation});
-    this.renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,premultipliedAlpha:true});
-    this.renderer.setPixelRatio(1);this.renderer.setClearColor(0,0);
-    this.renderer.autoClear=false;
-    this.renderer.setTransparentSort((a,b)=>a.renderOrder-b.renderOrder||a.id-b.id);
+    this.renderer=viewer.renderer;
     const projection=getNativeHudCameraSpec();
     this.camera=new THREE.PerspectiveCamera(projection.verticalFov*180/Math.PI,640/480,projection.near,projection.far);
     this.layers=new Map();this.elements=new Map();this.resources=new Map();this.textures=new Map();
@@ -73,10 +70,6 @@ export class RaceHudMeshes {
       geometry.setAttribute('color',new THREE.Uint8BufferAttribute(colors,4,true));
       const material=createNativeMeshMaterial(map,{blendMode:1});
       material.depthTest=false;material.depthWrite=false;
-      // Retain premultiplied RGB while accumulating coverage into this
-      // transparent HUD surface; the final 2D composite applies coverage once.
-      material.blendSrcAlpha=THREE.OneFactor;
-      material.blendDstAlpha=THREE.OneMinusSrcAlphaFactor;
       return {geometry,material};
     })());
     return this.resources.get(key);
@@ -208,16 +201,17 @@ export class RaceHudMeshes {
       }
     }
   }
-  render(context,width,height,layout=raceHudLayout(width,height)) {
-    const canvas=this.renderer.domElement;
-    if(canvas.width!==width||canvas.height!==height)this.renderer.setSize(width,height,false);
-    this.renderer.setViewport(0,0,width,height);this.renderer.clear();
-    for(const [name,{scene}]of this.layers){
-      const viewport=layout.group(name);
-      this.renderer.setViewport(viewport.x,height-viewport.y-viewport.height,viewport.width,viewport.height);
-      this.renderer.render(scene,this.camera);
-    }
-    context.drawImage(canvas,0,0,width,height);
+  renderElement(renderer,id,width,height,layout=raceHudLayout(width,height)) {
+    const element=this.elements.get(id);
+    if(!element?.mesh.visible)return false;
+    const mesh=element.mesh,parent=this.config['overlay.ini'][id].parent.toLowerCase();
+    const viewport=layout.group(['backarrow','junctionarrow'].includes(id)?'arrows':parent);
+    renderer.setViewport(viewport.x,height-viewport.y-viewport.height,viewport.width,viewport.height);
+    // Render the original node on its own so text and meshes can follow the
+    // native Composite child list, including the label inside Bonus.
+    mesh.parent.updateMatrixWorld(true);
+    renderer.render(mesh,this.camera);
+    return true;
   }
   async dispose() {
     const [resources,textures]=await Promise.all([
@@ -226,9 +220,9 @@ export class RaceHudMeshes {
     for(const result of resources)if(result.status==='fulfilled'){
       result.value.geometry.dispose();result.value.material.dispose();
     }
-    // Delete owned GPU objects before renderer.dispose clears the properties
-    // used by Three's texture-disposal listeners. Source images stay shared.
+    // The renderer and source images belong to the world. Retire only the
+    // overlay's geometry/materials and independently sampled texture clones.
     for(const result of textures)if(result.status==='fulfilled')result.value.dispose();
-    this.renderer.dispose();
+    this.loadedTextures.clear();this.textures.clear();this.resources.clear();
   }
 }

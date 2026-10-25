@@ -7,7 +7,7 @@ import {GAME_SCHEME} from './runtime.mjs';
 
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8',
   '.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8',
-  '.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg',
+  '.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.jpeg':'image/jpeg',
   '.gif':'image/gif','.webp':'image/webp','.ico':'image/x-icon','.mp4':'video/mp4',
   '.webm':'video/webm','.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg',
   '.ttf':'font/ttf','.woff2':'font/woff2','.bin':'application/octet-stream',

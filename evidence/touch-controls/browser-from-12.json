@@ -1,0 +1,52 @@
+{
+  "browser": "156.0.8078.47",
+  "touchProtocol": "Selective CDP touchEnd sends the ending contact. The live pointerup trace asserts only the released control receives pointerup; other contacts retain their state. Empty touchCancel ends all contacts. Verified against an independent three-contact DOM event probe on this Chromium version.",
+  "scope": "Direct DrivingView suspend/resume ownership regression on source in mobile Chromium. Browser-dispatched wheel and pedal contacts exercise the simulation-owned InputState.clear path. No previous gameplay/layout checks, screenshots, full races, builds or releases.",
+  "checks": [
+    {
+      "name": "Direct DrivingView suspension clears captured touches and artwork; stale moves stay neutral and a fresh resumed wheel stays analog",
+      "detail": {
+        "held": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": -0.4166666419655775,
+          "handbrake": 1,
+          "bonus": 0,
+          "analog": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.4166666419655775,
+            "handbrake": 1,
+            "bonus": 0
+          }
+        },
+        "resumed": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": 0.27777772837559944,
+          "handbrake": 0,
+          "bonus": 0,
+          "analog": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.27777772837559944,
+            "handbrake": 0,
+            "bonus": 0
+          }
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "firstCheck": 12,
+  "status": "passed",
+  "sourceHashes": {
+    "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+    "src/input.js": "d7d02908b86f2b059563081e4fdcc8a47bf4d028cbe4bbdfe20eed9c844d3713",
+    "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+    "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+    "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+    "src/hud-text-renderer.js": "b6cbba4095408f9ca0ee1877a95b44b585a98f76bcf69b84279e178ca052f9fe",
+    "tests/touch-controls-browser.mjs": "a9e7f9cb59f97ff9c1cf4a117dcb2765d4beae00c0f6b1da7fa73a599352e5fe"
+  }
+}

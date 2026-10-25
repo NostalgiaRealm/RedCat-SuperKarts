@@ -167,22 +167,34 @@ try{
       dataTexture:!!map.isDataTexture,premultiplyAlpha:map.premultiplyAlpha,
       separateTexture:textures.every(item=>item.map!==map),sharedPixels:textures.some(item=>item.map.image===map.image)}));
     const fonts=[];
-    for(const [name,image]of view.hud.images){
-      const file=resolveAsset(manifest,'images',name),map=await view.texture(file),data=map.image.data;
-      const rgba=image.getContext('2d').getImageData(0,0,image.width,image.height).data;
+    for(const [name,map]of view.hud.textures){
+      const file=resolveAsset(manifest,'images',name),sourceTexture=await view.texture(file),data=map.image.data;
+      const image=new Image();image.src='/assets/'+file;await image.decode();
+      const canvas=document.createElement('canvas');canvas.width=image.width;canvas.height=image.height;
+      const context=canvas.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0);
+      const rgba=context.getImageData(0,0,image.width,image.height).data;
       let opaque=0,keyed=0,mismatches=0;
       for(let offset=0;offset<data.length;offset+=4){
-        if(data[offset+3]===0){keyed++;if(rgba[offset+3]!==0)mismatches++;continue;}
+        if(rgba[offset+3]===0){
+          keyed++;if(data.slice(offset,offset+4).some(value=>value!==0))mismatches++;
+          continue;
+        }
         opaque++;
-        const expected=[Math.round(data[offset]*255/31),Math.round(data[offset+1]*255/63),Math.round(data[offset+2]*255/31),255];
-        if(expected.some((value,index)=>rgba[offset+index]!==value))mismatches++;
+        const rgb=Array.from(rgba.slice(offset,offset+3),value=>map.userData.nativeGamma?value*value>>8:value);
+        const expected=[rgb[0]>>3,rgb[1]>>2,rgb[2]>>3,255];
+        if(expected.slice(0,3).every(value=>value===0))expected[0]=1;
+        if(expected.some((value,index)=>data[offset+index]!==value))mismatches++;
       }
-      fonts.push({name,file,canvas:image instanceof HTMLCanvasElement,width:image.width,height:image.height,opaque,keyed,mismatches});
+      fonts.push({name,file,dataTexture:map.isDataTexture===true,format:map.userData.nativeTextureFormat,
+        sharedPixels:map.image===sourceTexture.image,independentSampler:map!==sourceTexture,
+        gammaPreserved:map.userData.nativeGamma===sourceTexture.userData.nativeGamma,
+        keyBeforeFiltering:map.userData.nativeColorKeyFilter===true,premultiplyAlpha:map.premultiplyAlpha,
+        width:map.image.width,height:map.image.height,opaque,keyed,mismatches});
     }
     const effects=[['streams',view.streamVisuals.material],['weather',view.weatherVisuals.material]].filter(([,material])=>material)
       .map(([name,material])=>({name,format:material.map?.userData.nativeTextureFormat,
         colorKeyThreshold:material.userData.native.colorKeyThreshold,source:material.blendSrc,destination:material.blendDst}));
-    view.updatePresentation(1);view.multisampling.render(view.scene,view.camera);view.hud.render();
+    view.updatePresentation(1);view.renderScene();view.hud.render();
     const sky=view.sky?.material;
     return {world,clones,fonts,effects,sky:{format:sky?.map?.userData.nativeTextureFormat,nativeByteColors:sky?.userData.nativeByteColors},
       hudText:view.hud.text,assetErrors:view.errors,glError:view.renderer.getContext().getError(),
@@ -194,12 +206,18 @@ try{
   assert.ok(integration.clones.length>0);
   assert.ok(integration.clones.every(row=>row.format==='RGB565'&&row.dataTexture&&row.separateTexture&&row.sharedPixels&&!row.premultiplyAlpha));
   assert.ok(integration.fonts.length>0);
-  for(const font of integration.fonts){assert.equal(font.canvas,true);assert.equal(font.mismatches,0);assert.ok(font.opaque>0);}
+  for(const font of integration.fonts){
+    assert.equal(font.dataTexture,true);assert.equal(font.format,'RGB565');
+    assert.equal(font.sharedPixels,true);assert.equal(font.independentSampler,true);
+    assert.equal(font.gammaPreserved,true);assert.equal(font.keyBeforeFiltering,true);
+    assert.equal(font.premultiplyAlpha,false);assert.equal(font.mismatches,0);
+    assert.ok(font.opaque>0);assert.ok(font.keyed>0);
+  }
   assert.equal(integration.sky.format,'RGB565');assert.equal(integration.sky.nativeByteColors,true);
   for(const effect of integration.effects){assert.equal(effect.format,'RGB565');assert.equal(effect.colorKeyThreshold,null);}
   assert.deepEqual(integration.assetErrors,[]);assert.equal(integration.glError,0);
   assert.ok(Object.keys(integration.hudText).length>0);
-  report.checks.push({case:'live race shared textures, sky, effects, HUD clones and font canvas expansion',
+  report.checks.push({case:'live race shared textures, sky, effects, HUD clones and original packed font pixels',
     worldTextures:integration.world.length,hudClones:integration.clones.length,fonts:integration.fonts.length});
   assert.deepEqual(errors,{page:[],console:[],http:[],requests:[]});
   report.status='passed';

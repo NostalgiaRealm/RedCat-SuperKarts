@@ -56,8 +56,11 @@ try{
   report.checks.push('Direct main-menu URL loads');
   await page.goto(origin+'/?drive=0');
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving'&&window.rcsk.viewer.clock.tick>2,null,{timeout:60000});
-  report.race=await page.evaluate(()=>({triangles:rcsk.viewer.renderer.info.render.triangles,errors:rcsk.viewer.errors}));
+  await page.waitForFunction(()=>rcsk.viewer.renderStats.hud?.glyphs>0);
+  report.race=await page.evaluate(()=>({triangles:rcsk.viewer.renderStats.world.triangles,
+    presentationTriangles:rcsk.viewer.renderStats.presentation.triangles,hud:rcsk.viewer.renderStats.hud,errors:rcsk.viewer.errors}));
   assert.ok(report.race.triangles>1000);assert.deepEqual(report.race.errors,[]);
+  assert.equal(report.race.presentationTriangles,1);assert.ok(report.race.hud.glyphs>0);
   await page.screenshot({path:directory+'/race.png'});
   report.checks.push('Three.js, OrbitControls and the actual race render successfully');
   assert.deepEqual(report.errors,[]);assert.deepEqual(report.requests,[]);

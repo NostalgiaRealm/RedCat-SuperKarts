@@ -1,5 +1,6 @@
-import {getHudStringSpec,layoutHudText,getRaceHudText} from './hud-text.js';
-import {resolveAsset} from './asset-animation.js';
+import {getHudStringSpec,getRaceHudText} from './hud-text.js';
+import {HudTextRenderer} from './hud-text-renderer.js';
+import {nativeHudDrawOrder} from './hud-draw-order.js';
 import {measureRaceHudLayout} from './race-hud-layout.js';
 import {createNativeHudNotifications,dispatchNativeHudNotification,
   updateNativeHudNotifications,getNativeHudNotificationOverride} from './hud-notifications.js';
@@ -10,9 +11,7 @@ import {NativeLapDisplay} from './simulation/native-lap-display.js';
 export class RaceHud {
   constructor(canvas,config,manifest){
     this.canvas=canvas;
-    this.context=canvas.getContext('2d');
     this.specs=new Map();
-    this.images=new Map();
     this.config=config;this.manifest=manifest;
     this.text={};
     this.lapDisplay=new NativeLapDisplay();
@@ -23,26 +22,17 @@ export class RaceHud {
     this.specialOverride=null;
     this.filter=2;
   }
-  async load(imageLoader=null){
-    const pending=[];
+  async load(textureLoader){
     const ids=['string_lap','string_laptime','string_bestlap','string_lap_value',
       'string_lapof_value','string_laptime_value','string_bestlap_value','string_countdown_value',
       'string_bonus','string_special'];
     for(const id of ids){
       const spec=getHudStringSpec(this.config,id);this.specs.set(id,spec);
-      for(const glyph of Object.values(spec.font.glyphs)){
-        if(this.images.has(glyph.texture))continue;
-        const file=resolveAsset(this.manifest,'images',glyph.texture);
-        if(!file)throw Error(`Original HUD image missing: ${glyph.texture}`);
-        this.images.set(glyph.texture,null);
-        if(imageLoader)pending.push(Promise.resolve(imageLoader(file)).then(image=>this.images.set(glyph.texture,image)));
-        else{
-          const image=new Image();image.src='/assets/'+file;
-          this.images.set(glyph.texture,image);pending.push(image.decode());
-        }
-      }
     }
-    await Promise.all(pending);
+    this.glyphs=new HudTextRenderer(this,textureLoader);
+    await this.glyphs.load();
+    this.textures=this.glyphs.textures;
+    this.drawOrder=nativeHudDrawOrder(this.meshes.config,{extraElements:[...this.meshes.elements.keys()]});
   }
   notify(id,deltaSeconds=0,{capture=false,lapCount=this.lapCount,nowSeconds=this.nowSeconds}={}){
     if(id===8)this.lapDisplay.notifyLap({lapCount,nowSeconds});
@@ -84,32 +74,33 @@ export class RaceHud {
     this.captureNotification();
   }
   render(){
-    const {canvas,context:ctx}=this,rect=canvas.getBoundingClientRect();
+    const {canvas}=this,rect=canvas.getBoundingClientRect();
     const dpr=devicePixelRatio||1,width=Math.round(rect.width*dpr),height=Math.round(rect.height*dpr);
     if(width===0||height===0)return;
     if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
-    ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,width,height);
     const layout=measureRaceHudLayout(canvas,width,height);
     this.layout=layout;
-    this.meshes?.render(ctx,width,height,layout);
-    // Captured once per native overlay pass; modern redraws do not advance
-    // 462320/462610's persistent sampler cache.
-    ctx.imageSmoothingEnabled=this.filter===2;
-    const {scale}=layout;
-    for(const [id,text]of Object.entries(this.text)){
-      const spec=id==='string_special'?getHudStringSpec(this.config,id,{overrides:{
-        [id]:this.specialOverride,
-      }}):this.specs.get(id);
-      if(!spec.visible)continue;
-      const {x,y}=layout.text(id);
-      ctx.setTransform(scale,0,0,scale,x,y);
-      ctx.globalAlpha=spec.rgba[3]/255;
-      for(const glyph of layoutHudText(spec,text)){
-        const s=glyph.source;
-        ctx.drawImage(this.images.get(s.texture),s.x,s.y,s.width,s.height,
-          glyph.x,glyph.y,glyph.width,glyph.height);
+    // The canvas now supplies only layout/accessibility metadata. Both meshes
+    // and glyphs blend directly into the RGB565 race presentation surface.
+    this.present?.(renderer=>this.draw(renderer,width,height,layout),width,height);
+  }
+  draw(renderer,width,height,layout){
+    this.meshes.viewer.nativeBlendState?.setNative(5,6);
+    const stats={calls:0,triangles:0,glyphs:0,order:[]};
+    for(const id of this.drawOrder){
+      let drawn=false;
+      if(Object.hasOwn(this.text,id)){
+        const count=this.glyphs.renderString(renderer,id,this.text[id],width,height,layout);
+        stats.glyphs+=count;drawn=count>0;
+      }else drawn=this.meshes.renderElement(renderer,id,width,height,layout);
+      if(drawn){
+        stats.calls+=renderer.info.render.calls;stats.triangles+=renderer.info.render.triangles;
+        stats.order.push(id);
       }
     }
-    ctx.globalAlpha=1;
+    this.stats=stats;return stats;
+  }
+  dispose(){
+    this.present=null;this.glyphs?.dispose();
   }
 }

@@ -120,8 +120,9 @@ It still uses the browser driver's supported rasterization and conversion
 rules. The original CPU bytes cannot determine a 1999 device's framebuffer
 rounding, driver overrides, dithering pattern or sample precision. The captured
 game initialization does not request dithering. Browser multisampling is an
-intentional extension, and a separate Canvas/HTML HUD or menu is not an original
-16-bit Direct3D framebuffer merely because the world has a 16-bit target.
+intentional extension. The later [HUD framebuffer follow-up](research-hud-framebuffer.md)
+now draws meshes and font quads into a shared RGB565 composition surface. Menu
+HTML remains a separate original-artwork presentation path.
 
 ## Focused source validation
 
@@ -136,7 +137,8 @@ were run for this change.
 - `tests/native-texture-precision-browser.mjs` checks 197 rendered pixel samples
   within one output byte, including low nonzero coverage, both texture formats,
   gamma, all four native blend modes, additive effects and the sky. It also
-  checks the live loader, shared HUD clones and expanded font pixels.
+  checks the live loader, shared HUD clones and original packed font pixels
+  (the earlier font-Canvas expectation was updated with the HUD follow-up).
 - Stream checks compare every S_SFX texel with independently calculated packed
   values. Fifteen effect/HUD comparisons isolate hidden pink contamination from
   the intentional precision change. Display off/on/off reloads retain the

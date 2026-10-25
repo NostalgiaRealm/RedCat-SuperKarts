@@ -1,5 +1,12 @@
 # Race sound coverage
 
+The [25 October power-up follow-up](research-powerup-audio.md) verifies the
+pickup/firing paths against both original copies, fresh REA/Hopper evidence,
+3,001 original instruction cases and 118 controlled browser cases. The current
+recordings, sound names, queue order and mixing matched; no game-audio change
+was required. The earlier 26-case tool below retains its narrower historical
+scope; its controlled clock baseline has been updated for the variable host.
+
 The playback audit precedes mixing corrections. A decoded file, a named sound
 in an INI, and a reachable gameplay trigger are separate evidence.
 

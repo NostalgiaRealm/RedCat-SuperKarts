@@ -1,16 +1,30 @@
 # Six tracks, three difficulties, four modes
 
-The current audit runs ordinary analog controls through the complete composed
-simulation. Its target is 72 five-lap races: six countries × three difficulties
-× normal, timed, star and duel modes. It uses the original opponent counts
-(4/3/3/1), original track files, player physics, opponent tables, timing and
+This retained audit records the 2026-10-20 source checkpoint, using ordinary
+analog controls through the complete composed simulation. Of the 72 five-lap
+combinations, **71 finished and 40 met the original Adventure qualification
+rule**. France on hard difficulty in timed mode remains the one unfinished
+check. A failed automated driving attempt does not establish that the original
+deadline is impossible.
+
+These races used fixed 25 ms updates. They do not validate the later
+[variable update timing](research-variable-update-timing.md) or
+[player stuck recovery](player-stuck-recovery.md) changes. Those source changes
+have their own focused evidence; the complete race matrix has not been rerun.
+The results and original evidence below remain historical, including the
+earlier build and test counts.
+
+The target was six countries × three difficulties × normal, timed, star and
+duel modes. The audit uses the original opponent counts (4/3/3/1), original
+track files, player physics, opponent tables, timing and
 qualification rules. No driving run writes positions, velocities, laps,
 pickups, timers or physics tables.
 
-`evidence/full-race-matrix/race-matrix.json` is the generated coverage report.
-It accepts only finished five-lap runs whose complete runtime, test sources and
-loaded assets still match their recorded hashes. Star cases additionally need
-twelve distinct collected stars. Timed cases must finish before expiry and
+`evidence/full-race-matrix/race-matrix.json` is the retained coverage report.
+When generated, its verifier accepted only finished five-lap runs whose complete
+runtime, test sources and loaded assets matched that checkpoint's hashes. The
+saved report is not a live verification of the current checkout. Star cases
+additionally need twelve distinct collected stars. Timed cases must finish before expiry and
 retain every original checkpoint award. It reports Adventure qualification
 separately: an ordinary or star race can finish while the player's place is
 insufficient to advance, and a finished duel can be lost.
@@ -21,13 +35,15 @@ AI. Different ordinary driving policies are permitted, and unsuccessful
 policies remain in the evidence directory. This is neither an all-character/
 all-seed claim nor an uninterrupted Adventure campaign.
 
-Accepted races use the browser's 25 ms simulation interval. The original
-`4432a0` loop waits at least 25 ms before calling `42f4c0`, which updates both
+Accepted races use the browser's then-fixed 25 ms simulation interval. The
+original `4432a0` loop waits at least 25 ms before calling `42f4c0`, which updates both
 the timer and physics. Faster standalone experiments are excluded even if
 they finish. Original-instruction evidence confirms that truncated substep
 velocity rotations make the original physics cadence-sensitive; the 120 Hz
 France finishes do not establish completion in the browser. See
-`research-frame-cadence.md`. Display refresh remains independent.
+`research-frame-cadence.md`. The later variable host preserves the original
+minimum interval while measuring the actual time between accepted updates;
+display refresh remains independent.
 
 ## Original files and native checks
 
@@ -102,9 +118,11 @@ acceleration, grip, gearing and the timer8 opponent estimate; every time-trial
 timer18 deadline remains unchanged. It restores original behavior.
 
 `research-startup-upgrades.md` records the original callsites, stores and
-validation boundaries. All 72 cases require fresh runs after this correction.
-The earlier 69 completed cases and verification checkpoint remain under
-`pre-upgrade-reset/`; they are not current completion claims.
+validation boundaries. This correction required fresh runs of all 72 cases;
+the 71 accepted completions in this retained matrix include the corrected
+initialization. The earlier 69 completed cases and verification checkpoint
+remain under `pre-upgrade-reset/`; they are not accepted completions for this
+checkpoint.
 
 ## Necessary exception: returning opponents must not overlap the player
 
@@ -275,7 +293,7 @@ and advances the actual simulation every25ms. The medium result retains an
 immutable completed-case snapshot and independently verified source/asset
 hashes when its redundant following hard case was stopped.
 
-## Verification artifacts
+## Historical verification artifacts
 
 - `final-unit-tests.log`:492 passing JavaScript tests.
 - `runtime-checks.json`:before/after runtime hashes and source/output hashes
@@ -285,10 +303,13 @@ hashes when its redundant following hard case was stopped.
 - `rescue-browser/`:four player-safety and three original environment-rescue
   browser checks, including the original shrink/grow sounds.
 - `build.log`:rebuilt static browser package.
-- `race-matrix.json`:live, hash-checked full-race coverage. An incomplete
-  matrix is explicitly marked incomplete; use
-  `node tools/verify-full-race-matrix.mjs --require-all` to require all72.
-- `interim-validation.json`:the current audit also verifies the original
+- `race-matrix.json`:retained hash-checked full-race coverage for this
+  checkpoint, explicitly marked `incomplete` with 71/72 finishes. The verifier
+  command `node tools/verify-full-race-matrix.mjs --require-all` requires all72
+  and checks the runtime/test/asset hashes against the checkout when run; the
+  historical report does not transfer its results to later source changes.
+- `interim-validation.json`:this historical audit also verified the original
   tables/timer evidence, runtime-bound checks and all6,831 copied build files.
-  Its status remains `incomplete-race-coverage` while any full race is missing.
-  Only the default strict delivery verifier can write `validation.json`.
+  Its recorded status is `incomplete-race-coverage`. Only the default strict
+  delivery verifier can write `validation.json`; no new verification or build
+  is claimed by this documentation update.

@@ -42,11 +42,15 @@ try{
   });
   await page.locator('[data-native=btnOk]').click();
   await page.waitForFunction(()=>window.rcsk.state.page==='driving',null,{timeout:60000});
+  await page.waitForFunction(()=>window.rcsk.viewer.renderStats.hud?.glyphs>0);
   await check('selected star race enters original start sequence with the correct difficulty and roster',async()=>{
     const state=await page.evaluate(()=>({phase:window.rcsk.viewer.race.phase,
       mode:window.rcsk.viewer.race.raceType,difficulty:window.rcsk.viewer.simulation.difficulty,
-      opponents:window.rcsk.viewer.opponents.length}));
-    assert.deepEqual(state,{phase:1,mode:2,difficulty:2,opponents:3});
+      opponents:window.rcsk.viewer.opponents.length,render:window.rcsk.viewer.renderStats}));
+    assert.deepEqual({phase:state.phase,mode:state.mode,difficulty:state.difficulty,opponents:state.opponents},
+      {phase:1,mode:2,difficulty:2,opponents:3});
+    assert.ok(state.render.world.triangles>1000);assert.ok(state.render.hud.glyphs>0);
+    assert.equal(state.render.presentation.triangles,1);
   });
   await page.goto(origin+'/?skipIntro');
   await page.getByRole('button',{name:'Instellingen',exact:true}).click();
@@ -101,11 +105,14 @@ try{
   });
   for(let id=0;id<6;id++){
     await page.goto(origin+'/?track='+id);await page.waitForFunction(()=>window.rcsk?.state.page==='viewer',null,{timeout:60000});
-    const stats=await page.evaluate(()=>({state:window.rcsk.state,render:window.rcsk.viewer.renderer.info.render}));
-    assert.equal(stats.state.track,id);assert.deepEqual(stats.state.assetErrors,[]);assert.ok(stats.render.triangles>1000);
+    await page.waitForFunction(()=>window.rcsk.viewer.renderStats.world!==null);
+    const stats=await page.evaluate(()=>({state:window.rcsk.state,render:window.rcsk.viewer.renderStats}));
+    assert.equal(stats.state.track,id);assert.deepEqual(stats.state.assetErrors,[]);assert.ok(stats.render.world.triangles>1000);
+    assert.equal(stats.render.presentation.triangles,1);
     const animation=await page.evaluate(()=>({sky:!!window.rcsk.viewer.sky,animations:window.rcsk.viewer.animations.length,tick:window.rcsk.viewer.clock.tick}));
     assert.equal(animation.sky,true);assert.ok(animation.animations>0);assert.ok(animation.tick>=0);
-    result.tracks.push({id,objects:stats.state.objects,triangles:stats.render.triangles});
+    result.tracks.push({id,objects:stats.state.objects,triangles:stats.render.world.triangles,
+      presentationTriangles:stats.render.presentation.triangles});
     await page.screenshot({path:`evidence/browser/track-${id}.png`});
   }
   await check('all six original track/scenery sets render without missing resources',()=>{});

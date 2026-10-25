@@ -1,0 +1,657 @@
+{
+  "schema": 1,
+  "date": "2026-10-25",
+  "scope": "Read-only audit of original menu sound-wrapper callsites, retained handler exports, original Delphi forms and extracted transition configuration against the port at the start of the 2026-10-25 correction. This does not claim native sound-card capture, a full original shell execution, full races or release validation.",
+  "source": {
+    "path": "/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskmenu.dat",
+    "sha256": "1b6872290010d6357db1b63d6691498b52f8d3def0083e5b42e816a2b7366733"
+  },
+  "authority": [
+    "evidence/native/rcskmenu.dat/assembly.tsv",
+    "evidence/native/rcskmenu.dat/functions/",
+    "public/assets/ui/forms.json",
+    "public/assets/config.json"
+  ],
+  "audioSemantics": {
+    "genericSynchronous": "0045c668(id,1): sndPlaySoundA(path,2)",
+    "genericAsynchronous": "0045c720(id) or 0045c668(id,0): sndPlaySoundA(path,3)",
+    "characterSynchronous": "0045c518(character,id,1): sndPlaySoundA(path,2)",
+    "characterAsynchronous": "0045c5cc(character,id) or 0045c518(character,id,0): sndPlaySoundA(path,3)",
+    "stop": "0045c7c0: sndPlaySoundA(NULL,0)",
+    "menuChannel": "These wrappers use the same process-wide sndPlaySound channel; a following sound replaces the prior menu sound."
+  },
+  "confirmedPriorDiscrepancies": [
+    {
+      "id": "main-options-post-press",
+      "original": [
+        "0045d038 common Option down: generic46 wait, character23 wait",
+        "00474aa4/00474aa9 Main Options click: generic46 async then phase10"
+      ],
+      "portBefore": "showMain/commonActions opened showSettings directly after commonPress; omitted final generic46.",
+      "correctionScope": "Only Main Options click. Country Options0046ff68 has no extra sound; nested settings returns have no FormShow."
+    },
+    {
+      "id": "profile-delete",
+      "original": [
+        "00475fec delete helper",
+        "00476012 obtains selected-profile character through00475c50",
+        "0047601f character26 async before requester string48"
+      ],
+      "portBefore": "deleteAdventureProfile only opens originalPrompt48; profile-specific character26 was absent."
+    },
+    {
+      "id": "adventure-profile-speaker",
+      "original": [
+        "00475e90/00475ec0 arrow selection ->00475ab4",
+        "00475ab4 ->00475d6c ->0045792c loads selected save into global active profile",
+        "common0045cfc0/0045cff0/0045d038 read active profile character+0x22"
+      ],
+      "portBefore": "showAdventure changed selectedSlot and displayed portraits without updating selection.character until accepting the profile; Help/Quit speaker could remain a previously selected character."
+    },
+    {
+      "id": "modal-quit-cancel",
+      "original": [
+        "00474998 Main quit requester runs modally then reenables same form",
+        "00473f6c/00475708 likewise show requester within existing caller; no new FormShow entry"
+      ],
+      "portBefore": "showQuit cancellation calls showMain/showCharacters/showAdventure; the reconstructed caller replays generic1/53/25.",
+      "correctionScope": "Restore caller nodes, focus and state after modal cancellation rather than simulate a new form entry."
+    },
+    {
+      "id": "modal-landinfo-return",
+      "original": [
+        "00478de8..00478e7e Overview handler",
+        "00478df6 generic46 async",
+        "00478e39 virtual+d8 runs Landinfo modally",
+        "00478e63 frees modal and00478e73 invalidates existing caller",
+        "00477aa8/00477aab Landinfo OK stops menu audio before close"
+      ],
+      "portBefore": "Overview lacked generic46, Landinfo OK called showBriefing and omitted stop; adding original briefing FormShow speech would cause an additional incorrect replay on that return."
+    },
+    {
+      "id": "modal-landinfo-help-return",
+      "original": [
+        "00477a60 ->00460d08 requester string46 returns within same Landinfo form; no FormShow"
+      ],
+      "portBefore": "Country Help notice callback showCountryInfo reenters Landinfo and repeats generic80+5*country."
+    },
+    {
+      "id": "adventure-character-back",
+      "original": [
+        "00473cdc sets phase result5 (PR_VALUE2)",
+        "trans.dat PHASE_SELECTCHAR maps PR_VALUE2 -> PHASE_ADVENT_MAIN"
+      ],
+      "portBefore": "showCharacters btnBack always showMain, including Adventure new-profile character selection.",
+      "notes": "The handler does not delete the new profile on Back."
+    },
+    {
+      "id": "adventure-character-firsttime",
+      "original": [
+        "004742d4 reads and clears PHASE_SELECTCHAR FIRSTTIME only when application mode2 (Quickrace); Adventure branch plays generic53 without consuming flag"
+      ],
+      "portBefore": "formVoice characters consumed FIRSTTIME in both Adventure and Quickrace.",
+      "notes": "Shipped flag0 hides this difference; configured flag1 must survive Adventure entry until the first Quickrace character selection."
+    },
+    {
+      "id": "adventure-start-stop",
+      "original": [
+        "004786a4/004786a8 stops menu voice before race entry/start-info processing"
+      ],
+      "portBefore": "Briefing OK did not stop the current menu sound explicitly."
+    },
+    {
+      "id": "adventure-name-and-delete-modal-lifecycle",
+      "original": [
+        "004760c0 ->004761e8 creates name dialog modally; ShowModal0047626a; cancellation returns false without transitioning outer Adventure form",
+        "00476193/004761b0 full-slot notice string52 is modal and returns within same Adventure form",
+        "00476098 successful delete calls00475ab4 to refresh existing Adventure form, without FormShow"
+      ],
+      "portBefore": "Name cancellation, full-slot notice dismissal and delete acceptance all call showAdventure while page has changed; this repeats generic25 and rebuilds/reset-focus on a continuing form.",
+      "correctionScope": "Restore original caller before cancel or continued refresh; delete acceptance may then update the existing Adventure view while preserving no-FormShow audio semantics."
+    },
+    {
+      "id": "confirmed-quit-farewell",
+      "original": [
+        "Confirmed Quit handlers set application mode5, e.g00474998 ->0045bbac(mode5)",
+        "0047913c shell loop return checks mode5 at00479242",
+        "0047925a invokes0045c518(active character,27,1), waiting for farewell before process termination"
+      ],
+      "portBefore": "showQuit confirm directly called window.close and fell back to Main if browser policy kept window open; no character27 farewell.",
+      "correctionScope": "Await original active-character sample27 on confirmed Quit before attempting window close. Browser inability to close a user-opened tab remains a platform adaptation."
+    }
+  ],
+  "verifiedMatchesAndNonGaps": [
+    {
+      "subject": "Common button down sounds",
+      "original": "0045cfc0 Quit generic46 wait then character22 async;0045cff0 Help generic46 wait then character20 async;0045d020 OK generic44 wait;0045d038 Options generic46 wait then character23 wait;0045d068 Back generic45 wait. Current commonPress maps these samples and wait flags correctly."
+    },
+    {
+      "subject": "No settings/highscore entrance greetings",
+      "original": "TFRMOPTIONS and TFRMHIGHSCORE DFM have no OnShow. Full executable direct-call inventory finds no generic8 or41 callsite and no embedded absolute pointers to the sound wrappers. The filenames do not establish an active behavior. Do not invent greetings."
+    },
+    {
+      "subject": "Profile arrows remain silent",
+      "original": "00475e90 and00475ec0 only select/load a profile. Their defLeft/defRight DFM definitions have no OnButtonStateChange. No generic47/48 calls appear in this path."
+    },
+    {
+      "subject": "Main game choices",
+      "original": "00474a24 character14 wait Quickrace;00474a64 character13 wait Adventure;00474ac0 character15 wait Highscore; port mapping matches."
+    },
+    {
+      "subject": "Character and difficulty",
+      "original": "00474234/00474268 generic47/48 wait then selected character0 async;00474324/00474340/0047435c character1/2/3 async; port mapping matches.004740f8 updates global active character while changing character selection."
+    },
+    {
+      "subject": "Country/race/highscore navigation",
+      "original": "0046fd98/0046fdc4 generic47/48 wait;0046fcc4 character country4..9 or locked67..72;0046fefc/0046ff20/0046ff44 character10/11/12 async;00477284/004772b0 generic47/48 wait. Existing fixtures cover selection; port mapping matches."
+    },
+    {
+      "subject": "Country information",
+      "original": "00477d80 and00477d30/44/58/6c select intro80+5*country and following four narrations. Port mapping matches for all30 recordings; modal lifecycle differences listed separately."
+    },
+    {
+      "subject": "Settings actions",
+      "original": "0046b554 keyboard9;0046b5d8 joystick10;0046b65c gamepad11;0046b828 configure12;0046b6e0 low-quality15;0046b768 high-quality16;0046b7f0 music17;0046b80c effects18. These are connected.13/14 hardware/software selector is deliberately unavailable in browser."
+    },
+    {
+      "subject": "Missing shipped files",
+      "original": "Generic17,18,49,50,51 references are absent from both retained install and CD, as documented in research-menu-audio. Their silence is not replaced with invented recordings."
+    },
+    {
+      "subject": "Controls and requester entries",
+      "original": "004622c4 Controls FormShow focuses a control;00460f00 Requester FormShow sets its label; neither calls an audio wrapper. Control capture50/51 and invalid110 are connected."
+    },
+    {
+      "subject": "Name entry Enter",
+      "original": "00470600 edit KeyUp Enter closes with result4 directly without a graphic-button press sound. Current direct Enter submit likewise does not synthesize generic44. Browser uses keydown rather than original keyup."
+    },
+    {
+      "subject": "Results",
+      "original": "00473184 ->004731c8 rank greeting uses character37..46 random pair;00473204 failure47..54 async,00473298 qualified55..62 wait;00472fe0 country unlock table;00471c70 highscore character36 async. Port uses these sample families and wait distinctions. No full-race result integration was run by this read-only audit."
+    }
+  ],
+  "focusedValidationSuggestions": [
+    "Record actual media starts, pauses and endings around Main Options: generic46 completion, character23 completion, final generic46 start before Options.",
+    "Create two Adventure saves with distinct characters, switch profile and open Help/Quit; verify chosen-profile speaker. Delete must start selected-profile character26 before requester48.",
+    "Cancel Quit from Main/Characters/Adventure and assert original caller DOM/focus survives with no extra FormShow greeting.",
+    "Enter Landinfo from briefing, play a photograph, close with OK and verify narration stops and existing briefing DOM is restored without a new briefing voice. Return from its Help notice must not restart country introduction.",
+    "Use controlled PHASE_SELECTCHAR FIRSTTIME=1: Adventure character entry plays53 without consuming flag, first subsequent Quickrace plays31 then53 on repeats.",
+    "Verify Adventure character Back returns to Adventure list and preserves profile; Quickrace Back still returns Main."
+  ],
+  "limits": [
+    "No claim that browser Back/Escape behavior exactly matches an original authored key binding. Landinfo DFM has no authored key handler or Cancel button flag; Escape close is a browser adaptation.",
+    "Byte callsite inventory below is direct E8 rel32 calls to the five known wrappers in executable PE sections. The original image contains no embedded absolute pointer value to any of the five wrappers; this supports the bounded no-indirect-reference check, not arbitrary whole-program proof.",
+    "Briefing narration selection and random sequencing are audited separately by the parallel briefing investigation."
+  ],
+  "directWrapperCallInventory": [
+    {
+      "call": "0045cfcd",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e896f6ffff",
+      "preceding12Bytes": "8bec807d08017520b201b02e"
+    },
+    {
+      "call": "0045cfe4",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e82ff5ffff",
+      "preceding12Bytes": "80800000008a402233c9b216"
+    },
+    {
+      "call": "0045cffd",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e866f6ffff",
+      "preceding12Bytes": "8bec807d08017520b201b02e"
+    },
+    {
+      "call": "0045d014",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8fff4ffff",
+      "preceding12Bytes": "80800000008a402233c9b214"
+    },
+    {
+      "call": "0045d02d",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e836f6ffff",
+      "preceding12Bytes": "8bec807d08017509b201b02c"
+    },
+    {
+      "call": "0045d045",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e81ef6ffff",
+      "preceding12Bytes": "8bec807d08017520b201b02e"
+    },
+    {
+      "call": "0045d05c",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8b7f4ffff",
+      "preceding12Bytes": "80800000008a4022b101b217"
+    },
+    {
+      "call": "0045d075",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e8eef5ffff",
+      "preceding12Bytes": "8bec807d08017509b201b02d"
+    },
+    {
+      "call": "00461984",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e897adffff",
+      "preceding12Bytes": "030000000f845b010000b033"
+    },
+    {
+      "call": "00461ac7",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e854acffff",
+      "preceding12Bytes": "008bc3e8b1020000eb09b06e"
+    },
+    {
+      "call": "00462130",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8eba5ffff",
+      "preceding12Bytes": "5680be4e03000000754db032"
+    },
+    {
+      "call": "0046b5af",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e86c11ffff",
+      "preceding12Bytes": "802c010000e85f76feffb009"
+    },
+    {
+      "call": "0046b633",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8e810ffff",
+      "preceding12Bytes": "802c010000e8db75feffb00a"
+    },
+    {
+      "call": "0046b6b7",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e86410ffff",
+      "preceding12Bytes": "802c010000e85775feffb00b"
+    },
+    {
+      "call": "0046b740",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8db0fffff",
+      "preceding12Bytes": "802c010000e8ce74feffb00f"
+    },
+    {
+      "call": "0046b7c8",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8530fffff",
+      "preceding12Bytes": "802c010000e84674feffb010"
+    },
+    {
+      "call": "0046b804",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8170fffff",
+      "preceding12Bytes": "04020000899068030000b011"
+    },
+    {
+      "call": "0046b820",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8fb0effff",
+      "preceding12Bytes": "0402000089906c030000b012"
+    },
+    {
+      "call": "0046b84d",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8ce0effff",
+      "preceding12Bytes": "8eb8460064ff30648920b00c"
+    },
+    {
+      "call": "0046ba1a",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8010dffff",
+      "preceding12Bytes": "ff92b400000084c07417b00d"
+    },
+    {
+      "call": "0046ba31",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8ea0cffff",
+      "preceding12Bytes": "01c6836603000003eb15b00e"
+    },
+    {
+      "call": "0046fd8e",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e839c8feff",
+      "preceding12Bytes": "008b80800000008a40228bd3"
+    },
+    {
+      "call": "0046fda8",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e8bbc8feff",
+      "preceding12Bytes": "bb3803000005741db201b02f"
+    },
+    {
+      "call": "0046fdd4",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e88fc8feff",
+      "preceding12Bytes": "bb3803000000741db201b030"
+    },
+    {
+      "call": "0046ff11",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e8b6c6feff",
+      "preceding12Bytes": "008b80800000008a4022b20a"
+    },
+    {
+      "call": "0046ff35",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e892c6feff",
+      "preceding12Bytes": "008b80800000008a4022b20b"
+    },
+    {
+      "call": "0046ff59",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e86ec6feff",
+      "preceding12Bytes": "008b80800000008a4022b20c"
+    },
+    {
+      "call": "00470062",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8b9c6feff",
+      "preceding12Bytes": "c3e844d4feff84c07407b023"
+    },
+    {
+      "call": "00471cfc",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e8cba8feff",
+      "preceding12Bytes": "008b80800000008a4022b224"
+    },
+    {
+      "call": "004730f1",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e8d694feff",
+      "preceding12Bytes": "008b008b80800000008a4022"
+    },
+    {
+      "call": "004731fa",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e8cd93feff",
+      "preceding12Bytes": "8b128b92800000008a522292"
+    },
+    {
+      "call": "0047323c",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e88b93feff",
+      "preceding12Bytes": "8b128b92800000008a522292"
+    },
+    {
+      "call": "004732d2",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e84192feff",
+      "preceding12Bytes": "8b92800000008a5222b10192"
+    },
+    {
+      "call": "00474244",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e81f84feff",
+      "preceding12Bytes": "bb38030000037323b201b02f"
+    },
+    {
+      "call": "0047425e",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e86983feff",
+      "preceding12Bytes": "a2feffff33d28a8338030000"
+    },
+    {
+      "call": "00474278",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e8eb83feff",
+      "preceding12Bytes": "bb38030000007423b201b030"
+    },
+    {
+      "call": "00474292",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e83583feff",
+      "preceding12Bytes": "6efeffff33d28a8338030000"
+    },
+    {
+      "call": "004742fd",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e81e84feff",
+      "preceding12Bytes": "c3e8a991feff84c07409b01f"
+    },
+    {
+      "call": "00474306",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e81584feff",
+      "preceding12Bytes": "09b01fe81e84feffeb10b035"
+    },
+    {
+      "call": "0047430f",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e80c84feff",
+      "preceding12Bytes": "10b035e81584feffeb07b035"
+    },
+    {
+      "call": "0047432f",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e89882feff",
+      "preceding12Bytes": "c3538bd8b2018a8338030000"
+    },
+    {
+      "call": "0047434b",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e87c82feff",
+      "preceding12Bytes": "00538bd8b2028a8338030000"
+    },
+    {
+      "call": "00474367",
+      "target": "0045c5cc",
+      "kind": "characterAsync",
+      "bytes": "e86082feff",
+      "preceding12Bytes": "00538bd8b2038a8338030000"
+    },
+    {
+      "call": "00474a3b",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8d87afeff",
+      "preceding12Bytes": "80800000008a4022b101b20e"
+    },
+    {
+      "call": "00474a7b",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8987afeff",
+      "preceding12Bytes": "80800000008a4022b101b20d"
+    },
+    {
+      "call": "00474aa9",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8727cfeff",
+      "preceding12Bytes": "fbff5bc38d4000538bd8b02e"
+    },
+    {
+      "call": "00474ad7",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e83c7afeff",
+      "preceding12Bytes": "80800000008a4022b101b20f"
+    },
+    {
+      "call": "00474b16",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8057cfeff",
+      "preceding12Bytes": "c3e89089feff84c0740933c0"
+    },
+    {
+      "call": "00474b1f",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8fc7bfeff",
+      "preceding12Bytes": "0933c0e8057cfeffeb07b001"
+    },
+    {
+      "call": "00475635",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8de6efeff",
+      "preceding12Bytes": "80800000008a4022b101b211"
+    },
+    {
+      "call": "0047601f",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8f464feff",
+      "preceding12Bytes": "d68bc3e835fcffff33c9b21a"
+    },
+    {
+      "call": "00476313",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e80864feff",
+      "preceding12Bytes": "c3e89371feff84c07409b018"
+    },
+    {
+      "call": "0047631c",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8ff63feff",
+      "preceding12Bytes": "09b018e80864feffeb07b019"
+    },
+    {
+      "call": "00477294",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e8cf53feff",
+      "preceding12Bytes": "bb8403000005741db201b02f"
+    },
+    {
+      "call": "004772c0",
+      "target": "0045c668",
+      "kind": "genericOptionalWait",
+      "bytes": "e8a353feff",
+      "preceding12Bytes": "bb8403000000741db201b030"
+    },
+    {
+      "call": "00477aab",
+      "target": "0045c7c0",
+      "kind": "stop",
+      "bytes": "e8104dfeff",
+      "preceding12Bytes": "ffebf0595dc38d4000538bd8"
+    },
+    {
+      "call": "00477d3e",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8dd49feff",
+      "preceding12Bytes": "802c0300008a048584c54700"
+    },
+    {
+      "call": "00477d52",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8c949feff",
+      "preceding12Bytes": "802c0300008a048585c54700"
+    },
+    {
+      "call": "00477d66",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8b549feff",
+      "preceding12Bytes": "802c0300008a048586c54700"
+    },
+    {
+      "call": "00477d7a",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e8a149feff",
+      "preceding12Bytes": "802c0300008a048587c54700"
+    },
+    {
+      "call": "00477d91",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e88a49feff",
+      "preceding12Bytes": "8a832c0300008a809cc54700"
+    },
+    {
+      "call": "004784d1",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e84a42feff",
+      "preceding12Bytes": "8d149281c2a4c547008a0402"
+    },
+    {
+      "call": "004786a8",
+      "target": "0045c7c0",
+      "kind": "stop",
+      "bytes": "e81341feff",
+      "preceding12Bytes": "7864fbffc38d400053568bd8"
+    },
+    {
+      "call": "00478df6",
+      "target": "0045c720",
+      "kind": "genericAsync",
+      "bytes": "e82539feff",
+      "preceding12Bytes": "ec83c4f85356578945fcb02e"
+    },
+    {
+      "call": "0047925a",
+      "target": "0045c518",
+      "kind": "characterOptionalWait",
+      "bytes": "e8b932feff",
+      "preceding12Bytes": "80800000008a4022b101b21b"
+    }
+  ],
+  "wrapperCallCounts": {
+    "genericAsync": 29,
+    "genericOptionalWait": 11,
+    "characterOptionalWait": 10,
+    "characterAsync": 13,
+    "stop": 2
+  },
+  "absoluteWrapperPointerOccurrences": {
+    "0045c720": 0,
+    "0045c668": 0,
+    "0045c518": 0,
+    "0045c5cc": 0,
+    "0045c7c0": 0
+  }
+}

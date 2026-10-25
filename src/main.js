@@ -1,10 +1,11 @@
 import {readSettings,writeSettings,renderDimensions} from './settings.js';
+import {GAME_VERSION} from './version.js';
 import {InputController} from './input.js';
 import {NativeMenu} from './native-menu.js';
 import {TrackViewer} from './world.js';
 import {MenuAudio} from './menu-audio.js';
 import {NATIVE_MOVIE_GAIN} from './audio-mixing.js';
-import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeCountryInfoSound,nativeMenuFirstTime,nativeMainMenuGreeting} from './menu-sound-events.js';
+import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeAdventureBriefingSound,nativeCountryInfoSound,nativeMenuFirstTime,nativeMainMenuGreeting} from './menu-sound-events.js';
 import {NativeControlDraft,NATIVE_CONTROL_FIELDS,nativeBindingImage,nativeBindingLabel,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from './native-control-settings.js';
 import {createNativeDisplaySettings} from './native-display-settings.js';
 import {chooseMultisampleCount} from './multisample-renderer.js';
@@ -16,6 +17,8 @@ import {NativeMenuRandom,nativeMenuRandomSeed,nativeAdventureOutcomeVoice,native
 import {NativeRacePauseGate,nativeRacePauseRequest} from './simulation/native-race-lifecycle.js';
 import {createRaceQuitRequester} from './race-requester.js';
 import {createLoadingScreen} from './loading-screen.js';
+import {HelpViewer} from './help-viewer.js';
+import {nativeHelpContext,nativeHelpNotice} from './native-help-context.js';
 import {nativeAdventureConfiguration,createNativeAdventureProfile,restartNativeAdventureProfile,
   nativeAdventureBriefing,beginNativeAdventureEvent,applyNativeAdventureResult,
   nativeAdventureSaveSlot,nativeAdventureReward,NATIVE_ADVENTURE_TYPES,NATIVE_ADVENTURE_COUNTRIES,
@@ -60,6 +63,7 @@ try{const saved=JSON.parse(localStorage.getItem('rcsk.selection.v1'));for(const 
 const saveSelection=()=>{try{localStorage.setItem('rcsk.selection.v1',JSON.stringify(selection));}catch{}};
 function message(text){$('message').textContent=text;$('message').hidden=false;clearTimeout(message.timer);message.timer=setTimeout(()=>$('message').hidden=true,6500);}
 const input=new InputController({onMenu:menuKey,onPause:back,onKeysChanged:advanceRacePause,onActivity:()=>viewer?.resumeAudio?.(),deadzone:()=>settings.deadzone,bindings:()=>settings.bindings});
+input.bindSteeringWheel($('touch-wheel'));
 for(const button of document.querySelectorAll('[data-input]'))input.bindTouch(button,button.dataset.input);
 const flightPanel=document.createElement('aside');flightPanel.id='flight-controls';flightPanel.hidden=true;
 const flightHelp=document.createElement('p');flightHelp.textContent='Vrij vliegen — race gepauzeerd. Rijtoetsen: bewegen en draaien · Spatie: omhoog · C: omlaag.';
@@ -112,7 +116,11 @@ function showNative(name,options){
   screen.replaceChildren(nativeMenu.render(name,options));
   if(focused){const element=screen.querySelector(`[data-element="${focused}"]`);if(element&&!element.disabled&&element.tabIndex>=0)element.focus();}
 }
-const commonActions=()=>({btnMainHelp:showHelp,btnMainStop:showQuit,btnMainOptions:()=>showSettings('main')});
+const commonActions=()=>({btnMainHelp:showHelp,btnMainStop:showQuit,btnMainOptions:()=>{
+  // Main's own474aa4 click follows the shared synchronous press sounds.
+  if(page==='main')menuAudio?.generic(46);
+  showSettings('main');
+}});
 function showMain(){
   playMode='quickrace';newProfileSelection=false;
   const entering=page!=='main'||screen.childElementCount===0;
@@ -135,7 +143,8 @@ function profileSelection(profile){
 }
 function showCharacters(){
   const adventure=playMode==='adventure';
-  formVoice('characters',adventure?53:31,53);
+  if(adventure){if(page!=='characters')menuAudio?.generic(53);}
+  else formVoice('characters',31,53);
   page='characters';saveSelection();
   const shift=async n=>{await menuAudio?.generic(nativeMenuNavigationSound(n),true);selection.character=Math.max(0,Math.min(3,selection.character+n));showCharacters();menuAudio?.character(selection.character,0);};
   const accept=()=>{
@@ -145,7 +154,7 @@ function showCharacters(){
     }else showCountries();
   };
   const portrait=(i,small=false)=>i<0||i>3?'':configs['ini/shellimg.dat'].charpics[i].split(',')[small?2:1].trim();
-  showNative('TFRMSELECTCHAR',{actions:{...commonActions(),btnBack:showMain,btnOk:accept,
+  showNative('TFRMSELECTCHAR',{actions:{...commonActions(),btnBack:()=>adventure?showAdventure():showMain(),btnOk:accept,
     btnPrevious:()=>shift(-1),btnNext:()=>shift(1),...Object.fromEntries(['rdoEasy','rdoMedium','rdoHard'].map((key,i)=>[key,()=>{selection.difficulty=i;menuAudio?.character(selection.character,i+1);showCharacters();}]))},
     images:{imgBackGround:configs['ini/shellang.ini'].dutch_images[adventure?26:27],
       imgPrevious:portrait(selection.character-1,true),imgCurrent:portrait(selection.character),imgNext:portrait(selection.character+1,true)},
@@ -189,20 +198,23 @@ function showBriefing(){
   const times={...configs['race.ini']['best times'],...raceSave.bestTimes};
   const language=configs['ini/shellang.ini'].dutch;
   showNative('TFRMADVENTBRIEF',{actions:{...commonActions(),btnBack:showMain,btnOk:()=>{
+    menuAudio?.stop();
     beginNativeAdventureEvent(profile,adventureConfig);showStartInfo();
-  },btnOverview:showCountryInfo},images:{...adventureMatrixImages(profile),
+  },btnOverview:()=>{menuAudio?.generic(46);showCountryInfo();}},images:{...adventureMatrixImages(profile),
       imgCountryRacer:configs['ini/shellimg.dat'].debriefpics[NATIVE_ADVENTURE_COUNTRIES[selection.country]].split(',')[0].trim()},
     text:{lblCountry:countries[selection.country],lblType:modes[selection.race],lblBriefing:text,btnOk:language[65],
       lblTrackTime:language[67],lblLapTime:language[68],
       lblTrackTimeString:formatNativeResultTime(Number(times['race_record_e'+selection.country]||0)),
       lblLapTimeString:formatNativeResultTime(Number(times['lap_record_e'+selection.country]||0))}});
   screen.querySelector('[data-element=lblBriefing]').style.setProperty('white-space','pre-line','important');
+  menuAudio?.generic(nativeAdventureBriefingSound(selection.country,selection.race));
 }
 function showAdventure(){
   playMode='adventure';newProfileSelection=false;formVoice('adventure',24,25);page='adventure';
   const occupied=raceSave.profiles.map(Boolean);
   if(!selectedProfile())raceSave.selectedSlot=occupied.indexOf(true);
   const slot=raceSave.selectedSlot,profile=selectedProfile();
+  if(profile)selection={character:profile.character,difficulty:profile.difficulty,country:profile.country,race:profile.raceType};
   const previous=nativeAdventureSaveSlot(occupied,'previous',slot),next=nativeAdventureSaveSlot(occupied,'next',slot);
   const portrait=(index,small)=>index<0?'':configs['ini/shellimg.dat'].charpics[raceSave.profiles[index].character].split(',')[small?2:1].trim();
   const shift=index=>{if(index>=0){raceSave.selectedSlot=index;writeRaceSave(raceSave);showAdventure();}};
@@ -218,14 +230,15 @@ function showAdventure(){
     disabled:[...(previous<0?['btnLeft']:[]),...(next<0?['btnRight']:[]),...(!profile?['btnOk','btnDeletePlayer']:[])]});
 }
 function newAdventureProfile(){
+  const restore=menuReturn();
   const slot=nativeAdventureSaveSlot(raceSave.profiles.map(Boolean),'new');
-  if(slot<0){originalNotice(configs['ini/shellang.ini'].dutch[52],showAdventure,21);return;}
+  if(slot<0){originalNotice(configs['ini/shellang.ini'].dutch[52],restore,21);return;}
   showNameEntry(configs['ini/shellang.ini'].dutch[53],'',name=>{
-    if(!name){showAdventure();return;}
+    if(!name){restore();return;}
     const profile=createNativeAdventureProfile(name,{slot,raceType:selectedProfile()?.raceType??0});
     raceSave.profiles[slot]=profile;raceSave.selectedSlot=slot;writeRaceSave(raceSave);
     playMode='adventure';newProfileSelection=true;profileSelection(profile);showCharacters();
-  },showAdventure,'profile-name');
+  },restore,'profile-name');
 }
 function removeSelectedProfile(){
   const slot=raceSave.selectedSlot;raceSave.profiles[slot]=null;
@@ -235,7 +248,9 @@ function removeSelectedProfile(){
 }
 function deleteAdventureProfile(){
   if(!selectedProfile())return;
-  originalPrompt(48,showAdventure,()=>{removeSelectedProfile();showAdventure();});
+  const restore=menuReturn();
+  menuAudio?.character(selectedProfile().character,26);
+  originalPrompt(48,restore,()=>{restore();removeSelectedProfile();showAdventure();});
 }
 function showHighscores(){
   if(page!=='highscores')highscoreCountry=0;
@@ -281,11 +296,14 @@ function showNameEntry(text,initial,accept,cancel,entryPage='score-name'){
     else if(event.code==='Escape'){event.preventDefault();finish(cancel);}};
 }
 const notImplemented=done=>originalPrompt(46,done);
+let countryInfoReturn=null;
+function closeCountryInfo(){menuAudio?.stop();countryInfoReturn?.();countryInfoReturn=null;}
 function showCountryInfo(){
+  countryInfoReturn=menuReturn();
   page='country-info';const countryKeys=['nederland','duitsland','engeland','frankrijk','spanje','italie'],entries=configs['ini/shellimg.dat']?.[countryKeys[selection.country]+'_overview']||{};
   menuAudio?.generic(nativeCountryInfoSound(selection.country));
   if(nativeMenu){
-    const images={},text={},actions={btnOk:showBriefing,btnMainHelp:showHelp};let index=0;
+    const images={},text={},actions={btnOk:closeCountryInfo,btnMainHelp:showHelp};let index=0;
     for(const value of Object.values(entries)){
       const[image,label]=value.split(','),photo=index;index++;
       images['imgPhoto'+index]=image.trim();text['lblPhoto'+index]=label?.trim()||'';
@@ -296,36 +314,59 @@ function showCountryInfo(){
   }
   const {content,footer}=base('Landinfo','mn_2200x');
   const cards=document.createElement('div');cards.className='cards';
-  for(const value of Object.values(entries)){const [image,label]=value.split(',');const card=document.createElement('figure');card.style.margin='10px';const img=document.createElement('img');img.src='/assets/menu/'+image.trim().replace('(IMAGEBASE)','').replace('.bmp','.png');img.width=121;img.height=137;img.alt=label?.trim()||'';const caption=document.createElement('figcaption');caption.textContent=label?.trim();card.append(img,caption);cards.append(card);}content.append(cards);footer.replaceChildren(button('Terug',showBriefing));
+  for(const value of Object.values(entries)){const [image,label]=value.split(',');const card=document.createElement('figure');card.style.margin='10px';const img=document.createElement('img');img.src='/assets/menu/'+image.trim().replace('(IMAGEBASE)','').replace('.bmp','.png');img.width=121;img.height=137;img.alt=label?.trim()||'';const caption=document.createElement('figcaption');caption.textContent=label?.trim();card.append(img,caption);cards.append(card);}content.append(cards);footer.replaceChildren(button('Terug',closeCountryInfo));
 }
-let helpData=null,helpReturn=showMain;
+function captureMenu(){
+  return {page,mode,inputMode:input.mode,bindingCapture,nodes:[...screen.childNodes],
+    scrollTop:screen.scrollTop,focus:document.activeElement,viewerActive:viewer?.active,
+    hidden:Object.fromEntries(['screen','intro','viewer-hud','race-hud','touch-controls'].map(id=>[id,$(id).hidden]))};
+}
+function restoreMenu(saved){
+  page=saved.page;mode=saved.mode;bindingCapture=saved.bindingCapture;
+  input.setMode(saved.inputMode);screen.replaceChildren(...saved.nodes);
+  for(const [id,hidden]of Object.entries(saved.hidden))$(id).hidden=hidden;
+  screen.scrollTop=saved.scrollTop;saved.focus?.focus({preventScroll:true});
+  if(saved.viewerActive)viewer?.resume();
+}
+function menuReturn(){const saved=captureMenu();return()=>restoreMenu(saved);}
+let helpData=null,helpReturn=showMain,helpSession=null,helpViewer=null;
+function closeHelp(){
+  if(!helpSession)return;
+  const saved=helpSession;helpSession=null;helpViewer=null;
+  restoreMenu(saved);
+}
 async function showHelp(topicId){
+  if(page==='help'){
+    if(typeof topicId==='string')helpViewer?.visit(topicId);
+    return;
+  }
   const previous=page;
-  if(page!=='help')helpReturn=({main:showMain,characters:showCharacters,countries:showCountries,adventure:showAdventure,highscores:showHighscores,briefing:showBriefing,'country-info':showCountryInfo,settings:advancedSettingsActive==='browser'?()=>showBrowserSettings(returnFromSettings):()=>showSettings(returnFromSettings),controls:showControlSettings,'start-info':()=>showControlSettings(true),viewer:resumeViewer})[page]||showMain;
+  const notice=nativeHelpNotice(previous);
+  if(notice!==null){originalPrompt(notice,menuReturn());return;}
+  // Native WinHelp opens separately. Keep the actual caller nodes and drafts
+  // alive so closing Help does not reconstruct a form or change race results.
+  const session=captureMenu();
+  helpSession=session;helpReturn=closeHelp;
   page='help';base('Help',null);
   try{
     helpData||=await fetch('/assets/help/topics.json').then(r=>{if(!r.ok)throw Error('Original help: '+r.status);return r.json();});
-    if(page!=='help')return;
-    const context={main:1,settings:2,controls:3,'start-info':3,highscores:4,adventure:5,briefing:7,characters:9,countries:10};
-    const id=typeof topicId==='string'?topicId:helpData.contextMap[context[previous]||1];
-    const topic=helpData.topics.find(t=>t.id===id)||helpData.topics[0];
-    const wrap=document.createElement('div');wrap.className='help-window';
-    const header=document.createElement('header'),title=document.createElement('h1');title.textContent=helpData.title;header.append(title,button('Terug',helpReturn));
-    const nav=document.createElement('nav');nav.setAttribute('aria-label',helpData.title);
-    for(const item of helpData.topics){const link=document.createElement('a');link.href='#help-'+item.id;link.dataset.helpTopic=item.id;link.textContent=item.title;if(item.id===topic.id)link.setAttribute('aria-current','page');nav.append(link);}
-    const article=document.createElement('article');article.className='original-help';article.dataset.topic=topic.id;
-    // HTML is generated from the shipped RCSK.HLP by the allowlisted converter.
-    // Embedded WinHelp macros are never executed.
-    article.innerHTML=topic.html;wrap.append(header,nav,article);screen.replaceChildren(wrap);
-    wrap.onclick=event=>{const link=event.target.closest('[data-help-topic]');if(link){event.preventDefault();showHelp(link.dataset.helpTopic);}};
-    screen.scrollTop=0;
-  }catch(error){console.error(error);helpReturn();message('Help kon niet worden geladen.');}
+    if(helpSession!==session||page!=='help')return;
+    const context=typeof topicId==='string'?topicId:nativeHelpContext(previous,{playMode})??1;
+    helpViewer=new HelpViewer(helpData,context,{screen,button,onClose:closeHelp});
+  }catch(error){
+    console.error(error);
+    if(helpSession===session){closeHelp();message('Help kon niet worden geladen.');}
+  }
 }
 function showQuit(){
   const fresh=playMode==='adventure'&&page==='characters'&&newProfileSelection;
-  const returnPage=({adventure:showAdventure,characters:showCharacters,briefing:showBriefing,countries:showCountries,debrief:showDebrief,highscores:showHighscores,settings:showSettings})[page]||showMain;
-  originalPrompt(fresh?50:36,returnPage,()=>{
+  const returnPage=menuReturn();
+  originalPrompt(fresh?50:36,returnPage,async()=>{
     if(fresh)removeSelectedProfile();
+    // Shell shutdown47925a waits for the active character's farewell.
+    mode='quitting';
+    for(const control of screen.querySelectorAll('button,input,select'))control.disabled=true;
+    await menuAudio?.character(selection.character,27,true);
     window.close();if(!window.closed)showMain();
   });
 }
@@ -557,7 +598,8 @@ function showBrowserSettings(from='main'){
   <div id="unlock-controls"></div><p id="unlock-status" class="settings-detail" role="status"></p>
   <h2>Bediening</h2>
   <label>Controller deadzone<input id="deadzone" type="range" min="0" max="50"></label>
-  <label>Aanraakbediening<select id="touch"><option value="auto">Automatisch</option><option value="on">Aan</option><option value="off">Uit</option></select></label>`;
+  <label>Aanraakbediening<select id="touch"><option value="auto">Automatisch</option><option value="on">Aan</option><option value="off">Uit</option></select></label>
+  <p id="game-version" class="settings-detail settings-version">Versie ${GAME_VERSION}</p>`;
   content.append(form);
   $('resolution').value=draft.resolution;$('scale').value=draft.renderScale;$('deadzone').value=draft.deadzone*100;$('touch').value=draft.touch;
   $('msaa-enabled').checked=draft.msaaEnabled;$('msaa-samples').value=draft.msaaSamples;
@@ -613,7 +655,7 @@ async function showTrack(id,driving=false,options={}){
   try{
     const DrivingView=driving?(await import('./driving-view.js')).DrivingView:null;
     if(viewer&&(driving?!(viewer instanceof DrivingView):!!viewer.motion)){
-      viewer.suspend();await viewer.audio?.dispose();viewer.hudMeshes?.dispose();viewer.finishFlag?.dispose();
+      viewer.suspend();await viewer.audio?.dispose();viewer.hud?.dispose();await viewer.hudMeshes?.dispose();viewer.finishFlag?.dispose();
       if(viewer.group)viewer.disposeGroup(viewer.group);
       viewer.controls.dispose();viewer.disposeRenderer();viewer=null;
     }
@@ -641,11 +683,11 @@ function resumeViewer(){
   viewer?.setAudioSettings?.(settings);viewer?.setFreeFlight?.(settings.freeFlight);viewer?.resume();resize();
 }
 function resize(){
-  input.state.clear();
+  input.clear();
   if(viewer){const size=viewer.resize(settings);$('render-size').textContent=`${size.width} × ${size.height} · ${settings.renderScale}%${size.limited?' · GPU-limiet':''}`;}
 }
 function back(reason){
-  if(mode==='reward')return;
+  if(mode==='reward'||mode==='quitting')return;
   if(mode==='intro'){if(reason!=='focus'&&!$('movie').paused)finishIntro();return;}
   if(reason==='focus'){if(mode==='viewer'||mode==='race'){viewer?.suspend();mode='paused';input.setMode('menu');}return;}
   if(racePause?.requester){
@@ -684,9 +726,9 @@ function back(reason){
     return;
   }
   if(page==='controls'||page==='start-info'){finishControls(false);return;}
-  if(page==='help'){helpReturn();return;}
+  if(page==='help'){if(!helpViewer?.closePanel())helpReturn();return;}
   if(['prompt','score-name','profile-name'].includes(page)){promptReturn?.();return;}
-  if(page==='countries')showCharacters();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
+  if(page==='countries')showCharacters();else if(page==='characters'&&playMode==='adventure')showAdventure();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
 }
 function menuKey(key){
   if(mode==='reward'){if($('movie').paused&&(key==='Enter'||key==='Space'))startMovie();return;}
@@ -723,11 +765,21 @@ $('play-movie').onclick=e=>{e.stopPropagation();startMovie();};$('skip-movie').o
 $('movie').onended=()=>rewardDone?rewardDone():finishIntro();$('movie').onpointerdown=()=>{if(mode==='intro'&&!$('movie').paused)finishIntro();};
 window.addEventListener('keydown',e=>{if(mode==='intro'&&!$('movie').paused&&(e.key.length===1||e.key==='Enter'||e.key==='Escape')){e.preventDefault();finishIntro();}});
 $('leave-viewer').onclick=showCountries;$('viewer-settings').onclick=()=>showSettings('viewer');
-$('touch-stop').onclick=()=>{
+function requestTouchQuit(){
   // Mobile adaptation: the original Stoppen art invokes the same Esc gate.
   if(mode!=='race')return;
   input.state.keys.add(27);back();input.state.keys.delete(27);advanceRacePause();
-};
+}
+$('touch-stop').onclick=requestTouchQuit;
+$('touch-stop').addEventListener('pointerup',event=>{
+  // A second finger does not synthesize click while the first holds the wheel.
+  // Keep release-inside behavior; the mode gate ignores any duplicate click.
+  if(event.pointerType!=='touch'||event.isPrimary)return;
+  const box=event.currentTarget.getBoundingClientRect();
+  if(event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom){
+    event.preventDefault();requestTouchQuit();
+  }
+});
 $('world').addEventListener('pointerdown',()=>{
   if(mode==='paused'&&!racePause)resumeViewer();
   else if(mode==='race'&&[3,6].includes(viewer.race.phase))input.state.keys.add('Space');

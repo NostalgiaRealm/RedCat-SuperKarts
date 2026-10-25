@@ -4,6 +4,101 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Version 0.9.0 source update — 25 October 2026
+
+The [0.9.0 changelog](../CHANGELOG.md) collects the source changes since the
+previous publication, including the focused follow-ups below. Version metadata
+in `package.json` and its lockfile agrees with the generated browser module;
+the npm version hook keeps that module in sync. The version is shown under
+**Instellingen → Meer instellingen**.
+
+The version update receives a focused landscape/portrait menu check and
+metadata consistency checks; it does not repeat the earlier suites or races.
+Evidence is recorded in `evidence/version-0.9.0/validation.json`. No desktop
+packages or static build outputs were regenerated.
+
+## Source audit and movie layout — 22 October 2026
+
+[Remaining work](remaining-work.md) records the current source/evidence audit.
+The audit itself ran no tests, races or builds. Its two rendering/harness items
+are now complete: the HUD shares an RGB565 composition surface, and the smoke
+tests inspect world geometry, packed textures and real HUD output. The focused
+23 October follow-up passed 23 unit tests, 120 glyph pixel samples, the existing
+197 texture GPU samples, mode/layout/mirror/lifecycle checks, and Chromium,
+Firefox and source Electron smoke checks. See
+[HUD framebuffer research](research-hud-framebuffer.md) for original addresses,
+commands, reports and limits. No full suite, full races or builds were run.
+
+The preceding movie-layout correction constrains the shared grid/video box to
+the viewport. All 11 original and prepared movies are 320×240, SAR 1:1, DAR 4:3;
+no media conversion was changed. That source-only check passed 66 combinations
+(11 movies × six viewports), complete-frame/black-border pixel comparisons at
+ultrawide and portrait sizes, and intro skipping to the menu. The local record
+is `evidence/runtime/movie-aspect/validation.json` (ignored, not distributed).
+The movie fix is included in `v0.9.0`, but not in the earlier `v0.1.0` source
+tag. No package was rebuilt for it.
+
+The published source release includes all prepared assets and no desktop
+builds. Packaging results below describe the earlier local checkpoint only.
+
+## Source-only power-up audio audit — 25 October 2026
+
+The [power-up sound audit](research-powerup-audio.md) found no recording,
+dispatch or mixing discrepancy requiring a game-audio change. It checks both
+original copies, 314 byte-identical WAVs, fresh REA/Hopper analyses and 3,001
+original instruction cases. Twenty focused comparison/queue/mixing/spatial
+tests and 118 controlled browser cases pass. All four player characters use
+the expected five pickup effects and 15 numbered firing recordings; FIFO,
+NPC suppression, homing warnings and missing-name behavior are preserved.
+
+The browser checks use explicit item-race fixture setup rather than full
+races. Random pickup type 7 has no authored track placement and is explicitly
+injected for its supported-state checks. No full suite, build, publication or
+native sound-card capture was performed. See
+`evidence/audio/powerup-parity/validation.json` for source hashes and limits.
+
+## Source-only menu speech and flow — 25 October 2026
+
+The [menu follow-up](research-menu-audio.md) restores all 24 Adventure briefing
+recordings and corrects selected-profile voices, modal returns, character Back,
+FIRSTTIME handling, source stop order and the awaited quit farewell. The audit
+resolved 65 original wrapper calls and verified 398 supplied menu WAVs against
+the original bytes; five configured references are absent in the supplied
+originals. No substitute recordings or unused filename-based greetings were added.
+
+Seventy-six original instruction probes, five focused JavaScript tests, 12
+menu-flow browser groups, 57 existing menu-playback cases and three existing
+profile-bank groups passed. One race opening checks menu narration does not
+carry into the race. Browser media events confirm playback and ordering, not
+a live original Windows sound-card comparison. Start-info/Landinfo Escape
+adaptations remain documented. See `evidence/audio/menu-flow/validation.json`.
+No full race, full suite, build or publication was run.
+
+## Source-only Help navigation — 23 October 2026
+
+The [Help follow-up](research-help-navigation.md) verifies 13 original topics,
+nine current-window jumps and 13 keyword mappings directly from the HLP.
+It corrects mode-specific Help contexts and country-information notice 46,
+adds Contents/Back/Index/History, and preserves the caller's form/drafts.
+There is no authored browse sequence or popup link to reconstruct; the old
+helpdeco warnings were misleading. Thirteen parser tests, nine JavaScript tests
+and ten focused browser groups passed. No race or build was required.
+
+## Source-only touch controls — 23 October 2026
+
+The [touch-control follow-up](research-touch-controls.md) replaces the old
+button grid with a proportional left steering wheel, right Alt-equivalent
+brake pedal and generated bonus button. It documents the SuperTuxKart response
+reference and the CC0 SVG artwork source. Twenty-four focused unit/protocol/
+layout tests and twelve browser groups passed, with remaining-group/layout-only
+reruns after fixes. The browser checks include actual forward/reverse movement,
+multi-touch, pause/rotation cleanup and four phone viewport layouts. See
+`evidence/touch-controls/browser.json` for source-specific segments.
+
+No full races, full suite or builds were run. Desktop SVG serving is verified
+through the protocol handler; physical phones, Safari and desktop packages
+remain outside this focused source check.
+
 ## Current source-only variable update timing
 
 The live runtime now follows the original minimum-interval admission and
@@ -37,9 +132,11 @@ audio, persistent settings/save data and original-menu exit with the normal
 Chromium sandbox enabled. Runs used Linux/Xvfb/KWin and SwiftShader; physical
 GPU/audio/controller testing and full races are outside this integration check.
 
-Linux AppImage/tar.gz and Windows x64 NSIS/ZIP packages are built. Every package
-stages 6,844 game files checked byte-for-byte, plus the narrowly scoped wrapper.
-The browser `dist/` is refreshed and includes the startup correction below.
+At that checkpoint, Linux AppImage/tar.gz and Windows x64 NSIS/ZIP packages were
+built locally. Each staged 6,844 game files checked byte-for-byte, plus the
+narrowly scoped wrapper. The then-current browser `dist/` was refreshed and
+included the startup correction below. These packages do not include later
+source changes and are not attached to the public source release.
 Windows packages are cross-built, with native execution unverified. macOS Intel
 and Apple Silicon build instructions/configuration are supplied; Mac packages,
 native runs, signing and notarization have not been validated here. See
@@ -274,8 +371,9 @@ MSAA and shadow checks are recorded in
 [the precision follow-up](research-native-texture-precision.md) and
 `evidence/texture-precision/validation.json`; no full suite or build was run for
 this source-only change. RGB555 is also tested in the converter; RGB565 is the
-chosen browser device profile. Exact historical GPU filtering/rounding and the
-separate Canvas/HTML HUD composition remain outside pixel-parity claims.
+chosen browser device profile. HUD meshes and glyphs now blend into an RGB565
+composition target; see [the HUD follow-up](research-hud-framebuffer.md). Exact
+historical GPU filtering/rounding and menu HTML remain outside pixel-parity claims.
 The original leaves most
 weather UVs and several stream fields uninitialized; the port initializes
 those undefined fields to zero. These policies are not claimed as pixel parity.
@@ -288,9 +386,9 @@ Their source hashes identify that checkpoint, which predates the current
 constructor reset and 72-case audit. In that earlier checkpoint, shortening
 England's test-driver steering look-ahead from `.7` to `.5` qualified its timed
 and duel attempts without production edits. Those historical outcomes do not
-establish current qualification: the current hard England timed completion
-finishes second and does not qualify. See `full-race-results.md` for the
-current results. Every retained route follower only supplies ordinary controls;
+establish current qualification: the later retained hard England timed run
+finished second and did not qualify. See `full-race-results.md` for those
+historical results. Every retained route follower only supplies ordinary controls;
 it never teleports, forces pickups or changes race rules.
 
 These separate course/mode completions and controlled UI transitions are not

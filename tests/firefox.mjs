@@ -36,9 +36,27 @@ try{
   await screenshot('main');report.checks.push('Original native main menu and images');
   for(const track of [0,3,5]){
     await request(`/session/${session}/url`,{url:origin+'/?track='+track});
-    await until("return window.rcsk?.state.page==='viewer'");
-    const data=await script("const v=window.rcsk.viewer,maps=new Set();v.group.traverse(o=>{for(const m of [o.material].flat()){if(m?.map)maps.add(m.map)}});const keyed=[...maps].filter(t=>t.userData.nativeColorKeyFilter);return{state:window.rcsk.state,triangles:v.renderer.info.render.triangles,sky:!!v.sky,animations:v.animations.length,keyedTextures:keyed.length,keyedBeforeFiltering:keyed.every(t=>t.premultiplyAlpha),webgl:v.renderer.getContext().getParameter(v.renderer.getContext().VERSION)}");
+    await until("return window.rcsk?.state.page==='viewer'&&window.rcsk.viewer.renderStats.world!==null");
+    const data=await script(`
+      const v=window.rcsk.viewer,maps=new Set();
+      v.group.traverse(o=>{for(const m of [o.material].flat()){if(m?.map)maps.add(m.map)}});
+      const keyed=[...maps].filter(t=>t.userData.nativeColorKeyFilter);
+      const keyPixelsAreZero=texture=>{
+        const pixels=texture.image.data;let count=0;
+        if(!pixels)return false;
+        for(let i=0;i<pixels.length;i+=4)if(pixels[i+3]===0){
+          count++;if(pixels[i]!==0||pixels[i+1]!==0||pixels[i+2]!==0)return false;
+        }
+        return count>0;
+      };
+      return {state:window.rcsk.state,triangles:v.renderStats.world.triangles,
+        presentationTriangles:v.renderStats.presentation.triangles,sky:!!v.sky,animations:v.animations.length,
+        keyedTextures:keyed.length,keyedBeforeFiltering:keyed.every(t=>t.isDataTexture
+          &&t.userData.nativeTextureFormat==='RGB565'&&!t.premultiplyAlpha&&keyPixelsAreZero(t)),
+        webgl:v.renderer.getContext().getParameter(v.renderer.getContext().VERSION)};
+    `);
     assert.deepEqual(data.state.assetErrors,[]);assert.ok(data.triangles>1000);assert.ok(data.sky&&data.animations>0);
+    assert.equal(data.presentationTriangles,1);
     assert.ok(data.keyedTextures>0);assert.equal(data.keyedBeforeFiltering,true);
     await screenshot('track-'+track);report.checks.push({track,triangles:data.triangles,
       keyedTextures:data.keyedTextures,keyedBeforeFiltering:data.keyedBeforeFiltering,webgl:data.webgl});
@@ -51,6 +69,8 @@ try{
   const after=await script("return window.rcsk.viewer.motion.snapshot()");
   assert.ok(after.updates>before.updates);assert.ok(after.forwardSpeed>before.forwardSpeed+1);
   assert.ok(Math.hypot(...after.position.map((v,i)=>v-before.position[i]))>1);
+  const render=await script('return window.rcsk.viewer.renderStats');
+  assert.ok(render.world.triangles>1000);assert.equal(render.presentation.triangles,1);assert.ok(render.hud.glyphs>0);
   await screenshot('driving');report.checks.push('Original kart/driver/camera and keyboard acceleration in driving research view');
   report.status='passed';
 }catch(error){report.status='failed';report.failure=String(error.stack||error);throw error;}

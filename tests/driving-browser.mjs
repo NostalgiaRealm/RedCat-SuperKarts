@@ -21,23 +21,43 @@ try{
     await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
     await page.waitForFunction(()=>window.rcsk.viewer.clock.tick>2);
     const state=await page.evaluate(()=>{
-      const v=window.rcsk.viewer,c=document.querySelector('#race-hud'),pixels=c.getContext('2d').getImageData(0,0,c.width,c.height).data;
-      return {errors:v.errors,driverFrames:v.driverFrames.size,triangles:v.renderer.info.render.triangles,
-        text:v.hud.text,atlas:[...v.hud.images.values()].map(image=>image.src),
-        hudPixels:pixels.filter((value,index)=>index%4===3&&value>0).length,position:[...v.motion.body.position],
+      const v=window.rcsk.viewer,renderer=v.renderer,gl=renderer.getContext();
+      v.suspend({notifyPause:false});
+      const width=Math.round(document.getElementById('race-hud').getBoundingClientRect().width*devicePixelRatio);
+      const height=Math.round(document.getElementById('race-hud').getBoundingClientRect().height*devicePixelRatio);
+      const read=()=>{const pixels=new Uint8Array(width*height*4);gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,pixels);return pixels;};
+      // Compare two presentations of the same frozen RGB565 world. The first
+      // omits overlay draws; the second uses the real glyph/mesh GPU path.
+      v.renderScene({present:false});v.multisampling.compose(()=>null,width,height);
+      const worldOnly=read();v.hud.render();const complete=read();
+      let hudPixels=0;
+      for(let i=0;i<complete.length;i+=4)if(complete[i]!==worldOnly[i]
+        ||complete[i+1]!==worldOnly[i+1]||complete[i+2]!==worldOnly[i+2])hudPixels++;
+      const state={errors:v.errors,driverFrames:v.driverFrames.size,triangles:v.renderStats.world.triangles,
+        presentationTriangles:v.renderStats.presentation.triangles,hud:v.renderStats.hud,
+        text:v.hud.text,atlas:[...v.hud.textures].map(([name,texture])=>({name,
+          format:texture.userData.nativeTextureFormat,packed:!!texture.isDataTexture,
+          premultiplyAlpha:texture.premultiplyAlpha,width:texture.image.width,height:texture.image.height})),
+        hudPixels,glError:gl.getError(),position:[...v.motion.body.position],
         visibleRanges:v.visibleSectorRanges,shadowCount:v.shadows.length,
         researchHeaderHidden:document.querySelector('#viewer-hud').hidden};
+      v.resume();return state;
     });
     assert.deepEqual(state.errors,[]);assert.ok(state.driverFrames>10);assert.ok(state.triangles>1000);
+    assert.equal(state.presentationTriangles,1);assert.ok(state.hud.glyphs>0);assert.equal(state.glError,0);
     assert.equal(state.text.string_lap,'Ronde');assert.equal(state.text.string_lap_value,'1');
-    assert.ok(state.hudPixels>1000);assert.ok(state.atlas.every(url=>/\/textures\/overlay[12]\.tga\.png$/.test(url)));
+    assert.ok(state.hudPixels>1000);assert.ok(state.atlas.length>0);
+    assert.ok(state.atlas.every(texture=>/^overlay[12]\.tga$/.test(texture.name)
+      &&texture.format==='RGB565'&&texture.packed&&!texture.premultiplyAlpha&&texture.width>0&&texture.height>0));
     assert.equal(state.researchHeaderHidden,true);
     assert.equal(state.shadowCount,5);assert.ok(state.visibleRanges.length>0);
     await page.keyboard.down('ArrowUp');await page.waitForTimeout(1000);await page.keyboard.up('ArrowUp');
     const moved=await page.evaluate(()=>window.rcsk.viewer.motion.snapshot());
     assert.ok(moved.forwardSpeed>0);assert.ok(Math.hypot(...moved.position.map((value,i)=>value-state.position[i]))>1);
     await page.screenshot({path:`evidence/driving/track-${id}.png`});
-    report.checks.push({track:id,character:id%4,originalHud:true,forwardSpeed:moved.forwardSpeed});
+    report.checks.push({track:id,character:id%4,originalHud:true,hudPixels:state.hudPixels,
+      hudGlyphs:state.hud.glyphs,worldTriangles:state.triangles,presentationTriangles:state.presentationTriangles,
+      forwardSpeed:moved.forwardSpeed});
   }
   await page.evaluate(()=>{
     window.testPad={id:'Explicitly simulated standard pad',connected:true,mapping:'standard',axes:[0,0,0,0],
@@ -103,17 +123,17 @@ try{
   });
   await page.setViewportSize({width:390,height:844});await page.reload();
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving');
-  const a=await page.locator('[data-input=accelerate]').boundingBox(),b=await page.locator('[data-input=left]').boundingBox();
+  const a=await page.locator('#touch-wheel').boundingBox(),b=await page.locator('#touch-brake').boundingBox();
   assert.ok(a&&b);const cdp=await context.newCDPSession(page);
   await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[
-    {x:a.x+a.width/2,y:a.y+a.height/2,id:1},{x:b.x+b.width/2,y:b.y+b.height/2,id:2},
+    {x:a.x+a.width*.2,y:a.y+a.height*.12,id:1},{x:b.x+b.width/2,y:b.y+b.height/2,id:2},
   ]});
-  await page.waitForFunction(()=>window.rcsk.state.input.throttle===1&&window.rcsk.state.input.steer===-1);
+  await page.waitForFunction(()=>window.rcsk.state.input.throttle===1&&window.rcsk.state.input.steer<-.5&&window.rcsk.state.input.handbrake===1);
   await cdp.send('Input.dispatchTouchEvent',{type:'touchCancel',touchPoints:[]});
-  await page.waitForFunction(()=>window.rcsk.state.input.throttle===0&&window.rcsk.state.input.steer===0);
+  await page.waitForFunction(()=>window.rcsk.state.input.throttle===0&&window.rcsk.state.input.steer===0&&window.rcsk.state.input.handbrake===0);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.screenshot({path:'evidence/driving/portrait.png'});
-  report.checks.push('Actual research-view controls combine two browser touch contacts and clear cancellation in portrait');
+  report.checks.push('Actual wheel and brake pedal combine two browser touch contacts and clear cancellation in portrait');
   for(const [width,height]of [[320,740],[390,844],[844,390]]){
     await page.setViewportSize({width,height});
     await page.waitForTimeout(120);

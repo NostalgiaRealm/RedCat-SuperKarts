@@ -11,6 +11,7 @@ import tempfile
 from pathlib import Path
 from urllib.parse import quote
 from PIL import Image
+from lib.winhelp_navigation import read_winhelp_navigation
 
 ROOT=Path(__file__).resolve().parents[1]
 DEFAULT_SOURCE=Path('/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/RCSK.HLP')
@@ -77,7 +78,8 @@ class HelpReader:
         self.reset()
     def link(self,value):
         raw=value.strip()
-        # WinHelp '*' is an internal jump flag; no macro or external command executes.
+        # '*' preserves the authored font; the binary opcode distinguishes
+        # jumps from popups. Neither macros nor external commands execute.
         target=raw.lstrip('*')
         if not re.fullmatch(r'[\w.]+',target):
             raise ValueError(f'Unsupported WinHelp target: {raw!r}')
@@ -86,7 +88,7 @@ class HelpReader:
             if run['style']['underline']:selected.append(run)
             elif run['text'].strip():break
         if not selected:raise ValueError(f'WinHelp link without underlined label: {raw}')
-        for run in selected:run['link']=target
+        for run in selected:run['link']=target;run['linkIndex']=len(self.topic['links'])
         self.topic['links'].append({'target':target,'raw':raw})
     def walk(self,nodes,state=None):
         state=dict(STYLE if state is None else state)
@@ -157,7 +159,8 @@ def render_topic(topic,images):
             if style['italic']:value=f'<em>{value}</em>'
             if run.get('link'):
                 target=run['link']
-                value=f'<a href="#help-{quote(target)}" data-help-topic="{html.escape(target,quote=True)}">{value}</a>'
+                link=topic['links'][run['linkIndex']]
+                value=f'<a href="#help-{quote(target)}" data-help-topic="{html.escape(target,quote=True)}" data-help-context="{link["contextId"]}" data-help-kind="{link["kind"]}">{value}</a>'
             elif style['underline']:value=f'<u>{value}</u>'
             # Only fixed CSS properties and parsed integers enter generated styles.
             value=f'<span style="font-size:{style["size"]/2:g}pt;color:{COLORS.get(style["color"],"#000000")}">{value}</span>'
@@ -202,6 +205,9 @@ def main():
         else:raise SystemExit('helpdeco is required. Build work/helpdeco/gcc/helpdeco or pass --helpdeco. Existing help output is not accepted as a successful rebuild.')
     args.raw.mkdir(parents=True,exist_ok=True);args.output.mkdir(parents=True,exist_ok=True)
     source=args.source.resolve();cmd=[str(exe.resolve()),str(source),'-y']
+    navigation=read_winhelp_navigation(source)
+    if navigation['macros'] or navigation['hasTopicWindowMap'] or navigation['bitmapHotspotCount']:
+        raise ValueError('Unexpected active WinHelp macro, window map or image hotspot')
     stem=source.stem
     extracted_names=[]
     with tempfile.TemporaryDirectory(prefix='helpdeco-',dir=args.raw) as staging:
@@ -230,14 +236,33 @@ def main():
                 if converted.convert('RGB').tobytes()!=rgb.tobytes():raise ValueError('Lossy help image conversion')
             images[source_image.name.lower()]={'file':'/assets/help/images/'+target.name,'width':im.width,'height':im.height,
                 'sourceSHA256':sha(source_image.read_bytes()),'pixelSHA256':sha(rgb.tobytes())}
+    native_topics={context:topic for topic in navigation['topics'] for context in topic['contextIds']}
     topics=[];ids={t['id'] for t in reader.topics}
     for topic in reader.topics:
-        for link in topic['links']:
+        native=native_topics[mapping[topic['id']]]
+        if native['title']!=topic['title'] or len(native['links'])!=len(topic['links']) or native['macros']:
+            raise ValueError('RTF topic does not agree with original WinHelp records')
+        # The raw keyword B-tree is authoritative: helpdeco's recovered RTF
+        # footnotes can attach keywords to the wrong topic on this host.
+        topic['keywords']=native['keywords']
+        for link,original in zip(topic['links'],native['links']):
             if link['target'] not in ids:raise ValueError(f'Unresolved topic {link["target"]}')
+            context=mapping[link['target']]
+            if original['kind']!='jump' or original['windowTarget'] is not None or original['externalFile'] is not None:
+                raise ValueError('Unexpected WinHelp popup, window or external destination')
+            if context not in original['targetContextIds']:
+                raise ValueError('RTF destination does not agree with original WinHelp hash')
+            link.update({'contextId':context,'kind':original['kind'],'preserveFont':original['preserveFont'],
+                         'targetHash':original['targetHash'],'opcode':original['opcode']})
         body,text,refs=render_topic(topic,images)
         topics.append({k:topic[k] for k in ['id','title','keywords','links']}|
-                      {'contextId':mapping.get(topic['id']),'html':body,'text':text,'images':refs})
+                      {'contextId':mapping[topic['id']],'contextHashes':native['contextHashes'],
+                       'browsePrevious':native['browsePrevious'],'browseNext':native['browseNext'],
+                       'topicOffset':native['topicOffset'],'html':body,'text':text,'images':refs})
     if set(mapping)!=ids:raise ValueError('HPJ context map does not match RTF topics')
+    if set(native_topics)!=set(mapping.values()):raise ValueError('HPJ map does not match original CTXOMAP')
+    if next(t['topicOffset'] for t in topics if t['id']==start)!=navigation['contentsTopicOffset']:
+        raise ValueError('HPJ Contents does not match original SYSTEM record')
     image_instances=sum(t['html'].count('<img ') for t in topics)
     if image_instances!=len(re.findall(r'\\\{bm[clr] ',rtf_source)):
         raise ValueError('Original RTF image reference was lost')
@@ -249,13 +274,16 @@ def main():
         target=args.output/source_audio.name.lower();shutil.copyfile(source_audio,target)
         baggage.append({'file':'/assets/help/'+target.name,'sourceSHA256':sha(source_audio.read_bytes())})
     # Helpdeco recovers context names by hash guessing; numeric map is authoritative.
-    limits=['WinHelp browse-chain navigation was not recovered by helpdeco; no next/previous topic order is invented.',
-            'Context strings may be helpdeco hash guesses; numeric context IDs come from the recovered MAP.',
-            'Original Windows help window placement and popup behavior are not emulated.',
-            'Baggage WAV is preserved; its original activation is not established.']
+    limits=['Context aliases may be helpdeco hash guesses; numeric contexts and link hashes are checked directly against the original HLP.',
+            'Browser window layout adapts to the viewport; native Windows window-manager placement is not emulated.',
+            'The secondary window and baggage WAV are defined but have no activation in the authored help records.']
     warnings=[line for line in log.splitlines() if re.search(r'warn|missing|browse|error|problems|bad',line,re.I)]
-    data={'schema':1,'title':title,'startTopic':start,'topics':topics,
+    data={'schema':2,'title':title,'startTopic':start,'topics':topics,
           'contextMap':{str(t['contextId']):t['id'] for t in topics},'images':images,'baggage':baggage,
+          'keywordIndex':navigation['keywords'],'windows':navigation['windows'],
+          'navigation':{'browseLinks':sum(t['browsePrevious'] is not None or t['browseNext'] is not None for t in topics),
+                        'popupLinks':0,'secondaryWindowLinks':0,'bitmapHotspots':navigation['bitmapHotspotCount'],
+                        'topicRecords':navigation['topicRecordCount'],'source':'Original |TOPIC, |CTXOMAP, |CONTEXT, |KWBTREE, |KWDATA and |SYSTEM'},
           'presentation':{'fontFamily':'Arial','backgroundRGB':[254,255,139],
                           'source':'RTF font1 and HPJ [WINDOWS] main background'},
           'source':{'path':str(source),'sha256':sha(source.read_bytes()),'rtfSHA256':sha(rtf.read_bytes()),
@@ -268,6 +296,7 @@ def main():
         'topics':len(topics),'images':len(images),'internalLinks':sum(len(t['links']) for t in topics),
         'tables':sum(t['html'].count('<table>') for t in topics),'tableCells':cells,
         'imageReferences':image_instances,'imagesPixelExact':True,
+        'navigation':data['navigation'],'keywords':len(data['keywordIndex']),
         'unresolvedLinks':0,'unresolvedImages':0,'warnings':warnings,'limitations':limits})
     print(f'Prepared {len(topics)} original help topics, {len(images)} pixel-exact images and {sum(len(t["links"]) for t in topics)} internal links.')
 if __name__=='__main__':main()

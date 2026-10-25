@@ -72,11 +72,18 @@ Menu source Delphi resources confirm `clFuchsia` transparency for `TDaviImage` s
 
 The game uses a different key: **`FUN_0042ccf0`** calls `FUN_004afdb0(0x7f00ff)`; **`FUN_004b5470`** reads its low byte as red, establishing **RGB `(255,0,127)`**. The indexed branch defaults to palette index 254 and passes its converted value to SetColorKey in **`FUN_004a4a30`**. Texture PNGs therefore key exact `(255,0,127)`. Original files remain unchanged; source and keyed-pixel counts are recorded. `SndGfx.ini` gamma=0 leaves channels unmodified; nonzero gamma enables the native channel-square/256 conversion and is not silently enabled by asset preparation.
 
-All 37 font files have a 256-entry table of `(uint16 width, uint16 height, uint32 offset)`, eight additional bytes, and indexed glyph pixels. Every glyph range fits its source file. Atlases use `e02_pl16.pcx`, explicitly selected by `SndGfx.ini [PALET]` for 16-bit rendering, and preserve original glyph metrics. Index 255 is made transparent based on the blank backgrounds; exact per-font runtime recoloring remains unverified. The four trailing header words are retained.
+All 37 font files have a 256-entry table of `(uint16 width, uint16 height, uint32 offset)`, eight additional bytes, and indexed glyph pixels. Every glyph range fits its source file. Atlases use `e02_pl16.pcx`, explicitly selected by `SndGfx.ini [PALET]` for 16-bit rendering, and preserve original glyph metrics. Index 255 is made transparent based on the blank backgrounds; exact per-font runtime recoloring remains unverified. The four trailing header words are retained. These extracted font files are distinct from the active race HUD's `Overlay.ini` glyph rectangles described below; this extraction limit is not evidence of a missing active HUD font.
 
 The Delphi menu uses Comic Sans MS. `--font-dir` copies installed `comic.ttf`, `comicbd.ttf`, `comici.ttf` and `comicz.ttf` with source paths and SHA-256 provenance in `fonts/menu-fonts.json`; these are distinct from the game's bitmap fonts.
 
 Movie conversion preserves 320×240, 4:3, and decoded 25-fps content with original audio. Source MPEG `r_frame_rate` can misleadingly report 50; the measured `avg_frame_rate` and decoded frame count establish the 25-fps sequence. The intro has 2,652 decoded frames (106.08 seconds of video). FFmpeg reports damaged-tail concealment warnings in some original win/intro MPEG streams. Generated MP4s contain every decoded original frame; source and output frame counts are checked exactly. Container durations can differ because the source MPEG duration estimate and AAC packet boundaries differ. This is recorded per movie, not hidden by clipping content. Video encoding is high-quality lossy H.264 CRF18; AAC audio is 160 kbps. No resizing, speed filters or content edits are applied.
+
+Browser presentation is a separate step from conversion. The shared movie
+element now uses `object-fit: contain` and centered positioning inside a black,
+viewport-bounded container in `src/style.css`. The intro and all reward movies
+therefore retain their original 4:3 image with borders where needed, without
+stretching or cropping. This source correction does not reconvert the movies
+or establish that an existing package or published release contains the fix.
 
 ## Animation, sky, kart and audio bindings
 
@@ -102,17 +109,32 @@ Sky **`0042d480`** selects `SndGfx.ini [SKY] mesh<track>` and `<mode><track>` te
 
 Helpdeco runs in a fresh temporary directory, then the original RTF, HPJ, bitmap and baggage files are preserved in `raw/help/`. The converter parses balanced RTF groups, CP1252 accents, bold/italic/underline runs, font sizes, colors, bullet paragraphs and table rows/cells. Metadata footnotes become the original titles, context IDs and keywords, not visible page text. Hidden WinHelp destinations become internal links; macros or external commands are not executed. Unsupported visible controls or unresolved links/images fail the conversion. All output text is HTML-escaped; image URLs and link attributes use generated local paths and validated context identifiers.
 
-The browser entry point is `/assets/help/topics.json`, schema 1:
+The browser entry point is `/assets/help/topics.json`, schema 2:
 
 * `title`, `startTopic`, `presentation` (original Arial font and HPJ main-window RGB background).
 * `topics`: original `id`, `title`, numeric `contextId`, `keywords`, safe `html`, plain `text`, image references and recovered links.
-* `contextMap`: numeric help-context string to topic ID.
+* `contextMap`: verified numeric help-context string to topic ID.
+* `keywordIndex`: original keyword B-tree destinations; `windows` retains original window metadata.
+* `navigation`: original browse/popup/window/hotspot coverage. Topic records retain original hashes and browse pointers.
 * `images`: original bitmap name to PNG path, dimensions, source digest and decoded-pixel digest.
 * `baggage`, source/tool digests, converter warnings and explicit limitations.
 
 Internal links use `data-help-topic="<context>"` and `href="#help-<context>"`; the application can intercept them to select the matching topic. The HTML contains the original page header pictures, 27 bullet items and two tables (eight rows, 21 cells). All 46 distinct BMPs are converted pixel-exact to RGB PNG, with 59 image placements. No authored replacement instructions are added. The unreferenced `MN_HSP01.WAV` baggage is preserved without inventing its activation.
 
-`docs/evidence/help-validation.json` records 13 named topics, nine resolved internal links, all image references and table cells. Helpdeco emits 14 physical-topic browse-chain warnings while recovering 13 context-map entries; the complete log is retained as `raw/help/helpdeco.log`. Browse chains and some original context strings cannot be reconstructed reliably, and Windows popup/window placement is not emulated. This does not prevent direct numeric-context or topic-link navigation. Chromium loaded all 13 converted topics, all 59 image placements and nine links with zero broken images or page errors; `docs/evidence/help-browser-validation.json` records that check. Screenshots in `evidence/ui/help-*.png` cover the main help page and both tables.
+`docs/evidence/help-validation.json` records 13 topics, nine resolved links and
+all image/table references. The [navigation follow-up](research-help-navigation.md)
+checks context numbers, link hashes and keyword mappings directly against
+`RCSK.HLP`. It corrects helpdeco's LP64 keyword corruption and establishes that
+all original browse pointers are absent; the 14 browse warnings are extractor
+errors, not an unrecovered topic sequence. No authored popup or secondary-window
+link exists. The viewer now supplies Contents, Back, Index and History while
+preserving the caller form and unsaved drafts. The original Windows window
+layout and non-scrolling header presentation remain browser adaptations.
+
+`docs/evidence/help-browser-validation.json` retains the initial conversion
+checkpoint. Current focused navigation checks are in
+`evidence/help-navigation/browser.json`; both cover all 13 topics, 59 image
+placements and nine links, with zero broken images or page errors.
 
 The three original `Phys0.dat`, `Phys1.dat`, `Phys2.dat` tables are additionally copied byte-for-byte into `public/assets/physics/phys0.dat` through `phys2.dat`, with digests in `manifest.physics`. No inferred physics constants are inserted into these source files.
 
@@ -148,7 +170,7 @@ Transparency is selected by the placed object's controller, not by inspecting it
 
 `src/asset-materials.js` exports `getNativeMaterialSpec`, `nativeVertexRGBA`, `nativeColorAttribute` and `createNativeMeshMaterial`. The geometry attribute packs source floats with the original `trunc(channel*255)` conversion, including alpha. The source files contain **13 meshes with non-unit alpha**; the tracks contain **58 ordinary-alpha and 41 screen-blended placements**. Eleven distinct source colors, four blend modes and eight enable transitions are checked by executing the original instructions in `tools/native-material-fixtures.py`.
 
-The accelerated game selects `D3DTBLEND_MODULATE`: RGB texture color multiplies vertex color, and RGB textures retain vertex alpha. The helper keeps the converted color-key mask separate from vertex alpha so a half-transparent lamp is not discarded by a combined alpha test. The existing browser's `.5` threshold for filtered key masks is explicitly retained as an approximation. Exact DirectDraw key filtering, native culling, texture color precision and framebuffer color-space comparisons are still pending; `DoubleSide` is not claimed as recovered culling. `forceSinglePass` avoids Three.js applying transparent blending twice.
+The accelerated game selects `D3DTBLEND_MODULATE`: RGB texture color multiplies vertex color, and RGB textures retain vertex alpha. The helper keeps the converted color-key mask separate from vertex alpha so a half-transparent lamp is not discarded by a combined alpha test. The earlier material checkpoint used a `.5` filtered-mask cutoff and provisional double-sided drawing; those are superseded. Current mesh materials default to `THREE.FrontSide`, and the [native precision follow-up](research-native-texture-precision.md) implements original RGB565 packing, protected non-key black, zero-coverage key rejection and a real RGB565 scene target. `forceSinglePass` remains a guard against Three.js applying transparent double-sided blending twice when a caller requests that mode. The [HUD framebuffer follow-up](research-hud-framebuffer.md) also draws original glyphs and overlay meshes into RGB565; exact historical GPU rasterization remains a comparison limit.
 
 The large Netherlands starting gate is original `strt0000..strt0038` geometry at OMP position `[-2346.18310546875,124,7097.0390625]`, type 12. Its initial local bounding size is approximately 538×238×135 units. The inspected creation chain **`0043e140 → 0048fb60 → 00490130 → 004a02b0`** stores original positions/angles without a special gate scale; no visual size correction is invented. Physics-enabled type-5 scenery registers a ground callback through **`0043f1b0 → 004939d0`**, which a static scenery viewer does not reproduce.
 
@@ -156,7 +178,7 @@ The large Netherlands starting gate is original `strt0000..strt0038` geometry at
 
 `applyNativeByteColorPipeline` keeps source texture and vertex RGB in their stored byte space: the original Direct3D 3 device's `D3DTBLEND_MODULATE` multiplies these values directly. Three.js's automatic sRGB decode/output conversion would instead produce approximately 93 for texture 128 multiplied by vertex 128, where the native byte operation gives 64. The helper marks textures `NoColorSpace`, disables tone mapping and omits the output color-space shader chunk. This is specific to the recovered legacy renderer; it is not a general recommendation for modern material rendering. Microsoft's [gamma documentation](https://learn.microsoft.com/en-us/windows/win32/direct3d9/gamma) identifies sRGB read/write conversion as explicit Direct3D 9 states, disabled by default; the recovered earlier device path does not enable such a conversion.
 
-`tools/validate-native-materials.mjs` reads actual WebGL2 pixels for 32 combinations of four original blend modes and eight vertex intensities, against byte-space reference equations. All channels match within one byte (`evidence/native/material-webgl-pixels.json`). This validates the browser pipeline, not an original GPU's 16-bit framebuffer quantization, filtered color-key edge behavior or display gamma ramp.
+`tools/validate-native-materials.mjs` reads actual WebGL2 pixels for 32 combinations of four original blend modes and eight vertex intensities, against byte-space reference equations. The retained material checkpoint matched all channels within one byte (`evidence/native/material-webgl-pixels.json`). Those historical results establish the byte-space modulation/blend stage, not validation of later source changes. The [native precision follow-up](research-native-texture-precision.md) records the subsequent texture packing, filtered-key and per-draw RGB565 framebuffer checks separately. Neither checkpoint establishes the exact rasterization or display gamma ramp of an original graphics device.
 
 `src/hud-mesh.js` translates **`00458a00/004589c0/00459440/00459910/00462770`** and the INI factories. HUD meshes use their own 90-degree horizontal camera, near plane 0.99 and disabled depth testing. The native viewport uses width/2 for both projected axes; at 640×480 an element's original pixel scale is approximately 0.00309375 native units. Composite parents carry separate child-position and model-scale factors. Consequently the three countdown X centers are 241.25, 320 and 398.75, rather than the raw INI values 215, 320 and 425. Normalized countdown Y=0.4 projects to pixel 144.
 
@@ -360,12 +382,22 @@ does not synthesize an alpha channel. Converted race PNGs retain decoded
 source RGB and carry only the exact color-key mask as alpha. Authored source
 alpha remains provenance metadata.
 
-The common WebGL loader multiplies these RGB textures by their binary key mask
-at upload, reproducing the key-to-black substitution before interpolation.
-This leaves every opaque source RGB byte unchanged, so it intentionally does
-not reproduce the original 16-bit quantization or its one-unit black protection.
-The filtered-mask threshold of 0.5 remains an explicit host approximation:
-the recovered CPU code does not establish a particular legacy GPU's ordering
-of filtering and key rejection. Blend factors and vertex alpha remain separate
-from the generated mask. See [the complete native texture-key evidence](research-texture-key.md)
-for the original-instruction fixtures, format selection and material distinctions.
+At the earlier texture-key checkpoint, the common WebGL loader replaced key
+RGB with black but left opaque channels unquantized and used a 0.5 filtered-mask
+cutoff. That implementation is superseded by the
+[native precision follow-up](research-native-texture-precision.md). The current
+loader applies exact key comparison, optional integer gamma, RGB565 truncation
+and protected non-key black before filtering. It stores native channel counts
+in an RGBA8 carrier and expands them in the shader without an intermediate
+8-bit rounding step. The shader rejects only zero key coverage, following the
+documented historical driver profile. Scene blending reaches a real RGB565
+target on every draw, with or without optional MSAA.
+
+Prepared PNGs still retain the original RGB bytes; these runtime conversions
+do not modify the archived source imagery. Blend factors and vertex alpha
+remain separate from the generated mask. Original glyph quads and overlay
+meshes now draw in native hierarchy order into a shared RGB565 composition
+target; see [the HUD follow-up](research-hud-framebuffer.md). Exact historical
+GPU filtering and rasterization remain unverified.
+See [the complete native texture-key evidence](research-texture-key.md) for
+the original-instruction fixtures, format selection and material distinctions.

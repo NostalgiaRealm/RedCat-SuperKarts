@@ -8,7 +8,7 @@ import {assertServerRuntime} from './server-runtime.mjs';
 const root = path.resolve(fileURLToPath(new URL('..', import.meta.url)));
 try{await assertServerRuntime(root);}catch(error){console.error(error.message);process.exit(1);}
 const port = Number(process.env.PORT || 4173);
-const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.ico':'image/x-icon','.webm':'video/webm','.mp4':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.ttf':'font/ttf','.woff2':'font/woff2','.bin':'application/octet-stream'};
+const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json','.png':'image/png','.svg':'image/svg+xml','.jpg':'image/jpeg','.ico':'image/x-icon','.webm':'video/webm','.mp4':'video/mp4','.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.ttf':'font/ttf','.woff2':'font/woff2','.bin':'application/octet-stream'};
 const server = http.createServer(async (req,res) => {
   try {
     const urlPath = decodeURIComponent(new URL(req.url,'http://local').pathname);

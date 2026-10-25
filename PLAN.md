@@ -1,11 +1,25 @@
 # RedCat SuperKarts reconstruction
 
-Status: local implementation, rebuilt browser package and available-host
-validation delivered. Complete native-process parity and unavailable platforms
-remain unverified; the remaining comparison work is listed below.
+Status: the `v0.9.0` source update includes the runnable browser/Electron game,
+prepared assets, movie/HUD corrections, Help navigation, redesigned touch
+controls, menu speech/flow fixes and power-up audio audit. See `CHANGELOG.md`.
+Existing builds and broad validation reports describe earlier checkpoints.
+Complete native-process parity and unavailable platforms remain unverified.
+The current [remaining-work audit](docs/remaining-work.md) separates source
+improvements, validation gaps and deliberately deferred distribution work.
 The complete accepted request is preserved in `docs/request.txt`.
 
 ## Latest requested additions
+
+The live host now uses measured variable updates with the original 25 ms minimum
+gate and uncapped rendering. World textures and framebuffer use native RGB565
+conversion and blending; HUD meshes and original font quads now share an RGB565
+composition target with native draw order and per-blend rounding.
+The shared movie layout now fits the complete original 4:3 frame to the viewport.
+See `docs/research-variable-update-timing.md`,
+`docs/research-native-texture-precision.md`, `docs/research-hud-framebuffer.md`
+and `docs/validation.md` for focused
+source checks. These changes did not refresh the full-race matrix or packages.
 
 The England tyre soft-lock now has automatic player recovery after sustained
 attempted driving without travel. Returns use revalidated road positions and
@@ -18,11 +32,12 @@ Electron now launches the source game without a server and packages the same
 original assets for Linux, Windows and macOS. At that earlier checkpoint,
 source and delivered Linux AppImage passed12 desktop checks each and all513
 JavaScript tests passed. Linux
-packages and cross-built Windows installer/ZIP are provided. macOS build
+packages and a cross-built Windows installer/ZIP were produced locally. They
+are not current builds or assets of the public source release. macOS build
 instructions cover Intel and Apple Silicon, with native Windows/macOS runs
 and Mac packaging still unverified. See `docs/desktop.md` and
-`evidence/desktop/validation.json`. The static browser build is also refreshed
-with the earlier missing-dependency/start-button correction.
+`evidence/desktop/validation.json`. The static browser build was also refreshed
+at that checkpoint with the earlier missing-dependency/start-button correction.
 
 The kart-shadow audit corrects premature viewport clipping and the browser's
 extra alpha compositing while retaining the original texture, shape, position
@@ -63,19 +78,19 @@ claimed as fresh runs of these additions.
 - Native code corroborates Davilex's M25/A2 Racer lineage. Race configuration is
   consumed from `data/game.ini` and `data/race.ini`, not the legacy `data/ini/game.ini`.
 
-## Current checkpoint
+## Implemented systems and retained checkpoints
 
-- The latest requested72-combination full-race audit is tracked by
+- The retained 72-combination full-race audit is tracked by
   `evidence/full-race-matrix/race-matrix.json` and
   `docs/research-full-race-matrix.md`. Its verifier checks original rules,
   five actual driven laps and unchanged runtime/assets, and rejects
-  standalone experiments above the production40Hz simulation cadence.
-  Incomplete combinations are listed explicitly. Current unit coverage is492
-  passing tests, with eleven focused mirror/recovery browser checks and a
-  refreshed static build.
-  The current five-lap coverage is71/72; France on hard difficulty in timed
+  standalone experiments above its then-production 40 Hz reference cadence.
+  That checkpoint passed 492 unit tests and eleven focused mirror/recovery
+  browser checks and refreshed its static build; these are historical results.
+  Its five-lap coverage is 71/72; France on hard difficulty in timed
   mode remains an incomplete automated driving check. Failed attempts do not
-  establish that the original deadline is impossible.
+  establish that the original deadline is impossible. The current measured
+  variable host and later recovery changes still need full-race coverage.
 - Original constructor execution establishes that loaded upgrade flags are
   cleared before player/NPC/timer initialization. The port follows this reset.
   Mirrored-world camera composition is corrected. Two captured native failure
@@ -189,6 +204,10 @@ The rebuilt-runtime checkpoint and refreshed checks are linked from
 
 ## Remaining comparison work
 
+The maintained list, including source/test maintenance, is
+[`docs/remaining-work.md`](docs/remaining-work.md). The principal verification
+items are:
+
 1. Obtain a trustworthy original Windows race baseline for complete visual,
    audible and trajectory comparison. WineD3D is unsuitable on this host.
    Exact color-key filtering/framebuffer precision still needs that reference.
@@ -197,8 +216,12 @@ The rebuilt-runtime checkpoint and refreshed checks are linked from
 3. Drive an uninterrupted 24-stage Adventure through its UI. Current evidence
    combines separate course/mode completions with controlled profile,
    progression, highscore and movie transitions.
+4. Validate current variable-cadence full races, including the still-unfinished
+   France hard timed check. Update the fixed-step test host for that scope;
+   retain its existing deterministic reference role separately.
 
-The previously outstanding Germany, France and Italy checks are now complete:
+The previously outstanding Germany, France and Italy normal-race checks were
+completed at their recorded checkpoint:
 five laps and first place each in648975/812350/565975ms. The follow-up restored
 original jump callbacks and route settings, improved the test driver and added
 the explicitly authorized player rescue safeguard. See

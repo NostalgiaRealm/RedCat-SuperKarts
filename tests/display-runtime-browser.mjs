@@ -6,7 +6,7 @@ const origin=process.env.RCSK_URL||'http://127.0.0.1:4173';
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',
   headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const report={origin,browser:browser.version(),checks:[],errors:[],
-  scope:'Actual DrivingView settings, native RGB565 channel-count bytes before GPU filtering, expanded HUD image reuse, sampler state, weather construction and cache reuse. No native framebuffer comparison.'};
+  scope:'Actual DrivingView settings, native RGB565 channel-count bytes before GPU filtering, packed HUD atlas reuse, sampler state, weather construction and cache reuse. No native framebuffer comparison.'};
 await mkdir('evidence/display',{recursive:true});
 try{
   const page=await browser.newPage({viewport:{width:800,height:600}});
@@ -49,15 +49,15 @@ try{
         }
       }
       const THREE=await import('three');
-      const font=[...v.hud.images.keys()][0];
+      const font=[...v.hud.textures.keys()][0];
       const fontRecord=v.hud.manifest.images[font];
       const fontTexture=await v.texture(fontRecord.file);
-      const fontImage=await v.textureImage(fontRecord.file);
+      const fontMap=v.hud.textures.get(font);
       const samplerFrames=[];
       for(let frame=1;frame<=3;frame++){
         v.onTick(.025,frame*25);v.hud.render();
         samplerFrames.push({frame,captured:v.hudSampler.frames,draw:{...v.hudSampler.current},
-          fontSmoothing:v.hud.context.imageSmoothingEnabled,
+          fontFilter:{min:fontMap.minFilter,mag:fontMap.magFilter},
           maps:[...v.hudMeshes.loadedTextures].map(map=>({min:map.minFilter,mag:map.magFilter}))});
         for(let refresh=0;refresh<3;refresh++)v.hud.render();
       }
@@ -73,9 +73,12 @@ try{
         expectedFilter:enabled?THREE.LinearFilter:THREE.NearestFilter,
         keyBeforeFiltering:map.userData.nativeColorKeyFilter===true,premultiplyAlpha:map.premultiplyAlpha,
         gamma:map.userData.nativeGamma??false,weather:!!v.simulation.weather,
-        fontUsesProcessedTexture:v.hud.images.get(font)===fontImage,
-        fontUsesExpandedImage:fontImage!==fontTexture.image&&fontImage.width===fontTexture.image.width&&fontImage.height===fontTexture.image.height,
-        fontSmoothing:v.hud.context.imageSmoothingEnabled,
+        fontUsesPackedPixels:fontMap.isDataTexture===true&&fontMap.image===fontTexture.image,
+        fontIndependentSampler:fontMap!==fontTexture,
+        fontFormat:fontMap.userData.nativeTextureFormat,
+        fontKeyBeforeFiltering:fontMap.userData.nativeColorKeyFilter===true,
+        fontGammaPreserved:fontMap.userData.nativeGamma===fontTexture.userData.nativeGamma,
+        fontFilter:{min:fontMap.minFilter,mag:fontMap.magFilter},
         hudMaps,samplerFrames,capturedFrames:v.hudSampler.frames,
         graphics:v.runtimeConfig['sndgfx.ini']['gfx options'],
         errors:v.errors};
@@ -85,13 +88,17 @@ try{
     assert.ok(result.opaque>0);assert.equal(result.gamma,!enabled);
     assert.equal(result.minFilter,result.expectedFilter);assert.equal(result.magFilter,result.expectedFilter);
     assert.equal(result.keyBeforeFiltering,true);assert.equal(result.premultiplyAlpha,false);assert.equal(result.weather,enabled);
-    assert.equal(result.fontUsesProcessedTexture,true);assert.equal(result.fontUsesExpandedImage,true);assert.equal(result.fontSmoothing,enabled);
+    assert.equal(result.fontUsesPackedPixels,true);assert.equal(result.fontIndependentSampler,true);
+    assert.equal(result.fontFormat,'RGB565');assert.equal(result.fontKeyBeforeFiltering,true);
+    assert.equal(result.fontGammaPreserved,true);
+    assert.equal(result.fontFilter.min,result.expectedFilter);assert.equal(result.fontFilter.mag,result.expectedFilter);
     assert.equal(result.capturedFrames,3);
     for(const frame of result.samplerFrames){
       const linear=enabled||frame.frame===1;
       assert.equal(frame.captured,frame.frame);assert.equal(frame.draw.min,linear?2:1);
-      assert.equal(frame.draw.mag,linear?2:1);assert.equal(frame.fontSmoothing,linear);
+      assert.equal(frame.draw.mag,linear?2:1);
       const filter=linear?1006:1003; // Three LinearFilter / NearestFilter.
+      assert.equal(frame.fontFilter.min,filter);assert.equal(frame.fontFilter.mag,filter);
       for(const map of frame.maps){assert.equal(map.min,filter);assert.equal(map.mag,filter);}
     }
     assert.ok(result.hudMaps.length>0);

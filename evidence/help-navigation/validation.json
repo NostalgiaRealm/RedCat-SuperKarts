@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-23",
+  "status": "passed",
+  "scope": "Source-only original-file Help navigation and Chromium integration. No races, full suite, desktop builds or publication. Original topic bodies and images unchanged. Native Windows window presentation and a live original Help process are not claimed.",
+  "checks": [
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_winhelp_navigation.py'",
+      "passed": 13
+    },
+    {
+      "command": "node --test tests/help-navigation.test.mjs tests/native-help-context.test.mjs",
+      "passed": 9
+    },
+    {
+      "command": "RCSK_URL=http://127.0.0.1:4184 node tests/help-navigation-browser.mjs",
+      "passedGroups": 10
+    },
+    {
+      "case": "Compared original topic text/title/ID/image records with HEAD",
+      "topics": 13,
+      "imagePlacements": 59,
+      "pixelExactImageRecords": 46
+    }
+  ],
+  "reports": [
+    {
+      "file": "docs/evidence/help-navigation-native.json",
+      "sha256": "723c27137c92a4810c88586a5ae3ad4db1782065a9ff640ddaea5c69b6410e84"
+    },
+    {
+      "file": "docs/evidence/help-context-native.json",
+      "sha256": "6eeaef5c08836e4cc25bc516f1b52b30e494d41c484bf375e61f1bcf1c86c2fc"
+    },
+    {
+      "file": "docs/evidence/help-validation.json",
+      "sha256": "e11933f0041c1e35541a4c42991c5211317f02902c708c535780bae5fd28bd3f"
+    },
+    {
+      "file": "evidence/help-navigation/browser.json",
+      "sha256": "b2d585773078ff52ca4aa4c3a4cc3d0878a5db2e6adb2e3dfa1274d4e12f6661"
+    }
+  ],
+  "sha256": {
+    "src/help-navigation.js": "872f61e9b651a2ff3a0269bd526b12635733d46c43040affe6f8da4cd86fbdd3",
+    "src/help-viewer.js": "3fb4c2078e9352e45f37939a0dbc2eb412a30fc3eb64af123c3d633c9b2bc2d5",
+    "src/native-help-context.js": "02d01927174f07bd30370bae7ffda3b3eae2d320f2176aeaeec4440da236cfbb",
+    "src/main.js": "61b8f27fddfdec849df9c539097b1aa921b42ebf2d08ed7588509b361e0cb0c4",
+    "src/style.css": "8ae7f6b59e982f2a39c327900a5b42db9e3c8a375073c392e2ef15f0da16dcb8",
+    "tools/prepare-help.py": "8cbb9aadae9094cf528d2760ed7735fb1020ff1d0076d926f666089be03a9a06",
+    "tools/lib/winhelp_navigation.py": "d9063f4e9b48e8137007b1fdc532a22ee7ca35301aec377aab3b8aa77ed64cde",
+    "tests/help-navigation.test.mjs": "bc1dd34b11eb9189dec3f46299e07f4e9659637474b32e01ecabe2ea8028eddc",
+    "tests/native-help-context.test.mjs": "fced74ee59a700058a8fa3bd07f84dfe1cfbdb1a8549f28a957b7dc1e5df302b",
+    "tests/test_winhelp_navigation.py": "ef6e861e22c95750995bf6527e83c3742e59ca63fccd21fb8bbbd87f59059754",
+    "tests/help-navigation-browser.mjs": "fd376e5c935c662397d144e6394db15e0a15531fa806b0438327ed89572bada7",
+    "public/assets/help/topics.json": "f6405fe347f59f24877df885acabbab2c1b6505af416ca05158d0d3ecc4d1d58"
+  }
+}

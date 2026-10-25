@@ -1,0 +1,775 @@
+{
+  "status": "passed",
+  "browser": "156.0.8078.47",
+  "scope": "Focused source-only mobile Chromium check. Real Quickrace menu launch and browser-dispatched multi-touch feed the running original motion simulation. Viewport, blur and visibility lifecycle checks are explicitly controlled. No full races, package builds or releases.",
+  "execution": "Seven input/gameplay checks passed before the Stoppen pointer and landscape HUD layout fixes. Only the four affected or remaining lifecycle/layout groups were then run. The input.js hash is identical across both segments. No all-track test or package build was run. A later race-time readability adjustment was checked by rerunning only the layout group via the direct driving route; final screenshots and glyph measurements come from that last segment. Final review then added an ownership callback to InputState.clear so DrivingView-owned suspension also releases pointer captures and pressed artwork. Only the new direct suspend/resume group12 was run against that final input source; earlier input/gameplay and layout evidence remains attributed to its own source snapshots.",
+  "touchProtocol": "Selective CDP touchEnd sends the ending contact; the independent blank-DOM probe in cdp-selective-release.json verified one pointerup and changedTouches[3] when only contact3 ended. The gameplay segment separately verified wheel and pedal remain held after releasing bonus. Empty touchCancel ends all contacts.",
+  "resolvedIssues": [
+    "Source and Electron protocols now serve the new SVG controls as image/svg+xml.",
+    "Stoppen activates from a second touch while the wheel remains held.",
+    "The large control band is excluded from landscape HUD scale, keeping standings above the bonus frame.",
+    "Landscape race-time text keeps its original size while the standings, bonus and minimap fit above the controls; actual rendered glyph heights are measured.",
+    "DrivingView calls InputState.clear directly; its owner callback now clears touch captures and visual state, ignores stale moves, and accepts fresh analog input after resume."
+  ],
+  "segments": [
+    {
+      "report": "browser-input-before-stop-fix.json",
+      "checks": 7,
+      "status": "first seven passed; subsequent Stoppen failure fixed and retested",
+      "sourceHashes": {
+        "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+        "src/input.js": "d6f9c233d38c81ae3240339339770f8352a937764c84aeb06346306abe0dc399",
+        "src/main.js": "01d3c1a2d85a45416d730abe74acbdc7a7208f64619fd6ecdf15e84d2823f218",
+        "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+        "tests/touch-controls-browser.mjs": "2bcb55d50e00476887f59cae47b7bb3c16ec41801785edd932d2fad740d8d94a"
+      }
+    },
+    {
+      "report": "browser-remaining.json",
+      "checks": 4,
+      "status": "passed",
+      "sourceHashes": {
+        "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+        "src/input.js": "d6f9c233d38c81ae3240339339770f8352a937764c84aeb06346306abe0dc399",
+        "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+        "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+        "tests/touch-controls-browser.mjs": "939ba50d4ad6c0582d6392692da52b6521fb9f5ed321b10014702e91ddf6c036"
+      }
+    },
+    {
+      "report": "browser-from-11.json",
+      "checks": 1,
+      "status": "passed",
+      "scope": "Layout-only source check via the existing direct driving route. Mobile viewport bounds and screenshots; no input gameplay groups, full races, builds or releases.",
+      "sourceHashes": {
+        "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+        "src/input.js": "d6f9c233d38c81ae3240339339770f8352a937764c84aeb06346306abe0dc399",
+        "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+        "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+        "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+        "src/hud-text-renderer.js": "b6cbba4095408f9ca0ee1877a95b44b585a98f76bcf69b84279e178ca052f9fe",
+        "tests/touch-controls-browser.mjs": "442c4b9efc44181ddbbc1ee0435cebb757e86cffd42231e009b34e9dd849b401"
+      }
+    },
+    {
+      "report": "browser-from-12.json",
+      "checks": 1,
+      "status": "passed",
+      "scope": "Direct DrivingView suspend/resume ownership regression on source in mobile Chromium. Browser-dispatched wheel and pedal contacts exercise the simulation-owned InputState.clear path. No previous gameplay/layout checks, screenshots, full races, builds or releases.",
+      "sourceHashes": {
+        "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+        "src/input.js": "d7d02908b86f2b059563081e4fdcc8a47bf4d028cbe4bbdfe20eed9c844d3713",
+        "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+        "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+        "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+        "src/hud-text-renderer.js": "b6cbba4095408f9ca0ee1877a95b44b585a98f76bcf69b84279e178ca052f9fe",
+        "tests/touch-controls-browser.mjs": "a9e7f9cb59f97ff9c1cf4a117dcb2765d4beae00c0f6b1da7fa73a599352e5fe"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "name": "Touch auto detects a mobile browser and loads all three control images",
+      "detail": [
+        {
+          "src": "/assets/touch/steering-wheel.svg",
+          "width": 256,
+          "height": 256
+        },
+        {
+          "src": "/assets/touch/brake-pedal.svg",
+          "width": 91,
+          "height": 129
+        },
+        {
+          "src": "/assets/touch/bonus.png",
+          "width": 1254,
+          "height": 1254
+        }
+      ]
+    },
+    {
+      "name": "The lower wheel feeds the original brake/reverse action and moves the kart backwards",
+      "detail": {
+        "reverseSpeed": -0.8231499195098877
+      }
+    },
+    {
+      "name": "The upper wheel accelerates and a held drag gives proportional left and right steering",
+      "detail": {
+        "forwardSpeed": 0.36455023288726807,
+        "left": -0.27777772837559944,
+        "right": 0.27777772837559944,
+        "nativeLeft": {
+          "throttle": 100,
+          "brake": 0,
+          "steering": -28,
+          "handbrake": false
+        }
+      }
+    },
+    {
+      "name": "The separate brake pedal enters the same native handbrake path as Alt",
+      "detail": {
+        "keyboard": {
+          "throttle": 0,
+          "brake": 0,
+          "steer": 0,
+          "handbrake": 1,
+          "bonus": 0
+        },
+        "pedal": {
+          "throttle": 0,
+          "brake": 0,
+          "steer": 0,
+          "handbrake": 1,
+          "bonus": 0
+        }
+      }
+    },
+    {
+      "name": "Three simultaneous contacts combine wheel, brake pedal and power-up without releasing each other",
+      "detail": {
+        "throttle": 1,
+        "brake": 0,
+        "steer": -0.4166666419655775,
+        "handbrake": 1,
+        "bonus": 1,
+        "analog": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": -0.4166666419655775,
+          "handbrake": 1,
+          "bonus": 1
+        }
+      }
+    },
+    {
+      "name": "Wheel capture continues outside its hitbox and release/cancel cannot leave a held input"
+    },
+    {
+      "name": "Resizing a held wheel clears it until a fresh touch begins"
+    },
+    {
+      "name": "The original Stoppen requester clears held controls and Nee resumes with neutral input"
+    },
+    {
+      "name": "Focus loss clears contacts and artwork, ignores stale movement, and resumes on a fresh world tap"
+    },
+    {
+      "name": "A controlled hidden-document lifecycle clears all touch inputs and permits a fresh gesture after resuming"
+    },
+    {
+      "name": "Portrait and landscape controls have separate large targets and leave the original bonus/minimap above them",
+      "detail": [
+        {
+          "viewport": [
+            320,
+            740
+          ],
+          "controls": [
+            {
+              "id": "touch-wheel",
+              "x": 16,
+              "y": 576,
+              "width": 148,
+              "height": 148
+            },
+            {
+              "id": "touch-brake",
+              "x": 232,
+              "y": 634,
+              "width": 72,
+              "height": 90
+            },
+            {
+              "id": "touch-bonus",
+              "x": 232,
+              "y": 534,
+              "width": 72,
+              "height": 90
+            },
+            {
+              "id": "touch-stop",
+              "x": 100.5,
+              "y": 480,
+              "width": 119,
+              "height": 43
+            }
+          ],
+          "hud": [
+            {
+              "id": "bonusframe",
+              "left": 24.119466520136434,
+              "right": 80.54929874073805,
+              "top": 393.11753033392984,
+              "bottom": 449.5473605579966
+            },
+            {
+              "id": "track",
+              "left": 217.315869932407,
+              "right": 280.01505124665204,
+              "top": 389.9817741896752,
+              "bottom": 452.68096111949666
+            },
+            {
+              "id": "frameredcat",
+              "left": 20.825321115589627,
+              "right": 52.17532303920029,
+              "top": 142.29802351242031,
+              "bottom": 173.64802659389682
+            },
+            {
+              "id": "framewhizzkitty",
+              "left": 23.96083234912699,
+              "right": 49.040762408921275,
+              "top": 108.95324416557739,
+              "bottom": 134.03316987172872
+            },
+            {
+              "id": "framebrutus",
+              "left": 23.96083234912699,
+              "right": 49.040762408921275,
+              "top": 11.673542730584803,
+              "bottom": 36.753467958422696
+            },
+            {
+              "id": "framemax",
+              "left": 23.96083234912699,
+              "right": 49.040762408921275,
+              "top": 44.10011289554151,
+              "bottom": 69.18003828281724
+            },
+            {
+              "id": "framecou",
+              "left": 23.96083234912699,
+              "right": 49.040762408921275,
+              "top": 76.52667098066149,
+              "bottom": 101.60659652737498
+            },
+            {
+              "id": "portrredcat",
+              "left": 20.825321116383176,
+              "right": 52.17532184263018,
+              "top": 145.07606809141672,
+              "bottom": 173.64802539811663
+            },
+            {
+              "id": "portrwhizzkitty",
+              "left": 23.960833129558065,
+              "right": 49.040760776601324,
+              "top": 108.95324559924275,
+              "bottom": 134.03316867239113
+            },
+            {
+              "id": "portrbrutus",
+              "left": 23.960833129558065,
+              "right": 49.040760776601324,
+              "top": 12.883572266649718,
+              "bottom": 36.75346585017743
+            },
+            {
+              "id": "portrmax",
+              "left": 23.960833129558065,
+              "right": 49.040760776601324,
+              "top": 45.31014212863718,
+              "bottom": 69.18003647754122
+            },
+            {
+              "id": "portrcou",
+              "left": 23.966408902557585,
+              "right": 49.04641380958873,
+              "top": 71.51327177048915,
+              "bottom": 101.60927328372264
+            }
+          ],
+          "scale": 0.6333333333333333,
+          "timeScale": 0.6333333333333333,
+          "timeGlyphHeight": 15.675003051757812,
+          "digitHeights": [
+            11.913002014160156,
+            11.913002014160156,
+            9.404998779296875,
+            11.913002014160156,
+            11.913002014160156,
+            9.404998779296875,
+            11.913002014160156,
+            11.913002014160156
+          ],
+          "nativeTimeGlyphHeight": 24.75000250932281,
+          "controlTop": 472,
+          "overflow": false
+        },
+        {
+          "viewport": [
+            390,
+            844
+          ],
+          "controls": [
+            {
+              "id": "touch-wheel",
+              "x": 16,
+              "y": 652.5,
+              "width": 175.5,
+              "height": 175.5
+            },
+            {
+              "id": "touch-brake",
+              "x": 296,
+              "y": 732,
+              "width": 78,
+              "height": 96
+            },
+            {
+              "id": "touch-bonus",
+              "x": 296,
+              "y": 626,
+              "width": 78,
+              "height": 96
+            },
+            {
+              "id": "touch-stop",
+              "x": 135.5,
+              "y": 572,
+              "width": 119,
+              "height": 43
+            }
+          ],
+          "hud": [
+            {
+              "id": "bonusframe",
+              "left": 27.831185784641534,
+              "right": 97.25472937182906,
+              "top": 466.9538037660848,
+              "bottom": 536.3773448970089
+            },
+            {
+              "id": "track",
+              "left": 265.513603140527,
+              "right": 342.6500959416048,
+              "top": 463.09599850966623,
+              "bottom": 540.2324982193808
+            },
+            {
+              "id": "frameredcat",
+              "left": 23.778520056679348,
+              "right": 62.347272423226684,
+              "top": 173.22191050541184,
+              "bottom": 211.79066429643882
+            },
+            {
+              "id": "framewhizzkitty",
+              "left": 27.636024008465444,
+              "right": 58.4909379636071,
+              "top": 132.19905696686163,
+              "bottom": 163.05396556587678
+            },
+            {
+              "id": "framebrutus",
+              "left": 27.636024008465444,
+              "right": 58.4909379636071,
+              "top": 12.519424280390513,
+              "bottom": 43.374332290954236
+            },
+            {
+              "id": "framemax",
+              "left": 27.636024008465444,
+              "right": 58.4909379636071,
+              "top": 52.412638891225406,
+              "bottom": 83.26754709793961
+            },
+            {
+              "id": "framecou",
+              "left": 27.636024008465444,
+              "right": 58.4909379636071,
+              "top": 92.30583864068223,
+              "bottom": 123.16074704354685
+            },
+            {
+              "id": "portrredcat",
+              "left": 23.77852005765562,
+              "right": 62.347270951130554,
+              "top": 176.6396364019403,
+              "bottom": 211.79066282531454
+            },
+            {
+              "id": "portrwhizzkitty",
+              "left": 27.636024968601042,
+              "right": 58.490935955424,
+              "top": 132.19905873064732,
+              "bottom": 163.05396409037593
+            },
+            {
+              "id": "portrbrutus",
+              "left": 27.636024968601042,
+              "right": 58.490935955424,
+              "top": 14.00807903857564,
+              "bottom": 43.37432969725776
+            },
+            {
+              "id": "portrmax",
+              "left": 27.636024968601042,
+              "right": 58.490935955424,
+              "top": 53.901293276678636,
+              "bottom": 83.26754487697505
+            },
+            {
+              "id": "portrcou",
+              "left": 27.642884636699137,
+              "right": 58.49789067363877,
+              "top": 86.13803829658863,
+              "bottom": 123.16404015826404
+            }
+          ],
+          "scale": 0.7791666666666667,
+          "timeScale": 0.7791666666666667,
+          "timeGlyphHeight": 19.284378051757812,
+          "digitHeights": [
+            14.6561279296875,
+            14.6561279296875,
+            11.570625305175781,
+            14.6561279296875,
+            14.6561279296875,
+            11.570625305175781,
+            14.6561279296875,
+            14.6561279296875
+          ],
+          "nativeTimeGlyphHeight": 24.75000250932281,
+          "controlTop": 564,
+          "overflow": false
+        },
+        {
+          "viewport": [
+            480,
+            320
+          ],
+          "controls": [
+            {
+              "id": "touch-wheel",
+              "x": 20,
+              "y": 164,
+              "width": 140,
+              "height": 140
+            },
+            {
+              "id": "touch-brake",
+              "x": 320,
+              "y": 222,
+              "width": 64,
+              "height": 82
+            },
+            {
+              "id": "touch-bonus",
+              "x": 396,
+              "y": 222,
+              "width": 64,
+              "height": 82
+            },
+            {
+              "id": "touch-stop",
+              "x": 180.5,
+              "y": 261,
+              "width": 119,
+              "height": 43
+            }
+          ],
+          "hud": [
+            {
+              "id": "bonusframe",
+              "left": 8.059733260068217,
+              "right": 36.274649370369026,
+              "top": 112.55876516696493,
+              "bottom": 140.7736802789983
+            },
+            {
+              "id": "track",
+              "left": 432.6579349662035,
+              "right": 464.00752562332605,
+              "top": 110.9908870948376,
+              "bottom": 142.34048055974833
+            },
+            {
+              "id": "frameredcat",
+              "left": 6.412660557794814,
+              "right": 22.087661519600147,
+              "top": 67.14901175621016,
+              "bottom": 82.82401329694841
+            },
+            {
+              "id": "framewhizzkitty",
+              "left": 7.980416174563495,
+              "right": 20.520381204460637,
+              "top": 50.476622082788694,
+              "bottom": 63.01658493586436
+            },
+            {
+              "id": "framebrutus",
+              "left": 7.980416174563495,
+              "right": 20.520381204460637,
+              "top": 1.836771365292401,
+              "bottom": 14.376733979211348
+            },
+            {
+              "id": "framemax",
+              "left": 7.980416174563495,
+              "right": 20.520381204460637,
+              "top": 18.050056447770753,
+              "bottom": 30.590019141408614
+            },
+            {
+              "id": "framecou",
+              "left": 7.980416174563495,
+              "right": 20.520381204460637,
+              "top": 34.263335490330746,
+              "bottom": 46.80329826368749
+            },
+            {
+              "id": "portrredcat",
+              "left": 6.412660558191588,
+              "right": 22.08766092131509,
+              "top": 68.53803404570836,
+              "bottom": 82.82401269905831
+            },
+            {
+              "id": "portrwhizzkitty",
+              "left": 7.980416564779032,
+              "right": 20.520380388300662,
+              "top": 50.476622799621374,
+              "bottom": 63.016584336195564
+            },
+            {
+              "id": "portrbrutus",
+              "left": 7.980416564779032,
+              "right": 20.520380388300662,
+              "top": 2.4417861333248596,
+              "bottom": 14.376732925088714
+            },
+            {
+              "id": "portrmax",
+              "left": 7.980416564779032,
+              "right": 20.520380388300662,
+              "top": 18.65507106431859,
+              "bottom": 30.590018238770607
+            },
+            {
+              "id": "portrcou",
+              "left": 7.983204451278793,
+              "right": 20.523206904794364,
+              "top": 31.756635885244577,
+              "bottom": 46.80463664186132
+            }
+          ],
+          "scale": 0.31666666666666665,
+          "timeScale": 0.6666666666666666,
+          "timeGlyphHeight": 16.500001907348633,
+          "digitHeights": [
+            12.540002822875977,
+            12.540002822875977,
+            9.900001525878906,
+            12.540002822875977,
+            12.540002822875977,
+            9.900001525878906,
+            12.540002822875977,
+            12.540002822875977
+          ],
+          "nativeTimeGlyphHeight": 24.75000250932281,
+          "controlTop": 152,
+          "overflow": false
+        },
+        {
+          "viewport": [
+            844,
+            390
+          ],
+          "controls": [
+            {
+              "id": "touch-wheel",
+              "x": 20,
+              "y": 202.40625,
+              "width": 171.59375,
+              "height": 171.59375
+            },
+            {
+              "id": "touch-brake",
+              "x": 626.625,
+              "y": 266.3125,
+              "width": 89.6875,
+              "height": 107.6875
+            },
+            {
+              "id": "touch-bonus",
+              "x": 734.3125,
+              "y": 266.3125,
+              "width": 89.6875,
+              "height": 107.6875
+            },
+            {
+              "id": "touch-stop",
+              "x": 362.5,
+              "y": 331,
+              "width": 119,
+              "height": 43
+            }
+          ],
+          "hud": [
+            {
+              "id": "bonusframe",
+              "left": 10.096207802959631,
+              "right": 45.440262872873866,
+              "top": 140.99929197416066,
+              "bottom": 176.34334579357252
+            },
+            {
+              "id": "track",
+              "left": 784.6958876951229,
+              "right": 823.9666639849764,
+              "top": 139.0352539204041,
+              "bottom": 178.30603372749724
+            },
+            {
+              "id": "frameredcat",
+              "left": 8.032964798240913,
+              "right": 27.668610534318194,
+              "top": 84.11573368227559,
+              "bottom": 103.75138014356632
+            },
+            {
+              "id": "framewhizzkitty",
+              "left": 9.99684945551303,
+              "right": 25.70532127441996,
+              "top": 63.23068633849332,
+              "bottom": 78.93915543055542
+            },
+            {
+              "id": "framebrutus",
+              "left": 9.99684945551303,
+              "right": 25.70532127441996,
+              "top": 2.3008733406099093,
+              "bottom": 18.009342133086914
+            },
+            {
+              "id": "framemax",
+              "left": 9.99684945551303,
+              "right": 25.70532127441996,
+              "top": 22.61081289808125,
+              "bottom": 38.31928179041996
+            },
+            {
+              "id": "framecou",
+              "left": 9.99684945551303,
+              "right": 25.70532127441996,
+              "top": 42.92074488951177,
+              "bottom": 58.62921388171215
+            },
+            {
+              "id": "portrredcat",
+              "left": 8.032964798737941,
+              "right": 27.668609784862838,
+              "top": 85.85572398036616,
+              "bottom": 103.75137939460573
+            },
+            {
+              "id": "portrwhizzkitty",
+              "left": 9.99684994432538,
+              "right": 25.70532025203864,
+              "top": 63.230687236450045,
+              "bottom": 78.93915467936668
+            },
+            {
+              "id": "portrbrutus",
+              "left": 9.99684994432538,
+              "right": 25.70532025203864,
+              "top": 3.058758822028859,
+              "bottom": 18.00934081261627
+            },
+            {
+              "id": "portrmax",
+              "left": 9.99684994432538,
+              "right": 25.70532025203864,
+              "top": 23.36869818973955,
+              "bottom": 38.319280659709975
+            },
+            {
+              "id": "portrcou",
+              "left": 10.000342253626991,
+              "right": 25.70886095207896,
+              "top": 39.78067073371612,
+              "bottom": 58.63089043150926
+            }
+          ],
+          "scale": 0.3966796875,
+          "timeScale": 0.8125,
+          "timeGlyphHeight": 20.109376907348633,
+          "digitHeights": [
+            15.283126831054688,
+            15.283126831054688,
+            12.065628051757812,
+            15.283126831054688,
+            15.283126831054688,
+            12.065628051757812,
+            15.283126831054688,
+            15.283126831054688
+          ],
+          "nativeTimeGlyphHeight": 24.75000250932281,
+          "controlTop": 190.40625,
+          "overflow": false
+        }
+      ]
+    },
+    {
+      "name": "Direct DrivingView suspension clears captured touches and artwork; stale moves stay neutral and a fresh resumed wheel stays analog",
+      "detail": {
+        "held": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": -0.4166666419655775,
+          "handbrake": 1,
+          "bonus": 0,
+          "analog": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": -0.4166666419655775,
+            "handbrake": 1,
+            "bonus": 0
+          }
+        },
+        "resumed": {
+          "throttle": 1,
+          "brake": 0,
+          "steer": 0.27777772837559944,
+          "handbrake": 0,
+          "bonus": 0,
+          "analog": {
+            "throttle": 1,
+            "brake": 0,
+            "steer": 0.27777772837559944,
+            "handbrake": 0,
+            "bonus": 0
+          }
+        }
+      }
+    }
+  ],
+  "errors": [],
+  "sourceHashes": {
+    "index.html": "334fc12dfa4816cad746dc3670c53379609ea9e7207e6c91b08ad1ed4b4f5443",
+    "src/input.js": "d7d02908b86f2b059563081e4fdcc8a47bf4d028cbe4bbdfe20eed9c844d3713",
+    "src/main.js": "6f7fc6837dd8db159f1294d9e0e6ec4d0367d30207d13cf174a0a3ec1502e7fc",
+    "src/style.css": "bec20236efb19e82fa3ac0e9c99820cd72d95ffd5e57c0e067abf659023fc8e4",
+    "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+    "tools/serve.mjs": "dea3e408ff80af56ed708d7bd6440c007a2d60025a99cf8b8490ceabe89bd116",
+    "electron/game-protocol.mjs": "baa89adcdcac0d60f32c858d3eb210106d95acc6d58571aa9d2bd62b652efc88",
+    "public/assets/touch/steering-wheel.svg": "574cda7834dd8d4a76b8761df3f0552c8a61e9121b0b050dba577981ea01ab89",
+    "public/assets/touch/brake-pedal.svg": "16e3458f35b57134aa71c2d4e9a355e52cca8e40166b49a4b6946c5fca897b87",
+    "public/assets/touch/bonus.png": "2573c6f0f6a00c295fd08f725877015bdd4c1cdb7aa1150cdf528d33b7ef8697",
+    "tests/touch-controls-browser.mjs": "b5da6d1723782c2b602abab9e99d2f706d6c35cc02fe7c410a1be56518a55850",
+    "tests/driving-browser.mjs": "c2f359c5c68b448bfeb181951297f982c69491cab5c921649b279f66b1caf03f",
+    "src/hud-text-renderer.js": "b6cbba4095408f9ca0ee1877a95b44b585a98f76bcf69b84279e178ca052f9fe"
+  },
+  "screenshots": [
+    "portrait-small.png",
+    "portrait.png",
+    "landscape-small.png",
+    "landscape.png"
+  ]
+}

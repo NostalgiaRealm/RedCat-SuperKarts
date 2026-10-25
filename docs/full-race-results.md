@@ -1,9 +1,15 @@
 # Full-race results
 
-71 of 72 combinations have a verified five-lap finish.
-40 of those runs also meet the original qualification
+At the retained **2026-10-20 source checkpoint**, 71 of 72 combinations had a
+verified five-lap finish. 40 of those runs also met the original qualification
 requirement. A completed race can be lost; opponents and qualification rules
 remain unchanged. The remaining check is France, hard difficulty, timed mode.
+
+These are historical results from fixed 25 ms simulation updates. They do not
+validate the later [variable update timing](research-variable-update-timing.md)
+or [player stuck recovery](player-stuck-recovery.md) changes. Those changes
+have focused checks, but the complete race matrix has not been rerun on the
+current source.
 
 The [focused France run](../evidence/full-race-matrix/timed-france-whole-race-projected-seam.json) completed 3 laps
 and 9 checkpoints, then expired at 2:03.500
@@ -39,29 +45,33 @@ distinct stars; every accepted timed race finished before its original deadline.
 | Italy | Medium | [8:08.875 · 1st ✓](../evidence/full-race-matrix/normal-d1-constructor-refresh.json) | [2:57.775 · 1st ✓](../evidence/full-race-matrix/timed-all-d1-post-init.json) | [10:04.600 · 1st ✓](../evidence/full-race-matrix/stars-upgrade-reset-d1.json) | [4:49.000 · 1st ✓](../evidence/full-race-matrix/duel-d1-post-init.json) |
 | Italy | Hard | [8:12.900 · 5th](../evidence/full-race-matrix/normal-d2-constructor-refresh.json) | [2:50.675 · 1st ✓](../evidence/full-race-matrix/timed-italy-predictive-refine-5.json) | [10:27.700 · 4th](../evidence/full-race-matrix/stars-upgrade-reset-d2.json) | [4:46.750 · 2nd](../evidence/full-race-matrix/duel-d2-post-init.json) |
 
-## What changed
+## Changes at that checkpoint
 
 The comparison with original instructions restored mirrored presentation and
 steering for England, France and Italy, and the original constructor reset of
 player upgrade switches before physics, opponent and timer initialization.
 
-Two new safeguards address reproduced failures that can stop a race:
-returning opponents wait if their original return position overlaps the
+Two safeguards added at that checkpoint address reproduced failures that can
+stop a race: returning opponents wait if their original return position overlaps the
 player, and an opponent velocity component is reset only if original
 preparation changes it from finite to nonfinite. Original finite physics,
 opponent behavior, track geometry and checkpoint time awards are retained.
-The existing player-return safeguard remains: after two seconds blocked,
-it can select a safe original waypoint up to twelve sectors behind, and
-checks overlap again as the kart returns to full size.
+The player-return safeguard at that checkpoint could select a safe original
+waypoint up to twelve sectors behind after two seconds blocked, and checked
+overlap again as the kart returned to full size.
+
+The later [player stuck recovery](player-stuck-recovery.md) adds attempted-driving
+detection, previously visited safe positions and a broader bounded return
+search; the older twelve-sector description is not the current recovery policy.
 
 ## Validation and scope
 
-The current runtime passes 492 tests and 11 focused browser checks.
+That historical runtime passed 492 tests and 11 focused browser checks.
 Original files were compared across all six tracks and all three difficulty
 tables, alongside bounded execution of original game instructions.
 
-The races use ordinary controls at the browser's 25 ms simulation interval.
-Test-driver forecasts work on private copies and never write live race state.
+The races use ordinary controls at the browser's then-fixed 25 ms simulation
+interval. Test-driver forecasts work on private copies and never write live race state.
 Most matrix runs begin from the active starting grid; selected timed cases
 also include the authored opening camera and countdown. These results cover
 five-lap driving in the composed port, not complete startup coverage for every
@@ -71,6 +81,9 @@ reliably on this host, so no original Windows whole-race visual comparison is
 claimed.
 
 The [machine-checked matrix](../evidence/full-race-matrix/race-matrix.json)
-is authoritative. [Research notes](research-full-race-matrix.md) explain the
-original evidence, necessary exceptions, controller corrections and retained
-failed attempts.
+is authoritative for its recorded source, test and asset hashes. It is not a
+live verification of the current checkout.
+[Research notes](research-full-race-matrix.md) explain the original evidence,
+necessary exceptions, controller corrections and retained
+failed attempts. This documentation update does not claim new test runs,
+race completions or builds.
