@@ -53,6 +53,14 @@ it does not resolve the full-race, native-reference or physical-device gaps belo
 The subsequent [folder separation](runtime-layout.md) makes every normal launch
 use generated runtime files, with editable modules kept in `source/`.
 
+## Version 1.0.0 publication — 26 October 2026
+
+Version 1.0.0 publishes the accumulated source changes and new desktop builds
+on GitHub and GitLab, including the complete `original-source/` folder and
+source archives. At the user's request, no tests or build checks are run for
+this release. The earlier focused records remain historical; publication does
+not resolve the validation gaps below. See [release notes](releases/1.0.0.md).
+
 ## Remaining validation
 
 The [26 October original-code comparison](full-source-audit.md) adds the complete
@@ -71,9 +79,9 @@ instruction/browser checks do not replace the broader validation below.
 
 ## Optional or intentionally deferred
 
-- Publisher signing and notarization remain separate work. Version 0.9.0 now
-  includes desktop downloads; the source-only restriction was superseded by
-  the explicit request to build and publish this version.
+- Publisher signing and notarization remain separate work. Desktop downloads
+  are included in the 1.0.0 release; the earlier source-only restriction was
+  superseded by explicit build-and-publication requests.
 - Original Help navigation is implemented and the obsolete browse-chain note
   is resolved: the source has no authored sequence or popup links. Native
   Windows window placement and non-scrolling header rendering remain browser

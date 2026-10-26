@@ -70,7 +70,9 @@ checked against the source and updated where needed. Local links, anchors and
 npm script names receive a separate consistency check.
 The audit covers 76 Markdown files, 482 local links/anchors and 80 npm-script
 references, with no remaining errors. The [validation guide](validation.md#runtime-folder-separation--26-october-2026)
-records the focused runtime and save-compatibility checks.
+records the focused runtime and save-compatibility checks. This is the
+pre-release layout checkpoint; the later 1.0.0 release notes and publication
+policy are outside that count. No documentation checks are rerun for 1.0.0.
 
 Historical validation counts, release details, frozen hashes and original
 analysis records retain their checkpoint scope. Old evidence may name an

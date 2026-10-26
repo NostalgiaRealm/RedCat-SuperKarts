@@ -33,10 +33,16 @@ dependency; desktop game payloads do not need to contain it.
   Apple Silicon, with architecture identified in each filename.
 - The version's changelog, build metadata and downloadable-file checksums.
 
-After committing the complete source, `npm run release:source` creates both
-source archives under `release/`. It does not run tests or inspect archive
-contents. Freeze source and version before producing release artifacts; do not
-move an already published version tag to accommodate later changes.
+After committing the complete source, create both 1.0.0 source archives:
+
+```sh
+npm run release:source -- --output release/1.0.0
+```
+
+Use the matching directory for a later version. The helper does not run tests
+or inspect archive contents. Freeze source and version before producing release
+artifacts; do not move an already published version tag to accommodate later
+changes.
 
 Describe the checks actually performed, including any explicit exclusions.
 Successful compilation, packaging, publication and checksum generation are
