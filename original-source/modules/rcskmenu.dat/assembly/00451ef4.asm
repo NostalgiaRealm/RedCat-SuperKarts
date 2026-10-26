@@ -1,0 +1,3 @@
+; 00451ef4 FUN_00451ef4
+00451ef4	8b808c000000	MOV EAX,dword ptr [EAX + 0x8c]
+00451efa	c3	RET

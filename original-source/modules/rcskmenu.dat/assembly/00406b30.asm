@@ -1,0 +1,2 @@
+; 00406b30 USER32.DLL::SetWindowsHookExA
+00406b30	ff25c0f44700	JMP dword ptr [0x0047f4c0]

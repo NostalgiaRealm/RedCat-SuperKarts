@@ -1,0 +1,2 @@
+; 00406ae8 USER32.DLL::SetRect
+00406ae8	ff25e4f44700	JMP dword ptr [0x0047f4e4]

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeAIPlayerBehind, nativeAIStartChase, updateNativeAITransition, NATIVE_AI_TRANSITIONS } from '../src/simulation/native-ai.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
+import { nativeAIPlayerBehind, nativeAIStartChase, updateNativeAITransition, NATIVE_AI_TRANSITIONS } from '../source/simulation/native-ai.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/ai-state-fixtures.json', import.meta.url)));
 for (const precision of [24, 53]) {
   test(`Original AI player-behind guard ${precision}-bit`, () => {

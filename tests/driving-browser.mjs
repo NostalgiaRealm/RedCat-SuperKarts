@@ -118,7 +118,7 @@ try{
   await page.evaluate(()=>window.testPad.buttons[9]={value:0,pressed:false});
   report.checks.push('Keyboard Enter and controller Start also resume a focus pause');
   await page.evaluate(async()=>{
-    const {writeSettings}=await import('/src/settings.js');
+    const {writeSettings}=await import('/source/settings.js');
     writeSettings({...window.rcsk.state.settings,touch:'on'});
   });
   await page.setViewportSize({width:390,height:844});await page.reload();

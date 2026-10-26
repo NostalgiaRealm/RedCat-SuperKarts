@@ -1,0 +1,2 @@
+; 004066e0 USER32.DLL::CallNextHookEx
+004066e0	ff25e0f64700	JMP dword ptr [0x0047f6e0]

@@ -1,0 +1,2 @@
+; 00406298 KERNEL32.DLL::EnumCalendarInfoA
+00406298	ff253cf34700	JMP dword ptr [0x0047f33c]

@@ -1,0 +1,26 @@
+; 0041aca8 FUN_0041aca8
+0041aca8	55	PUSH EBP
+0041aca9	8bec	MOV EBP,ESP
+0041acab	83c4f8	ADD ESP,-0x8
+0041acae	53	PUSH EBX
+0041acaf	8955fc	MOV dword ptr [EBP + -0x4],EDX
+0041acb2	8945f8	MOV dword ptr [EBP + -0x8],EAX
+0041acb5	8b45f8	MOV EAX,dword ptr [EBP + -0x8]
+0041acb8	50	PUSH EAX
+0041acb9	68b8aa4100	PUSH 0x41aab8
+0041acbe	8b45f8	MOV EAX,dword ptr [EBP + -0x8]
+0041acc1	50	PUSH EAX
+0041acc2	68d0ab4100	PUSH 0x41abd0
+0041acc7	55	PUSH EBP
+0041acc8	e85fffffff	CALL 0x0041ac2c
+0041accd	59	POP ECX
+0041acce	8bc8	MOV ECX,EAX
+0041acd0	baecac4100	MOV EDX,0x41acec
+0041acd5	8b45fc	MOV EAX,dword ptr [EBP + -0x4]
+0041acd8	8b18	MOV EBX,dword ptr [EAX]
+0041acda	ff5308	CALL dword ptr [EBX + 0x8]
+0041acdd	5b	POP EBX
+0041acde	59	POP ECX
+0041acdf	59	POP ECX
+0041ace0	5d	POP EBP
+0041ace1	c3	RET

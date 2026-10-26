@@ -1,0 +1,2 @@
+; 00415974 COMCTL32.DLL::ImageList_SetBkColor
+00415974	ff2558f74700	JMP dword ptr [0x0047f758]

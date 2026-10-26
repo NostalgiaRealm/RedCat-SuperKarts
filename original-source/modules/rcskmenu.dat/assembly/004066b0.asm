@@ -1,0 +1,2 @@
+; 004066b0 GDI32.DLL::StretchDIBits
+004066b0	ff2568f34700	JMP dword ptr [0x0047f368]

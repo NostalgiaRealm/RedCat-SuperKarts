@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PlayerStuckRecovery,PLAYER_STUCK_SECONDS} from '../src/simulation/player-stuck-recovery.js';
+import {PlayerStuckRecovery,PLAYER_STUCK_SECONDS} from '../source/simulation/player-stuck-recovery.js';
 
 const body=()=>({position:[0,0,0],yaw:0,sector:2,waypoint:8,forwardSpeed:0});
 const race=()=>({distance:2,lapCount:0,finishArmed:false});

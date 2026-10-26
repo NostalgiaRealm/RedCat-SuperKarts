@@ -1,0 +1,5 @@
+; 00479074 TfrmAdventBrief_FormShow
+00479074	8b80e8020000	MOV EAX,dword ptr [EAX + 0x2e8]
+0047907a	8b10	MOV EDX,dword ptr [EAX]
+0047907c	ff92b0000000	CALL dword ptr [EDX + 0xb0]
+00479082	c3	RET

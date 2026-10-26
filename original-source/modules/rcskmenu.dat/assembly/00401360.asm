@@ -1,0 +1,2 @@
+; 00401360 OLEAUT32.DLL::SysStringLen
+00401360	ff250cf24700	JMP dword ptr [0x0047f20c]

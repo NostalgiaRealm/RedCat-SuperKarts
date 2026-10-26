@@ -1,0 +1,2 @@
+; 00406718 USER32.DLL::CreateMenu
+00406718	ff25c8f64700	JMP dword ptr [0x0047f6c8]

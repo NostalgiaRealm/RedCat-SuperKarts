@@ -1,0 +1,2 @@
+; 00406648 GDI32.DLL::SetBkColor
+00406648	ff259cf34700	JMP dword ptr [0x0047f39c]

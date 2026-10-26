@@ -1,0 +1,4 @@
+; 00453e28 FUN_00453e28
+00453e28	8b10	MOV EDX,dword ptr [EAX]
+00453e2a	ff5274	CALL dword ptr [EDX + 0x74]
+00453e2d	c3	RET

@@ -1,0 +1,8 @@
+; 004cda30 Unwind@004cda30
+004cda30	8b4504	MOV EAX,dword ptr [EBP + 0x4]
+004cda33	50	PUSH EAX
+004cda34	8b4dd0	MOV ECX,dword ptr [EBP + -0x30]
+004cda37	51	PUSH ECX
+004cda38	e863fcfdff	CALL 0x004ad6a0
+004cda3d	83c408	ADD ESP,0x8
+004cda40	c3	RET

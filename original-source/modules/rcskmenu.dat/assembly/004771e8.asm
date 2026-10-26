@@ -1,0 +1,4 @@
+; 004771e8 TfrmHighscore_btnOkClick
+004771e8	c680d402000001	MOV byte ptr [EAX + 0x2d4],0x1
+004771ef	e82479fbff	CALL 0x0042eb18
+004771f4	c3	RET

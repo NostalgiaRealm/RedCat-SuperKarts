@@ -1,0 +1,2 @@
+; 00401258 KERNEL32.DLL::RtlUnwind
+00401258	ff25b4f14700	JMP dword ptr [0x0047f1b4]

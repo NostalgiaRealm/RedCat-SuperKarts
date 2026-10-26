@@ -1,8 +1,8 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
-import {createNativeAdventureProfile,nativeAdventureConfiguration} from '../src/simulation/native-adventure.js';
-import {nativeAdventureBriefingSound,nativeCountryInfoSound} from '../src/menu-sound-events.js';
+import {createNativeAdventureProfile,nativeAdventureConfiguration} from '../source/simulation/native-adventure.js';
+import {nativeAdventureBriefingSound,nativeCountryInfoSound} from '../source/menu-sound-events.js';
 
 const origin=process.env.RCSK_URL||'http://127.0.0.1:4173';
 const directory='evidence/audio/menu-flow';

@@ -1,0 +1,2 @@
+; 00406620 GDI32.DLL::Rectangle
+00406620	ff25b0f34700	JMP dword ptr [0x0047f3b0]

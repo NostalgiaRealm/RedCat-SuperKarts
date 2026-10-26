@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeCrashAudio, NATIVE_CRASH_SOUNDS} from '../src/native-crash-audio.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {NativeCrashAudio, NATIVE_CRASH_SOUNDS} from '../source/native-crash-audio.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const fixtures = JSON.parse(fs.readFileSync(new URL('../evidence/native/crash-audio-fixtures.json', import.meta.url)));
 test('840 original crash callbacks preserve impact thresholds, timer wrap, suppression and shared RNG', () => {

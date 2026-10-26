@@ -1,0 +1,2 @@
+; 00406668 GDI32.DLL::SetEnhMetaFileBits
+00406668	ff258cf34700	JMP dword ptr [0x0047f38c]

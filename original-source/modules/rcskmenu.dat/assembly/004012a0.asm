@@ -1,0 +1,2 @@
+; 004012a0 KERNEL32.DLL::FindFirstFileA
+004012a0	ff2598f14700	JMP dword ptr [0x0047f198]

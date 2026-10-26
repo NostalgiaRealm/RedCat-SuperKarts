@@ -1,0 +1,24 @@
+; 00437c8c FUN_00437c8c
+00437c8c	55	PUSH EBP
+00437c8d	8bec	MOV EBP,ESP
+00437c8f	81c4acfeffff	ADD ESP,0xfffffeac
+00437c95	c785acfeffff54010000	MOV dword ptr [EBP + 0xfffffeac],0x154
+00437c9f	6a00	PUSH 0x0
+00437ca1	8d85acfeffff	LEA EAX,[EBP + 0xfffffeac]
+00437ca7	50	PUSH EAX
+00437ca8	6a00	PUSH 0x0
+00437caa	6a29	PUSH 0x29
+00437cac	e8afeefcff	CALL 0x00406b60
+00437cb1	85c0	TEST EAX,EAX
+00437cb3	741c	JZ 0x00437cd1
+00437cb5	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+00437cb8	8b40fc	MOV EAX,dword ptr [EAX + -0x4]
+00437cbb	8b9544ffffff	MOV EDX,dword ptr [EBP + 0xffffff44]
+00437cc1	8910	MOV dword ptr [EAX],EDX
+00437cc3	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+00437cc6	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+00437cc9	8b9548ffffff	MOV EDX,dword ptr [EBP + 0xffffff48]
+00437ccf	8910	MOV dword ptr [EAX],EDX
+00437cd1	8be5	MOV ESP,EBP
+00437cd3	5d	POP EBP
+00437cd4	c3	RET

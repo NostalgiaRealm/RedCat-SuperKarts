@@ -1,0 +1,2 @@
+; 004065c0 GDI32.DLL::GetTextMetricsA
+004065c0	ff25e0f34700	JMP dword ptr [0x0047f3e0]

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeQuitRequester} from '../src/native-quit-requester.js';
-import {createRaceQuitRequester} from '../src/race-requester.js';
+import {NativeQuitRequester} from '../source/native-quit-requester.js';
+import {createRaceQuitRequester} from '../source/race-requester.js';
 const fixture=JSON.parse(readFileSync(new URL('../evidence/native/quit-requester-fixtures.json',import.meta.url)));
 const keys=JSON.parse(readFileSync(new URL('../evidence/native/race-lifecycle-fixtures.json',import.meta.url))).quitKeys;
 

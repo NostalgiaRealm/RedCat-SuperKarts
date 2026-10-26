@@ -1,0 +1,7 @@
+; 0046b80c TfrmOptions_sldEffectVolumeChange
+0046b80c	8b90f8020000	MOV EDX,dword ptr [EAX + 0x2f8]
+0046b812	8b9204020000	MOV EDX,dword ptr [EDX + 0x204]
+0046b818	89906c030000	MOV dword ptr [EAX + 0x36c],EDX
+0046b81e	b012	MOV AL,0x12
+0046b820	e8fb0effff	CALL 0x0045c720
+0046b825	c3	RET

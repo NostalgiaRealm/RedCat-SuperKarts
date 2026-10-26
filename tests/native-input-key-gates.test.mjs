@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {InputState} from '../src/input.js';
-import {createNativeInputState,updateNativeInput,updateNativeAnalogInput} from '../src/simulation/native-input.js';
+import {InputState} from '../source/input.js';
+import {createNativeInputState,updateNativeInput,updateNativeAnalogInput} from '../source/simulation/native-input.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/gameplay/native-input-key-gates.json',import.meta.url)));
 const actions={18:'handbrake',32:'bonus',37:'left',38:'accelerate',39:'right',40:'brake'};
 

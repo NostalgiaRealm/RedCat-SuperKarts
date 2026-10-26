@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {NativeControlDraft,NATIVE_CONTROL_ACTIONS,NATIVE_DEFAULT_KEYS,nativeBindingImage,
-  browserBindingCode,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from '../src/native-control-settings.js';
+  browserBindingCode,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from '../source/native-control-settings.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/menu-settings-fixtures.json',import.meta.url)));
 const bindings=Object.fromEntries(NATIVE_CONTROL_ACTIONS.map((action,i)=>[action,browserBindingCode(NATIVE_DEFAULT_KEYS[i])]));
 test('90 original keyboard capture traces preserve clear, duplicate, rejection and Escape behavior',()=>{

@@ -1,0 +1,2 @@
+; 00406440 KERNEL32.DLL::SizeofResource
+00406440	ff2568f24700	JMP dword ptr [0x0047f268]

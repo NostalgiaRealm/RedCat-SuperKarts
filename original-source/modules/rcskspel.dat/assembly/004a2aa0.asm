@@ -1,0 +1,2 @@
+; 004a2aa0 thunk_FUN_004a2ab0
+004a2aa0	e90b000000	JMP 0x004a2ab0

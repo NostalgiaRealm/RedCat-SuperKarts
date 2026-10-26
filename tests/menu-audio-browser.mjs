@@ -1,8 +1,8 @@
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
-import {createNativeAdventureProfile,nativeAdventureConfiguration} from '../src/simulation/native-adventure.js';
-import {nativeCountryInfoSound} from '../src/menu-sound-events.js';
+import {createNativeAdventureProfile,nativeAdventureConfiguration} from '../source/simulation/native-adventure.js';
+import {nativeCountryInfoSound} from '../source/menu-sound-events.js';
 
 const origin=process.env.RCSK_URL||'http://127.0.0.1:4173';
 const config=JSON.parse(await readFile('public/assets/config.json'));

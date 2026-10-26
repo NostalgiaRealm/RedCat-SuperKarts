@@ -1,0 +1,2 @@
+; 00401230 KERNEL32.DLL::GetSystemTime
+00401230	ff25c8f14700	JMP dword ptr [0x0047f1c8]

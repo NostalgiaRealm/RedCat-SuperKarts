@@ -1,0 +1,2 @@
+; 00455910 WINMM.DLL::mciGetErrorStringA
+00455910	ff2580f74700	JMP dword ptr [0x0047f780]

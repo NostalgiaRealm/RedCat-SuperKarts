@@ -14,8 +14,8 @@ try {
   await page.waitForFunction(()=>rcsk.state.page==='driving',null,{timeout:60000});
   const result=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {applyNativeByteColorPipeline}=await import('/src/asset-materials.js');
-    const {MultisampleSceneRenderer}=await import('/src/multisample-renderer.js');
+    const {applyNativeByteColorPipeline}=await import('/source/asset-materials.js');
+    const {MultisampleSceneRenderer}=await import('/source/multisample-renderer.js');
     const view=rcsk.viewer;view.suspend();view.clock.pause();
     const renderer=view.renderer,gl=renderer.getContext(),frames=[],data=[];
     function read(){const width=renderer.domElement.width,height=renderer.domElement.height;

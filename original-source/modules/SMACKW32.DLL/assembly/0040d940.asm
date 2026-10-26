@@ -1,0 +1,2 @@
+; 0040d940 KERNEL32.DLL::GetCommandLineA
+0040d940	ff253c134100	JMP dword ptr [0x0041133c]

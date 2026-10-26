@@ -1,0 +1,2 @@
+; 00401320 ADVAPI32.DLL::RegCloseKey
+00401320	ff25f8f14700	JMP dword ptr [0x0047f1f8]

@@ -1,0 +1,9 @@
+; 00459ce0 FUN_00459ce0
+00459ce0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+00459ce4	8b08	MOV ECX,dword ptr [EAX]
+00459ce6	890db04a5400	MOV dword ptr [0x00544ab0],ECX
+00459cec	8b5004	MOV EDX,dword ptr [EAX + 0x4]
+00459cef	8915b44a5400	MOV dword ptr [0x00544ab4],EDX
+00459cf5	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+00459cf8	a3b84a5400	MOV [0x00544ab8],EAX
+00459cfd	c3	RET

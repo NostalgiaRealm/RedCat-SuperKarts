@@ -1,0 +1,2 @@
+; 00415954 COMCTL32.DLL::ImageList_Destroy
+00415954	ff2568f74700	JMP dword ptr [0x0047f768]

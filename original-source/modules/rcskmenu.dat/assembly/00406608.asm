@@ -1,0 +1,2 @@
+; 00406608 GDI32.DLL::Polyline
+00406608	ff25bcf34700	JMP dword ptr [0x0047f3bc]

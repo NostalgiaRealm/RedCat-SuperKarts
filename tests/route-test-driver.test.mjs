@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {StarApproachPlanner,preferredRoadNodes} from './helpers/star-approach-planner.mjs';
 import {RouteTestDriver} from './helpers/route-test-driver.mjs';
-import {NativeSceneryBodies} from '../src/simulation/native-scenery-contact.js';
-import {nativeRectangleSweep} from '../src/simulation/native-collision.js';
-import {nativeTrigTable} from '../src/simulation/native-integrator.js';
-import {createNativeInputState,nativeAnalogFromNormalized,updateNativeAnalogInput} from '../src/simulation/native-input.js';
+import {NativeSceneryBodies} from '../source/simulation/native-scenery-contact.js';
+import {nativeRectangleSweep} from '../source/simulation/native-collision.js';
+import {nativeTrigTable} from '../source/simulation/native-integrator.js';
+import {createNativeInputState,nativeAnalogFromNormalized,updateNativeAnalogInput} from '../source/simulation/native-input.js';
 
 const read=name=>JSON.parse(fs.readFileSync(new URL(`../public/assets/${name}`,import.meta.url)));
 const config=read('config.json'),manifest=read('manifest.json');

@@ -1,0 +1,16 @@
+; 004ba980 FUN_004ba980
+004ba980	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+004ba984	8d0449	LEA EAX,[ECX + ECX*0x2]
+004ba987	c1e003	SHL EAX,0x3
+004ba98a	2bc1	SUB EAX,ECX
+004ba98c	33c9	XOR ECX,ECX
+004ba98e	c1e002	SHL EAX,0x2
+004ba991	8988d0b96a00	MOV dword ptr [EAX + 0x6ab9d0],ECX
+004ba997	8988c8b96a00	MOV dword ptr [EAX + 0x6ab9c8],ECX
+004ba99d	8988d8b96a00	MOV dword ptr [EAX + 0x6ab9d8],ECX
+004ba9a3	8988e0b96a00	MOV dword ptr [EAX + 0x6ab9e0],ECX
+004ba9a9	8988e8b96a00	MOV dword ptr [EAX + 0x6ab9e8],ECX
+004ba9af	8988f0b96a00	MOV dword ptr [EAX + 0x6ab9f0],ECX
+004ba9b5	8988f8b96a00	MOV dword ptr [EAX + 0x6ab9f8],ECX
+004ba9bb	898800ba6a00	MOV dword ptr [EAX + 0x6aba00],ECX
+004ba9c1	c3	RET

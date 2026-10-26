@@ -1,0 +1,3 @@
+; 004be341 FUN_004be341
+004be341	c701d4364d00	MOV dword ptr [ECX],0x4d36d4
+004be347	c3	RET

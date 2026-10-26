@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {getNativeSkidAudioCommands} from '../src/skid-audio.js';
+import {getNativeSkidAudioCommands} from '../source/skid-audio.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/skid-audio-fixtures.json', import.meta.url)));
 
 test('176 original tyre-loop decisions preserve contact, slip, enabled, playing and controller gates', () => {

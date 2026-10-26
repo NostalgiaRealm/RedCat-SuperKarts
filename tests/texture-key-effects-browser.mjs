@@ -15,14 +15,14 @@ try{
   await page.evaluate(()=>rcsk.viewer.clock.pause());
   const result=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {createNativeMeshMaterial}=await import('/src/asset-materials.js');
-    const {getNativeRescueVisualSpec}=await import('/src/rescue-assets.js');
-    const {NativeSmoke}=await import('/src/simulation/native-smoke.js');
-    const {NativeRandom}=await import('/src/simulation/native-random.js');
-    const {getNativeKartShadowSpec}=await import('/src/kart-shadow.js');
-    const {getNativeFinishFlagSpec}=await import('/src/finish-flag.js');
-    const {createNativeHomingArm,updateNativeHomingArm}=await import('/src/simulation/native-homing-arm.js');
-    const {getHudMeshSpec}=await import('/src/hud-mesh.js');
+    const {createNativeMeshMaterial}=await import('/source/asset-materials.js');
+    const {getNativeRescueVisualSpec}=await import('/source/rescue-assets.js');
+    const {NativeSmoke}=await import('/source/simulation/native-smoke.js');
+    const {NativeRandom}=await import('/source/simulation/native-random.js');
+    const {getNativeKartShadowSpec}=await import('/source/kart-shadow.js');
+    const {getNativeFinishFlagSpec}=await import('/source/finish-flag.js');
+    const {createNativeHomingArm,updateNativeHomingArm}=await import('/source/simulation/native-homing-arm.js');
+    const {getHudMeshSpec}=await import('/source/hud-mesh.js');
     const viewer=rcsk.viewer,[config,manifest]=await viewer.resources;
     const size=256;
     const renderer=new THREE.WebGLRenderer({antialias:false});

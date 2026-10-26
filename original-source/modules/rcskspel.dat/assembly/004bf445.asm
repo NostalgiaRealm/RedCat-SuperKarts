@@ -1,0 +1,7 @@
+; 004bf445 FUN_004bf445
+004bf445	6a40	PUSH 0x40
+004bf447	ff74240c	PUSH dword ptr [ESP + 0xc]
+004bf44b	ff74240c	PUSH dword ptr [ESP + 0xc]
+004bf44f	e8d1ffffff	CALL 0x004bf425
+004bf454	83c40c	ADD ESP,0xc
+004bf457	c3	RET

@@ -1,0 +1,6 @@
+; 004aacd0 FUN_004aacd0
+004aacd0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+004aacd4	b9c05f6a00	MOV ECX,0x6a5fc0
+004aacd9	50	PUSH EAX
+004aacda	e881070000	CALL 0x004ab460
+004aacdf	c3	RET

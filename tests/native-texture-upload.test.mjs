@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import {NATIVE_TEXTURE_COLOR_KEY_RGB, packNativeTextureRGBA,
-  nativeTexturePixelsRGBA, nativeTextureChannelScale} from '../src/native-texture-upload.js';
+  nativeTexturePixelsRGBA, nativeTextureChannelScale} from '../source/native-texture-upload.js';
 
 const native = JSON.parse(fs.readFileSync(
   new URL('../evidence/native/texture-key-fixtures.json', import.meta.url)));

@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
 import {RouteTestDriver} from '../tests/helpers/route-test-driver.mjs';
 
 const root=new URL('../',import.meta.url);

@@ -1,0 +1,7 @@
+; 004bff25 _malloc
+004bff25	ff35bc676b00	PUSH dword ptr [0x006b67bc]
+004bff2b	ff742408	PUSH dword ptr [ESP + 0x8]
+004bff2f	e803000000	CALL 0x004bff37
+004bff34	59	POP ECX
+004bff35	59	POP ECX
+004bff36	c3	RET

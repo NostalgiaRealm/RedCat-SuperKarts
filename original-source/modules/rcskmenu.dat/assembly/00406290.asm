@@ -1,0 +1,2 @@
+; 00406290 KERNEL32.DLL::EnterCriticalSection
+00406290	ff2540f34700	JMP dword ptr [0x0047f340]

@@ -1,0 +1,2 @@
+; 0041e42e DSOUND.DLL::Ordinal_2
+0041e42e	ff2534804200	JMP dword ptr [0x00428034]

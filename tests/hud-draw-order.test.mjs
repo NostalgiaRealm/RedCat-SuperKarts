@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeHudDrawOrder} from '../src/hud-draw-order.js';
-import {createNativeStarHudConfig,getNativeStarHudCommands} from '../src/simulation/native-star-hud.js';
+import {nativeHudDrawOrder} from '../source/hud-draw-order.js';
+import {createNativeStarHudConfig,getNativeStarHudCommands} from '../source/simulation/native-star-hud.js';
 
 const config=JSON.parse(fs.readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 

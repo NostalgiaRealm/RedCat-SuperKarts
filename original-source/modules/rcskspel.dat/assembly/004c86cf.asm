@@ -1,0 +1,16 @@
+; 004c86cf FUN_004c86cf
+004c86cf	55	PUSH EBP
+004c86d0	8bec	MOV EBP,ESP
+004c86d2	51	PUSH ECX
+004c86d3	9bd97dfc	FSTCW word ptr [EBP + -0x4]
+004c86d7	8b450c	MOV EAX,dword ptr [EBP + 0xc]
+004c86da	8bc8	MOV ECX,EAX
+004c86dc	234508	AND EAX,dword ptr [EBP + 0x8]
+004c86df	f7d1	NOT ECX
+004c86e1	234dfc	AND ECX,dword ptr [EBP + -0x4]
+004c86e4	0bc8	OR ECX,EAX
+004c86e6	894d0c	MOV dword ptr [EBP + 0xc],ECX
+004c86e9	d96d0c	FLDCW word ptr [EBP + 0xc]
+004c86ec	0fbf45fc	MOVSX EAX,word ptr [EBP + -0x4]
+004c86f0	c9	LEAVE
+004c86f1	c3	RET

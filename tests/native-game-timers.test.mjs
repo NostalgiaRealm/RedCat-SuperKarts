@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeGameTimers, NATIVE_PAUSED_TIMER_IDS, resetNativeInactivePlayer, nativeRaceTimerSetup } from '../src/simulation/native-game-timers.js';
-import { parseRacerTable } from '../src/simulation/native-tables.js';
+import { NativeGameTimers, NATIVE_PAUSED_TIMER_IDS, resetNativeInactivePlayer, nativeRaceTimerSetup } from '../source/simulation/native-game-timers.js';
+import { parseRacerTable } from '../source/simulation/native-tables.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/game-timer-fixtures.json', import.meta.url)));
 
 test('2880 original timer operations preserve pause, reset, limit, sentinel and uint32 wrap behavior', () => {

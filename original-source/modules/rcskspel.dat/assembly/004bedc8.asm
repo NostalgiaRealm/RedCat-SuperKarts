@@ -1,0 +1,19 @@
+; 004bedc8 __global_unwind2
+004bedc8	55	PUSH EBP
+004bedc9	8bec	MOV EBP,ESP
+004bedcb	53	PUSH EBX
+004bedcc	56	PUSH ESI
+004bedcd	57	PUSH EDI
+004bedce	55	PUSH EBP
+004bedcf	6a00	PUSH 0x0
+004bedd1	6a00	PUSH 0x0
+004bedd3	68e0ed4b00	PUSH 0x4bede0
+004bedd8	ff7508	PUSH dword ptr [EBP + 0x8]
+004beddb	e8c0ca0000	CALL 0x004cb8a0
+004bede0	5d	POP EBP
+004bede1	5f	POP EDI
+004bede2	5e	POP ESI
+004bede3	5b	POP EBX
+004bede4	8be5	MOV ESP,EBP
+004bede6	5d	POP EBP
+004bede7	c3	RET

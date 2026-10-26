@@ -1,0 +1,12 @@
+; 004bcddb FUN_004bcddb
+004bcddb	56	PUSH ESI
+004bcddc	8bf1	MOV ESI,ECX
+004bcdde	e83dfaffff	CALL 0x004bc820
+004bcde3	f644240801	TEST byte ptr [ESP + 0x8],0x1
+004bcde8	7407	JZ 0x004bcdf1
+004bcdea	56	PUSH ESI
+004bcdeb	e860f3ffff	CALL 0x004bc150
+004bcdf0	59	POP ECX
+004bcdf1	8bc6	MOV EAX,ESI
+004bcdf3	5e	POP ESI
+004bcdf4	c20400	RET 0x4

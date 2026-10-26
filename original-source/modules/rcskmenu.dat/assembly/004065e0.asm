@@ -1,0 +1,2 @@
+; 004065e0 GDI32.DLL::LineTo
+004065e0	ff25d0f34700	JMP dword ptr [0x0047f3d0]

@@ -1,0 +1,2 @@
+; 00406748 USER32.DLL::DeleteMenu
+00406748	ff25b0f64700	JMP dword ptr [0x0047f6b0]

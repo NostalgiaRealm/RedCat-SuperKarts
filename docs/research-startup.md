@@ -1,8 +1,19 @@
 # Native startup, menus, engine and timing investigation
 
+[Documentation index](README.md) · [Original-code export](../original-source/README.md) ·
+[Process handoff](#process-sequence-and-settings-handoff) ·
+[Menus](#intro-and-native-menus) · [Timing](#timing-and-render-coupling) ·
+[Reference limits](#reference-environment-and-limits) ·
+[Camera](#active-player-camera-and-projection)
+
 Evidence recorded 2026-10-20. Original inputs and Spookkasteel reference were read only. All runtime tests use copied game, disc and Wine prefix under `evidence/native/runtime/`.
 
 ## Artifact identity and reproducible inspection
+
+The [five-module original-code reference](../original-source/README.md) now
+provides the consolidated C/assembly export and reproducible verification.
+The earlier paths and recovery notes below retain their investigation history;
+use the new reference to navigate the complete identified function inventory.
 
 `evidence/native/metadata/*.json` records hashes, import tables, sections and entry points. The launcher `RCSK.exe`, menu `rcskmenu.dat`, race `rcskspel.dat`, and legacy `RCMovie.dat` are all native Windows GUI PE32/i386 executables. The `.dat` extension does not mean those files are data archives. `rclemu00.dat` through `rclemu05.dat` are MP3 streams, while `cars*.dat` and `Phys*.dat` are separate numeric binary tables.
 
@@ -268,9 +279,9 @@ QuickRace country OK0x46fdf0 invokes0x46222c when start-info is enabled. This cr
 
 Player creation0x4319f0 calls0x415f90; constructor0x490130 clears flags, and both callers OR3. Active player uses Euler0x4911a0, not the RK4 branch gated by flag4.0x493110 sets0x680ad8 to the player index;0x491d30 always divides the selected player's frame delta into8 substeps. Planar velocities are truncated to0.0001 once before this loop.0x491530 first calls object+0x54 (player0x4325b0) once; after integration0x491d30 calls0x4932e0 sector update,0x4937e0 waypoint alignment and0x4936a0, whose object+0x58 callback is0x416650 ground placement. Thus the ground callback is after all8 substeps.
 
-`src/simulation/native-integrator.js` matches360 isolated native Euler cases exactly, including original4096-entry sin/cos tables, floor-heading conversion, quantized displacement, local-velocity rotation and force integration.0x4c062b uses temporary CW0x173f (round toward-negative-infinity). CRT initialization0x4be597→0x4c17bc→0x4c8ee9 sets53-bit precision; later Direct3D runtime precision has not been measured. Fixtures explicitly cover CW0x007f(24-bit) and0x027f(53-bit), rather than relying on Unicorn's default CW0. This is instruction execution against synthetic states, not a complete native race comparison.
+`source/simulation/native-integrator.js` matches360 isolated native Euler cases exactly, including original4096-entry sin/cos tables, floor-heading conversion, quantized displacement, local-velocity rotation and force integration.0x4c062b uses temporary CW0x173f (round toward-negative-infinity). CRT initialization0x4be597→0x4c17bc→0x4c8ee9 sets53-bit precision; later Direct3D runtime precision has not been measured. Fixtures explicitly cover CW0x007f(24-bit) and0x027f(53-bit), rather than relying on Unicorn's default CW0. This is instruction execution against synthetic states, not a complete native race comparison.
 
-`src/simulation/native-collision.js` ports the static rail path. CMP0x49ced0 reads position and direction vectors, derives XZ length and yaw;0x4997f0 builds a rectangle x[-10,0],z[-1,length+1].0x499b20 gathers rails from previous/current/next sectors via the PMP collision indices. Native0x499c30 runs both directed corner sweeps0x49a120, then rotation overlap0x49a480; it does not collide against arbitrary render triangles.0x492470 temporarily projects velocity away from an incoming contact, repeats the sweep, restores velocity and provides a displacement override.0x49c220 applies the rail impulse after movement. The reversed sweep really supplies a rail-local contact point; that surprising native behavior is preserved and covered by execution fixtures.
+`source/simulation/native-collision.js` ports the static rail path. CMP0x49ced0 reads position and direction vectors, derives XZ length and yaw;0x4997f0 builds a rectangle x[-10,0],z[-1,length+1].0x499b20 gathers rails from previous/current/next sectors via the PMP collision indices. Native0x499c30 runs both directed corner sweeps0x49a120, then rotation overlap0x49a480; it does not collide against arbitrary render triangles.0x492470 temporarily projects velocity away from an incoming contact, repeats the sweep, restores velocity and provides a displacement override.0x49c220 applies the rail impulse after movement. The reversed sweep really supplies a rail-local contact point; that surprising native behavior is preserved and covered by execution fixtures.
 
 Validation:120 native CMP loader cases,480 point-clipping cases,360 rectangle sweeps,200 composed sweep/projection cases,320 rail impulse cases,360 Euler cases, and410 clock samples. Generator scripts under `tools/native-*-fixtures.py` preserve original PEs. Composed collision fixtures mock only geometry/broadphase and diagnostic logging; sweep/projection/contact math executes original code. Static track rails are implemented; kart-to-kart0x49b9c0 remains separate. These tests do not establish AI, checkpoint progression, race rules or full race parity.
 
@@ -278,7 +289,7 @@ PRNG0x4be6c9 is `(state*214013+2531011) mod2^32`, returning `(state>>16)&0x7fff`
 
 ## Active player camera and projection
 
-`src/simulation/native-camera.js` executes the active-player camera formula, validated against200 original0x498c00 cases under both explicit FPU precisions.0x41dee0 creates the player camera and selects0x41e280 mode1: body-relative position offset(0,50,-150), target offset(0,50,0), world up(0,1,0). The position filter converts desired-minus-previous into body local space, scales by(.1,.1,.5), transforms back and adds the previous position. Target smoothing is disabled. These coefficients apply per native frame, with no dt; update the camera alongside simulation rather than independently per render.
+`source/simulation/native-camera.js` executes the active-player camera formula, validated against200 original0x498c00 cases under both explicit FPU precisions.0x41dee0 creates the player camera and selects0x41e280 mode1: body-relative position offset(0,50,-150), target offset(0,50,0), world up(0,1,0). The position filter converts desired-minus-previous into body local space, scales by(.1,.1,.5), transforms back and adds the previous position. Target smoothing is disabled. These coefficients apply per native frame, with no dt; update the camera alongside simulation rather than independently per render.
 
 Game initialization0x42d7xx passes near1.5,far12500,FOV1.4137166738510132radians to0x4a1a40. Although the projection matrix has equal X/Y scale, **viewport0x4acf40 corrects aspect**: D3DVIEWPORT2 clipX=-1,clipY=H/W,clipWidth=2,clipHeight=2H/W. Thus81degrees is the horizontal FOV; equivalent Three.js vertical FOV is `2*atan(tan(horizontalFov/2)/aspect)`. No geometric stretching is implied by the equal matrix scales. The [Microsoft Direct3D transformation pipeline](https://learn.microsoft.com/en-us/windows/win32/dxtecharts/the-direct3d-transformation-pipeline) describes this clip-volume scaling stage. Browser widescreen can preserve the native4:3 vertical framing and reveal additional horizontal space as an explicit modern adaptation.
 
@@ -313,7 +324,7 @@ first movement step is the next frame. Camera6 stays selected throughout
 the countdown; green`0x420f00` alone updates and selects the retained
 player camera. Camera0 is frozen while camera6 is active.
 
-`src/simulation/native-start-camera.js` reproduces this controller and reuses
+`source/simulation/native-start-camera.js` reproduces this controller and reuses
 the verified scenery Hermite spline.48 original startup executions and12988
 updates match exactly at both24-bit and53-bit precision, across all six tracks,
 four entry deltas including.1, and varied body matrices. The initialization
@@ -334,7 +345,7 @@ the generators and portable kernels were corrected to execute the real startup
 initializer and regenerated. `tools/native_probe_math.py` shares this original
 initializer, replacing only LocalAlloc with isolated emulator memory.
 
-`src/simulation/native-integrator.js` exports `NATIVE_ANGLE_COUNT=4096` and
+`source/simulation/native-integrator.js` exports `NATIVE_ANGLE_COUNT=4096` and
 4096-entry tables. Original Euler, CMP loader, directed rectangle sweeps,
 composed rail collision, and render matrix fixtures were regenerated with4096.
 20 focused tests passed after the correction; their stored test cases cover
@@ -348,13 +359,15 @@ via `0x4a2560`, then scales rows via `0x4a26b0`. The portable
 `nativeRotationMatrix([x,y,z], {precision,order,scale})` returns that3x3matrix;
 it matches480 original-instruction cases across all three orders and both FPU
 modes. A Three.js adapter must transpose this storage, rather than substituting
-an assumed Euler order. The helper is in `src/simulation/native-transform.js`.
+an assumed Euler order. The helper is in `source/simulation/native-transform.js`.
 
-`src/simulation/native-random.js` exposes `NativeRandom(seed).next()` and shared
+`source/simulation/native-random.js` exposes `NativeRandom(seed).next()` and shared
 `.state` with the exact CRT update at `0x4be6c9`;384 draws across six seed cases
-match original instructions. Startup reseeding and call ordering still need to
-be preserved by consumers, as described above; a deterministic inspection seed
-is an explicit testing mode.
+match original instructions. Consumers must preserve startup reseeding and
+call ordering, as described above. The composed implementation now preserves
+construction draws before the gameplay reseed, including rotating scenery,
+opponents and weather; see [the integration evidence](research-assets.md).
+A deterministic inspection seed is an explicit testing mode.
 
 ### Rendering states and visibility
 
@@ -363,7 +376,7 @@ is an explicit testing mode.
 TEXTUREMAG (17) and TEXTUREMIN (18) to D3DFILTER_LINEAR (2), and SHADEMODE (9)
 to GOURAUD (2). Other filter values select NEAREST (1). Software with filter2
 returns without changing its cached filtering/shading. None of these settings
-selects a mipmap filter. `src/simulation/native-render.js` exposes the choices
+selects a mipmap filter. `source/simulation/native-render.js` exposes the choices
 and the exact state-cache write sequence.
 
 Mirrored track startup `0x42d7d0` negates the projection X column and sets

@@ -1,0 +1,2 @@
+; 004062f8 KERNEL32.DLL::GetDateFormatA
+004062f8	ff250cf34700	JMP dword ptr [0x0047f30c]

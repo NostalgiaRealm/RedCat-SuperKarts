@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 import {copyPlayerForRailForecast,advancePrivateRailFrame} from './helpers/private-native-contact-forecast.mjs';
 const root=new URL('../public/assets/',import.meta.url);
 const read=path=>fs.readFile(new URL(path,root)),json=async path=>JSON.parse(await read(path));

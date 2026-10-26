@@ -1,0 +1,2 @@
+; 00406998 USER32.DLL::IsIconic
+00406998	ff258cf54700	JMP dword ptr [0x0047f58c]

@@ -1,0 +1,2 @@
+; 00406b28 USER32.DLL::SetWindowTextA
+00406b28	ff25c4f44700	JMP dword ptr [0x0047f4c4]

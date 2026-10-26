@@ -1,0 +1,2 @@
+; 00406330 KERNEL32.DLL::GetLocaleInfoA
+00406330	ff25f0f24700	JMP dword ptr [0x0047f2f0]

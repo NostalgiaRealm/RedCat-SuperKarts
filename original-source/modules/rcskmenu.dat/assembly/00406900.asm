@@ -1,0 +1,2 @@
+; 00406900 USER32.DLL::GetSubMenu
+00406900	ff25d4f54700	JMP dword ptr [0x0047f5d4]

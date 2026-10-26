@@ -1,0 +1,6 @@
+; 004bfd82 FUN_004bfd82
+004bfd82	8bc1	MOV EAX,ECX
+004bfd84	83600400	AND dword ptr [EAX + 0x4],0x0
+004bfd88	83600800	AND dword ptr [EAX + 0x8],0x0
+004bfd8c	c7003c374d00	MOV dword ptr [EAX],0x4d373c
+004bfd92	c3	RET

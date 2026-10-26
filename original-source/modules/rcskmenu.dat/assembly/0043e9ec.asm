@@ -1,0 +1,3 @@
+; 0043e9ec FUN_0043e9ec
+0043e9ec	8b4024	MOV EAX,dword ptr [EAX + 0x24]
+0043e9ef	c3	RET

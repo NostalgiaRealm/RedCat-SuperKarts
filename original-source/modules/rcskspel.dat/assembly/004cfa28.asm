@@ -1,0 +1,8 @@
+; 004cfa28 Unwind@004cfa28
+004cfa28	8b45c0	MOV EAX,dword ptr [EBP + -0x40]
+004cfa2b	83e001	AND EAX,0x1
+004cfa2e	85c0	TEST EAX,EAX
+004cfa30	0f8408000000	JZ 0x004cfa3e
+004cfa36	8d4de4	LEA ECX,[EBP + -0x1c]
+004cfa39	e972baf3ff	JMP 0x0040b4b0
+004cfa3e	c3	RET

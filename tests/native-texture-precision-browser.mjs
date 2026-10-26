@@ -21,9 +21,9 @@ try{
   await page.setContent('<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>');
   report.synthetic=await page.evaluate(async fixtures=>{
     const THREE=await import('three');
-    const {createNativeMeshMaterial,applyNativeByteColorPipeline}=await import('/src/asset-materials.js');
-    const {packNativeTextureRGBA,nativeTexturePixelsRGBA}=await import('/src/native-texture-upload.js');
-    const {TrackViewer}=await import('/src/world.js');
+    const {createNativeMeshMaterial,applyNativeByteColorPipeline}=await import('/source/asset-materials.js');
+    const {packNativeTextureRGBA,nativeTexturePixelsRGBA}=await import('/source/native-texture-upload.js');
+    const {TrackViewer}=await import('/source/world.js');
     const renderer=new THREE.WebGLRenderer({alpha:false,antialias:false,preserveDrawingBuffer:true});
     renderer.setSize(8,8);renderer.outputColorSpace=THREE.SRGBColorSpace;
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
@@ -156,7 +156,7 @@ try{
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
   report.integration=await page.evaluate(async()=>{
     const THREE=await import('three'),view=rcsk.viewer;
-    const {resolveAsset}=await import('/src/asset-animation.js');
+    const {resolveAsset}=await import('/source/asset-animation.js');
     view.updateLoop?.stop();view.clock.pause();
     const [,manifest]=await view.resources;
     const textures=await Promise.all([...view.textures].map(async([file,pending])=>({file,map:await pending})));

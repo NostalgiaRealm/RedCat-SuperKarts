@@ -1,0 +1,2 @@
+; 004012e0 KERNEL32.DLL::GetStartupInfoA
+004012e0	ff2578f14700	JMP dword ptr [0x0047f178]

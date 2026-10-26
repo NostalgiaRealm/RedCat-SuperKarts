@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeRotationMatrix } from '../src/simulation/native-transform.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
+import { nativeRotationMatrix } from '../source/simulation/native-transform.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/transform-fixtures.json', import.meta.url)));
 for (const precision of [24, 53]) test(`Native render matrices ${precision}-bit`, () => {

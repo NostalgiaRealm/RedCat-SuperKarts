@@ -1,0 +1,3 @@
+; 00440fa8 FUN_00440fa8
+00440fa8	c7420c01000000	MOV dword ptr [EDX + 0xc],0x1
+00440faf	c3	RET

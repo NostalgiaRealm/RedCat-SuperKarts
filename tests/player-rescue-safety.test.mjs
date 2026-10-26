@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {nativeRescueDestination} from '../src/simulation/native-rescue.js';
-import {rescuePlacementClear,rescueRectanglesOverlap} from '../src/simulation/rescue-safety.js';
-import {nativeRectangleOverlap} from '../src/simulation/native-collision.js';
-import {updateNativeGround} from '../src/simulation/native-ground.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {nativeRescueDestination} from '../source/simulation/native-rescue.js';
+import {rescuePlacementClear,rescueRectanglesOverlap} from '../source/simulation/rescue-safety.js';
+import {nativeRectangleOverlap} from '../source/simulation/native-collision.js';
+import {updateNativeGround} from '../source/simulation/native-ground.js';
 
 const read=path=>fs.readFileSync(new URL('../'+path,import.meta.url));
 const json=path=>JSON.parse(read(path));

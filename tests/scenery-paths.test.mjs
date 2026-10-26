@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {getNativeSceneryPaths, nativePathDurationTicks, sampleNativeSceneryPath,
-  advanceNativeSceneryPath, NativeSceneryPaths} from '../src/scenery-paths.js';
+  advanceNativeSceneryPath, NativeSceneryPaths} from '../source/scenery-paths.js';
 
 const read = path => JSON.parse(fs.readFileSync(new URL(`../${path}`, import.meta.url)));
 const fixture = read('evidence/native/scenery-path-fixtures.json');

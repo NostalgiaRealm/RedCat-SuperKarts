@@ -1,0 +1,3 @@
+; 00427f10 Unwind@00427f10
+00427f10	8b4df0	MOV ECX,dword ptr [EBP + -0x10]
+00427f13	e9686affff	JMP 0x0041e980

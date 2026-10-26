@@ -1,0 +1,3 @@
+; 004505e8 FUN_004505e8
+004505e8	ff4014	INC dword ptr [EAX + 0x14]
+004505eb	c3	RET

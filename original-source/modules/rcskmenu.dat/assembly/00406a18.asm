@@ -1,0 +1,2 @@
+; 00406a18 USER32.DLL::OemToCharA
+00406a18	ff254cf54700	JMP dword ptr [0x0047f54c]

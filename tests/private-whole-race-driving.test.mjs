@@ -5,9 +5,9 @@ import {createForecastRoute,projectForecastRoute,forecastRouteTarget,executeWhol
 import {hybridFranceLine} from './helpers/private-france-hybrid-driver.mjs';
 import {executeClosedLoopPolicy} from './helpers/private-closed-loop-contact-driving.mjs';
 import {createPrivateRaceSnapshotter} from './helpers/private-race-snapshot.mjs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
 const root=new URL('../',import.meta.url);
 const read=async p=>JSON.parse(await fs.readFile(new URL(p,root),'utf8'));
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));

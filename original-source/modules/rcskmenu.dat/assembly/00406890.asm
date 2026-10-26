@@ -1,0 +1,2 @@
+; 00406890 USER32.DLL::GetKeyboardState
+00406890	ff250cf64700	JMP dword ptr [0x0047f60c]

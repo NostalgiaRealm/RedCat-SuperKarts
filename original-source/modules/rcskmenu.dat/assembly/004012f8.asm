@@ -1,0 +1,2 @@
+; 004012f8 USER32.DLL::LoadStringA
+004012f8	ff25e0f14700	JMP dword ptr [0x0047f1e0]

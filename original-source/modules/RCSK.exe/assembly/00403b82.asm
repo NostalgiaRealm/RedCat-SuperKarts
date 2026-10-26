@@ -1,0 +1,7 @@
+; 00403b82 FUN_00403b82
+00403b82	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+00403b86	830008	ADD dword ptr [EAX],0x8
+00403b89	8b08	MOV ECX,dword ptr [EAX]
+00403b8b	8b41f8	MOV EAX,dword ptr [ECX + -0x8]
+00403b8e	8b51fc	MOV EDX,dword ptr [ECX + -0x4]
+00403b91	c3	RET

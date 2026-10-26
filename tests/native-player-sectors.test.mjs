@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRaceState,nativeSectorDistance,nativeCrossedTriggers} from '../src/simulation/native-race.js';
+import {NativeRaceState,nativeSectorDistance,nativeCrossedTriggers} from '../source/simulation/native-race.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/gameplay/native-player-sectors.json',import.meta.url)));
 const tracks=Array.from({length:6},(_,i)=>JSON.parse(fs.readFileSync(
   new URL(`../public/assets/tracks/etappe${i}.json`,import.meta.url))));

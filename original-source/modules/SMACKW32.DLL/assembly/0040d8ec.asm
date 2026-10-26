@@ -1,0 +1,2 @@
+; 0040d8ec KERNEL32.DLL::CreateMutexA
+0040d8ec	ff252c134100	JMP dword ptr [0x0041132c]

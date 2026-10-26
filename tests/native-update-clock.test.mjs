@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeUpdateClock,SimulationClock} from '../src/simulation/clock.js';
+import {NativeUpdateClock,SimulationClock} from '../source/simulation/clock.js';
 
 const close=(actual,expected)=>assert.ok(Math.abs(actual-expected)<1e-9,`${actual} != ${expected}`);
 const create=()=>{

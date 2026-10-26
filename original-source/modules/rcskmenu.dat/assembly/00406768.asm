@@ -1,0 +1,2 @@
+; 00406768 USER32.DLL::DestroyWindow
+00406768	ff25a0f64700	JMP dword ptr [0x0047f6a0]

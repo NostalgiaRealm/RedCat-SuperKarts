@@ -1,0 +1,2 @@
+; 00406388 KERNEL32.DLL::GlobalAlloc
+00406388	ff25c4f24700	JMP dword ptr [0x0047f2c4]

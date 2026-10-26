@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {isSafePlayerRecoveryPose,nativeRescueDestinationAtWaypoint} from '../src/simulation/player-recovery-position.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {isSafePlayerRecoveryPose,nativeRescueDestinationAtWaypoint} from '../source/simulation/player-recovery-position.js';
 const hashes={};
 const read=file=>{const bytes=fs.readFileSync(file);hashes[file]=crypto.createHash('sha256').update(bytes).digest('hex');return bytes;};
 const json=name=>JSON.parse(read('public/assets/'+name));
@@ -26,7 +26,7 @@ for(let id=0;id<6;id++){
     noCandidateWithinHalfCircuitBehind:gaps(Math.floor(track.route.length/2)-1),usable};
   tracks.push(row);console.log(JSON.stringify({...row,usable:undefined}));
 }
-for(const file of ['src/simulation/player-recovery-position.js','src/simulation/rescue-safety.js'])read(file);
+for(const file of ['source/simulation/player-recovery-position.js','source/simulation/rescue-safety.js'])read(file);
 const report={scope:'Current initial original occupancy and car0 bounds. Every candidate passes full road footprint, live SAT and a 30-unit forward exit. Candidate availability is not a guarantee for arbitrary moving occupancy, an 80-unit relocation, or same-lap history eligibility.',
   hashes,bodyBounds:cars.cars[0].bodyBounds,tracks};
 fs.mkdirSync('evidence/player-recovery',{recursive:true});

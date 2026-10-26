@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -8,7 +9,7 @@ try {
   await page.goto((process.env.RCSK_URL || 'http://127.0.0.1:4173') + '/assets/config.json');
   const result = await page.evaluate(async () => {
     const [{NativeRaceAudio}, config, manifest] = await Promise.all([
-      import('/src/native-race-audio.js'), fetch('/assets/config.json').then(r => r.json()),
+      import('/source/native-race-audio.js'), fetch('/assets/config.json').then(r => r.json()),
       fetch('/assets/manifest.json').then(r => r.json()),
     ]);
     const tracks = [], context = new OfflineAudioContext(2, 48000, 48000);

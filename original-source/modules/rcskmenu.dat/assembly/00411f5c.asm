@@ -1,0 +1,3 @@
+; 00411f5c FUN_00411f5c
+00411f5c	895018	MOV dword ptr [EAX + 0x18],EDX
+00411f5f	c3	RET

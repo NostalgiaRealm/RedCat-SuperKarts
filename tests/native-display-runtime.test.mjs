@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {configWithNativeDisplaySettings,nativeTextureGamma} from '../src/simulation/native-display-settings.js';
-import {getNativeWeatherSpec} from '../src/simulation/native-weather.js';
+import {configWithNativeDisplaySettings,nativeTextureGamma} from '../source/simulation/native-display-settings.js';
+import {getNativeWeatherSpec} from '../source/simulation/native-weather.js';
 
 const config=JSON.parse(readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 const native=JSON.parse(readFileSync(new URL('../evidence/native/texture-key-fixtures.json',import.meta.url)));

@@ -1,0 +1,6 @@
+; 0040b5e0 FUN_0040b5e0
+0040b5e0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0040b5e4	894108	MOV dword ptr [ECX + 0x8],EAX
+0040b5e7	8b4904	MOV ECX,dword ptr [ECX + 0x4]
+0040b5ea	c6040100	MOV byte ptr [ECX + EAX*0x1],0x0
+0040b5ee	c20400	RET 0x4

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeVoiceController} from '../src/native-voice-controller.js';
+import {NativeVoiceController} from '../source/native-voice-controller.js';
 const read=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url)));
 const config=read('../public/assets/config.json'),manifest=read('../public/assets/manifest.json');
 const fixture=read('../evidence/native/voice-queue-fixtures.json');

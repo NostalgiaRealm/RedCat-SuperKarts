@@ -1,0 +1,9 @@
+; 0041eca0 FUN_0041eca0
+0041eca0	8bc1	MOV EAX,ECX
+0041eca2	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+0041eca6	894805	MOV dword ptr [EAX + 0x5],ECX
+0041eca9	83c021	ADD EAX,0x21
+0041ecac	8b11	MOV EDX,dword ptr [ECX]
+0041ecae	50	PUSH EAX
+0041ecaf	ff520c	CALL dword ptr [EDX + 0xc]
+0041ecb2	c20400	RET 0x4

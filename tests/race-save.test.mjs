@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readRaceSave,writeRaceSave,applyRaceResult,saveHighscore,configWithRaceSave,unlockAllCountries} from '../src/race-save.js';
-import {createNativeAdventureProfile} from '../src/simulation/native-adventure.js';
+import {readRaceSave,writeRaceSave,applyRaceResult,saveHighscore,configWithRaceSave,unlockAllCountries} from '../source/race-save.js';
+import {createNativeAdventureProfile} from '../source/simulation/native-adventure.js';
 
 test('race saves preserve original result/highscore records and separate original configuration',()=>{
   const storage={value:null,getItem(){return this.value;},setItem(key,value){this.value=value;}};

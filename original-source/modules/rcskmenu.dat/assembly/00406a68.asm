@@ -1,0 +1,2 @@
+; 00406a68 USER32.DLL::ReleaseCapture
+00406a68	ff2524f54700	JMP dword ptr [0x0047f524]

@@ -1,0 +1,3 @@
+; 00404ee8 FUN_00404ee8
+00404ee8	e8d3ffffff	CALL 0x00404ec0
+00404eed	c3	RET

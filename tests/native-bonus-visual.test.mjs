@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {nativeBonusVisual} from '../src/simulation/native-bonus.js';
+import {nativeBonusVisual} from '../source/simulation/native-bonus.js';
 const read=path=>JSON.parse(readFileSync(new URL(path,import.meta.url)));
 const fixture=read('../evidence/native/bonus-visual-fixtures.json');
 const config=read('../public/assets/config.json'),manifest=read('../public/assets/manifest.json');

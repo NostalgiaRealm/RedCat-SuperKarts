@@ -1,0 +1,2 @@
+; 00406b90 USER32.DLL::UpdateWindow
+00406b90	ff2590f44700	JMP dword ptr [0x0047f490]

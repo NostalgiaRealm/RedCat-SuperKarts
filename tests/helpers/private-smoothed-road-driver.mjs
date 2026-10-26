@@ -1,6 +1,6 @@
 import { RouteTestDriver as Base } from './private-projected-line-driver.mjs';
-import { NativeRailCollision } from '../../src/simulation/native-collision.js';
-import { createNativeTrack, sampleNativeTrack } from '../../src/simulation/native-track.js';
+import { NativeRailCollision } from '../../source/simulation/native-collision.js';
+import { createNativeTrack, sampleNativeTrack } from '../../source/simulation/native-track.js';
 
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[2] - b[2]);
 

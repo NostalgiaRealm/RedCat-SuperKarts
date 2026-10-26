@@ -1,0 +1,2 @@
+; 00406960 USER32.DLL::InflateRect
+00406960	ff25a8f54700	JMP dword ptr [0x0047f5a8]

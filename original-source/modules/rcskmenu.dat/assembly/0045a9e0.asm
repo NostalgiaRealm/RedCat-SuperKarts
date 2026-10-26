@@ -1,0 +1,3 @@
+; 0045a9e0 FUN_0045a9e0
+0045a9e0	8a4010	MOV AL,byte ptr [EAX + 0x10]
+0045a9e3	c3	RET

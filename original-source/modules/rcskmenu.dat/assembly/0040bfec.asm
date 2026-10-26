@@ -1,0 +1,7 @@
+; 0040bfec FUN_0040bfec
+0040bfec	8b10	MOV EDX,dword ptr [EAX]
+0040bfee	33c9	XOR ECX,ECX
+0040bff0	8908	MOV dword ptr [EAX],ECX
+0040bff2	8bc2	MOV EAX,EDX
+0040bff4	e8b36effff	CALL 0x00402eac
+0040bff9	c3	RET

@@ -1,0 +1,4 @@
+; 00425a54 FUN_00425a54
+00425a54	8b08	MOV ECX,dword ptr [EAX]
+00425a56	ff51f0	CALL dword ptr [ECX + -0x10]
+00425a59	c3	RET

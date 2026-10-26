@@ -1,0 +1,2 @@
+; 00406950 USER32.DLL::GetWindowTextA
+00406950	ff25b0f54700	JMP dword ptr [0x0047f5b0]

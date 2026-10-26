@@ -1,0 +1,12 @@
+; 0046fefc TfrmSelectCountry_rdoCountryClick
+0046fefc	53	PUSH EBX
+0046fefd	8bd8	MOV EBX,EAX
+0046feff	a170c64700	MOV EAX,[0x0047c670]
+0046ff04	8b00	MOV EAX,dword ptr [EAX]
+0046ff06	8b8080000000	MOV EAX,dword ptr [EAX + 0x80]
+0046ff0c	8a4022	MOV AL,byte ptr [EAX + 0x22]
+0046ff0f	b20a	MOV DL,0xa
+0046ff11	e8b6c6feff	CALL 0x0045c5cc
+0046ff16	c6833903000000	MOV byte ptr [EBX + 0x339],0x0
+0046ff1d	5b	POP EBX
+0046ff1e	c3	RET

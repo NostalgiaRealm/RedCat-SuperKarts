@@ -1,9 +1,9 @@
 // Test-only native player copies. World data are read-only; no real body or
 // shared contact callback is ever passed to a resolving forecast.
-import {NativeGroundClock} from '../../src/simulation/native-ground.js';
-import {sampleNativeTrack} from '../../src/simulation/native-track.js';
-import {applyNativeRailContact} from '../../src/simulation/native-collision.js';
-import {nativeAnalogFromNormalized} from '../../src/simulation/native-input.js';
+import {NativeGroundClock} from '../../source/simulation/native-ground.js';
+import {sampleNativeTrack} from '../../source/simulation/native-track.js';
+import {applyNativeRailContact} from '../../source/simulation/native-collision.js';
+import {nativeAnalogFromNormalized} from '../../source/simulation/native-input.js';
 export class PrivateDynamicContact extends Error {}
 export function copyPlayerForRailForecast(motion) {
   const copy=Object.assign(Object.create(Object.getPrototypeOf(motion)),motion);

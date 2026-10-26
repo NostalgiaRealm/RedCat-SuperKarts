@@ -1,0 +1,4 @@
+; 00440ec0 FUN_00440ec0
+00440ec0	8b10	MOV EDX,dword ptr [EAX]
+00440ec2	ff5274	CALL dword ptr [EDX + 0x74]
+00440ec5	c3	RET

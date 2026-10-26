@@ -1,0 +1,10 @@
+; 004c1bb0 FUN_004c1bb0
+004c1bb0	ff742410	PUSH dword ptr [ESP + 0x10]
+004c1bb4	c60568676b0001	MOV byte ptr [0x006b6768],0x1
+004c1bbb	ff742410	PUSH dword ptr [ESP + 0x10]
+004c1bbf	ff742410	PUSH dword ptr [ESP + 0x10]
+004c1bc3	ff742410	PUSH dword ptr [ESP + 0x10]
+004c1bc7	e867fdffff	CALL 0x004c1933
+004c1bcc	802568676b0000	AND byte ptr [0x006b6768],0x0
+004c1bd3	83c410	ADD ESP,0x10
+004c1bd6	c3	RET

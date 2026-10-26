@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeSmoke} from '../src/simulation/native-smoke.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {RescueVisuals} from '../src/race-visuals.js';
+import {NativeSmoke} from '../source/simulation/native-smoke.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {RescueVisuals} from '../source/race-visuals.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/display-effect-fixtures.json',import.meta.url)));
 test('accelerated cloud construction matches original alpha option gate and consumes no emission RNG when disabled',()=>{
   for(const row of fixture.smoke.filter(row=>row.sourceCapability&&row.destinationCapability)){

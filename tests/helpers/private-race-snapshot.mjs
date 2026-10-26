@@ -2,9 +2,9 @@
  * Fresh constructors retain their own closures; only data are transplanted.
  * Immutable shipped asset inputs/world geometry are shared read-only. */
 import {createHash} from 'node:crypto';
-import {RaceSimulation} from '../../src/race-simulation.js';
-import {NativeRandom} from '../../src/simulation/native-random.js';
-import {NativeDeltaFilter} from '../../src/simulation/clock.js';
+import {RaceSimulation} from '../../source/race-simulation.js';
+import {NativeRandom} from '../../source/simulation/native-random.js';
+import {NativeDeltaFilter} from '../../source/simulation/clock.js';
 
 const OBSERVERS=new Set(['onPlayerCollision','onVoiceRequest','onDirectSound',
   'onSceneryImpact','onEngineStart','onAnimationRequest']);

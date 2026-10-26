@@ -1,0 +1,2 @@
+; 004012b8 KERNEL32.DLL::GetLastError
+004012b8	ff258cf14700	JMP dword ptr [0x0047f18c]

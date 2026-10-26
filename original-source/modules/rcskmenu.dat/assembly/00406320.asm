@@ -1,0 +1,2 @@
+; 00406320 KERNEL32.DLL::GetLastError
+00406320	ff25f8f24700	JMP dword ptr [0x0047f2f8]

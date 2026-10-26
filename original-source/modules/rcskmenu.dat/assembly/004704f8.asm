@@ -1,0 +1,4 @@
+; 004704f8 TfrmEditBox_btnOkClick
+004704f8	c680d402000004	MOV byte ptr [EAX + 0x2d4],0x4
+004704ff	e814e6fbff	CALL 0x0042eb18
+00470504	c3	RET

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativePickupSoundRequest, nativeFiringSoundRequest} from '../src/bonus-audio.js';
+import {nativePickupSoundRequest, nativeFiringSoundRequest} from '../source/bonus-audio.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/bonus-audio-fixtures.json', import.meta.url)));
 test('original static pickup names and player-only firing requests, including missing GOT_BONUS', () => {

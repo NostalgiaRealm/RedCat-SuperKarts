@@ -1,0 +1,2 @@
+; 00406598 GDI32.DLL::GetPixel
+00406598	ff25f4f34700	JMP dword ptr [0x0047f3f4]

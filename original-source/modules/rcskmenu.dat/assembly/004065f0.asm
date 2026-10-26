@@ -1,0 +1,2 @@
+; 004065f0 GDI32.DLL::MoveToEx
+004065f0	ff25c8f34700	JMP dword ptr [0x0047f3c8]

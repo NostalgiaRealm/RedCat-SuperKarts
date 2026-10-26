@@ -1,0 +1,3424 @@
+{
+  "status": "passed",
+  "scope": "Source-only software-WebGL HUD integration. Mode reloads use original assets/config. Combat cases fire original weapons and place only the projectile at a controlled contact before the real NativeBonusCombat.step. Arrow cases use disclosed controlled orientation/velocity and an original marker54 dispatch. Actor positions, race progress and HUD text are not assigned. No full-race or packaged-app coverage is claimed.",
+  "checks": [
+    {
+      "case": "native HUD elements and original roster in mode 0",
+      "state": {
+        "mode": 0,
+        "opponents": 4,
+        "characters": [
+          "Nederland",
+          "RedCat",
+          "Brutus",
+          "Max",
+          "WhizzKitty"
+        ],
+        "text": {
+          "string_lap": "Ronde",
+          "string_laptime": "Rondetijd",
+          "string_bestlap": "Snelste ronde",
+          "string_bonus": "BONUS",
+          "string_lap_value": "1",
+          "string_lapof_value": "/5",
+          "string_laptime_value": "00:00:00",
+          "string_bestlap_value": "--:--:--"
+        },
+        "remainingMs": 25000,
+        "elements": {
+          "backredcat": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backbrutus": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backmax": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backcou": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "frameredcat": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framewhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framebrutus": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framemax": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framecou": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrredcat": {
+            "visible": true,
+            "mesh": "meshes/charrc.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charwk.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrbrutus": {
+            "visible": true,
+            "mesh": "meshes/charbr.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrmax": {
+            "visible": true,
+            "mesh": "meshes/charmax.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrcou": {
+            "visible": true,
+            "mesh": "meshes/charneder.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "first": {
+            "visible": true,
+            "mesh": "meshes/ovrl1e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "second": {
+            "visible": true,
+            "mesh": "meshes/ovrl2e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "third": {
+            "visible": true,
+            "mesh": "meshes/ovrl3e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "fourth": {
+            "visible": true,
+            "mesh": "meshes/ovrl4e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "fifth": {
+            "visible": true,
+            "mesh": "meshes/ovrl5e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "backarrow": {
+            "visible": false,
+            "mesh": "meshes/ovlypijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "junctionarrow": {
+            "visible": false,
+            "mesh": "meshes/spltpijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "track": {
+            "visible": true,
+            "mesh": "meshes/ovltrck1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotplayer": {
+            "visible": true,
+            "mesh": "meshes/ovrldot2.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer0": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer1": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer2": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer3": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusframe": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusobject": {
+            "visible": false,
+            "mesh": null,
+            "texture": null,
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "starflag": {
+            "visible": false,
+            "mesh": "meshes/ovrlvlag.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              0,
+              0,
+              255,
+              127
+            ]
+          },
+          "star1": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star2": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star3": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star4": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star5": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star6": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star7": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star8": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star9": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star10": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star11": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star12": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          }
+        },
+        "layout": {
+          "portrait": false,
+          "scale": 0.975
+        }
+      }
+    },
+    {
+      "case": "native HUD elements and original roster in mode 1",
+      "state": {
+        "mode": 1,
+        "opponents": 3,
+        "characters": [
+          "RedCat",
+          "Brutus",
+          "Max",
+          "WhizzKitty"
+        ],
+        "text": {
+          "string_lap": "Ronde",
+          "string_laptime": "Rondetijd",
+          "string_bestlap": "Snelste ronde",
+          "string_bonus": "BONUS",
+          "string_lap_value": "1",
+          "string_lapof_value": "/5",
+          "string_laptime_value": "00:00:00",
+          "string_bestlap_value": "--:--:--",
+          "string_countdown_value": "25:00"
+        },
+        "remainingMs": 25000,
+        "elements": {
+          "backredcat": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backbrutus": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backmax": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "frameredcat": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framewhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framebrutus": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framemax": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrredcat": {
+            "visible": true,
+            "mesh": "meshes/charrc.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charwk.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrbrutus": {
+            "visible": true,
+            "mesh": "meshes/charbr.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrmax": {
+            "visible": true,
+            "mesh": "meshes/charmax.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "first": {
+            "visible": true,
+            "mesh": "meshes/ovrl1e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "second": {
+            "visible": true,
+            "mesh": "meshes/ovrl2e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "third": {
+            "visible": true,
+            "mesh": "meshes/ovrl3e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "fourth": {
+            "visible": true,
+            "mesh": "meshes/ovrl4e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "backarrow": {
+            "visible": false,
+            "mesh": "meshes/ovlypijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "junctionarrow": {
+            "visible": false,
+            "mesh": "meshes/spltpijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "track": {
+            "visible": true,
+            "mesh": "meshes/ovltrck1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotplayer": {
+            "visible": true,
+            "mesh": "meshes/ovrldot2.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer0": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer1": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer2": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusframe": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusobject": {
+            "visible": false,
+            "mesh": null,
+            "texture": null,
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "starflag": {
+            "visible": false,
+            "mesh": "meshes/ovrlvlag.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              0,
+              0,
+              255,
+              127
+            ]
+          },
+          "star1": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star2": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star3": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star4": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star5": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star6": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star7": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star8": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star9": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star10": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star11": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star12": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          }
+        },
+        "layout": {
+          "portrait": false,
+          "scale": 0.975
+        }
+      }
+    },
+    {
+      "case": "native HUD elements and original roster in mode 2",
+      "state": {
+        "mode": 2,
+        "opponents": 3,
+        "characters": [
+          "RedCat",
+          "Brutus",
+          "Max",
+          "WhizzKitty"
+        ],
+        "text": {
+          "string_lap": "Ronde",
+          "string_laptime": "Rondetijd",
+          "string_bestlap": "Snelste ronde",
+          "string_bonus": "BONUS",
+          "string_lap_value": "1",
+          "string_lapof_value": "/5",
+          "string_laptime_value": "00:00:00",
+          "string_bestlap_value": "--:--:--"
+        },
+        "remainingMs": 25000,
+        "elements": {
+          "backredcat": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backbrutus": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backmax": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "frameredcat": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framewhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framebrutus": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framemax": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrredcat": {
+            "visible": true,
+            "mesh": "meshes/charrc.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charwk.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrbrutus": {
+            "visible": true,
+            "mesh": "meshes/charbr.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrmax": {
+            "visible": true,
+            "mesh": "meshes/charmax.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "first": {
+            "visible": true,
+            "mesh": "meshes/ovrl1e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "second": {
+            "visible": true,
+            "mesh": "meshes/ovrl2e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "third": {
+            "visible": true,
+            "mesh": "meshes/ovrl3e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "fourth": {
+            "visible": true,
+            "mesh": "meshes/ovrl4e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "backarrow": {
+            "visible": false,
+            "mesh": "meshes/ovlypijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "junctionarrow": {
+            "visible": false,
+            "mesh": "meshes/spltpijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "track": {
+            "visible": true,
+            "mesh": "meshes/ovltrck1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotplayer": {
+            "visible": true,
+            "mesh": "meshes/ovrldot2.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer0": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer1": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer2": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusframe": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusobject": {
+            "visible": false,
+            "mesh": null,
+            "texture": null,
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "starflag": {
+            "visible": true,
+            "mesh": "meshes/ovrlvlag.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              0,
+              0,
+              255,
+              127
+            ]
+          },
+          "star1": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star2": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star3": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star4": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star5": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star6": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star7": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star8": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star9": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star10": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star11": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star12": {
+            "visible": true,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          }
+        },
+        "layout": {
+          "portrait": false,
+          "scale": 0.975
+        }
+      }
+    },
+    {
+      "case": "native HUD elements and original roster in mode 3",
+      "state": {
+        "mode": 3,
+        "opponents": 1,
+        "characters": [
+          "Nederland",
+          "WhizzKitty"
+        ],
+        "text": {
+          "string_lap": "Ronde",
+          "string_laptime": "Rondetijd",
+          "string_bestlap": "Snelste ronde",
+          "string_bonus": "BONUS",
+          "string_lap_value": "1",
+          "string_lapof_value": "/5",
+          "string_laptime_value": "00:00:00",
+          "string_bestlap_value": "--:--:--"
+        },
+        "remainingMs": 25000,
+        "elements": {
+          "backwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "backcou": {
+            "visible": true,
+            "mesh": "meshes/charvlak.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              64
+            ]
+          },
+          "framewhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "framecou": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrwhizzkitty": {
+            "visible": true,
+            "mesh": "meshes/charwk.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "portrcou": {
+            "visible": true,
+            "mesh": "meshes/charneder.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "first": {
+            "visible": true,
+            "mesh": "meshes/ovrl1e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "second": {
+            "visible": true,
+            "mesh": "meshes/ovrl2e.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "backarrow": {
+            "visible": false,
+            "mesh": "meshes/ovlypijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "junctionarrow": {
+            "visible": false,
+            "mesh": "meshes/spltpijl.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              0
+            ]
+          },
+          "track": {
+            "visible": true,
+            "mesh": "meshes/ovltrck1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotplayer": {
+            "visible": true,
+            "mesh": "meshes/ovrldot2.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "dotracer0": {
+            "visible": true,
+            "mesh": "meshes/ovrldot1.json",
+            "texture": "textures/overlay2.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusframe": {
+            "visible": true,
+            "mesh": "meshes/charlijn.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "bonusobject": {
+            "visible": false,
+            "mesh": null,
+            "texture": null,
+            "rgba": [
+              255,
+              255,
+              255,
+              255
+            ]
+          },
+          "starflag": {
+            "visible": false,
+            "mesh": "meshes/ovrlvlag.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              0,
+              0,
+              255,
+              127
+            ]
+          },
+          "star1": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star2": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star3": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star4": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star5": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star6": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star7": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star8": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star9": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star10": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star11": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          },
+          "star12": {
+            "visible": false,
+            "mesh": "meshes/ovrlster.json",
+            "texture": "textures/overlay1.tga.png",
+            "rgba": [
+              127,
+              127,
+              127,
+              255
+            ]
+          }
+        },
+        "layout": {
+          "portrait": false,
+          "scale": 0.975
+        }
+      }
+    },
+    {
+      "case": "original arrow meshes follow facing, native fade, marker54 and timeout",
+      "arrows": {
+        "initial": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 0,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 0,
+            "type": 0,
+            "alphaStep": 0,
+            "timestampSeconds": 0,
+            "remainingSeconds": 0
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            },
+            "junctionarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            }
+          }
+        },
+        "reversingWhileFacingForward": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 60.025001525878906,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 0,
+            "type": 0,
+            "alphaStep": 0,
+            "timestampSeconds": 0,
+            "remainingSeconds": 0
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            },
+            "junctionarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            }
+          }
+        },
+        "fades": [
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.04999923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 0,
+              "timestampSeconds": 60.04999923706055,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.07500076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 0,
+              "timestampSeconds": 60.04999923706055,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.099998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 0,
+              "timestampSeconds": 60.04999923706055,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.125,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 1,
+              "timestampSeconds": 60.121429443359375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  18
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.150001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 1,
+              "timestampSeconds": 60.121429443359375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  18
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.17499923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 1,
+              "timestampSeconds": 60.121429443359375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  18
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.20000076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 2,
+              "timestampSeconds": 60.1928596496582,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  36
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.224998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 2,
+              "timestampSeconds": 60.1928596496582,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  36
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.25,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 2,
+              "timestampSeconds": 60.1928596496582,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  36
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.275001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 3,
+              "timestampSeconds": 60.26428985595703,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  54
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.29999923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 3,
+              "timestampSeconds": 60.26428985595703,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  54
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.32500076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 3,
+              "timestampSeconds": 60.26428985595703,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  54
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.349998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 4,
+              "timestampSeconds": 60.33572006225586,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  72
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.375,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 4,
+              "timestampSeconds": 60.33572006225586,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  72
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.400001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 4,
+              "timestampSeconds": 60.33572006225586,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  72
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.42499923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 5,
+              "timestampSeconds": 60.40715026855469,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  91
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.45000076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 5,
+              "timestampSeconds": 60.40715026855469,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  91
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.474998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 5,
+              "timestampSeconds": 60.40715026855469,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  91
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.5,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 6,
+              "timestampSeconds": 60.478580474853516,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  109
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.525001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 6,
+              "timestampSeconds": 60.478580474853516,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  109
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.54999923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 6,
+              "timestampSeconds": 60.478580474853516,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  109
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.57500076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 7,
+              "timestampSeconds": 60.550010681152344,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  127
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.599998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 7,
+              "timestampSeconds": 60.550010681152344,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  127
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.625,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 8,
+              "timestampSeconds": 60.62144088745117,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  145
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.650001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 8,
+              "timestampSeconds": 60.62144088745117,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  145
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.67499923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 8,
+              "timestampSeconds": 60.62144088745117,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  145
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.70000076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 9,
+              "timestampSeconds": 60.69287109375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  163
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.724998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 9,
+              "timestampSeconds": 60.69287109375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  163
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.75,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 9,
+              "timestampSeconds": 60.69287109375,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  163
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.775001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 10,
+              "timestampSeconds": 60.76430130004883,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  182
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.79999923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 10,
+              "timestampSeconds": 60.76430130004883,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  182
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.82500076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 10,
+              "timestampSeconds": 60.76430130004883,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  182
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.849998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 11,
+              "timestampSeconds": 60.835731506347656,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  200
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.875,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 11,
+              "timestampSeconds": 60.835731506347656,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  200
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.900001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 11,
+              "timestampSeconds": 60.835731506347656,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  200
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.92499923706055,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 12,
+              "timestampSeconds": 60.907161712646484,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  218
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.95000076293945,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 12,
+              "timestampSeconds": 60.907161712646484,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  218
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 60.974998474121094,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 1,
+              "type": 1,
+              "alphaStep": 12,
+              "timestampSeconds": 60.907161712646484,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  218
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 61,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 2,
+              "type": 1,
+              "alphaStep": 13,
+              "timestampSeconds": 60.97859191894531,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  236
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          },
+          {
+            "input": {
+              "forward": false,
+              "nowSeconds": 61.025001525878906,
+              "deltaSeconds": 0.025
+            },
+            "state": {
+              "phase": 2,
+              "type": 1,
+              "alphaStep": 13,
+              "timestampSeconds": 60.97859191894531,
+              "remainingSeconds": 0
+            },
+            "nodes": {
+              "backarrow": {
+                "visible": true,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  236
+                ]
+              },
+              "junctionarrow": {
+                "visible": false,
+                "rgba": [
+                  255,
+                  255,
+                  255,
+                  0
+                ]
+              }
+            }
+          }
+        ],
+        "restored": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 61.04999923706055,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 0,
+            "type": 1,
+            "alphaStep": 13,
+            "timestampSeconds": 60.97859191894531,
+            "remainingSeconds": 0
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                236
+              ]
+            },
+            "junctionarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            }
+          }
+        },
+        "junctionStart": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 61.07500076293945,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 1,
+            "type": 2,
+            "alphaStep": 0,
+            "timestampSeconds": 61.07500076293945,
+            "remainingSeconds": 0.9500000476837158
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                236
+              ]
+            },
+            "junctionarrow": {
+              "visible": true,
+              "rgba": [
+                255,
+                255,
+                255,
+                0
+              ]
+            }
+          }
+        },
+        "junctionVisible": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 61.375,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 1,
+            "type": 2,
+            "alphaStep": 4,
+            "timestampSeconds": 61.360721588134766,
+            "remainingSeconds": 0.6500003337860107
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                236
+              ]
+            },
+            "junctionarrow": {
+              "visible": true,
+              "rgba": [
+                255,
+                255,
+                255,
+                72
+              ]
+            }
+          }
+        },
+        "junctionEnd": {
+          "input": {
+            "forward": true,
+            "nowSeconds": 62.17499923706055,
+            "deltaSeconds": 0.025
+          },
+          "state": {
+            "phase": 0,
+            "type": 2,
+            "alphaStep": 13,
+            "timestampSeconds": 62.00359344482422,
+            "remainingSeconds": -0.02499960921704769
+          },
+          "nodes": {
+            "backarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                236
+              ]
+            },
+            "junctionarrow": {
+              "visible": false,
+              "rgba": [
+                255,
+                255,
+                255,
+                236
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "actual weapon contacts dispatch Raak only for player hits, after the rendered frame",
+      "contacts": [
+        {
+          "name": "player-to-NPC",
+          "hit": {
+            "type": "hit",
+            "shooter": 4,
+            "racer": 0,
+            "bonus": 3,
+            "level": 1
+          },
+          "contactPose": [
+            -2301.247314453125,
+            -9.157112121582031,
+            7226.69189453125
+          ],
+          "afterHit": {
+            "captured": null,
+            "queued": "Raak!",
+            "visible": true,
+            "queue": []
+          },
+          "nextCapture": "Raak!",
+          "nextAlpha": 25
+        },
+        {
+          "name": "NPC-to-player",
+          "hit": {
+            "type": "hit",
+            "shooter": 0,
+            "racer": 4,
+            "bonus": 3,
+            "level": 1
+          },
+          "contactPose": [
+            -2353.725830078125,
+            -0.7046051025390625,
+            7343.15478515625
+          ],
+          "afterHit": {
+            "captured": null,
+            "queued": "Raak!",
+            "visible": false,
+            "queue": []
+          },
+          "nextCapture": null,
+          "nextAlpha": 255
+        },
+        {
+          "name": "NPC-to-NPC",
+          "hit": {
+            "type": "hit",
+            "shooter": 0,
+            "racer": 1,
+            "bonus": 3,
+            "level": 1
+          },
+          "contactPose": [
+            -2384.316162109375,
+            -10.065792083740234,
+            7209.04931640625
+          ],
+          "afterHit": {
+            "captured": null,
+            "queued": "Raak!",
+            "visible": false,
+            "queue": []
+          },
+          "nextCapture": null,
+          "nextAlpha": 255
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "hashesBefore": {
+    "src/race-hud.js": "eac03b783172df4a02c1e6e57fcc7d649913f005dcb26eb32580dfcc8e63bc8a",
+    "src/race-hud-meshes.js": "33b1127b943f3124eb0c9ae4feec1fc493f10b3aa0efed34713b312db66a84d4",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/hud-text-renderer.js": "f7d9c73cedad26e964f9447777da744fe0f5f08f80bd8fde83bb01344c6da9b2",
+    "src/hud-draw-order.js": "a7090623c0cce6d702793132f03e7d7f2333cd348883cba1ef5282d482988074",
+    "src/multisample-renderer.js": "e0a262a1456f4ed7b15150f4af1a96320b0da877020bec8b7d38a8e3e99195d5",
+    "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+    "src/hud-gameplay-events.js": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+    "src/driving-view.js": "1976dae30a909600b23d951efea7aa4c8e942ba5bb4edf808106a98a947fab47",
+    "src/simulation/native-combat.js": "319c6944a2fbf41611b5d4e051a5ca42e6415ef916d4b4d011e146d6d0ae7be8",
+    "src/simulation/native-star-hud.js": "013cbae809aa3f4fbf247174cb663ea5ecfb1db5bb5587246be2ea1bbb8bc072",
+    "src/simulation/native-hud-arrows.js": "1de72b7b51dde3701496fc2c5f277c3e1b421fbc0f2d9c65ab36548f2710bc63",
+    "src/simulation/native-race.js": "f2e8ffc690bc2063845bbd47096ba8005da7f2918080a73fc5edd79aa34a03db",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "tests/hud-modes-browser.mjs": "a000381c695b04a3caa16054aaa2471baabe6085072cae1edf5ff11a9c202df6"
+  },
+  "hashesAfter": {
+    "src/race-hud.js": "eac03b783172df4a02c1e6e57fcc7d649913f005dcb26eb32580dfcc8e63bc8a",
+    "src/race-hud-meshes.js": "33b1127b943f3124eb0c9ae4feec1fc493f10b3aa0efed34713b312db66a84d4",
+    "src/hud-text.js": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+    "src/hud-text-renderer.js": "f7d9c73cedad26e964f9447777da744fe0f5f08f80bd8fde83bb01344c6da9b2",
+    "src/hud-draw-order.js": "a7090623c0cce6d702793132f03e7d7f2333cd348883cba1ef5282d482988074",
+    "src/multisample-renderer.js": "e0a262a1456f4ed7b15150f4af1a96320b0da877020bec8b7d38a8e3e99195d5",
+    "src/race-hud-layout.js": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+    "src/hud-gameplay-events.js": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+    "src/driving-view.js": "1976dae30a909600b23d951efea7aa4c8e942ba5bb4edf808106a98a947fab47",
+    "src/simulation/native-combat.js": "319c6944a2fbf41611b5d4e051a5ca42e6415ef916d4b4d011e146d6d0ae7be8",
+    "src/simulation/native-star-hud.js": "013cbae809aa3f4fbf247174cb663ea5ecfb1db5bb5587246be2ea1bbb8bc072",
+    "src/simulation/native-hud-arrows.js": "1de72b7b51dde3701496fc2c5f277c3e1b421fbc0f2d9c65ab36548f2710bc63",
+    "src/simulation/native-race.js": "f2e8ffc690bc2063845bbd47096ba8005da7f2918080a73fc5edd79aa34a03db",
+    "public/assets/config.json": "900318101666e5cc96a7f34d69a58f6d688c418ae36356923423384a70acb9ae",
+    "tests/hud-modes-browser.mjs": "a000381c695b04a3caa16054aaa2471baabe6085072cae1edf5ff11a9c202df6"
+  },
+  "changedDuringRun": []
+}

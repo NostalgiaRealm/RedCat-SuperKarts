@@ -1,0 +1,244 @@
+/*
+ * FUN_004031f0 at 004031f0
+ * undefined FUN_004031f0(void)
+ * Address ranges: 004031f0-00403d8f
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_004031f0(uint param_1)
+
+{
+  int iVar1;
+  int iVar2;
+  
+  if (DAT_00504fa4 != 0) {
+    FUN_00405f70();
+  }
+  if ((int)param_1 < 0) {
+    FUN_004afee0(s__s__d____T_ARRAY_construction__i_004de770,
+                 s____Libs_win3dlib_Include_array_h_004de7b4,0x107,&DAT_00504fc5,&DAT_00504fac,
+                 param_1);
+  }
+  DAT_00504f98 = operator_new(param_1 * 0x6c);
+  DAT_00504f9c = param_1;
+  DAT_00504fa0 = 0;
+  DAT_00504fa8 = operator_new(param_1);
+  FUN_004afce0(s_T_ARRAY___alloc___16_16s___16_16_004de744,&DAT_00504fc5,&DAT_00504fac,DAT_00504f9c)
+  ;
+  DAT_00504fa4 = 1;
+  iVar2 = 0;
+  if (0 < (int)param_1) {
+    do {
+      iVar1 = iVar2 + 1;
+      *(undefined1 *)((int)DAT_00504fa8 + iVar2) = 0;
+      iVar2 = iVar1;
+    } while (iVar1 < (int)param_1);
+  }
+  if (DAT_00504fec != 0) {
+    FUN_00405f70();
+  }
+  DAT_00504fe0 = operator_new(0x2ec);
+  DAT_00504fe4 = 0x11;
+  _DAT_00504fe8 = 0;
+  DAT_00504ff0 = operator_new(0x11);
+  FUN_004afce0(s_T_ARRAY___alloc___16_16s___16_16_004de744,&DAT_0050500d,&DAT_00504ff4,DAT_00504fe4)
+  ;
+  DAT_00504fec = 1;
+  iVar2 = 0;
+  do {
+    iVar1 = iVar2 + 1;
+    *(undefined1 *)((int)DAT_00504ff0 + iVar2) = 1;
+    iVar2 = iVar1;
+  } while (iVar1 < 0x11);
+  *DAT_00504fe0 = 6;
+  DAT_00504fe0[1] = 0x40000000;
+  DAT_00504fe0[2] = 0x42340000;
+  DAT_00504fe0[3] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[4] = 0x40000000;
+  DAT_00504fe0[5] = 0x42480000;
+  DAT_00504fe0[6] = 0x41480000;
+  DAT_00504fe0[7] = 0x43480000;
+  DAT_00504fe0[8] = 0x43480000;
+  DAT_00504fe0[9] = 0x43960000;
+  DAT_00504fe0[10] = 0x40000000;
+  DAT_00504fe0[0xb] = 5;
+  DAT_00504fe0[0xc] = 0x40000000;
+  DAT_00504fe0[0xd] = 0x41700000;
+  DAT_00504fe0[0xe] = 11309.733 / _DAT_004fc8f4;
+  DAT_00504fe0[0xf] = 0x40700000;
+  DAT_00504fe0[0x10] = 0x41c80000;
+  DAT_00504fe0[0x11] = 0x41600000;
+  DAT_00504fe0[0x12] = 0x43480000;
+  DAT_00504fe0[0x13] = 0x43480000;
+  DAT_00504fe0[0x14] = 0x43960000;
+  DAT_00504fe0[0x15] = 0x40000000;
+  DAT_00504fe0[0x16] = 8;
+  DAT_00504fe0[0x17] = 0x3f800000;
+  DAT_00504fe0[0x18] = 0x41380000;
+  DAT_00504fe0[0x19] = 6031.858 / _DAT_004fc8f4;
+  DAT_00504fe0[0x1a] = 0x40233333;
+  DAT_00504fe0[0x1b] = 0x41c80000;
+  DAT_00504fe0[0x1c] = 0x41500000;
+  DAT_00504fe0[0x1d] = 0x43480000;
+  DAT_00504fe0[0x1e] = 0x43480000;
+  DAT_00504fe0[0x1f] = 0x43960000;
+  DAT_00504fe0[0x20] = 0x40000000;
+  DAT_00504fe0[0x21] = 4;
+  DAT_00504fe0[0x22] = 0x3f99999a;
+  DAT_00504fe0[0x23] = 0x41a80000;
+  DAT_00504fe0[0x24] = 8293.805 / _DAT_004fc8f4;
+  DAT_00504fe0[0x25] = 0x4079999a;
+  DAT_00504fe0[0x26] = 0x41c80000;
+  DAT_00504fe0[0x27] = 0x41680000;
+  DAT_00504fe0[0x28] = 0x43480000;
+  DAT_00504fe0[0x29] = 0x43480000;
+  DAT_00504fe0[0x2a] = 0x43960000;
+  DAT_00504fe0[0x2b] = 0x40000000;
+  DAT_00504fe0[0x2c] = 4;
+  DAT_00504fe0[0x2d] = 0x3fa66666;
+  DAT_00504fe0[0x2e] = 0x41c80000;
+  DAT_00504fe0[0x2f] = 7539.8223 / _DAT_004fc8f4;
+  DAT_00504fe0[0x30] = 0x4099999a;
+  DAT_00504fe0[0x31] = 0x41c80000;
+  DAT_00504fe0[0x32] = 0x417ccccd;
+  DAT_00504fe0[0x33] = 0x43480000;
+  DAT_00504fe0[0x34] = 0x43480000;
+  DAT_00504fe0[0x35] = 0x43960000;
+  DAT_00504fe0[0x36] = 0x40000000;
+  DAT_00504fe0[0x37] = 5;
+  DAT_00504fe0[0x38] = 0x3fa00000;
+  DAT_00504fe0[0x39] = 0x42000000;
+  DAT_00504fe0[0x3a] = 12063.716 / _DAT_004fc8f4;
+  DAT_00504fe0[0x3b] = 0x41100000;
+  DAT_00504fe0[0x3c] = 0x42200000;
+  DAT_00504fe0[0x3d] = 0x41600000;
+  DAT_00504fe0[0x3e] = 0x43480000;
+  DAT_00504fe0[0x3f] = 0x43480000;
+  DAT_00504fe0[0x40] = 0x43c80000;
+  DAT_00504fe0[0x41] = 0x40000000;
+  DAT_00504fe0[0x42] = 4;
+  DAT_00504fe0[0x43] = 0x3fa00000;
+  DAT_00504fe0[0x44] = 0x42000000;
+  DAT_00504fe0[0x45] = 10178.76 / _DAT_004fc8f4;
+  DAT_00504fe0[0x46] = 0x40c9999a;
+  DAT_00504fe0[0x47] = 0x42200000;
+  DAT_00504fe0[0x48] = 0x4181999a;
+  DAT_00504fe0[0x49] = 0x42fa0000;
+  DAT_00504fe0[0x4a] = 0x42c80000;
+  DAT_00504fe0[0x4b] = 0x43160000;
+  DAT_00504fe0[0x4c] = 0x40000000;
+  DAT_00504fe0[0x4d] = 7;
+  DAT_00504fe0[0x4e] = 0x3fa00000;
+  DAT_00504fe0[0x4f] = 0x429e6666;
+  DAT_00504fe0[0x50] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x51] = 0x4113d70a;
+  DAT_00504fe0[0x52] = 0x42b00000;
+  DAT_00504fe0[0x53] = 0x416ccccd;
+  DAT_00504fe0[0x54] = 0x42a00000;
+  DAT_00504fe0[0x55] = 0x42960000;
+  DAT_00504fe0[0x56] = 0x42aa0000;
+  DAT_00504fe0[0x57] = 0x40000000;
+  DAT_00504fe0[0x58] = 7;
+  DAT_00504fe0[0x59] = 0x3fa00000;
+  DAT_00504fe0[0x5a] = 0x429e6666;
+  DAT_00504fe0[0x5b] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x5c] = 0x4113d70a;
+  DAT_00504fe0[0x5d] = 0x42b00000;
+  DAT_00504fe0[0x5e] = 0x416ccccd;
+  DAT_00504fe0[0x5f] = 0x42a00000;
+  DAT_00504fe0[0x60] = 0x42960000;
+  DAT_00504fe0[0x61] = 0x42aa0000;
+  DAT_00504fe0[0x62] = 0x40000000;
+  DAT_00504fe0[99] = 7;
+  DAT_00504fe0[100] = 0x3fa00000;
+  DAT_00504fe0[0x65] = 0x429e6666;
+  DAT_00504fe0[0x66] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x67] = 0x4113d70a;
+  DAT_00504fe0[0x68] = 0x42b00000;
+  DAT_00504fe0[0x69] = 0x416ccccd;
+  DAT_00504fe0[0x6a] = 0x42a00000;
+  DAT_00504fe0[0x6b] = 0x42960000;
+  DAT_00504fe0[0x6c] = 0x42aa0000;
+  DAT_00504fe0[0x6d] = 0x40000000;
+  DAT_00504fe0[0x6e] = 7;
+  DAT_00504fe0[0x6f] = 0x3fa00000;
+  DAT_00504fe0[0x70] = 0x429e6666;
+  DAT_00504fe0[0x71] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x72] = 0x4113d70a;
+  DAT_00504fe0[0x73] = 0x42b00000;
+  DAT_00504fe0[0x74] = 0x416ccccd;
+  DAT_00504fe0[0x75] = 0x42a00000;
+  DAT_00504fe0[0x76] = 0x42960000;
+  DAT_00504fe0[0x77] = 0x42aa0000;
+  DAT_00504fe0[0x78] = 0x40000000;
+  DAT_00504fe0[0x79] = 7;
+  DAT_00504fe0[0x7a] = 0x3fa00000;
+  DAT_00504fe0[0x7b] = 0x429e6666;
+  DAT_00504fe0[0x7c] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x7d] = 0x4113d70a;
+  DAT_00504fe0[0x7e] = 0x42b00000;
+  DAT_00504fe0[0x7f] = 0x416ccccd;
+  DAT_00504fe0[0x80] = 0x42a00000;
+  DAT_00504fe0[0x81] = 0x42960000;
+  DAT_00504fe0[0x82] = 0x42aa0000;
+  DAT_00504fe0[0x83] = 0x40000000;
+  DAT_00504fe0[0x84] = 7;
+  DAT_00504fe0[0x85] = 0x3fa00000;
+  DAT_00504fe0[0x86] = 0x429e6666;
+  DAT_00504fe0[0x87] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x88] = 0x4113d70a;
+  DAT_00504fe0[0x89] = 0x42b00000;
+  DAT_00504fe0[0x8a] = 0x416ccccd;
+  DAT_00504fe0[0x8b] = 0x42a00000;
+  DAT_00504fe0[0x8c] = 0x42960000;
+  DAT_00504fe0[0x8d] = 0x42aa0000;
+  DAT_00504fe0[0x8e] = 0x40000000;
+  DAT_00504fe0[0x8f] = 7;
+  DAT_00504fe0[0x90] = 0x3fa00000;
+  DAT_00504fe0[0x91] = 0x429e6666;
+  DAT_00504fe0[0x92] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x93] = 0x4113d70a;
+  DAT_00504fe0[0x94] = 0x42b00000;
+  DAT_00504fe0[0x95] = 0x416ccccd;
+  DAT_00504fe0[0x96] = 0x42a00000;
+  DAT_00504fe0[0x97] = 0x42960000;
+  DAT_00504fe0[0x98] = 0x42aa0000;
+  DAT_00504fe0[0x99] = 0x40000000;
+  DAT_00504fe0[0x9a] = 7;
+  DAT_00504fe0[0x9b] = 0x3fa00000;
+  DAT_00504fe0[0x9c] = 0x429e6666;
+  DAT_00504fe0[0x9d] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0x9e] = 0x4113d70a;
+  DAT_00504fe0[0x9f] = 0x42b00000;
+  DAT_00504fe0[0xa0] = 0x416ccccd;
+  DAT_00504fe0[0xa1] = 0x42a00000;
+  DAT_00504fe0[0xa2] = 0x42960000;
+  DAT_00504fe0[0xa3] = 0x42aa0000;
+  DAT_00504fe0[0xa4] = 0x40000000;
+  DAT_00504fe0[0xa5] = 7;
+  DAT_00504fe0[0xa6] = 0x3fa00000;
+  DAT_00504fe0[0xa7] = 0x429e6666;
+  DAT_00504fe0[0xa8] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0xa9] = 0x4113d70a;
+  DAT_00504fe0[0xaa] = 0x42b00000;
+  DAT_00504fe0[0xab] = 0x416ccccd;
+  DAT_00504fe0[0xac] = 0x42a00000;
+  DAT_00504fe0[0xad] = 0x42960000;
+  DAT_00504fe0[0xae] = 0x42aa0000;
+  DAT_00504fe0[0xaf] = 0x40000000;
+  DAT_00504fe0[0xb0] = 7;
+  DAT_00504fe0[0xb1] = 0x3fa00000;
+  DAT_00504fe0[0xb2] = 0x429e6666;
+  DAT_00504fe0[0xb3] = 13571.681 / _DAT_004fc8f4;
+  DAT_00504fe0[0xb4] = 0x4113d70a;
+  DAT_00504fe0[0xb5] = 0x42b00000;
+  DAT_00504fe0[0xb6] = 0x416ccccd;
+  DAT_00504fe0[0xb7] = 0x42a00000;
+  DAT_00504fe0[0xb8] = 0x42960000;
+  DAT_00504fe0[0xb9] = 0x42aa0000;
+  DAT_00504fe0[0xba] = 0x40000000;
+  return;
+}
+

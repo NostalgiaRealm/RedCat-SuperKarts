@@ -1,0 +1,2 @@
+; 004159f0 COMCTL32.DLL::ImageList_Write
+004159f0	ff2520f74700	JMP dword ptr [0x0047f720]

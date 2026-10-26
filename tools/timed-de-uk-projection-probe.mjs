@@ -1,10 +1,10 @@
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
 import {RouteTestDriver} from './timed-projection-driver.mjs';
-import {nativeAdventureQualification} from '../src/simulation/native-adventure.js';
+import {nativeAdventureQualification} from '../source/simulation/native-adventure.js';
 
 const root=new URL('../',import.meta.url),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 const planPath=process.argv[2],output=process.argv[3];
@@ -24,7 +24,7 @@ async function sourceSnapshot(){
       if(entry.isDirectory())await visit(name);else if(entry.isFile())paths.push(name);
     }
   }
-  await visit('src');
+  await visit('source');
   return Object.fromEntries(await Promise.all(paths.sort().map(async path=>[path,hash(await read(path))])));
 }
 const sourceAtStart=await sourceSnapshot();

@@ -1,0 +1,3 @@
+; 004d1174 Unwind@004d1174
+004d1174	8d8d6cffffff	LEA ECX,[EBP + 0xffffff6c]
+004d117a	e931a3f3ff	JMP 0x0040b4b0

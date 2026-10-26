@@ -1,0 +1,3 @@
+; 0046af8c FUN_0046af8c
+0046af8c	b001	MOV AL,0x1
+0046af8e	c3	RET

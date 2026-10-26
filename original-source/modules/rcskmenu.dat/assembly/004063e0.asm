@@ -1,0 +1,2 @@
+; 004063e0 KERNEL32.DLL::LoadResource
+004063e0	ff2598f24700	JMP dword ptr [0x0047f298]

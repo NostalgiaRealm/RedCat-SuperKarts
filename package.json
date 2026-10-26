@@ -1,6 +1,6 @@
 {
   "name": "redcat-superkarts-port",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "description": "Evidence-led browser and desktop reconstruction of RedCat SuperKarts",
@@ -8,15 +8,18 @@
   "desktopName": "redcat-superkarts.desktop",
   "author": "RedCat SuperKarts port contributors",
   "license": "UNLICENSED",
-  "engines": { "node": "24.x" },
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
-    "version": "node tools/sync-version.mjs",
+    "version": "node tools/sync-version.mjs && npm run bundle",
     "prepare:assets": "node tools/prepare.mjs",
     "dev": "node tools/serve.mjs",
     "start": "node tools/serve.mjs",
+    "preview": "node tools/serve.mjs --dist",
     "build": "node tools/build.mjs",
     "desktop:icons": "node tools/prepare-desktop-icons.mjs",
-    "desktop": "npm run desktop:icons && electron .",
+    "desktop": "npm run bundle && npm run desktop:icons && electron .",
     "desktop:prepare": "npm run build && npm run desktop:icons",
     "desktop:pack": "npm run desktop:prepare && electron-builder --dir --publish never",
     "dist:linux": "npm run desktop:prepare && electron-builder --linux --x64 --publish never",
@@ -28,7 +31,9 @@
     "test:driving": "node tests/driving-browser.mjs",
     "test:firefox": "node tests/firefox.mjs",
     "test:assets": "python3 tools/validate-assets.py",
-    "test:parsers": "python3 -m unittest discover -s tests -p 'test_*.py'"
+    "test:parsers": "python3 -m unittest discover -s tests -p 'test_*.py'",
+    "bundle": "node tools/refresh-runtime.mjs",
+    "release:source": "node tools/package-release-source.mjs"
   },
   "dependencies": {
     "three": "0.186.0"
@@ -36,6 +41,7 @@
   "devDependencies": {
     "electron": "44.9.2",
     "electron-builder": "26.15.3",
+    "esbuild": "0.28.2",
     "playwright": "1.58.2"
   }
 }

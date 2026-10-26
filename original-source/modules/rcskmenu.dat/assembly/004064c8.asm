@@ -1,0 +1,2 @@
+; 004064c8 GDI32.DLL::CreateDIBitmap
+004064c8	ff255cf44700	JMP dword ptr [0x0047f45c]

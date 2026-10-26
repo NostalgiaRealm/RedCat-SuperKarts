@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativePlayerCamera} from '../src/simulation/native-camera.js';
+import {NativePlayerCamera} from '../source/simulation/native-camera.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/camera-control-fixtures.json',import.meta.url)));
 function snapshot(camera){return Object.fromEntries(['position','target','up','mode','bodyVisible','positionDamping'].map(key=>[key,camera[key]]));}
 

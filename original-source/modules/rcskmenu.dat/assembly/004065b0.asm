@@ -1,0 +1,2 @@
+; 004065b0 GDI32.DLL::GetTextExtentPoint32A
+004065b0	ff25e8f34700	JMP dword ptr [0x0047f3e8]

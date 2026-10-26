@@ -1,0 +1,2 @@
+; 00401318 KERNEL32.DLL::MultiByteToWideChar
+00401318	ff2560f14700	JMP dword ptr [0x0047f160]

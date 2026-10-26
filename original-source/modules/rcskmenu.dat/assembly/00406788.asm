@@ -1,0 +1,2 @@
+; 00406788 USER32.DLL::DrawFrameControl
+00406788	ff2590f64700	JMP dword ptr [0x0047f690]

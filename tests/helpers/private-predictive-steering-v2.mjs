@@ -1,7 +1,7 @@
 // Private test controller. Predictions own separate scalar bodies. No live
 // simulation state, forces, collision responses, timers or physics is changed.
-import {calculateNativePlayerForces} from '../../src/simulation/native-player.js';
-import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../src/simulation/native-integrator.js';
+import {calculateNativePlayerForces} from '../../source/simulation/native-player.js';
+import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../source/simulation/native-integrator.js';
 
 const wrap=value=>Math.atan2(Math.sin(value),Math.cos(value));
 export function predictSteering(motion,target,input,{frames=12,slipWeight=0,rateWeight=1}={}){

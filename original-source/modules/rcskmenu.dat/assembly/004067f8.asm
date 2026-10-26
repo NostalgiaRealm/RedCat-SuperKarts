@@ -1,0 +1,2 @@
+; 004067f8 USER32.DLL::FindWindowA
+004067f8	ff2558f64700	JMP dword ptr [0x0047f658]

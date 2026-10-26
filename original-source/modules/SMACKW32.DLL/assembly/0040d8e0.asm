@@ -1,0 +1,2 @@
+; 0040d8e0 KERNEL32.DLL::ReleaseMutex
+0040d8e0	ff2568134100	JMP dword ptr [0x00411368]

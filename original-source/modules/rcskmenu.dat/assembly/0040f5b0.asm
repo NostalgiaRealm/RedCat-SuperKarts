@@ -1,0 +1,3 @@
+; 0040f5b0 FUN_0040f5b0
+0040f5b0	8b4504	MOV EAX,dword ptr [EBP + 0x4]
+0040f5b3	c3	RET

@@ -1,0 +1,2 @@
+; 004066d8 USER32.DLL::BeginPaint
+004066d8	ff25e4f64700	JMP dword ptr [0x0047f6e4]

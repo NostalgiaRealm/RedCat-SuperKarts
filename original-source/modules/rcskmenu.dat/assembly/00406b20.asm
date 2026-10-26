@@ -1,0 +1,2 @@
+; 00406b20 USER32.DLL::SetWindowPos
+00406b20	ff25c8f44700	JMP dword ptr [0x0047f4c8]

@@ -5,7 +5,7 @@ import {
   finalizeNativeOpponentResults, nativeRaceResultPatch, nativeHighscoreIndex,
   insertNativeHighscore, serializeNativeHighscore, nativeQuickRaceDebriefAction,
   nativeResultTimeParts, formatNativeResultTime,
-} from '../src/simulation/native-results.js';
+} from '../source/simulation/native-results.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/result-fixtures.json', import.meta.url)));
 

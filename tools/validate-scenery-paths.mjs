@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -9,7 +10,7 @@ try{
   await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+'/assets/config.json');
   await page.setContent('<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script><canvas style="width:960px;height:720px"></canvas>');
   await page.evaluate(async()=>{
-    const [{TrackViewer},{NativeSceneryPaths}]=await Promise.all([import('/src/world.js'),import('/src/scenery-paths.js')]);
+    const [{TrackViewer},{NativeSceneryPaths}]=await Promise.all([import('/source/world.js'),import('/source/scenery-paths.js')]);
     window.PathController=NativeSceneryPaths;window.viewer=new TrackViewer(document.querySelector('canvas'));
     viewer.renderer.setSize(960,720,false);
   });

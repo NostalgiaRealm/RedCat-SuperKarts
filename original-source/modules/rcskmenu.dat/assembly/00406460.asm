@@ -1,0 +1,2 @@
+; 00406460 KERNEL32.DLL::WaitForSingleObject
+00406460	ff2558f24700	JMP dword ptr [0x0047f258]

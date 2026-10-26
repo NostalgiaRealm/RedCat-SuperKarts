@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeSettings,renderDimensions,readSettings,writeSettings,adaptVerticalFov} from '../src/settings.js';
-import {InputState,axisDeadzone} from '../src/input.js';
+import {normalizeSettings,renderDimensions,readSettings,writeSettings,adaptVerticalFov} from '../source/settings.js';
+import {InputState,axisDeadzone} from '../source/input.js';
 
 test('Auto applies DPR once, each render scale multiplies both dimensions',()=>{
   for(const scale of [25,100,200]){

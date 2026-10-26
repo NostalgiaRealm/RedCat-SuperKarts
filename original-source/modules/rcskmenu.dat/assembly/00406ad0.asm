@@ -1,0 +1,2 @@
+; 00406ad0 USER32.DLL::SetMenu
+00406ad0	ff25f0f44700	JMP dword ptr [0x0047f4f0]

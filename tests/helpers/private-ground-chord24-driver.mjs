@@ -1,6 +1,6 @@
 import {RouteTestDriver as Base} from './private-timed-lane-driver.mjs';
-import {NativeRailCollision} from '../../src/simulation/native-collision.js';
-import {createNativeTrack,sampleNativeTrack} from '../../src/simulation/native-track.js';
+import {NativeRailCollision} from '../../source/simulation/native-collision.js';
+import {createNativeTrack,sampleNativeTrack} from '../../source/simulation/native-track.js';
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[2]-b[2]);
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 

@@ -1,0 +1,2 @@
+; 00406940 USER32.DLL::GetWindowPlacement
+00406940	ff25b8f54700	JMP dword ptr [0x0047f5b8]

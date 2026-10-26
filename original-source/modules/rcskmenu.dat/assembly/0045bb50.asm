@@ -1,0 +1,3 @@
+; 0045bb50 FUN_0045bb50
+0045bb50	8a4004	MOV AL,byte ptr [EAX + 0x4]
+0045bb53	c3	RET

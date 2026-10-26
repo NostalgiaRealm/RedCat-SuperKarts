@@ -1,0 +1,3 @@
+; 0043cebc FUN_0043cebc
+0043cebc	a1dcd44700	MOV EAX,[0x0047d4dc]
+0043cec1	c3	RET

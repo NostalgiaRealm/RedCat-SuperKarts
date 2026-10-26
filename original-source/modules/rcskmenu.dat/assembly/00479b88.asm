@@ -1,0 +1,3 @@
+; 00479b88 TfrmIntro_Timer1Timer
+00479b88	e88b4ffbff	CALL 0x0042eb18
+00479b8d	c3	RET

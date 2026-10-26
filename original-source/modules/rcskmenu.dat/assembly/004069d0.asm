@@ -1,0 +1,2 @@
+; 004069d0 USER32.DLL::LoadBitmapA
+004069d0	ff2570f54700	JMP dword ptr [0x0047f570]

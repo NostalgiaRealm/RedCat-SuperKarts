@@ -1,0 +1,2 @@
+; 004013cc KERNEL32.DLL::VirtualFree
+004013cc	ff2540f14700	JMP dword ptr [0x0047f140]

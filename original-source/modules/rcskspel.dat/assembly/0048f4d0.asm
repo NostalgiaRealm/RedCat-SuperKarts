@@ -1,0 +1,3 @@
+; 0048f4d0 FUN_0048f4d0
+0048f4d0	d94108	FLD float ptr [ECX + 0x8]
+0048f4d3	c3	RET

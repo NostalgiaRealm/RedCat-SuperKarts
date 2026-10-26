@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {applyNativeKartContact} from '../src/simulation/native-kart-contact.js';
+import {applyNativeKartContact} from '../source/simulation/native-kart-contact.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/kart-contact-fixtures.json',import.meta.url)));
 test('kart-to-kart impulse matches original instructions at both x87 precisions',()=>{

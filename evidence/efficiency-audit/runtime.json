@@ -1,0 +1,1413 @@
+{
+  "date": "2026-10-26",
+  "baselineCommit": "4386c34a77af4df695f39ced3556b2b19216a467",
+  "scope": "Authored src JavaScript inventory and runtime efficiency review. All modules were inventoried and their exports/imports/hot-path patterns checked; deeper implementation/caller review focused on rendering, HUD, audio, asset caches, scenery, input and pickup/combat counters. This is not a proof of complete semantic equivalence or a full native-game comparison. Storage/settings schema, main loader and server/build work belong to the parent audit. Original-source generated evidence was not changed.",
+  "filesReviewed": 123,
+  "changes": [
+    {
+      "path": "src/hud-text-renderer.js",
+      "sha256": "f7d9c73cedad26e964f9447777da744fe0f5f08f80bd8fde83bb01344c6da9b2"
+    },
+    {
+      "path": "src/race-visuals.js",
+      "sha256": "50036d7d3795aa9e73747890c1bda3c2793bac2a472e4724555e4ed27f98d5ef"
+    },
+    {
+      "path": "src/render-transforms.js",
+      "sha256": "637e3aceec55b160d630b47ec4d68d98607e56c0069c94e7501e6c6281ee7bca"
+    },
+    {
+      "path": "src/simulation/native-bonus.js",
+      "sha256": "25f2c835409c6db05e5ff5e8509ea1b7e28a11b027b3cb34517fe71378a0374d"
+    },
+    {
+      "path": "src/simulation/native-combat.js",
+      "sha256": "319c6944a2fbf41611b5d4e051a5ca42e6415ef916d4b4d011e146d6d0ae7be8"
+    },
+    {
+      "path": "src/simulation/native-ai-items.js",
+      "sha256": "ca4f179bfa057504d9d8616482f203f49f7f82786b553152047466044f5ebd52"
+    },
+    {
+      "path": "src/simulation/native-results.js",
+      "sha256": "458b60da739f43a605d0ca465b94a9478bb6f443e1c68329717ebe836b90e006"
+    }
+  ],
+  "benefits": [
+    "Unchanged HUD glyphs retain cached layout and GPU buffers while every required draw still occurs; cache is bounded per string and disposed with HUD.",
+    "Native render transforms write existing matrices directly; shadow conversion occurs at captured endpoints rather than every unlocked frame.",
+    "Five effect renderers share packed ARGB byte writes without temporary per-vertex arrays.",
+    "Pickup/projectile active counters no longer allocate filtered arrays; original per-pickup recount timing remains.",
+    "Moved unchanged NPC finish timer recorder into results and re-exported the prior AI API, removing the menu persistence dependency on AI/items/trig modules without changing save fields or timers."
+  ],
+  "validation": {
+    "nodeRuns": [
+      {
+        "command": "node --test tests/render-efficiency.test.mjs tests/hud-text.test.mjs tests/kart-shadow.test.mjs tests/native-render-position.test.mjs tests/native-track-mirror.test.mjs",
+        "passed": 21
+      },
+      {
+        "command": "node --test tests/render-efficiency.test.mjs tests/simulation-bonus.test.mjs tests/simulation-combat.test.mjs tests/native-streams.test.mjs tests/native-weather.test.mjs tests/native-homing-arm.test.mjs",
+        "passed": 42
+      },
+      {
+        "command": "node --test tests/native-ai-finish.test.mjs tests/native-results.test.mjs",
+        "passed": 8
+      }
+    ],
+    "uniqueNodeTests": 66,
+    "repeatedTests": 5,
+    "note": "First run included five new render-efficiency cases. Second run repeats those five and adds the packed stream/weather case, while validating the subsequent shared color-write/count changes. Original HUD/shadow/mirror source was unchanged after its first pass.",
+    "browser": {
+      "command": "RCSK_URL=http://127.0.0.1:4184 RCSK_HUD_FRAMEBUFFER_OUTPUT=evidence/efficiency-audit/hud-framebuffer node tests/hud-framebuffer-browser.mjs",
+      "report": "evidence/efficiency-audit/hud-framebuffer/browser.json",
+      "groups": 2,
+      "pixelComparisons": 120,
+      "sceneConfigurations": 3,
+      "errors": []
+    },
+    "benchmark": "evidence/efficiency-audit/hud-benchmark.json",
+    "fullSuite": false,
+    "fullRaces": false,
+    "builds": false,
+    "hudModesBrowser": {
+      "command": "RCSK_URL=http://127.0.0.1:4184 RCSK_HUD_MODE_OUTPUT=evidence/code-efficiency/hud-modes node tests/hud-modes-browser.mjs",
+      "passedGroups": 6,
+      "outputDirectory": "evidence/code-efficiency/hud-modes",
+      "scope": "Existing focused HUD integration check across four race modes, notices, portrait and combat events; no complete races.",
+      "report": "evidence/code-efficiency/hud-modes/report.json"
+    }
+  },
+  "inventory": [
+    {
+      "path": "src/arm-audio.js",
+      "lines": 14,
+      "sha256": "50a4e7848d441449e66b1d61e55bb205e7b2050d5714205e66c557820ce0e474",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/asset-animation.js",
+      "lines": 154,
+      "sha256": "0f47660a069ca25811db1e52874f6b1cecaff8d767030f3a331b3dfc5846c99d",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/asset-materials.js",
+      "lines": 133,
+      "sha256": "1fc7adc31a4ccfaa5ca87df4a23463a76a36ade2ea6a22ae5ad616e8c2ecec46",
+      "imports": [
+        "three",
+        "./native-texture-upload.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/audio-mixing.js",
+      "lines": 58,
+      "sha256": "e643893d232e87b8f23d465cd447e339da16f514346f1f297d21ba24ee868434",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/bonus-audio.js",
+      "lines": 13,
+      "sha256": "d3a18547691988a15b9cc0230162847d97833e1862ac8fdf860cca3f5945a06b",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/bubble-visuals.js",
+      "lines": 55,
+      "sha256": "2fb8035ff823121e994a62f92b5e5f992acfaa469d7747b3f4357c25e0a02ae7",
+      "imports": [
+        "three",
+        "./asset-animation.js",
+        "./asset-materials.js",
+        "./render-order.js",
+        "./render-transforms.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/driving-view.js",
+      "lines": 400,
+      "sha256": "1976dae30a909600b23d951efea7aa4c8e942ba5bb4edf808106a98a947fab47",
+      "imports": [
+        "three",
+        "./world.js",
+        "./simulation/native-camera.js",
+        "./settings.js",
+        "./player-assets.js",
+        "./simulation/native-transform.js",
+        "./render-transforms.js",
+        "./asset-animation.js",
+        "./game-audio.js",
+        "./race-hud.js",
+        "./asset-materials.js",
+        "./race-simulation.js",
+        "./race-visuals.js",
+        "./race-hud-meshes.js",
+        "./bubble-visuals.js",
+        "./native-blend-state.js",
+        "./simulation/native-hud-sampler.js",
+        "./native-race-audio.js",
+        "./spatial-audio.js",
+        "./audio-mixing.js",
+        "./simulation/clock.js",
+        "./race-save.js",
+        "./simulation/native-render.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "coordinated root review; no edits by runtime agent"
+    },
+    {
+      "path": "src/engine-audio.js",
+      "lines": 114,
+      "sha256": "1535161cb9c6117b2f412d2c191fe6c0b401a1a9982cc5088d5ae173b091cdf6",
+      "imports": [
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/finish-flag.js",
+      "lines": 52,
+      "sha256": "3150bccdd8226a2f2b5b3a236bbdd0703def554ff61aab8ce589441b094409d5",
+      "imports": [
+        "./simulation/native-integrator.js",
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/game-audio.js",
+      "lines": 20,
+      "sha256": "e51f2f21d3ceb8c4f2171eb71b1df6c4e76cd07852ff5bdd56bb631d2fcae9d8",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/help-navigation.js",
+      "lines": 28,
+      "sha256": "872f61e9b651a2ff3a0269bd526b12635733d46c43040affe6f8da4cd86fbdd3",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/help-viewer.js",
+      "lines": 104,
+      "sha256": "3fb4c2078e9352e45f37939a0dbc2eb412a30fc3eb64af123c3d633c9b2bc2d5",
+      "imports": [
+        "./help-navigation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-draw-order.js",
+      "lines": 37,
+      "sha256": "a7090623c0cce6d702793132f03e7d7f2333cd348883cba1ef5282d482988074",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-gameplay-events.js",
+      "lines": 25,
+      "sha256": "fca436f9bbdfe9b51fa92a0338221847f25b78d774227b9d2d9103651377ef04",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-mesh.js",
+      "lines": 120,
+      "sha256": "e1a7c41ce2c11dfa946c907a85dadf67dc7b7a2cdda1da689ec86383f3161849",
+      "imports": [
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-notifications.js",
+      "lines": 140,
+      "sha256": "42c666f83997ec5224f75ba580bb73e374cbc7476e94891c9f7e3eff5f768a1b",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-portraits.js",
+      "lines": 122,
+      "sha256": "9d577ef6b58bf77147b9e080141d047f733ffa96494ded02d78f799bc98c4dfc",
+      "imports": [
+        "./simulation/native-integrator.js",
+        "./hud-mesh.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/hud-text-renderer.js",
+      "lines": 164,
+      "sha256": "f7d9c73cedad26e964f9447777da744fe0f5f08f80bd8fde83bb01344c6da9b2",
+      "imports": [
+        "three",
+        "./asset-animation.js",
+        "./asset-materials.js",
+        "./hud-text.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "inspected implementation/call sites; optimized and validated"
+    },
+    {
+      "path": "src/hud-text.js",
+      "lines": 172,
+      "sha256": "fcd15c3a137d4cb8276c07049b5a2f087a3995bc5bbc56eeea15325604efab3d",
+      "imports": [
+        "./hud-mesh.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/input.js",
+      "lines": 158,
+      "sha256": "d7d02908b86f2b059563081e4fdcc8a47bf4d028cbe4bbdfe20eed9c844d3713",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/kart-shadow.js",
+      "lines": 26,
+      "sha256": "564d385a8488909cf7d739e8fabe35300929d14b5706c0277441ea1bfac4c871",
+      "imports": [
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/loading-screen.js",
+      "lines": 22,
+      "sha256": "8e98c1c4152b783841d17783eb3704b618a2c623b091e711ceb4ad15d06ccfab",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/main.js",
+      "lines": 856,
+      "sha256": "1c5b5ffba8cd03c06ac20abbffa69e72b8c29c1b10992453e23fbb9fdae51210",
+      "imports": [
+        "./settings.js",
+        "./version.js",
+        "./movie-playback.js",
+        "./input.js",
+        "./native-menu.js",
+        "./menu-audio.js",
+        "./audio-mixing.js",
+        "./menu-sound-events.js",
+        "./native-control-settings.js",
+        "./native-display-settings.js",
+        "./native-tab-order.js",
+        "./menu-regions.js",
+        "./race-save.js",
+        "./simulation/native-results.js",
+        "./simulation/native-menu-random.js",
+        "./simulation/native-race-lifecycle.js",
+        "./race-requester.js",
+        "./loading-screen.js",
+        "./help-viewer.js",
+        "./native-help-context.js",
+        "./simulation/native-adventure.js",
+        "./driving-view.js",
+        "./world.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "coordinated root review; no edits by runtime agent"
+    },
+    {
+      "path": "src/menu-audio.js",
+      "lines": 24,
+      "sha256": "2e9618b813b790e2480c2936a4a7bfeb9238ce9448ed5f1bb6d0155b167d09b8",
+      "imports": [
+        "./audio-mixing.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/menu-regions.js",
+      "lines": 32,
+      "sha256": "54d5f616a966313ff104fd0405d4ef911988eb9169a12fc246a46cd93fe4ba77",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/menu-sound-events.js",
+      "lines": 47,
+      "sha256": "79ec4130967b61f59bd3f2a415c36cf9a0d3ccb1350e081b632a91c5b38650c4",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/movie-playback.js",
+      "lines": 47,
+      "sha256": "b742b07ccc3ebbae621ee8cfbd853a0abb16e2b615b862a6acb9a513e12d6d7d",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/multisample-renderer.js",
+      "lines": 140,
+      "sha256": "e0a262a1456f4ed7b15150f4af1a96320b0da877020bec8b7d38a8e3e99195d5",
+      "imports": [
+        "three",
+        "./settings.js",
+        "./settings.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-blend-state.js",
+      "lines": 40,
+      "sha256": "d4f1031a2defe2da38659c0c970e4c1fbecc7762cb398881e2915dec5332d941",
+      "imports": [
+        "three"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-control-settings.js",
+      "lines": 64,
+      "sha256": "40254dbc99776bb784044f4eca52139823763b8a2dbd4530bbd7a952c34a59b3",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-crash-audio.js",
+      "lines": 32,
+      "sha256": "1924aca759e5c4f30ccf32cedd7f502387c4114fe95e8b67845b8327f6ac5d41",
+      "imports": [
+        "./simulation/native-random.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-display-settings.js",
+      "lines": 113,
+      "sha256": "349df61cb8928bdef7f5362764bbdd316d2a685b21d19a12225acd82cc43fa42",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-help-context.js",
+      "lines": 22,
+      "sha256": "02d01927174f07bd30370bae7ffda3b3eae2d320f2176aeaeec4440da236cfbb",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-key-audio.js",
+      "lines": 28,
+      "sha256": "f894c02d565c53fbafc3568e816acb8ac82f1ca04c86eadca14ee59a9e9f0bc8",
+      "imports": [
+        "./simulation/native-character-voice.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-menu.js",
+      "lines": 106,
+      "sha256": "b841b05d731dd52fd98548d3f604e9f86e4a4079d6d1b494cf7dc136e6c91265",
+      "imports": [
+        "./native-portrait.js",
+        "./native-tab-order.js",
+        "./menu-regions.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-portrait.js",
+      "lines": 233,
+      "sha256": "445c1e9be2a44f4b6a137024887d4d74ab923d5e68b3b4787a9c584b671f9997",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-quit-requester.js",
+      "lines": 37,
+      "sha256": "cdfd4381b625bc37781cb727e51e04f140cfc2b03ece74fb09fc8706fe18304c",
+      "imports": [
+        "./simulation/native-race-lifecycle.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-race-audio.js",
+      "lines": 312,
+      "sha256": "246ea97bfdf3859e65d53a02397078cb956f9cfdefd6d012cad7f913e73ccee1",
+      "imports": [
+        "./asset-animation.js",
+        "./native-voice-controller.js",
+        "./native-crash-audio.js",
+        "./audio-mixing.js",
+        "./skid-audio.js",
+        "./spatial-audio.js",
+        "./engine-audio.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-tab-order.js",
+      "lines": 30,
+      "sha256": "f7a281ab1165028833d2f404a56a8eb1d77ab99e17f5606deb7b5bfa3fd83917",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-texture-upload.js",
+      "lines": 68,
+      "sha256": "d5e5a69b70a3b564d4e5bcc77325b001eed0a77b5a3f7de5972607af6ce96e4b",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-update-loop.js",
+      "lines": 42,
+      "sha256": "3238c5a5050758063acaa2d6d10b17fc3e3fc3fcd4af94ef47b2894898bcd651",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/native-voice-controller.js",
+      "lines": 82,
+      "sha256": "e76556a912202116fe666a1be89055a79f1a2f456e832c3ead3904a14240e313",
+      "imports": [
+        "./asset-animation.js",
+        "./spatial-audio.js",
+        "./simulation/native-integrator.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/player-assets.js",
+      "lines": 254,
+      "sha256": "d48d7358267213f406c29d035199f42759f476d97eff907365a21437ae1bc093",
+      "imports": [
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-hud-layout.js",
+      "lines": 42,
+      "sha256": "2c48ccc76298662cf13d97f78111c886d1cd9403d593db7295548ce2e638a91f",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-hud-meshes.js",
+      "lines": 228,
+      "sha256": "33b1127b943f3124eb0c9ae4feec1fc493f10b3aa0efed34713b312db66a84d4",
+      "imports": [
+        "three",
+        "./hud-mesh.js",
+        "./asset-materials.js",
+        "./render-transforms.js",
+        "./simulation/native-transform.js",
+        "./simulation/native-minimap.js",
+        "./hud-portraits.js",
+        "./simulation/native-bonus-hud.js",
+        "./simulation/native-bonus.js",
+        "./simulation/native-countdown.js",
+        "./race-hud-layout.js",
+        "./simulation/native-star-hud.js",
+        "./simulation/native-hud-arrows.js",
+        "./simulation/native-projectile.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-hud.js",
+      "lines": 106,
+      "sha256": "eac03b783172df4a02c1e6e57fcc7d649913f005dcb26eb32580dfcc8e63bc8a",
+      "imports": [
+        "./hud-text.js",
+        "./hud-text-renderer.js",
+        "./hud-draw-order.js",
+        "./race-hud-layout.js",
+        "./hud-notifications.js",
+        "./hud-gameplay-events.js",
+        "./simulation/native-lap-display.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-requester.js",
+      "lines": 51,
+      "sha256": "f3599509503910fdf35bd21f0235d9b8ef54d86ef829630fb30d786673b86764",
+      "imports": [
+        "./asset-animation.js",
+        "./native-quit-requester.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-save.js",
+      "lines": 81,
+      "sha256": "2fa9c3d4a336d2c9631ceb3b934cb96da1f7c3d68d0e6ad555478b71550382d5",
+      "imports": [
+        "./simulation/native-results.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "coordinated root review; no edits by runtime agent"
+    },
+    {
+      "path": "src/race-simulation.js",
+      "lines": 642,
+      "sha256": "e10d71df8dc3c56408365ee6c71439d9af3fbc15b4edd5ec1eaf0642dea7e1eb",
+      "imports": [
+        "./simulation/native-motion.js",
+        "./simulation/native-track.js",
+        "./simulation/native-collision.js",
+        "./simulation/native-tables.js",
+        "./simulation/native-ai-driver.js",
+        "./simulation/npc-velocity-safety.js",
+        "./simulation/native-race-setup.js",
+        "./simulation/native-race.js",
+        "./simulation/native-bonus.js",
+        "./simulation/native-combat.js",
+        "./simulation/native-bubble-attachments.js",
+        "./simulation/native-projectile.js",
+        "./simulation/native-jump.js",
+        "./simulation/native-rank.js",
+        "./simulation/native-rescue.js",
+        "./simulation/native-ai-items.js",
+        "./simulation/native-game-timers.js",
+        "./simulation/native-countdown.js",
+        "./simulation/native-camera.js",
+        "./simulation/native-race-lifecycle.js",
+        "./simulation/native-results.js",
+        "./simulation/native-race-options.js",
+        "./simulation/native-input.js",
+        "./simulation/native-start-camera.js",
+        "./simulation/native-camera-matrix.js",
+        "./simulation/native-smoke.js",
+        "./simulation/native-weather.js",
+        "./simulation/native-skidmarks.js",
+        "./simulation/native-explosions.js",
+        "./simulation/native-streams.js",
+        "./simulation/native-squash.js",
+        "./simulation/native-scenery-hazards.js",
+        "./simulation/native-scenery-contact.js",
+        "./simulation/native-scenery-reactions.js",
+        "./scenery-paths.js",
+        "./simulation/native-render.js",
+        "./simulation/native-character-voice.js",
+        "./native-crash-audio.js",
+        "./native-key-audio.js",
+        "./audio-mixing.js",
+        "./simulation/clock.js",
+        "./player-assets.js",
+        "./simulation/free-flight.js",
+        "./simulation/native-rescue.js",
+        "./simulation/player-stuck-recovery.js",
+        "./simulation/player-recovery-position.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/race-visuals.js",
+      "lines": 525,
+      "sha256": "50036d7d3795aa9e73747890c1bda3c2793bac2a472e4724555e4ed27f98d5ef",
+      "imports": [
+        "three",
+        "./player-assets.js",
+        "./render-transforms.js",
+        "./simulation/native-transform.js",
+        "./asset-materials.js",
+        "./simulation/native-bonus.js",
+        "./asset-animation.js",
+        "./rescue-assets.js",
+        "./simulation/native-rescue.js",
+        "./kart-shadow.js",
+        "./finish-flag.js",
+        "./simulation/native-kart-color.js",
+        "./render-order.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "inspected implementation/call sites; optimized and validated"
+    },
+    {
+      "path": "src/render-order.js",
+      "lines": 21,
+      "sha256": "df7d7bca5091ba67c5629aafb970011c6765cebc23901906e24460d09e1246f2",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/render-transforms.js",
+      "lines": 36,
+      "sha256": "637e3aceec55b160d630b47ec4d68d98607e56c0069c94e7501e6c6281ee7bca",
+      "imports": [
+        "three"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "inspected implementation/call sites; optimized and validated"
+    },
+    {
+      "path": "src/rescue-assets.js",
+      "lines": 37,
+      "sha256": "0afcc47d953e925219b2109b33731556524ae9fa37074efd3810d7e810aeb244",
+      "imports": [
+        "./asset-animation.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/scenery-paths.js",
+      "lines": 140,
+      "sha256": "4d141521caa83fa0e93291d344dec6e6ab06038156ea4591d985f17f70a57353",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/settings.js",
+      "lines": 57,
+      "sha256": "7c6491e8fd73bdde4ef68cbf35d2c8ca3780cd39f28f105e55bfe5e06d79617b",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "coordinated root review; no edits by runtime agent"
+    },
+    {
+      "path": "src/simulation/clock.js",
+      "lines": 227,
+      "sha256": "3885dbef3d6d63d677452db012f9c67c8521ea9ddc6c33c879df389a23a0c333",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/free-flight.js",
+      "lines": 68,
+      "sha256": "b4c02ad4d31b4420759a139ac79396040ca5da54c31880468d73f210811aebd0",
+      "imports": [
+        "./native-track.js",
+        "./native-transform.js",
+        "./native-ground.js",
+        "./rescue-safety.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-adventure.js",
+      "lines": 184,
+      "sha256": "de2fcf64afb03cdb39b1e6c56cce70fbf6938a3b211c07b838d2421e6064b57f",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-ai-driver.js",
+      "lines": 274,
+      "sha256": "d3a8a498548b4d507ed1d856fff8e1ce0b66aac1230e461150fd973776009057",
+      "imports": [
+        "./native-ai.js",
+        "./native-ai-items.js",
+        "./native-motion.js",
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-collision.js",
+        "./native-ground.js",
+        "./native-track.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-ai-items.js",
+      "lines": 224,
+      "sha256": "ca4f179bfa057504d9d8616482f203f49f7f82786b553152047466044f5ebd52",
+      "imports": [
+        "./native-ai.js",
+        "./native-results.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "inspected implementation/call sites; unchanged NPC timer recorder relocated to results to remove menu AI dependency; original AI import path re-exported"
+    },
+    {
+      "path": "src/simulation/native-ai-range.js",
+      "lines": 39,
+      "sha256": "b7ee558c101d7351ebe44984426839ad7640fc64d1488cf7d7b979befa2d5a9a",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-ai.js",
+      "lines": 553,
+      "sha256": "0fe56f773b759dfd1a23f10e4291f6406f815e07ed8ec2207882f662c0b789e9",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-bonus-effects.js",
+      "lines": 120,
+      "sha256": "38d46156b11fe47b1fc503ed6c5559f7e9c66b9fd5066d1dd7919b3d54c5e152",
+      "imports": [
+        "./native-ground.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-bonus-hud.js",
+      "lines": 63,
+      "sha256": "cdd4f8e1fadf4f5f8ea87c91401b9d0fbd2d1d0d58940fe4a9cc69964e9e77b8",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-bonus.js",
+      "lines": 252,
+      "sha256": "25f2c835409c6db05e5ff5e8509ea1b7e28a11b027b3cb34517fe71378a0374d",
+      "imports": [
+        "./native-random.js",
+        "../bonus-audio.js",
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "inspected implementation/call sites; optimized and validated"
+    },
+    {
+      "path": "src/simulation/native-bubble-attachments.js",
+      "lines": 54,
+      "sha256": "4c74e4da78382b130f2472c8a4c7dce217211bf89aab372e750092700116cd31",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-camera-matrix.js",
+      "lines": 26,
+      "sha256": "43d93b5f1b80dfcaf20b4104552c241ff9e36a694525d36410e73151045552b3",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-camera.js",
+      "lines": 138,
+      "sha256": "b0b28d4e907665b290e1cce08b7d0b0429d55498faed5c6c3f220fb1360d70f9",
+      "imports": [
+        "./native-integrator.js",
+        "./native-race-lifecycle.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-character-voice.js",
+      "lines": 136,
+      "sha256": "f8ff4ff3428214463bf04c330199aab8f2156886c9b54de228ceb0184fb21ac1",
+      "imports": [
+        "./native-random.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-collision.js",
+      "lines": 216,
+      "sha256": "b0c31b1fc3265ed73fcbdbf483d98d2437d73a23c4a4dc65b6024ff3eb4f357b",
+      "imports": [
+        "./native-integrator.js",
+        "./native-kart-contact.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-combat.js",
+      "lines": 222,
+      "sha256": "319c6944a2fbf41611b5d4e051a5ca42e6415ef916d4b4d011e146d6d0ae7be8",
+      "imports": [
+        "./native-bonus.js",
+        "./native-projectile.js",
+        "./native-bonus-effects.js",
+        "./native-track.js",
+        "./native-ai-items.js",
+        "./native-character-voice.js",
+        "../bonus-audio.js",
+        "./native-homing-arm.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "inspected implementation/call sites; optimized and validated"
+    },
+    {
+      "path": "src/simulation/native-countdown.js",
+      "lines": 42,
+      "sha256": "d86173ecc11e3aad9530d1b88b390c93941e12ad7d8a4053274b0ece0e55758c",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-display-settings.js",
+      "lines": 24,
+      "sha256": "a415e6eab37d60e6662d8d5a55c8808217e98b567e88ac653d90455625c02c01",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-explosions.js",
+      "lines": 57,
+      "sha256": "56de8b200814b20ded1f363158f7198d41845bde2752dee31baeebf2903c73ef",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-forces.js",
+      "lines": 74,
+      "sha256": "c54c1ef342a811d5d0a45fda6d66ac8aa7aa2c69e74db3ac6e00f1641e24c5ab",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-game-timers.js",
+      "lines": 105,
+      "sha256": "9a77fc6bc40d97165aaf9a1b5462bca33792b90cb34cf8472293b47b295ee05c",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-ground.js",
+      "lines": 136,
+      "sha256": "81509b6e31c7beadab94a8657669a548f8356c3e1a58b0317dd72e96e69a64f9",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-homing-arm.js",
+      "lines": 176,
+      "sha256": "4b780cfa2c1b7f7e6a9d168a6819b4a18f65eebb804a0396e6929eeb522f56f8",
+      "imports": [
+        "./native-integrator.js",
+        "../arm-audio.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-hud-arrows.js",
+      "lines": 65,
+      "sha256": "1de72b7b51dde3701496fc2c5f277c3e1b421fbc0f2d9c65ab36548f2710bc63",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-hud-sampler.js",
+      "lines": 52,
+      "sha256": "fb055011cf32eb95e282ce0bb9abbb3c069a81a671dec564c5c9a672e32b6139",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-input.js",
+      "lines": 64,
+      "sha256": "adf5a872488a29ddd30340e97c15a3faf2d409e5ee40d5639f5d76ebeca11856",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-integrator.js",
+      "lines": 78,
+      "sha256": "dccb39d1567bb0eea0fc9e65ccc34380ae23ea227ff9f3ec16c7ee0d3a6200f4",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-jump.js",
+      "lines": 32,
+      "sha256": "94c42ff6657b307991350289c749723922bbe996a48c29c659a62c6df43dac0d",
+      "imports": [
+        "./native-projectile.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-kart-color.js",
+      "lines": 51,
+      "sha256": "ec78a402a8ba3e5fb3f9b8bc540d9b9fb130adfe895241244936d2df4270be50",
+      "imports": [
+        "./native-track.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-kart-contact.js",
+      "lines": 55,
+      "sha256": "a23d2ef6f71561f36a1c79ddd906ae34c4a01e1d6bd1e75521abfb0ad7faab40",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-lap-display.js",
+      "lines": 26,
+      "sha256": "78a78cf486cd2e21603a564b8b4d7a179e71f68c76da593908772c81c934debe",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-menu-random.js",
+      "lines": 25,
+      "sha256": "53bdc41ad401223e5d6ad577ca12da7f428d02e2d20703cb26fe58b8d34b431c",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-minimap.js",
+      "lines": 36,
+      "sha256": "59d6dcdd05e556954e44cf9c6d397415dccd1967b77cdbe15ca79460b88b4207",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-motion.js",
+      "lines": 159,
+      "sha256": "3292ad9bf72ed972adeb2246b4151d76436b26dd6566a9c988cabf4b7b87f74e",
+      "imports": [
+        "./native-input.js",
+        "./native-player.js",
+        "./native-integrator.js",
+        "./native-collision.js",
+        "./native-ground.js",
+        "./native-track.js",
+        "./native-transform.js",
+        "./native-game-timers.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-player.js",
+      "lines": 79,
+      "sha256": "f01084d23ff4e018d2f9cfc24fa5eba0a97cea94734d9ce68f23f4c5da58a147",
+      "imports": [
+        "./native-forces.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-projectile.js",
+      "lines": 168,
+      "sha256": "20b56de54faa0a11f3e8cc9e620f8f0cd079e873b99444ce8c28f7a169b3d420",
+      "imports": [
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-bonus.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-race-lifecycle.js",
+      "lines": 177,
+      "sha256": "494fed50d006c88523a753d068064f4779b58d95cfd18f102ecf4ac2b5b49150",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-race-options.js",
+      "lines": 38,
+      "sha256": "ec70fec5caa34ce4eed9bf9043dedd055d3a26fe90a4aa8af8f66fe40413f8d0",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-race-setup.js",
+      "lines": 137,
+      "sha256": "b3370dab9fc672873a9f445e77ae770c34d4d4adc9cea7dffe302e1afb6837a8",
+      "imports": [
+        "./native-start.js",
+        "./native-race.js",
+        "./native-integrator.js",
+        "./native-race-options.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-race.js",
+      "lines": 179,
+      "sha256": "f2e8ffc690bc2063845bbd47096ba8005da7f2918080a73fc5edd79aa34a03db",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-random.js",
+      "lines": 10,
+      "sha256": "3b48183445a61d648668edef1a6e28f21af75dea0b3868997ff0840eea24222e",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-rank.js",
+      "lines": 46,
+      "sha256": "6ad847379732a10b946e02ab797ef1e5149b49429588b9c86a645103a287a4a1",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-render.js",
+      "lines": 76,
+      "sha256": "04fd89992d788eda788bdcfc1dc8ac99bab54d3191f64bf87548c866bfbab5ec",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-rescue.js",
+      "lines": 322,
+      "sha256": "a481190d10dc5c7706d32040d7fba5da98fabbdd2f75cccf734854f51f058cc3",
+      "imports": [
+        "./native-track.js",
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-ground.js",
+        "./rescue-safety.js",
+        "./player-recovery-position.js",
+        "./player-recovery-position.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-results.js",
+      "lines": 140,
+      "sha256": "458b60da739f43a605d0ca465b94a9478bb6f443e1c68329717ebe836b90e006",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "inspected implementation/call sites; unchanged NPC timer recorder relocated to results to remove menu AI dependency; original AI import path re-exported"
+    },
+    {
+      "path": "src/simulation/native-scenery-contact.js",
+      "lines": 167,
+      "sha256": "829a880d6807eb9929fa6532a06c5af48af1573a4e8bf114660a5df83ff7ca6e",
+      "imports": [
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-track.js",
+        "../spatial-audio.js",
+        "../asset-animation.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-scenery-hazards.js",
+      "lines": 65,
+      "sha256": "a4eef6a41df12cb9c83e7e09121e17ccbd6fba8868c2ba63a6bc9a5f837dea65",
+      "imports": [
+        "../asset-animation.js",
+        "../spatial-audio.js",
+        "./native-transform.js",
+        "./native-squash-activation.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-scenery-reactions.js",
+      "lines": 123,
+      "sha256": "ac3818577b1a28e17381619647f7369a8d2647ce4b2162a5af3248858ded0f0b",
+      "imports": [
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-track.js",
+        "../spatial-audio.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-skidmarks.js",
+      "lines": 70,
+      "sha256": "ca6b943d1f45df9e86eb225e103db2c37a5d4ee74614761759b0496ef0b11b99",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-smoke.js",
+      "lines": 131,
+      "sha256": "01208ca8764ed903ecd13471a61087aff76b9df110d9fa4334d7f21990c31359",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-squash-activation.js",
+      "lines": 31,
+      "sha256": "f5595ec89b66ac13149fce4b003fef0f4e24cc95c0bcb4aa5dae13cde29ef47a",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-squash.js",
+      "lines": 104,
+      "sha256": "a47854d777833421bc81188ba7e4ebe0d26be5489e6bea1daba606242c23cbaa",
+      "imports": [
+        "./native-integrator.js",
+        "./native-transform.js",
+        "./native-game-timers.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-star-hud.js",
+      "lines": 39,
+      "sha256": "013cbae809aa3f4fbf247174cb663ea5ecfb1db5bb5587246be2ea1bbb8bc072",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-start-camera.js",
+      "lines": 84,
+      "sha256": "99b1ba35593f26069de45891e331686e9988a06743c9fbe5d5743cf9ef89e171",
+      "imports": [
+        "../scenery-paths.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-start.js",
+      "lines": 61,
+      "sha256": "878cb672d8bc15e9902834fe419ae625fee9e7ac82d9101d7366aefa009ad33b",
+      "imports": [
+        "./native-ground.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-streams.js",
+      "lines": 255,
+      "sha256": "b75d1c0e460074e404272680eaf8b6565a49dfb4a9a9b3d5cf9ba773ef7256f6",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-tables.js",
+      "lines": 61,
+      "sha256": "d2b5f412b60ab099a6422652ee8aba2b2cabf31ec1c820668c26a931bb050dbf",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-track.js",
+      "lines": 137,
+      "sha256": "c86c29355caaded4eeb6b34d617deb261f5da54419ab1bcec5c59fdeaacc70f5",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-transform.js",
+      "lines": 36,
+      "sha256": "d73b56e15c253c7cff001ab59822e81b100ed1070711a066454d8fe576a5aaec",
+      "imports": [
+        "./native-integrator.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/native-weather.js",
+      "lines": 143,
+      "sha256": "36f751b5e7654bc47d00736b99726d8dfb4b55bcf8f7312f6e97e6bc65a4012b",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/npc-velocity-safety.js",
+      "lines": 26,
+      "sha256": "27cb0c46abfa5eeaf982f42e99ba09c4d8817833aad644569d016802e3f3661a",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/player-recovery-position.js",
+      "lines": 141,
+      "sha256": "ffb3901fd6b72b532fd94940d5c940c6bee63130ff4288a39580a9faa1f4a5c3",
+      "imports": [
+        "./native-track.js",
+        "./native-integrator.js",
+        "./rescue-safety.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/player-stuck-recovery.js",
+      "lines": 66,
+      "sha256": "77970c9c9e87f706280d7e2dee6451944eb0c8c6bb8fed00acdd68005353d953",
+      "imports": [],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/simulation/rescue-safety.js",
+      "lines": 72,
+      "sha256": "42ceb67e8c0095354d1aecc9e36bc82e33e4f8a59d40e87b927955ca30b3f1e5",
+      "imports": [
+        "./native-integrator.js",
+        "./native-track.js"
+      ],
+      "family": "native simulation/reference helpers",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/skid-audio.js",
+      "lines": 12,
+      "sha256": "d29faabaefbc9127999b8c3dc56cdc5e02ad8d11fb05c39f72578b9f5e3aa2f0",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/spatial-audio.js",
+      "lines": 86,
+      "sha256": "b5e89fd2d3138d80314fcb46747b618bcef93a04f51ff3ec8e3384ade2f83bf3",
+      "imports": [
+        "./simulation/native-integrator.js",
+        "./asset-animation.js",
+        "./simulation/native-camera-matrix.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/version.js",
+      "lines": 2,
+      "sha256": "9f5aa50930ddeb1a6ac02ddea30fd4866082e9902311f7cdbb041898f643d155",
+      "imports": [],
+      "family": "browser runtime/render/audio/UI",
+      "review": "reviewed exports/imports and hot-path allocation/cache/ordering patterns; retained native operation boundaries"
+    },
+    {
+      "path": "src/world.js",
+      "lines": 329,
+      "sha256": "cee02a47eca4202fedf2cdba93fafed99448e1ab5c0d95303a895215d2385ce9",
+      "imports": [
+        "three",
+        "three/addons/controls/OrbitControls.js",
+        "./settings.js",
+        "./simulation/clock.js",
+        "./native-update-loop.js",
+        "./asset-animation.js",
+        "./simulation/native-transform.js",
+        "./simulation/native-integrator.js",
+        "./simulation/native-random.js",
+        "./render-transforms.js",
+        "./simulation/native-bonus.js",
+        "./asset-materials.js",
+        "./scenery-paths.js",
+        "./spatial-audio.js",
+        "./render-order.js",
+        "./simulation/native-display-settings.js",
+        "./native-texture-upload.js",
+        "./multisample-renderer.js"
+      ],
+      "family": "browser runtime/render/audio/UI",
+      "review": "coordinated root review; no edits by runtime agent"
+    }
+  ]
+}

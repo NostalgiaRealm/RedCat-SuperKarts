@@ -1,0 +1,2 @@
+; 00406610 GDI32.DLL::RealizePalette
+00406610	ff25b8f34700	JMP dword ptr [0x0047f3b8]

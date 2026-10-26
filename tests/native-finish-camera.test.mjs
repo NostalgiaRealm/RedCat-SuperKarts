@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeFinishCamera } from '../src/simulation/native-camera.js';
+import { NativeFinishCamera } from '../source/simulation/native-camera.js';
 const read = path => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url)));
 const fixtures = read('evidence/native/finish-camera-fixtures.json');
 const tracks = Array.from({ length: 6 }, (_, i) => read(`public/assets/tracks/etappe${i}.json`));

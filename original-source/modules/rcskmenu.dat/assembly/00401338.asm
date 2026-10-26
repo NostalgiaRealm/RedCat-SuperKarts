@@ -1,0 +1,2 @@
+; 00401338 KERNEL32.DLL::WideCharToMultiByte
+00401338	ff255cf14700	JMP dword ptr [0x0047f15c]

@@ -1,0 +1,3 @@
+; 004cfb13 Unwind@004cfb13
+004cfb13	8d4d84	LEA ECX,[EBP + -0x7c]
+004cfb16	e995b9f3ff	JMP 0x0040b4b0

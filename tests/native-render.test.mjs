@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 import {nativeGameRenderSettings,nativeGameRenderStateCalls,nativeFogSelection,nativeVisibleChunkStart,
- nativeVisibleChunkRanges,nativeObjectCallbackRanges,nativeAdjustVisibleChunks} from '../src/simulation/native-render.js';
+ nativeVisibleChunkRanges,nativeObjectCallbackRanges,nativeAdjustVisibleChunks} from '../source/simulation/native-render.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/render-fixtures.json',import.meta.url)));
 test('Native render settings issue the original cached Direct3D states',()=>{
  for(const c of fixture.settings)assert.deepEqual(nativeGameRenderStateCalls(c.input),c.expected);

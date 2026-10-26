@@ -1,0 +1,3 @@
+; 004bcfbb FUN_004bcfbb
+004bcfbb	b999646b00	MOV ECX,0x6b6499
+004bcfc0	e988f4ffff	JMP 0x004bc44d

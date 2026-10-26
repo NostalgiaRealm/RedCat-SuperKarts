@@ -1,14 +1,14 @@
 import {RouteTestDriver as OpeningDriver} from '../tests/helpers/private-ground-hazard-line.mjs';
-import {tireLateralForce,resistanceForce} from '../src/simulation/native-forces.js';
+import {tireLateralForce,resistanceForce} from '../source/simulation/native-forces.js';
 import {authoredBranchGoal} from '../tests/helpers/private-nl-authored-branch.mjs';
 import fs from 'node:fs/promises';
 import {predictSteering} from '../tests/helpers/private-predictive-driving-v3.mjs';
 import crypto from 'node:crypto';
-import { RaceSimulation } from '../src/race-simulation.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS } from '../src/simulation/clock.js';
+import { RaceSimulation } from '../source/race-simulation.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS } from '../source/simulation/clock.js';
 import { RouteTestDriver } from '../tests/helpers/route-test-driver.mjs';
-import { nativeAdventureQualification } from '../src/simulation/native-adventure.js';
+import { nativeAdventureQualification } from '../source/simulation/native-adventure.js';
 import {validationSourceDependencies} from './validation-source-dependencies.mjs';
 
 const root = new URL('../', import.meta.url), assets = new URL('public/assets/', root);
@@ -29,7 +29,7 @@ async function sourceSnapshot() {
       else if (entry.isFile()) paths.push(path);
     }
   }
-  await visit('src');
+  await visit('source');
   paths.push(...await validationSourceDependencies(new URL(import.meta.url),root));
   return Object.fromEntries(await Promise.all(paths.sort().map(async path =>
     [path, crypto.createHash('sha256').update(await fs.readFile(new URL(path, root))).digest('hex')])));

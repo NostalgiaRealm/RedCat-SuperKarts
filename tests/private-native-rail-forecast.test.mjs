@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {nativeAnalogFromNormalized} from '../src/simulation/native-input.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {nativeAnalogFromNormalized} from '../source/simulation/native-input.js';
 import {copyPlayerForRailForecast,advancePrivateRailFrame} from './helpers/private-native-rail-forecast.mjs';
 const root=new URL('../public/assets/',import.meta.url),read=p=>fs.readFile(new URL(p,root)),json=async p=>JSON.parse(await read(p));
 test('private rail forecast matches original player step ordering through real rail contacts without mutating source',async()=>{

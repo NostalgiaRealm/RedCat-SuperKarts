@@ -1,0 +1,3 @@
+; 004ce232 Unwind@004ce232
+004ce232	8d4dc4	LEA ECX,[EBP + -0x3c]
+004ce235	e976d2f3ff	JMP 0x0040b4b0

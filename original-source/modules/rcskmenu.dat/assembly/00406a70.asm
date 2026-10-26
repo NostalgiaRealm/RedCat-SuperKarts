@@ -1,0 +1,2 @@
+; 00406a70 USER32.DLL::ReleaseDC
+00406a70	ff2520f54700	JMP dword ptr [0x0047f520]

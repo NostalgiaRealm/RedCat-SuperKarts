@@ -1,0 +1,2 @@
+; 0040d8c8 KERNEL32.DLL::TlsFree
+0040d8c8	ff257c134100	JMP dword ptr [0x0041137c]

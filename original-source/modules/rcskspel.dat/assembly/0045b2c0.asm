@@ -1,0 +1,5 @@
+; 0045b2c0 FUN_0045b2c0
+0045b2c0	d905cc294d00	FLD float ptr [0x004d29cc]
+0045b2c6	d835c8294d00	FDIV float ptr [0x004d29c8]
+0045b2cc	d91dbc4a5400	FSTP float ptr [0x00544abc]
+0045b2d2	c3	RET

@@ -1,0 +1,11 @@
+; 0041e830 CRect::CRect
+0041e830	8b542408	MOV EDX,dword ptr [ESP + 0x8]
+0041e834	8bc1	MOV EAX,ECX
+0041e836	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+0041e83a	8908	MOV dword ptr [EAX],ECX
+0041e83c	8b4c240c	MOV ECX,dword ptr [ESP + 0xc]
+0041e840	895004	MOV dword ptr [EAX + 0x4],EDX
+0041e843	8b542410	MOV EDX,dword ptr [ESP + 0x10]
+0041e847	894808	MOV dword ptr [EAX + 0x8],ECX
+0041e84a	89500c	MOV dword ptr [EAX + 0xc],EDX
+0041e84d	c21000	RET 0x10

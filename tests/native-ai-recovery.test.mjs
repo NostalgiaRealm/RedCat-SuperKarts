@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { prepareNativeAIRecovery } from '../src/simulation/native-ai.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
+import { prepareNativeAIRecovery } from '../source/simulation/native-ai.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/ai-recovery-fixtures.json', import.meta.url)));
 for (const precision of [24, 53]) test(`Native NPC recovery and spring ${precision}-bit`, () => {
   for (const [i, c] of fixtures.cases.entries()) {

@@ -1,0 +1,29 @@
+; 004aed90 FUN_004aed90
+004aed90	56	PUSH ESI
+004aed91	8bf1	MOV ESI,ECX
+004aed93	83be9801000001	CMP dword ptr [ESI + 0x198],0x1
+004aed9a	7417	JZ 0x004aedb3
+004aed9c	682a010000	PUSH 0x12a
+004aeda1	68c8e44f00	PUSH 0x4fe4c8
+004aeda6	6898e44f00	PUSH 0x4fe498
+004aedab	e830110000	CALL 0x004afee0
+004aedb0	83c40c	ADD ESP,0xc
+004aedb3	8bce	MOV ECX,ESI
+004aedb5	e876faffff	CALL 0x004ae830
+004aedba	85c0	TEST EAX,EAX
+004aedbc	740e	JZ 0x004aedcc
+004aedbe	f6460408	TEST byte ptr [ESI + 0x4],0x8
+004aedc2	741c	JZ 0x004aede0
+004aedc4	8b4620	MOV EAX,dword ptr [ESI + 0x20]
+004aedc7	5e	POP ESI
+004aedc8	83e002	AND EAX,0x2
+004aedcb	c3	RET
+004aedcc	f686d000000008	TEST byte ptr [ESI + 0xd0],0x8
+004aedd3	740b	JZ 0x004aede0
+004aedd5	8b86ec000000	MOV EAX,dword ptr [ESI + 0xec]
+004aeddb	5e	POP ESI
+004aeddc	83e002	AND EAX,0x2
+004aeddf	c3	RET
+004aede0	83c8ff	OR EAX,0xffffffff
+004aede3	5e	POP ESI
+004aede4	c3	RET

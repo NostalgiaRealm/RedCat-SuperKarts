@@ -1,0 +1,2 @@
+; 00427acc AVIFIL32.DLL::AVIStreamOpenFromFileA
+00427acc	ff250c804200	JMP dword ptr [0x0042800c]

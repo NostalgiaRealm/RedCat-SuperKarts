@@ -1,0 +1,2 @@
+; 0048f118 DINPUT.DLL::DirectInputCreateA
+0048f118	ff2518204d00	JMP dword ptr [0x004d2018]

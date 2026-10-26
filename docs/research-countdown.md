@@ -41,7 +41,7 @@ re-python tools/native-countdown-fixtures.py
 node --test tests/native-countdown.test.mjs
 ```
 
-The controller is implemented in `src/simulation/native-countdown.js`. Mounting
+The controller is implemented in `source/simulation/native-countdown.js`. Mounting
 its original overlay meshes and connecting the full race-start/camera/sound
 flow remain separate integration work. These fixtures do not establish a
 full original race rendering baseline under WineD3D.

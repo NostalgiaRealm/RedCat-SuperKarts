@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {getNativeKartShadowPose} from '../src/kart-shadow.js';
-import {NativeBlendState} from '../src/native-blend-state.js';
-import {KartVisual,KartShadowVisual} from '../src/race-visuals.js';
-import {advanceNativeKartColor} from '../src/simulation/native-kart-color.js';
+import {getNativeKartShadowPose} from '../source/kart-shadow.js';
+import {NativeBlendState} from '../source/native-blend-state.js';
+import {KartVisual,KartShadowVisual} from '../source/race-visuals.js';
+import {advanceNativeKartColor} from '../source/simulation/native-kart-color.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/render-position-fixtures.json',import.meta.url)));
 
 test('200 original rescue draw consumers distinguish logical position from matrix translation',()=>{

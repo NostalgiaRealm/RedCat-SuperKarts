@@ -1,6 +1,6 @@
 // Test-only visibility routing around CMP barriers and current scenery bounds. These
 // points are steering targets, never writes to simulation position or pickups.
-import { nativeTrigTable } from '../../src/simulation/native-integrator.js';
+import { nativeTrigTable } from '../../source/simulation/native-integrator.js';
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[2]-b[2]);
 function pointSegment(p,a,b){
   const dx=b[0]-a[0],dz=b[2]-a[2],den=dx*dx+dz*dz;

@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -8,7 +9,7 @@ try{
   await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+'/assets/config.json');
   await page.setContent('<style>html,body{margin:0;background:#222}canvas{width:100vw;height:100vh;display:block}</style><canvas></canvas>');
   const result=await page.evaluate(async()=>{
-    const [{RaceHud},config,manifest]=await Promise.all([import('/src/race-hud.js'),
+    const [{RaceHud},config,manifest]=await Promise.all([import('/source/race-hud.js'),
       fetch('/assets/config.json').then(r=>r.json()),fetch('/assets/manifest.json').then(r=>r.json())]);
     const hud=window.hud=new RaceHud(document.querySelector('canvas'),config,manifest);await hud.load();
     const race=window.race={events:[],elapsedMs:12345,lapCount:0,lapLimit:5,lapTimerLimitMs:120000,

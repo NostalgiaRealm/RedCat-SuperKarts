@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeAIDriver, NativeWaypointOccupancy } from '../src/simulation/native-ai-driver.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { NativeGroundClock } from '../src/simulation/native-ground.js';
-import { NativeRailCollision } from '../src/simulation/native-collision.js';
-import { createNativeTrack } from '../src/simulation/native-track.js';
-import { nativePlayerStart } from '../src/simulation/native-start.js';
-import { parseRacerTable } from '../src/simulation/native-tables.js';
-import { SimulationClock } from '../src/simulation/clock.js';
+import { NativeAIDriver, NativeWaypointOccupancy } from '../source/simulation/native-ai-driver.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { NativeGroundClock } from '../source/simulation/native-ground.js';
+import { NativeRailCollision } from '../source/simulation/native-collision.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
+import { nativePlayerStart } from '../source/simulation/native-start.js';
+import { parseRacerTable } from '../source/simulation/native-tables.js';
+import { SimulationClock } from '../source/simulation/clock.js';
 
 const read = name => JSON.parse(readFileSync(new URL(`../${name}`, import.meta.url)));
 const inventory = read('evidence/gameplay/inventory.json');

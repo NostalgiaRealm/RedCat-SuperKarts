@@ -1,0 +1,5 @@
+; 0040afd4 FUN_0040afd4
+0040afd4	89cc	MOV ESP,ECX
+0040afd6	891424	MOV dword ptr [ESP],EDX
+0040afd9	8b6d00	MOV EBP,dword ptr [EBP]
+0040afdc	e92386ffff	JMP 0x00403604

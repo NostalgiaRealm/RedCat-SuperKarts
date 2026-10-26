@@ -1,0 +1,2 @@
+; 00406b80 USER32.DLL::UnhookWindowsHookEx
+00406b80	ff2598f44700	JMP dword ptr [0x0047f498]

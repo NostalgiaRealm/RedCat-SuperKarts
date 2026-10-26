@@ -1,0 +1,4 @@
+; 00458be0 FUN_00458be0
+00458be0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+00458be4	89417c	MOV dword ptr [ECX + 0x7c],EAX
+00458be7	c20400	RET 0x4

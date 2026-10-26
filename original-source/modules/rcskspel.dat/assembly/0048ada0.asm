@@ -1,0 +1,13 @@
+; 0048ada0 FUN_0048ada0
+0048ada0	56	PUSH ESI
+0048ada1	8bf1	MOV ESI,ECX
+0048ada3	8b06	MOV EAX,dword ptr [ESI]
+0048ada5	ff10	CALL dword ptr [EAX]
+0048ada7	8b4e04	MOV ECX,dword ptr [ESI + 0x4]
+0048adaa	48	DEC EAX
+0048adab	5e	POP ESI
+0048adac	8d14c0	LEA EDX,[EAX + EAX*0x8]
+0048adaf	8b4104	MOV EAX,dword ptr [ECX + 0x4]
+0048adb2	c1e205	SHL EDX,0x5
+0048adb5	03c2	ADD EAX,EDX
+0048adb7	c3	RET

@@ -1,0 +1,4 @@
+; 004031fc FUN_004031fc
+004031fc	8b10	MOV EDX,dword ptr [EAX]
+004031fe	ff52f8	CALL dword ptr [EDX + -0x8]
+00403201	c3	RET

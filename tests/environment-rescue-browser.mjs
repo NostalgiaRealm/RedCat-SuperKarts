@@ -16,9 +16,9 @@ try{
   await page.waitForFunction(()=>rcsk.state.page==='driving',null,{timeout:60000});
   const initial=await page.evaluate(async()=>{
     const view=rcsk.viewer,sim=view.simulation,body=view.motion.body,track=view.track;
-    const {nativeRescueNearestSector}=await import('/src/simulation/native-rescue.js');
-    const {sampleNativeTrack}=await import('/src/simulation/native-track.js');
-    const {nativeRotationMatrix}=await import('/src/simulation/native-transform.js');
+    const {nativeRescueNearestSector}=await import('/source/simulation/native-rescue.js');
+    const {sampleNativeTrack}=await import('/source/simulation/native-track.js');
+    const {nativeRotationMatrix}=await import('/source/simulation/native-transform.js');
     view.clock.pause();
     // Reproduction fixture starts on the raised bridge, pointed toward its
     // unguarded edge. Only normal keyboard acceleration moves it after setup.
@@ -119,7 +119,7 @@ try{
   assert.deepEqual(render.sky,render.logicalPosition);
   assert.notDeepEqual(render.kart,render.logicalPosition);
   assert.deepEqual(recovered.colorSamplePosition,render.logicalPosition);
-  const {getNativeKartShadowPose}=await import('../src/kart-shadow.js');
+  const {getNativeKartShadowPose}=await import('../source/kart-shadow.js');
   assert.deepEqual(render.shadow,getNativeKartShadowPose({
     position:render.logicalPosition,matrixTranslation:render.matrixPosition,matrix:[],
   },render.shadowPlane).position);

@@ -1,0 +1,2 @@
+; 00406938 USER32.DLL::GetWindowLongA
+00406938	ff25bcf54700	JMP dword ptr [0x0047f5bc]

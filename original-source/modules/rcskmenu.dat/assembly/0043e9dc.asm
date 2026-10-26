@@ -1,0 +1,3 @@
+; 0043e9dc FUN_0043e9dc
+0043e9dc	8a4048	MOV AL,byte ptr [EAX + 0x48]
+0043e9df	c3	RET

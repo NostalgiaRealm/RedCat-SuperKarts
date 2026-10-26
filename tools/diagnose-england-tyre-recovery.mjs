@@ -2,10 +2,10 @@ import fs from 'node:fs';
 import crypto from 'node:crypto';
 import {runEnglandTyreFixture} from '../tests/helpers/england-tyre-fixture.mjs';
 const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
-const files=['src/race-simulation.js','src/simulation/player-stuck-recovery.js',
-  'src/simulation/player-recovery-position.js','src/simulation/native-rescue.js',
-  'src/simulation/native-bonus.js',
-  'src/simulation/native-motion.js','src/simulation/native-collision.js',
+const files=['source/race-simulation.js','source/simulation/player-stuck-recovery.js',
+  'source/simulation/player-recovery-position.js','source/simulation/native-rescue.js',
+  'source/simulation/native-bonus.js',
+  'source/simulation/native-motion.js','source/simulation/native-collision.js',
   'tests/helpers/england-tyre-fixture.mjs','tests/player-recovery-integration.test.mjs',
   'tools/diagnose-england-tyre-recovery.mjs','public/assets/tracks/etappe2.json',
   'public/assets/cars.json','public/assets/physics/phys0.dat'];

@@ -85,7 +85,7 @@ try{
   await launch();
   await check('Original intro decodes and advances in the desktop protocol',async()=>{
     await page.waitForFunction(()=>window.rcsk?.state.page==='intro'&&document.querySelector('#movie').readyState>=2,null,{timeout:60000});
-    if(await page.locator('#movie').evaluate(video=>video.paused))await page.locator('#play-movie').click();
+    if(await page.locator('#movie').evaluate(video=>video.paused||video.muted))await page.locator('#movie-audio').click();
     await page.waitForFunction(()=>{
       const video=document.querySelector('#movie');
       return !video.paused&&video.currentTime>.4&&video.webkitDecodedFrameCount>0&&video.webkitAudioDecodedByteCount>0;

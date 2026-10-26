@@ -1,0 +1,20 @@
+; 004aaea0 FUN_004aaea0
+004aaea0	6aff	PUSH -0x1
+004aaea2	6868184d00	PUSH 0x4d1868
+004aaea7	64a100000000	MOV EAX,FS:[0x0]
+004aaead	50	PUSH EAX
+004aaeae	64892500000000	MOV dword ptr FS:[0x0],ESP
+004aaeb5	51	PUSH ECX
+004aaeb6	56	PUSH ESI
+004aaeb7	8bf1	MOV ESI,ECX
+004aaeb9	89742404	MOV dword ptr [ESP + 0x4],ESI
+004aaebd	c744241000000000	MOV dword ptr [ESP + 0x10],0x0
+004aaec5	e806080000	CALL 0x004ab6d0
+004aaeca	8bce	MOV ECX,ESI
+004aaecc	c7442410ffffffff	MOV dword ptr [ESP + 0x10],0xffffffff
+004aaed4	e8d7f1ffff	CALL 0x004aa0b0
+004aaed9	8b4c2408	MOV ECX,dword ptr [ESP + 0x8]
+004aaedd	5e	POP ESI
+004aaede	64890d00000000	MOV dword ptr FS:[0x0],ECX
+004aaee5	83c410	ADD ESP,0x10
+004aaee8	c3	RET

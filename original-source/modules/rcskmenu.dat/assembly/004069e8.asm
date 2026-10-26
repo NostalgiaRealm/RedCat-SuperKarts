@@ -1,0 +1,2 @@
+; 004069e8 USER32.DLL::LoadKeyboardLayoutA
+004069e8	ff2564f54700	JMP dword ptr [0x0047f564]

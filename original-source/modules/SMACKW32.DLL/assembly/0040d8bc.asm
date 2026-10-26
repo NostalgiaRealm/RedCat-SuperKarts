@@ -1,0 +1,2 @@
+; 0040d8bc USER32.DLL::MessageBoxA
+0040d8bc	ff2598124100	JMP dword ptr [0x00411298]

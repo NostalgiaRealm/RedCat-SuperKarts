@@ -1,0 +1,2 @@
+; 004be1b7 FUN_004be1b7
+004be1b7	c3	RET

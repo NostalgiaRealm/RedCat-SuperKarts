@@ -1,0 +1,4 @@
+; 0040fd8c FUN_0040fd8c
+0040fd8c	92	XCHG EAX,EDX
+0040fd8d	e82affffff	CALL 0x0040fcbc
+0040fd92	c3	RET

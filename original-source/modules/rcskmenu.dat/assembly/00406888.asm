@@ -1,0 +1,2 @@
+; 00406888 USER32.DLL::GetKeyboardLayoutList
+00406888	ff2510f64700	JMP dword ptr [0x0047f610]

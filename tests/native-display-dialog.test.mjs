@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeDisplayControls,nativeDisplayValues,nativeDisplayFields} from '../src/native-display-settings.js';
-import {normalizeSettings,DEFAULT_DISPLAY_SETTINGS} from '../src/settings.js';
+import {nativeDisplayControls,nativeDisplayValues,nativeDisplayFields} from '../source/native-display-settings.js';
+import {normalizeSettings,DEFAULT_DISPLAY_SETTINGS} from '../source/settings.js';
 const fixtures=JSON.parse(fs.readFileSync(new URL('../evidence/native/display-dialog-fixtures.json',import.meta.url)));
 test('48 original advanced display init, cancel and commit cases preserve inverse checkbox semantics',()=>{
   for(const row of fixtures.cases){

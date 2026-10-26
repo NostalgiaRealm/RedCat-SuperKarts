@@ -1,0 +1,2 @@
+; 00406980 USER32.DLL::InvalidateRect
+00406980	ff2598f54700	JMP dword ptr [0x0047f598]

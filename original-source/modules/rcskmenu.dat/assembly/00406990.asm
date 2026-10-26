@@ -1,0 +1,2 @@
+; 00406990 USER32.DLL::IsDialogMessageA
+00406990	ff2590f54700	JMP dword ptr [0x0047f590]

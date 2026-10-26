@@ -1,0 +1,2 @@
+; 00401220 KERNEL32.DLL::CreateFileA
+00401220	ff25d0f14700	JMP dword ptr [0x0047f1d0]

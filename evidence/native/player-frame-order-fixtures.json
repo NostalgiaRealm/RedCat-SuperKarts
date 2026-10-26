@@ -1,0 +1,1207 @@
+{
+  "sourceSha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "callerRange": "0x432ab5..0x432f2b",
+  "scope": "Run the original player's audio/trigger/wheel/input dispatch order.\n\nThe original caller and keyboard/analog input routines execute in Unicorn.\nAudio, ranks, track queries, wheel work, forces and shooting are explicit\nboundaries; a supplied speed change at the trigger/fire boundary reveals which\nlater callbacks see it. This is not a complete native race execution.",
+  "cases": [
+    {
+      "inputMode": 1,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 20.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 25.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": true
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 30.0,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 30.0,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        }
+      ]
+    },
+    {
+      "inputMode": 1,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": true
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 37.5,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 37.5,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 20.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 25.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 0.0,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 30.0,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 30.0,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        }
+      ]
+    },
+    {
+      "inputMode": 2,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 37.5,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 37.5,
+          "throttle": 21.75,
+          "brake": 0,
+          "steering": 20.0,
+          "handbrake": true
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": false,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": false,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 20.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": true,
+      "buttons": 0,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 25.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": false
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": false
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 0,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 20.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 30.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 30.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        }
+      ]
+    },
+    {
+      "inputMode": 3,
+      "active": true,
+      "buttons": 52,
+      "triggerBoost": 5,
+      "trace": [
+        {
+          "stage": "engine",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "rank",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "triggers",
+          "forwardSpeed": 20.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "first-wheels",
+          "forwardSpeed": 25.0,
+          "throttle": 20.0,
+          "brake": 0,
+          "steering": 30.0,
+          "handbrake": false
+        },
+        {
+          "stage": "fire",
+          "forwardSpeed": 25.0,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        },
+        {
+          "stage": "forces",
+          "forwardSpeed": 37.5,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        },
+        {
+          "stage": "second-wheels",
+          "forwardSpeed": 37.5,
+          "throttle": 100.0,
+          "brake": 0,
+          "steering": 50.0,
+          "handbrake": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+; 004c1f90 FUN_004c1f90
+004c1f90	55	PUSH EBP
+004c1f91	8bec	MOV EBP,ESP
+004c1f93	83c4e0	ADD ESP,-0x20
+004c1f96	8945e0	MOV dword ptr [EBP + -0x20],EAX
+004c1f99	8b4518	MOV EAX,dword ptr [EBP + 0x18]
+004c1f9c	8945f0	MOV dword ptr [EBP + -0x10],EAX
+004c1f9f	8b451c	MOV EAX,dword ptr [EBP + 0x1c]
+004c1fa2	8945f4	MOV dword ptr [EBP + -0xc],EAX
+004c1fa5	eb09	JMP 0x004c1fb0

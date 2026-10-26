@@ -1,0 +1,2 @@
+; 004064f0 GDI32.DLL::CreateRectRgn
+004064f0	ff2548f44700	JMP dword ptr [0x0047f448]

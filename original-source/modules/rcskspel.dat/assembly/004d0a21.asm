@@ -1,0 +1,4 @@
+; 004d0a21 Unwind@004d0a21
+004d0a21	8b4dec	MOV ECX,dword ptr [EBP + -0x14]
+004d0a24	83c140	ADD ECX,0x40
+004d0a27	e984aaf3ff	JMP 0x0040b4b0

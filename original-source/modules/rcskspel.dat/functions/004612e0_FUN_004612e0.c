@@ -1,0 +1,106 @@
+/*
+ * FUN_004612e0 at 004612e0
+ * undefined FUN_004612e0(void)
+ * Address ranges: 004612e0-00461441
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void __thiscall FUN_004612e0(int param_1,undefined4 param_2)
+
+{
+  char cVar1;
+  uint uVar2;
+  uint uVar3;
+  char *pcVar4;
+  char *pcVar5;
+  undefined1 local_2c [4];
+  char *local_28;
+  undefined4 local_24;
+  undefined4 local_20;
+  undefined1 local_1c [4];
+  int local_18;
+  undefined4 local_14;
+  void *local_10;
+  void *pvStack_c;
+  undefined1 *puStack_8;
+  undefined4 local_4;
+  
+  local_4 = 0xffffffff;
+  puStack_8 = &LAB_004cf16b;
+  pvStack_c = ExceptionList;
+  local_2c[0] = (undefined1)param_2;
+  uVar2 = 0xffffffff;
+  pcVar4 = s_D__work_rcsk_Code_game_Hud_Manag_004f3b6c;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  uVar2 = ~uVar2 - 1;
+  local_28 = (char *)0x0;
+  local_24 = 0;
+  local_20 = 0;
+  ExceptionList = &pvStack_c;
+  cVar1 = FUN_0040b600(uVar2,1);
+  if (cVar1 != '\0') {
+    pcVar4 = s_D__work_rcsk_Code_game_Hud_Manag_004f3b6c;
+    pcVar5 = local_28;
+    for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *(undefined4 *)pcVar5 = *(undefined4 *)pcVar4;
+      pcVar4 = pcVar4 + 4;
+      pcVar5 = pcVar5 + 4;
+    }
+    for (uVar3 = uVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *pcVar5 = *pcVar4;
+      pcVar4 = pcVar4 + 1;
+      pcVar5 = pcVar5 + 1;
+    }
+    FUN_0040b5e0(uVar2);
+  }
+  local_1c[0] = (undefined1)param_2;
+  uVar2 = 0xffffffff;
+  local_4 = 0;
+  pcVar4 = s_Invalid_element_m_Top_in_overlay_004f3b94;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  local_18 = 0;
+  local_14 = 0;
+  local_10 = (void *)0x0;
+  FUN_0040b540(s_Invalid_element_m_Top_in_overlay_004f3b94,~uVar2 - 1);
+  local_4 = CONCAT31(local_4._1_3_,1);
+  FUN_00464530(*(undefined4 *)(param_1 + 4),local_1c,local_2c,0xe8);
+  if (local_18 != 0) {
+    cVar1 = *(char *)(local_18 + -1);
+    if ((cVar1 == '\0') || (cVar1 == -1)) {
+      FUN_004bc150((char *)(local_18 + -1));
+    }
+    else {
+      *(char *)(local_18 + -1) = cVar1 + -1;
+    }
+  }
+  local_18 = 0;
+  local_14 = 0;
+  local_10 = (void *)0x0;
+  local_4 = 0xffffffff;
+  if (local_28 != (char *)0x0) {
+    cVar1 = local_28[-1];
+    if ((cVar1 == '\0') || (cVar1 == -1)) {
+      FUN_004bc150(local_28 + -1);
+    }
+    else {
+      local_28[-1] = cVar1 + -1;
+    }
+  }
+  local_28 = (char *)0x0;
+  local_24 = 0;
+  local_20 = 0;
+  (**(code **)(**(int **)(param_1 + 4) + 0xc))(param_2);
+  ExceptionList = local_10;
+  return;
+}
+

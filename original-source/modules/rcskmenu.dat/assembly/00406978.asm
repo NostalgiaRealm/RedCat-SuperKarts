@@ -1,0 +1,2 @@
+; 00406978 USER32.DLL::IntersectRect
+00406978	ff259cf54700	JMP dword ptr [0x0047f59c]

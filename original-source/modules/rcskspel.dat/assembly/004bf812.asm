@@ -1,0 +1,5 @@
+; 004bf812 FUN_004bf812
+004bf812	ff742404	PUSH dword ptr [ESP + 0x4]
+004bf816	e86cffffff	CALL 0x004bf787
+004bf81b	59	POP ECX
+004bf81c	c3	RET

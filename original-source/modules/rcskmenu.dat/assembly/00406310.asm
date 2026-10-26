@@ -1,0 +1,2 @@
+; 00406310 KERNEL32.DLL::GetEnvironmentVariableA
+00406310	ff2500f34700	JMP dword ptr [0x0047f300]

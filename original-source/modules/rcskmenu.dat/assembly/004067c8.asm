@@ -1,0 +1,2 @@
+; 004067c8 USER32.DLL::EndPaint
+004067c8	ff2570f64700	JMP dword ptr [0x0047f670]

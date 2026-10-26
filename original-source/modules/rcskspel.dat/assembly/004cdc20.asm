@@ -1,0 +1,3 @@
+; 004cdc20 FUN_004cdc20
+004cdc20	b8905f4d00	MOV EAX,0x4d5f90
+004cdc25	e94b0fffff	JMP 0x004beb75

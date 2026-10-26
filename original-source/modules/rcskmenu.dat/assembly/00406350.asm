@@ -1,0 +1,2 @@
+; 00406350 KERNEL32.DLL::GetProcAddress
+00406350	ff25e0f24700	JMP dword ptr [0x0047f2e0]

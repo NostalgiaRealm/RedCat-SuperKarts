@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {getNPCAnimationEventRequests, getNPCTurboAnimationRequests,
-  getNPCDrivingAnimationRequests, requestDriverAnimation} from '../src/player-assets.js';
+  getNPCDrivingAnimationRequests, requestDriverAnimation} from '../source/player-assets.js';
 
 const fixtures = JSON.parse(fs.readFileSync(new URL('../evidence/native/npc-animation-fixtures.json', import.meta.url)));
 

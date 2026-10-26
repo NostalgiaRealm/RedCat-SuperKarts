@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeTrafficRelocationRequests } from '../src/simulation/native-ai-range.js';
+import { nativeTrafficRelocationRequests } from '../source/simulation/native-ai-range.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/ai-range-fixtures.json', import.meta.url)));
 test('720 complete native outside-car checks preserve wrap boundaries and registry filtering', () => {

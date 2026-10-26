@@ -1,0 +1,2 @@
+; 00401248 KERNEL32.DLL::RaiseException
+00401248	ff25bcf14700	JMP dword ptr [0x0047f1bc]

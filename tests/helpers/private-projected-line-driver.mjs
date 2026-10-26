@@ -3,7 +3,7 @@
  * Reads original linked DMP road nodes and returns ordinary analog inputs.
  * It never changes a kart, race timer, trigger, pickup, or physics constant.
  */
-import { NativeRailCollision } from '../../src/simulation/native-collision.js';
+import { NativeRailCollision } from '../../source/simulation/native-collision.js';
 import { StarApproachPlanner,preferredRoadNodes } from './star-approach-planner.mjs';
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const distance = (a, b) => Math.hypot(a[0] - b[0], a[2] - b[2]);

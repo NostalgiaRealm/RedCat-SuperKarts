@@ -7,8 +7,8 @@ import {
   nativeAdventureSaveSlot, nativeFirstAdventureSaveSlot, nativeAdventureSavePath,
   readNativeAdventureProfile, nativeAdventureBriefing, beginNativeAdventureEvent,
   restartNativeAdventureProfile, nativeAdventureReward,
-} from '../src/simulation/native-adventure.js';
-import {NativeMenuRandom,nativeMenuRandomSeed,nativeAdventureOutcomeVoice} from '../src/simulation/native-menu-random.js';
+} from '../source/simulation/native-adventure.js';
+import {NativeMenuRandom,nativeMenuRandomSeed,nativeAdventureOutcomeVoice} from '../source/simulation/native-menu-random.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/adventure-fixtures.json', import.meta.url)));
 const config = JSON.parse(readFileSync(new URL('../public/assets/config.json', import.meta.url)));
 

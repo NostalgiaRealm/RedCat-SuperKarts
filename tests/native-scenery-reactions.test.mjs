@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {nativeSceneryPlayerOverlap,launchNativeScenery,updateNativeSceneryReaction,NativeSceneryReactions} from '../src/simulation/native-scenery-reactions.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {createNativeTrack} from '../src/simulation/native-track.js';
+import {nativeSceneryPlayerOverlap,launchNativeScenery,updateNativeSceneryReaction,NativeSceneryReactions} from '../source/simulation/native-scenery-reactions.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {createNativeTrack} from '../source/simulation/native-track.js';
 const fixture=JSON.parse(readFileSync(new URL('../evidence/native/scenery-reaction-fixtures.json',import.meta.url)));
 
 test('non-solid scenery checks only strict player XZ radius overlap',()=>{

@@ -1,0 +1,2 @@
+; 004062c0 KERNEL32.DLL::FindResourceA
+004062c0	ff2528f34700	JMP dword ptr [0x0047f328]

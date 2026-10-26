@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {applyNativePlayerJump,nativeJumpSettings} from '../src/simulation/native-jump.js';
-import {nativeCrossedTriggers} from '../src/simulation/native-race.js';
+import {applyNativePlayerJump,nativeJumpSettings} from '../source/simulation/native-jump.js';
+import {nativeCrossedTriggers} from '../source/simulation/native-race.js';
 
 const read=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url)));
 const fixture=read('../evidence/race-completion/france-native-jump-fixtures.json');

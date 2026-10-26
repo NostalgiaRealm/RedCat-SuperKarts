@@ -1,0 +1,2 @@
+; 00406780 USER32.DLL::DrawFocusRect
+00406780	ff2594f64700	JMP dword ptr [0x0047f694]

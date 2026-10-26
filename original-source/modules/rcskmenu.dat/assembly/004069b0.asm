@@ -1,0 +1,2 @@
+; 004069b0 USER32.DLL::IsWindowEnabled
+004069b0	ff2580f54700	JMP dword ptr [0x0047f580]

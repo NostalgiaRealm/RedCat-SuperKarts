@@ -1,0 +1,2 @@
+; 0040ce44 OLE32.DLL::IsEqualGUID
+0040ce44	ff2504f74700	JMP dword ptr [0x0047f704]

@@ -1,0 +1,2 @@
+; 004158b0 COMCTL32.DLL::InitCommonControls
+004158b0	ff2570f74700	JMP dword ptr [0x0047f770]

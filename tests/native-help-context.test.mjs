@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeHelpContext,nativeHelpNotice} from '../src/native-help-context.js';
+import {nativeHelpContext,nativeHelpNotice} from '../source/native-help-context.js';
 
 const help=JSON.parse(fs.readFileSync(new URL('../public/assets/help/topics.json',import.meta.url)));
 const topic=context=>help.topics.find(item=>item.id===help.contextMap[context]);

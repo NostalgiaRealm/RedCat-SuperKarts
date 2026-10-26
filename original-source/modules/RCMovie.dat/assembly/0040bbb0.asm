@@ -1,0 +1,10 @@
+; 0040bbb0 FUN_0040bbb0
+0040bbb0	55	PUSH EBP
+0040bbb1	8bec	MOV EBP,ESP
+0040bbb3	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0040bbb6	a3e0d64300	MOV [0x0043d6e0],EAX
+0040bbbb	8b4d0c	MOV ECX,dword ptr [EBP + 0xc]
+0040bbbe	890de4d64300	MOV dword ptr [0x0043d6e4],ECX
+0040bbc4	c705dcd6430001000000	MOV dword ptr [0x0043d6dc],0x1
+0040bbce	5d	POP EBP
+0040bbcf	c3	RET

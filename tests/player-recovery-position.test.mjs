@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
-import {NativeRescueController,nativeRescueDestinationAtWaypoint} from '../src/simulation/native-rescue.js';
-import {isSafePlayerRecoveryPose,selectPlayerRecoveryDestination} from '../src/simulation/player-recovery-position.js';
-import {sampleNativeTrack} from '../src/simulation/native-track.js';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
+import {NativeRescueController,nativeRescueDestinationAtWaypoint} from '../source/simulation/native-rescue.js';
+import {isSafePlayerRecoveryPose,selectPlayerRecoveryDestination} from '../source/simulation/player-recovery-position.js';
+import {sampleNativeTrack} from '../source/simulation/native-track.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const bounds={minX:-10,maxX:10,minZ:-15,maxZ:15};
 const road=width=>[

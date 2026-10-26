@@ -1,0 +1,4 @@
+; 0042ecc8 FUN_0042ecc8
+0042ecc8	33d2	XOR EDX,EDX
+0042ecca	e8e9ceffff	CALL 0x0042bbb8
+0042eccf	c3	RET

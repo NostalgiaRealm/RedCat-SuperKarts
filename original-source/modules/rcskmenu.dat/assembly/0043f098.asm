@@ -1,0 +1,10 @@
+; 0043f098 FUN_0043f098
+0043f098	33c9	XOR ECX,ECX
+0043f09a	890a	MOV dword ptr [EDX],ECX
+0043f09c	33c9	XOR ECX,ECX
+0043f09e	894a04	MOV dword ptr [EDX + 0x4],ECX
+0043f0a1	8b4838	MOV ECX,dword ptr [EAX + 0x38]
+0043f0a4	894a08	MOV dword ptr [EDX + 0x8],ECX
+0043f0a7	8b403c	MOV EAX,dword ptr [EAX + 0x3c]
+0043f0aa	89420c	MOV dword ptr [EDX + 0xc],EAX
+0043f0ad	c3	RET

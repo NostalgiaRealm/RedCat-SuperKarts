@@ -1,0 +1,341 @@
+{
+  "format": "superkarts-gameplay-dispatch-audit-v1",
+  "date": "2026-10-26",
+  "scope": "Inventory shipped marker dispatch against the original PE and course files.\n\nThis records bounded static source coverage, not complete gameplay equivalence.\nIt verifies public marker records against fresh parses of the originals.",
+  "originalBinary": "/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Davilex/RedCat Super Karts/data/rcskspel.dat",
+  "originalBinarySha256": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f",
+  "nativePlayerTable": "0x4ecd80",
+  "nativeDispatch": "0x4938e0",
+  "nativeNpcDispatch": "0x406470/0x4067e0",
+  "allShippedPositivePmpMarkersAccountedFor": true,
+  "pmpMarkers": [
+    {
+      "marker": 9,
+      "placements": 6,
+      "nativeCallback": "0x00442970",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "zero-sector progress flag"
+    },
+    {
+      "marker": 13,
+      "placements": 5,
+      "nativeCallback": "0x00442370",
+      "portModule": null,
+      "reviewedDisposition": "original callback is a single RET"
+    },
+    {
+      "marker": 14,
+      "placements": 6,
+      "nativeCallback": "0x00440dd0",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "finish/lap callback"
+    },
+    {
+      "marker": 15,
+      "placements": 6,
+      "nativeCallback": "0x00440e40",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "arm the finish line"
+    },
+    {
+      "marker": 49,
+      "placements": 7,
+      "nativeCallback": "0x00441c50",
+      "portModule": "src/simulation/native-jump.js",
+      "reviewedDisposition": "forward jump; current DMP49 and facing guard"
+    },
+    {
+      "marker": 52,
+      "placements": 3,
+      "nativeCallback": "0x00441d50",
+      "portModule": "src/simulation/native-jump.js",
+      "reviewedDisposition": "reverse jump; current DMP52 and facing guard"
+    },
+    {
+      "marker": 54,
+      "placements": 11,
+      "nativeCallback": "0x004420f0",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "original notification9; no invented text"
+    },
+    {
+      "marker": 61,
+      "placements": 10,
+      "nativeCallback": "0x00000000",
+      "portModule": null,
+      "reviewedDisposition": "NULL callback; strength data for jump49/52"
+    },
+    {
+      "marker": 74,
+      "placements": 7,
+      "nativeCallback": "0x00441e70",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "timed gate"
+    },
+    {
+      "marker": 75,
+      "placements": 6,
+      "nativeCallback": "0x00441e70",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "timed gate"
+    },
+    {
+      "marker": 76,
+      "placements": 7,
+      "nativeCallback": "0x00441e70",
+      "portModule": "src/simulation/native-race.js",
+      "reviewedDisposition": "timed gate"
+    },
+    {
+      "marker": 79,
+      "placements": 10,
+      "nativeCallback": "0x00442140",
+      "portModule": "src/simulation/native-weather.js",
+      "reviewedDisposition": "pause weather"
+    },
+    {
+      "marker": 80,
+      "placements": 10,
+      "nativeCallback": "0x00442180",
+      "portModule": "src/simulation/native-weather.js",
+      "reviewedDisposition": "resume weather"
+    },
+    {
+      "marker": 83,
+      "placements": 4,
+      "nativeCallback": "0x004421e0",
+      "portModule": "src/simulation/native-weather.js",
+      "reviewedDisposition": "rain-data control"
+    },
+    {
+      "marker": 86,
+      "placements": 2,
+      "nativeCallback": "0x004422c0",
+      "portModule": "src/simulation/native-weather.js",
+      "reviewedDisposition": "pause snow"
+    },
+    {
+      "marker": 87,
+      "placements": 2,
+      "nativeCallback": "0x004422d0",
+      "portModule": "src/simulation/native-weather.js",
+      "reviewedDisposition": "resume snow"
+    }
+  ],
+  "dmpMarkers": {
+    "1": 238,
+    "49": 9,
+    "50": 58,
+    "51": 8,
+    "52": 3,
+    "55": 4,
+    "56": 1,
+    "57": 1,
+    "68": 11,
+    "69": 6,
+    "70": 6,
+    "71": 6,
+    "72": 6,
+    "73": 6,
+    "79": 13,
+    "80": 14,
+    "255": 6
+  },
+  "dmpReview": {
+    "49/52": "Player jump guards read current waypoint; NPC marker switch has no jump case.",
+    "50/51": "Environment-rescue predicate48c030 and return scan48bf80, before both racer callbacks.",
+    "68": "NPC40b0b0 multiplies three linear velocities by float32(.98); player41cb80 is RET.",
+    "69-73": "415dd0 scans start positions; not a per-update effect.",
+    "1/55-57/79-80/255": "No active effect in the NPC406470 switch; player weather79/80 is dispatched from PMP."
+  },
+  "tracks": [
+    {
+      "track": 0,
+      "name": "Nederland",
+      "originalPmpSha256": "c93bda8fcc3fb61d10d7dae7f6f2d3b2330cc45ee67bb2e1490e0bebd45fffb6",
+      "originalDmpSha256": "7dcd92456d6c3f2a5a7abd0a126c16fe77f9ebb6dc053ff61b59f9cdb350d50b",
+      "convertedSha256": "5bcf250c62593161645aed294e60e06ee49ffb77839417b9bb9122e09d017e43",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "49": 3,
+        "54": 3,
+        "61": 3,
+        "74": 1,
+        "75": 1,
+        "76": 1,
+        "79": 2,
+        "80": 2
+      },
+      "dmpMarkers": {
+        "1": 149,
+        "49": 2,
+        "50": 12,
+        "51": 1,
+        "55": 4,
+        "56": 1,
+        "57": 1,
+        "68": 11,
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1,
+        "79": 2,
+        "80": 2,
+        "255": 2
+      }
+    },
+    {
+      "track": 1,
+      "name": "Duitsland",
+      "originalPmpSha256": "f6ba17da0d733026568cfc4be75a7392531780b64dbdc57732d2074875c24256",
+      "originalDmpSha256": "2509ed5812a7a5ce868b12b337041680fdd19b0caec37645591871ba06785d76",
+      "convertedSha256": "ea05d664811a3c8f456390c0171958c42e6399a3b536111650c31d5b46218851",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "14": 1,
+        "15": 1,
+        "49": 2,
+        "52": 3,
+        "54": 3,
+        "61": 5,
+        "74": 2,
+        "75": 1,
+        "76": 2,
+        "86": 2,
+        "87": 2
+      },
+      "dmpMarkers": {
+        "49": 3,
+        "50": 12,
+        "51": 1,
+        "52": 3,
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1,
+        "255": 2
+      }
+    },
+    {
+      "track": 2,
+      "name": "Engeland",
+      "originalPmpSha256": "3cc77e636c09e8c1c7cb584472d440b912770d857f72d2f5893351f600345d0b",
+      "originalDmpSha256": "913e39350a2f40edf6df53f373528288c72953b4ebd8cd0cd5e5bcff9fe63256",
+      "convertedSha256": "310373f774143138f7a2d0dbfb1126f95eb5f47e1ed9e4c2229b6d4ecf888d76",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "74": 1,
+        "75": 1,
+        "76": 1,
+        "79": 8,
+        "80": 8,
+        "83": 4
+      },
+      "dmpMarkers": {
+        "1": 89,
+        "51": 1,
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1,
+        "79": 11,
+        "80": 12,
+        "255": 1
+      }
+    },
+    {
+      "track": 3,
+      "name": "Frankrijk",
+      "originalPmpSha256": "3cf5ef06f238c38fcf25fb6bf1d7453a2212724ca1d4ff333cde3b1630bdb05d",
+      "originalDmpSha256": "ecf7289f02d55a5fde1106beeea581984e1c23bcce33e98a6db2e888803a7914",
+      "convertedSha256": "3aae75d5eb2af227ab3d41a64773e3aa5d890f1853b745f3493d7a13eb7ebe61",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "49": 2,
+        "61": 2,
+        "74": 1,
+        "75": 1,
+        "76": 1
+      },
+      "dmpMarkers": {
+        "49": 4,
+        "50": 16,
+        "51": 1,
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1,
+        "255": 1
+      }
+    },
+    {
+      "track": 4,
+      "name": "Spanje",
+      "originalPmpSha256": "3975fa1c9961d357a03fb7753dfa00e301b044144976dcab3f5ef4dd130c12fb",
+      "originalDmpSha256": "9cd0d950b1d3f8cd36e2affba0f4b69721f0facce43344df81f5d6bb8d2bece6",
+      "convertedSha256": "9232f0f09ca277476a158f5689e11d5bd59159f03db3b266607e1532a798daaf",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "54": 3,
+        "74": 1,
+        "75": 1,
+        "76": 1
+      },
+      "dmpMarkers": {
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1
+      }
+    },
+    {
+      "track": 5,
+      "name": "Italie",
+      "originalPmpSha256": "065ee6c0e3ab511c058e28bc3b51824f80467afaaa0aca60954327a7c06efa6c",
+      "originalDmpSha256": "e9ff7c4e5c762bea54971db034c1b11ccb52ec24cfe35abc1c0c086fd9b85e83",
+      "convertedSha256": "586dc9b8a04124097383ca5ca1aa7f92dfcaad2b10eba546aff5f98185425ce0",
+      "allRouteAndDriveRecordsMatchOriginal": true,
+      "pmpMarkers": {
+        "9": 1,
+        "13": 1,
+        "14": 1,
+        "15": 1,
+        "54": 2,
+        "74": 1,
+        "75": 1,
+        "76": 1
+      },
+      "dmpMarkers": {
+        "50": 18,
+        "51": 4,
+        "69": 1,
+        "70": 1,
+        "71": 1,
+        "72": 1,
+        "73": 1
+      }
+    }
+  ]
+}

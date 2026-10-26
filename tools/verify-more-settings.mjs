@@ -1,3 +1,7 @@
+// Historical checkpoint verifier: the recorded src/ hashes and copy-layout
+// assertions below belong to its frozen evidence snapshot, before source/ was
+// separated from bundled runtime output. Use the matching historical checkout;
+// do not regenerate these records as evidence of the current runtime.
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';

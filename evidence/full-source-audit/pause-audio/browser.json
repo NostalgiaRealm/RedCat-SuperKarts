@@ -1,0 +1,269 @@
+{
+  "status": "passed",
+  "scope": "Source-only Chromium. Real P/Escape/cancel keys and media playback; controlled near-end music seek for completion; synthetic blur and one synchronous pointerdown/blur pair through existing host handlers. No full race, native Windows playback, build or package test.",
+  "checks": [
+    {
+      "name": "P pause freezes race while original music and sound buffers continue",
+      "before": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 0.512,
+        "audioState": "running",
+        "musicTime": 0.017458,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 0.864,
+        "audioState": "running",
+        "musicTime": 0.340916,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "Escape requester preserves original background audio",
+      "before": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 0.8746666666666667,
+        "audioState": "running",
+        "musicTime": 0.342629,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 1.2266666666666666,
+        "audioState": "running",
+        "musicTime": 0.700836,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "focus loss from open requester remains paused after cancellation until deliberate resume",
+      "before": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 1.2266666666666666,
+        "audioState": "suspended",
+        "musicTime": 0.701559,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 1,
+        "raceMs": 41,
+        "audioTime": 1.2266666666666666,
+        "audioState": "suspended",
+        "musicTime": 0.701559,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "resumed": {
+        "mode": "race",
+        "tick": 2,
+        "raceMs": 77,
+        "audioTime": 1.2693333333333334,
+        "audioState": "running",
+        "musicTime": 0.780009,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "blur while cancellation waits for key release cannot restart race or audio",
+      "before": {
+        "mode": "paused",
+        "tick": 3,
+        "raceMs": 103,
+        "audioTime": 1.2693333333333334,
+        "audioState": "suspended",
+        "musicTime": 0.787627,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 3,
+        "raceMs": 103,
+        "audioTime": 1.2693333333333334,
+        "audioState": "suspended",
+        "musicTime": 0.787627,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "resumed": {
+        "mode": "race",
+        "tick": 4,
+        "raceMs": 118,
+        "audioTime": 1.2906666666666666,
+        "audioState": "running",
+        "musicTime": 0.812698,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "blur during the requester pressed-frame delay cannot restart race or audio",
+      "before": {
+        "mode": "paused",
+        "tick": 4,
+        "raceMs": 118,
+        "audioTime": 1.2906666666666666,
+        "audioState": "suspended",
+        "musicTime": 0.812698,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 4,
+        "raceMs": 118,
+        "audioTime": 1.2906666666666666,
+        "audioState": "suspended",
+        "musicTime": 0.812698,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "resumed": {
+        "mode": "race",
+        "tick": 5,
+        "raceMs": 147,
+        "audioTime": 1.3226666666666667,
+        "audioState": "running",
+        "musicTime": 0.826734,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "blur during P resume key release retains the host pause",
+      "before": {
+        "mode": "paused",
+        "tick": 5,
+        "raceMs": 147,
+        "audioTime": 1.3226666666666667,
+        "audioState": "suspended",
+        "musicTime": 0.829573,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 5,
+        "raceMs": 147,
+        "audioTime": 1.3226666666666667,
+        "audioState": "suspended",
+        "musicTime": 0.829573,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      },
+      "resumed": {
+        "mode": "race",
+        "tick": 6,
+        "raceMs": 172,
+        "audioTime": 1.344,
+        "audioState": "running",
+        "musicTime": 0.842224,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "music finishes during pause and restarts on resume",
+      "seek": {
+        "duration": 71.5755,
+        "loop": false
+      },
+      "before": {
+        "mode": "paused",
+        "tick": 6,
+        "raceMs": 172,
+        "audioTime": 1.6293333333333333,
+        "audioState": "running",
+        "musicTime": 71.5755,
+        "musicPaused": true,
+        "musicEnded": true,
+        "automaticLoop": false
+      },
+      "after": {
+        "mode": "paused",
+        "tick": 6,
+        "raceMs": 172,
+        "audioTime": 1.8773333333333333,
+        "audioState": "running",
+        "musicTime": 71.5755,
+        "musicPaused": true,
+        "musicEnded": true,
+        "automaticLoop": false
+      },
+      "resumed": {
+        "mode": "race",
+        "tick": 6,
+        "raceMs": 172,
+        "audioTime": 1.8773333333333333,
+        "audioState": "running",
+        "musicTime": 0,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "normal native updates restart completed music",
+      "state": {
+        "mode": "race",
+        "tick": 16,
+        "raceMs": 429,
+        "audioTime": 2.1226666666666665,
+        "audioState": "running",
+        "musicTime": 0.000459,
+        "musicPaused": false,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    },
+    {
+      "name": "leaving race stops its audio",
+      "state": {
+        "mode": "menu",
+        "tick": 16,
+        "raceMs": 429,
+        "audioTime": 2.24,
+        "audioState": "suspended",
+        "musicTime": 0.087086,
+        "musicPaused": true,
+        "musicEnded": false,
+        "automaticLoop": false
+      }
+    }
+  ],
+  "errors": []
+}

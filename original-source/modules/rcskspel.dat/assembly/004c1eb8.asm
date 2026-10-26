@@ -1,0 +1,4 @@
+; 004c1eb8 FUN_004c1eb8
+004c1eb8	d9c9	FXCH
+004c1eba	ddd8	FSTP ST0
+004c1ebc	c3	RET

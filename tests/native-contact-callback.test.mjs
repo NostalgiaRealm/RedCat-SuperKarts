@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {finishNativeContactStep,NativeRailCollision} from '../src/simulation/native-collision.js';
+import {finishNativeContactStep,NativeRailCollision} from '../source/simulation/native-collision.js';
 
 test('contact callback order and persistent latches match original engine dispatch',async()=>{
   const fixture=JSON.parse(await readFile(new URL('../evidence/native/contact-callback-fixtures.json',import.meta.url)));

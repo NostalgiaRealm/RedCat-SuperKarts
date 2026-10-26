@@ -1,10 +1,10 @@
 // Private test-driver forecast only. Other bodies retain their observed poses
 // while copied velocities may respond to predicted contact. This is not a
 // whole-race AI/scenery prediction, and no result is written into the race.
-import {NativeGroundClock} from '../../src/simulation/native-ground.js';
-import {sampleNativeTrack} from '../../src/simulation/native-track.js';
-import {NativeRailCollision} from '../../src/simulation/native-collision.js';
-import {nativeAnalogFromNormalized} from '../../src/simulation/native-input.js';
+import {NativeGroundClock} from '../../source/simulation/native-ground.js';
+import {sampleNativeTrack} from '../../source/simulation/native-track.js';
+import {NativeRailCollision} from '../../source/simulation/native-collision.js';
+import {nativeAnalogFromNormalized} from '../../source/simulation/native-input.js';
 
 export class PrivateDynamicContact extends Error {}
 function bodyCopy(body) {

@@ -1,0 +1,2 @@
+; 00406710 USER32.DLL::CreateIcon
+00406710	ff25ccf64700	JMP dword ptr [0x0047f6cc]

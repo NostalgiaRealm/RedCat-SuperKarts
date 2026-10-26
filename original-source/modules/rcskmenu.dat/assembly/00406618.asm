@@ -1,0 +1,2 @@
+; 00406618 GDI32.DLL::RectVisible
+00406618	ff25b4f34700	JMP dword ptr [0x0047f3b4]

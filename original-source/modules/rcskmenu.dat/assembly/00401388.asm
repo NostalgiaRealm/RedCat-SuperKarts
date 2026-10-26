@@ -1,0 +1,2 @@
+; 00401388 KERNEL32.DLL::InterlockedDecrement
+00401388	ff2550f14700	JMP dword ptr [0x0047f150]

@@ -1,0 +1,2 @@
+; 00406628 GDI32.DLL::RestoreDC
+00406628	ff25acf34700	JMP dword ptr [0x0047f3ac]

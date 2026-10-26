@@ -1,0 +1,2 @@
+; 00406498 GDI32.DLL::CopyEnhMetaFileA
+00406498	ff2574f44700	JMP dword ptr [0x0047f474]

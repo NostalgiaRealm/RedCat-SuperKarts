@@ -1,0 +1,2 @@
+; 00406600 GDI32.DLL::PlayEnhMetaFile
+00406600	ff25c0f34700	JMP dword ptr [0x0047f3c0]

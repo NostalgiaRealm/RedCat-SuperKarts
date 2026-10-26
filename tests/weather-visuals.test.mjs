@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
-import {WeatherVisuals,SkidmarkVisuals,ExplosionVisuals} from '../src/race-visuals.js';
-import {NativeWeather} from '../src/simulation/native-weather.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeSkidmarks} from '../src/simulation/native-skidmarks.js';
-import {NativeExplosions} from '../src/simulation/native-explosions.js';
+import {WeatherVisuals,SkidmarkVisuals,ExplosionVisuals} from '../source/race-visuals.js';
+import {NativeWeather} from '../source/simulation/native-weather.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeSkidmarks} from '../source/simulation/native-skidmarks.js';
+import {NativeExplosions} from '../source/simulation/native-explosions.js';
 import fs from 'node:fs';
 const manifest=JSON.parse(fs.readFileSync(new URL('../public/assets/manifest.json',import.meta.url)));
 const viewer=()=>({camera:new THREE.PerspectiveCamera(),scene:new THREE.Scene(),group:new THREE.Group(),

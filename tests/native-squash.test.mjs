@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeSquash} from '../src/simulation/native-squash.js';
+import {NativeSquash} from '../source/simulation/native-squash.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/squash-fixtures.json',import.meta.url)));
 const config=JSON.parse(readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 

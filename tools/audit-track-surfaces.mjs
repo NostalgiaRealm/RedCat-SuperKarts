@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import { createNativeTrack } from '../src/simulation/native-track.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
 
 // Inventory only. No rule is inferred from a texture filename or its pixels.
 const root = new URL('../', import.meta.url);

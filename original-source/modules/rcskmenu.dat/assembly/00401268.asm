@@ -1,0 +1,2 @@
+; 00401268 KERNEL32.DLL::SetFilePointer
+00401268	ff25acf14700	JMP dword ptr [0x0047f1ac]

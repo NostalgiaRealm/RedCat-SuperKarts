@@ -1,0 +1,4 @@
+; 0044cfec FUN_0044cfec
+0044cfec	a170d84700	MOV EAX,[0x0047d870]
+0044cff1	e8b65efbff	CALL 0x00402eac
+0044cff6	c3	RET

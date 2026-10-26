@@ -1,0 +1,2 @@
+; 004064e0 GDI32.DLL::CreatePalette
+004064e0	ff2550f44700	JMP dword ptr [0x0047f450]

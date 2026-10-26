@@ -1,0 +1,2 @@
+; 00406898 USER32.DLL::GetLastActivePopup
+00406898	ff2508f64700	JMP dword ptr [0x0047f608]

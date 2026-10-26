@@ -1,0 +1,3 @@
+; 004cec70 Unwind@004cec70
+004cec70	8d4d94	LEA ECX,[EBP + -0x6c]
+004cec73	e938c8f3ff	JMP 0x0040b4b0

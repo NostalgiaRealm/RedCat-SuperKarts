@@ -1,0 +1,12 @@
+; 0044fe80 FUN_0044fe80
+0044fe80	8bc1	MOV EAX,ECX
+0044fe82	33d2	XOR EDX,EDX
+0044fe84	83c9ff	OR ECX,0xffffffff
+0044fe87	894808	MOV dword ptr [EAX + 0x8],ECX
+0044fe8a	89480c	MOV dword ptr [EAX + 0xc],ECX
+0044fe8d	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+0044fe91	8910	MOV dword ptr [EAX],EDX
+0044fe93	895004	MOV dword ptr [EAX + 0x4],EDX
+0044fe96	894810	MOV dword ptr [EAX + 0x10],ECX
+0044fe99	895014	MOV dword ptr [EAX + 0x14],EDX
+0044fe9c	c20400	RET 0x4

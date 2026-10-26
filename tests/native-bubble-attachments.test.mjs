@@ -1,10 +1,10 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {NativeBubbleAttachments} from '../src/simulation/native-bubble-attachments.js';
-import {getNativeBubbleShellSpec,BubbleShellVisuals} from '../src/bubble-visuals.js';
+import {NativeBubbleAttachments} from '../source/simulation/native-bubble-attachments.js';
+import {getNativeBubbleShellSpec,BubbleShellVisuals} from '../source/bubble-visuals.js';
 import * as THREE from 'three';
-import {NATIVE_RENDER_ORDER} from '../src/render-order.js';
+import {NATIVE_RENDER_ORDER} from '../source/render-order.js';
 
 const fixtures=JSON.parse(await readFile(new URL('../evidence/native/bubble-attachment-fixtures.json',import.meta.url)));
 

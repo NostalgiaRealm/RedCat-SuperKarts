@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { nativeAIPositionBehind, nativeAINearestShooterTarget, nativeAIItemGuard,
-  nativeAICatchupGuard, updateNativeAICatchupState, prepareNativeAIFireState } from '../src/simulation/native-ai-items.js';
+  nativeAICatchupGuard, updateNativeAICatchupState, prepareNativeAIFireState } from '../source/simulation/native-ai-items.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/ai-item-fixtures.json',import.meta.url)));
 const tracks=Array.from({length:6},(_,i)=>JSON.parse(readFileSync(new URL(`../public/assets/tracks/etappe${i}.json`,import.meta.url))));
 

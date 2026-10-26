@@ -1,0 +1,2 @@
+; 00401330 ADVAPI32.DLL::RegQueryValueExA
+00401330	ff25f0f14700	JMP dword ptr [0x0047f1f0]

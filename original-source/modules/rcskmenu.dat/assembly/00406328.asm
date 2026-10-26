@@ -1,0 +1,2 @@
+; 00406328 KERNEL32.DLL::GetLocalTime
+00406328	ff25f4f24700	JMP dword ptr [0x0047f2f4]

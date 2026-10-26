@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/gameplay/native-live-contact-fixtures.json',import.meta.url)));
 test('16 original sweeps reproduce the captured France contact and signed velocity variants exactly',()=>{

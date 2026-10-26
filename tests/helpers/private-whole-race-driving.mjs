@@ -1,6 +1,6 @@
 // Test-only input selection. Each candidate advances an independent complete
 // race snapshot. Nothing from a candidate is copied into the actual race.
-import {tireLateralForce,resistanceForce} from '../../src/simulation/native-forces.js';
+import {tireLateralForce,resistanceForce} from '../../source/simulation/native-forces.js';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap=v=>Math.atan2(Math.sin(v),Math.cos(v));
 export const WHOLE_RACE_SCORE=Object.freeze({progress:.2,accumulatedCrossSquared:.00003,

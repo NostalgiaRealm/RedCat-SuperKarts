@@ -1,0 +1,13 @@
+; 004bdbb3 FUN_004bdbb3
+004bdbb3	8b4150	MOV EAX,dword ptr [ECX + 0x50]
+004bdbb6	85c0	TEST EAX,EAX
+004bdbb8	740f	JZ 0x004bdbc9
+004bdbba	50	PUSH EAX
+004bdbbb	e80a370000	CALL 0x004c12ca
+004bdbc0	85c0	TEST EAX,EAX
+004bdbc2	59	POP ECX
+004bdbc3	7d04	JGE 0x004bdbc9
+004bdbc5	83c8ff	OR EAX,0xffffffff
+004bdbc8	c3	RET
+004bdbc9	33c0	XOR EAX,EAX
+004bdbcb	c3	RET

@@ -3,9 +3,9 @@
 A reconstruction of the original Windows game using **Three.js**, **Electron**
 and the original supplied assets. Play in a browser or in a desktop window.
 
-**Version 0.9.0** · [Changelog](CHANGELOG.md) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v0.9.0) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v0.9.0)
+**Version 1.0.0** · [Changelog](CHANGELOG.md) ·
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.0) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.0)
 
 - **Six circuits**, **four playable characters**, **four active race modes** and
   **three difficulty levels**, with the original menus.
@@ -25,6 +25,11 @@ race baseline here. See [feature status](docs/feature-parity.md) and
 unavailable platforms. The [remaining-work audit](docs/remaining-work.md)
 separates confirmed improvements from validation gaps and optional work.
 
+To inspect how the original worked, see the [recovered C and assembly](original-source/README.md).
+This is decompiled reference code, not the developers' original source project.
+The [source comparison report](docs/full-source-audit.md) records the latest
+confirmed corrections and the intentional port features that were preserved.
+
 [Run the game](#run-the-game) · [Controls](#controls) ·
 [Settings and saves](#settings-and-saves) ·
 [Prepare original assets](#prepare-original-assets) ·
@@ -42,6 +47,8 @@ The published source release includes the prepared game assets. Download and
 extract the source archive, or clone the repository, then follow the commands
 below. You do not need to import the original disc files for this release.
 The source archive is separate from the ready-to-run desktop downloads.
+Version 1.0.0 was packaged and published without tests or build checks, as
+requested. See [its release notes](docs/releases/1.0.0.md) for the scope.
 
 Install **Node.js 24 and npm**, then open a terminal in this project folder.
 The instructions below assume the original assets have already been prepared
@@ -59,10 +66,16 @@ npm start
 
 Open **[http://127.0.0.1:4173/](http://127.0.0.1:4173/)**.
 Keep the terminal open while playing. Press **Ctrl+C** in that terminal to stop
-the server. Browser audio may need a click before the intro starts.
+the server. The intro starts automatically; if the browser blocks sound, use
+**Geluid inschakelen** at the bottom left to enable audio while it keeps playing.
+This button also enters fullscreen if the game is not already fullscreen.
 
 For later launches, run only `npm start`, unless `node_modules/` was removed.
-The server reads `src/` and `public/assets/` directly, so **no build is needed**.
+The command refreshes the small generated runtime in `src/`, then serves it
+with the prepared `public/assets/`. **No separate build command is needed.**
+The editable modules live in [`source/`](source/README.md); the game does not
+load those individual files. Changes made while the server is running need
+`npm run bundle` and a browser reload, or a server restart.
 Startup reports missing Three.js dependencies and shows the reinstall command.
 The `node_modules/` dependency folder is intentionally excluded from Git.
 
@@ -293,19 +306,38 @@ local browser or desktop commands above.
 npm run build
 ```
 
-This creates `dist/` with the prepared original assets. Serve that directory
-through any static HTTP server; opening `index.html` through `file://` is not
-supported. For example:
+This creates `dist/` with the prepared original assets. The build combines the
+JavaScript modules into a small set of files, loads the renderer when needed
+and removes unused library code. Editable files stay in [`source/`](source/README.md).
+Use `npm run bundle` to refresh only the local runtime, without copying assets
+or creating `dist/` or desktop packages. See [the folder guide](docs/runtime-layout.md).
+
+To try that output locally, stop any server already using port 4173, then run:
+
+```sh
+npm run preview
+```
+
+Open the same [local address](http://127.0.0.1:4173/). Switching between `npm start`
+and `npm run preview` on that address keeps existing browser saves and settings;
+no migration is needed. Preview requires a completed build and does not rebuild
+when you edit source. Use `npm start` to refresh and run the local runtime.
+
+You can also serve `dist/` through any static HTTP server; opening `index.html`
+through `file://` is not supported. For example:
 
 ```sh
 python3 -m http.server 4175 --bind 127.0.0.1 --directory dist
 ```
 
+That different port has separate browser saves. See [build and loading
+details](docs/code-efficiency.md) for the changes and focused validation.
+
 ### Host on a subdomain
 
 The browser build can run as a static site at an address such as
 `https://karts.example.com/`. Serve the **contents of `dist/` at the subdomain
-root**, including the bundled Three.js files.
+root**, including every generated JavaScript chunk and prepared asset.
 
 The [subdomain hosting instructions](docs/hosting.md) cover build requirements,
 the exact upload layout, DNS and HTTPS, Caddy/Nginx examples, caching, media
@@ -322,8 +354,9 @@ Run the packaging command on the corresponding operating system:
 | macOS | `npm run dist:mac` | Separate Intel and Apple Silicon DMG/ZIP packages. |
 
 `npm run desktop:pack` creates an unpacked application for the host platform.
-These commands build locally without publishing. Each package is checked for
-missing or changed game files.
+These commands build locally without publishing. Normal packaging verifies
+missing or changed game files; the 1.0.0 release deliberately skips package
+verification and all other build checks.
 
 See [desktop build instructions](docs/desktop.md) for prerequisites, exact
 commands for all three platforms, save locations, optional signing and the
@@ -348,145 +381,17 @@ the full menu, countdown and results path. See the
 
 ## Testing
 
-These are development checks. They are not needed each time you launch the
-game. Choose checks relevant to the behavior you change.
-
-The rendering smoke tests now check the world and HUD separately from the
-final screen copy. The [HUD rendering follow-up](docs/research-hud-framebuffer.md)
-records the relevant source checks; older results below retain their original
-checkpoint and platform scope.
-
-### Unit, parser and asset checks
-
-```sh
-npm test
-npm run test:parsers
-npm run test:assets
-```
-
-### Browser and gameplay checks
-
-Start the server:
-
-```sh
-npm run dev
-```
-
-In a second terminal, while that server is running:
-
-```sh
-npm run test:browser
-npm run test:driving
-node tests/quickrace-browser.mjs
-node tests/adventure-browser.mjs
-node tests/animation-browser.mjs
-node tests/camera-browser.mjs
-node tests/audio-settings-browser.mjs
-node tools/validate-race-sound-triggers.mjs
-node tests/weather-browser.mjs
-node tests/streams-squash-browser.mjs
-```
-
-Browser tests use `/usr/bin/google-chrome`, headless Chromium with SwiftShader.
-Override `CHROME_PATH` or `RCSK_URL` if needed. Those checks are not hardware
-rendering benchmarks, actual 240 Hz display tests, or real mobile/controller
-testing. They retain screenshots and `evidence/browser/report.json`.
-The driving checks retain `evidence/driving/report.json` and cover all six
-circuits, all four selectable drivers, original HUD atlas rendering, keyboard
-movement, simulated controller braking, focus pause/resume and two simultaneous
-touch contacts.
-Animation checks drive all four characters through both steering directions
-and reverse, then compare pickup/hit queue changes and displayed source meshes.
-Camera checks exercise all original view keys. Audio checks verify actual
-playback before checking original source/group levels.
-
-### Firefox checks
-
-Firefox checks use a separately started geckodriver with a disposable profile:
-
-```sh
-xvfb-run -a env LIBGL_ALWAYS_SOFTWARE=1 work/geckodriver/geckodriver --host 127.0.0.1 --port 4447
-# In a second terminal:
-npm run test:firefox
-```
-
-Override `WEBDRIVER_URL`, `FIREFOX_PATH` or `RCSK_URL` as needed. The recorded
-run uses Firefox 158.0 under Xvfb/software OpenGL. The driver is not a runtime
-dependency or included in `dist/`.
-
-### What native checks establish
-
-Unicorn checks execute bytes from the original race executable, with explicit
-external input/timer stubs. They validate bounded recovered routines and do
-not establish complete native race parity. Reproduction commands, addresses,
-hashes and numerical tolerances are in the research documents.
-
-Wine 11 Staging was useful for intro/menu/process handoff. The user reports
-that WineD3D renders the race incorrectly; no full race visual/handling parity
-is inferred from that environment.
+Checks are for development, not required each time you launch the game. The
+[development guide](docs/development.md) lists focused unit, asset, browser,
+Firefox and native checks, their requirements and evidence limits.
 
 ## Recorded validation checkpoints
 
-These records describe the source and builds tested at each checkpoint. Earlier
-full-race results remain tied to their historical runtime hashes.
-
-### Initial broad checkpoint
-
-The earlier broad checkpoint passed 374 JavaScript tests, four parser tests,
-36 control-only race cases and 18 five-minute opponent runs. Every course
-qualifies in all four modes on easy; every star race collects twelve stars.
-Ordinary races finish at all three difficulties, with placing/qualification
-reported separately. `evidence/final/validation.json` records that source,
-build checks and retained unsuccessful attempts.
-
-### Greeting, recovery and follow-up audit
-
-Subsequent greeting, starter, danger-zone recovery and texture-key corrections
-have focused native/browser
-verification in `evidence/regressions/validation.json`. The subsequent broader
-audit is documented in `docs/research-followup-audit.md`, with the build from
-that checkpoint and separately refreshed checks in
-`evidence/followup/validation.json`.
-It restores menu transactions and advanced settings, original keyboard rules,
-the missing bubble shell, rescue rendering and progress, and native arithmetic
-details. It also checks all 24 Adventure transitions consecutively; those
-controlled results are separate from physically driven race completions.
-
-### Germany, France and Italy race completion
-
-The three subsequently unfinished normal-race checks are now complete:
-Germany 10:48.975, France 13:32.350 and Italy 9:25.975, all five laps and first
-place using ordinary controls on identical frozen source. This follow-up
-restores original jump callbacks and route settings, and adds an explicitly
-authorized player rescue fallback for occupied or overlapping return points.
-It retains the original effects and voices. Details and rebuilt-file
-verification from that checkpoint are in `docs/research-race-completion.md` and
-`evidence/race-completion/validation.json`.
-
-### Full race matrix
-
-The earlier full-race audit targeted all 72 track/difficulty/mode combinations:
-71 finished, and 40 also qualified for Adventure. France on hard difficulty in
-timed mode remains incomplete. Those historical fixed-25-ms results are recorded
-in `evidence/full-race-matrix/race-matrix.json`; the verifier checked matching
-source/asset hashes at that checkpoint. They do not establish full-race coverage
-for the later variable update host and recovery changes. This audit corrected the native
-race constructor's upgrade reset and mirrored rendering/input composition,
-and added narrowly scoped recovery and nonfinite-opponent safeguards for
-captured stuck cases. It retains the original physics, deadlines and gate
-awards. That checkpoint includes 492 unit tests, eleven focused browser checks
-and refreshed source-asset comparisons. See the
-[full race results](docs/full-race-results.md) and
-[research notes](docs/research-full-race-matrix.md).
-
-### Extra settings and shadows
-
-The extra-settings additions described above were checked alongside shadow
-corrections. The shadow audit fixes viewport-edge disappearance and unintended
-browser alpha compositing using the original shadow code and assets. Focused
-checks and the refreshed static build from that checkpoint are documented in
-[extra settings](docs/more-settings.md) and
-[shadow research](docs/research-kart-shadows.md).
+See [current validation](docs/validation.md) for dated results and platform
+coverage. The [earlier checkpoint overview](docs/history/validation-overview.md)
+preserves the broad race, greeting/recovery, full-matrix and shadow records.
+Historical results remain tied to their tested source; the [remaining-work
+list](docs/remaining-work.md) identifies the open validation gaps.
 
 ## Technical documentation
 
@@ -494,27 +399,26 @@ In these notes, **native** means the behavior or files of the original Windows
 game. Research records distinguish recovered routines, observed behavior and
 remaining comparison limits.
 
-The repository includes the retained test fixtures and validation reports.
-Native analysis databases, decompiler exports, Wine environments and raw input
-copies remain local; historical research paths referring to those files are
-not part of the runnable source release.
+The repository includes retained test fixtures, validation reports and the
+complete [recovered C/assembly reference](original-source/README.md), including
+its copied runtime inputs and export tools. The entire `original-source/`
+folder is included on GitHub and GitLab and in every release source archive.
+It is inspection material, not a runtime requirement. This includes any
+working databases and helper files inside `original-source/`. Other local
+analysis directories, Wine environments and unrelated raw extraction folders
+remain local; historical paths to those files are not required to run the game.
+See the [release publication policy](docs/releases/README.md).
 
 The source game uses Davilex's **M25/A2 Racer** engine lineage. Spookkasteel uses
 **Genesis3D** worlds and **DaviScript** formats, so only proven-compatible
 extraction and technical findings are reused. The Spookkasteel checkout and
 supplied original installation/ISO remain read-only inputs.
 
-| Topic | Start here |
-| --- | --- |
-| Current milestone, checkpoint and next steps | [PLAN.md](PLAN.md) |
-| Evidence classifications and source authority | [Original behavior](docs/original-behavior.md) |
-| Separate implementation and comparison status | [Feature parity](docs/feature-parity.md) |
-| Acceptance criteria, outcomes and unavailable platforms | [Validation](docs/validation.md) |
-| Native processes, UI, timer and reference limits | [Startup research](docs/research-startup.md) |
-| Extraction, geometry, textures and media | [Asset research](docs/research-assets.md) |
-| Content, parameters and recovered native routines | [Gameplay research](docs/research-gameplay.md) |
-| Original HUD coverage and restored elements across all four race modes | [HUD research](docs/research-hud-modes.md) |
-| The complete original request | [docs/request.txt](docs/request.txt) |
+The [documentation index](docs/README.md) organizes every guide and research
+report by topic. Start with [PLAN.md](PLAN.md) for current priorities,
+[feature parity](docs/feature-parity.md) for implementation/comparison status,
+and [original behavior](docs/original-behavior.md) for evidence definitions.
+The complete original request remains in [docs/request.txt](docs/request.txt).
 
 ## Original assets and rights
 

@@ -1,0 +1,6 @@
+; 0046b8c8 TfrmOptions_btnMainHelpClick
+0046b8c8	a16cc84700	MOV EAX,[0x0047c86c]
+0046b8cd	8b00	MOV EAX,dword ptr [EAX]
+0046b8cf	ba02000000	MOV EDX,0x2
+0046b8d4	e86f6ffcff	CALL 0x00432848
+0046b8d9	c3	RET

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 import {copiedNPCPath,sampleCopiedNPCPath,createRouteTrafficForecast} from './helpers/private-route-traffic-forecast.mjs';
 import {predictClosedLoop} from './helpers/private-closed-loop-route-traffic-driving.mjs';
 

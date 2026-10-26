@@ -1,0 +1,5 @@
+; 0041e8e0 FUN_0041e8e0
+0041e8e0	8b410c	MOV EAX,dword ptr [ECX + 0xc]
+0041e8e3	8b5104	MOV EDX,dword ptr [ECX + 0x4]
+0041e8e6	2bc2	SUB EAX,EDX
+0041e8e8	c3	RET

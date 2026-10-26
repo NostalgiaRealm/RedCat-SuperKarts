@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import {writeFile} from 'node:fs/promises';
 
@@ -7,7 +8,7 @@ try {
   await page.goto(process.env.PORT_URL || 'http://127.0.0.1:4173');
   await page.setContent('<!doctype html><html><body style="margin:0"></body></html>');
   const results = await page.evaluate(async () => {
-    const {applyNativeMenuRegion} = await import('/src/menu-regions.js');
+    const {applyNativeMenuRegion} = await import('/source/menu-regions.js');
     const {regions} = await (await fetch('/assets/ui/regions.json')).json();
     const results = [];
     for (const [name, region] of Object.entries(regions)) {

@@ -1,0 +1,2 @@
+; 0040d8aa KERNEL32.DLL::SetEvent
+0040d8aa	ff2570134100	JMP dword ptr [0x00411370]

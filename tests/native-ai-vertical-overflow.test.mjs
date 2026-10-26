@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { applyNativeAICatchup } from '../src/simulation/native-ai.js';
+import { applyNativeAICatchup } from '../source/simulation/native-ai.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/ai-vertical-overflow.json', import.meta.url)));
 const bits = value => {

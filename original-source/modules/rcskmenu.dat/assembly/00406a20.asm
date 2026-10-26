@@ -1,0 +1,2 @@
+; 00406a20 USER32.DLL::OffsetRect
+00406a20	ff2548f54700	JMP dword ptr [0x0047f548]

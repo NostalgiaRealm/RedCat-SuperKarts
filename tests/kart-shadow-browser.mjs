@@ -10,8 +10,8 @@ const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/u
   headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader']});
 const report={browser:browser.version(),checks:[],errors:[],
   scope:'Original shadow texture/quad through actual WebGL materials. An isolated viewport-edge control recreates the old stale sphere; live loaded races verify kart/road ordering and both scene resolve paths. Controlled inspection cameras are not original-game screenshots.'};
-report.sourceSha256=Object.fromEntries(await Promise.all(['src/world.js','src/kart-shadow.js','src/race-visuals.js',
-  'src/asset-materials.js','src/multisample-renderer.js','tests/kart-shadow-browser.mjs']
+report.sourceSha256=Object.fromEntries(await Promise.all(['source/world.js','source/kart-shadow.js','source/race-visuals.js',
+  'source/asset-materials.js','source/multisample-renderer.js','tests/kart-shadow-browser.mjs']
   .map(async path=>[path,createHash('sha256').update(await readFile(path)).digest('hex')])));
 try{
   const page=await browser.newPage({viewport:{width:960,height:720}});
@@ -23,7 +23,7 @@ try{
   await page.setContent('<style>body{margin:0}</style><script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script><canvas style="width:960px;height:720px"></canvas>');
   const edge=await page.evaluate(async()=>{
     const [THREE,{TrackViewer},{KartShadowVisual}]=await Promise.all([
-      import('three'),import('/src/world.js'),import('/src/race-visuals.js')]);
+      import('three'),import('/source/world.js'),import('/source/race-visuals.js')]);
     const viewer=new TrackViewer(document.querySelector('canvas'));
     viewer.renderer.setSize(960,720,false);viewer.renderer.setClearColor(0xffffff);
     const [,manifest]=await viewer.resources;
@@ -84,7 +84,7 @@ try{
     await page.waitForFunction(()=>rcsk.viewer.clock.tick>2);
     const checks=await page.evaluate(async()=>{
       const view=rcsk.viewer;view.clock.pause();view.active=false;view.updatePresentation(1);
-      const THREE=await import('three'),{sampleNativeTrack}=await import('/src/simulation/native-track.js');
+      const THREE=await import('three'),{sampleNativeTrack}=await import('/source/simulation/native-track.js');
       const p=view.playerVisual.group.getWorldPosition(new THREE.Vector3());
       // Inspection camera shows the authored shadow under the current live kart.
       view.camera.position.set(p.x+80,p.y+100,p.z+100);view.camera.up.set(0,1,0);view.camera.lookAt(p);

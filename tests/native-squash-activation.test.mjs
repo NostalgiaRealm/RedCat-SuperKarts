@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeSquashTargets} from '../src/simulation/native-squash-activation.js';
+import {nativeSquashTargets} from '../source/simulation/native-squash-activation.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/squash-activation-fixtures.json',import.meta.url)));
 test('1920 original hazard callbacks preserve boundary, frame, cached position and target quirks',()=>{
   for(const c of fixture.cases){

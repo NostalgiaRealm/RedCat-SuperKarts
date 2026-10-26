@@ -1,0 +1,2 @@
+; 0041e428 DINPUT.DLL::DirectInputCreateA
+0041e428	ff252c804200	JMP dword ptr [0x0042802c]

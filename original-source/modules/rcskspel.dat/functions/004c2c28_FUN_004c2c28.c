@@ -1,0 +1,34 @@
+/*
+ * FUN_004c2c28 at 004c2c28
+ * undefined FUN_004c2c28(void)
+ * Address ranges: 004c2c28-004c2cc2
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+undefined4
+FUN_004c2c28(int *param_1,undefined4 param_2,undefined4 param_3,undefined4 param_4,int *param_5,
+            int param_6,undefined4 param_7,uint param_8)
+
+{
+  undefined4 uVar1;
+  
+  if (*param_5 != 0x19930520) {
+    FUN_004c2bd2();
+  }
+  if ((*(byte *)(param_1 + 1) & 0x66) == 0) {
+    if (param_5[3] != 0) {
+      if (((*param_1 == -0x1f928c9d) && (0x19930520 < (uint)param_1[5])) &&
+         (*(code **)(param_1[7] + 8) != (code *)0x0)) {
+        uVar1 = (**(code **)(param_1[7] + 8))
+                          (param_1,param_2,param_3,param_4,param_5,param_6,param_7,param_8 & 0xff);
+        return uVar1;
+      }
+      FUN_004c2cc3(param_1,param_2,param_3,param_4,param_5,param_8,param_6,param_7);
+    }
+  }
+  else if ((param_5[1] != 0) && (param_6 == 0)) {
+    FUN_004c2f6f(param_2,param_4,param_5,0xffffffff);
+  }
+  return 1;
+}
+

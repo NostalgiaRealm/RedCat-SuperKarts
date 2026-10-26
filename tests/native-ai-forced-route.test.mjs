@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { prepareNativeForcedRouteAI } from '../src/simulation/native-ai.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { parseRacerTable } from '../src/simulation/native-tables.js';
+import { prepareNativeForcedRouteAI } from '../source/simulation/native-ai.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { parseRacerTable } from '../source/simulation/native-tables.js';
 const json = path => JSON.parse(readFileSync(new URL(`../${path}`, import.meta.url)));
 const fixtures = json('evidence/native/ai-mode27-fixtures.json');
 const tracks = Array.from({ length: 6 }, (_, i) => {

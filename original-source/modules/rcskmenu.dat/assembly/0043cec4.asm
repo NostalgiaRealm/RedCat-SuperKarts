@@ -1,0 +1,2 @@
+; 0043cec4 FUN_0043cec4
+0043cec4	c3	RET

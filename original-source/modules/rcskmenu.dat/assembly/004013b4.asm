@@ -1,0 +1,2 @@
+; 004013b4 KERNEL32.DLL::LocalAlloc
+004013b4	ff254cf14700	JMP dword ptr [0x0047f14c]

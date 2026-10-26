@@ -32,8 +32,8 @@ SuperTuxKart C++ code is used as a behavioral reference.
 
 The requested right-hand brake pedal must use RedCat's **Alt / handbrake**
 action. It is separate from the wheel's downward **Arrow Down / brake-reverse**
-axis. These are distinct existing inputs in `src/input.js` and
-`src/simulation/native-input.js`; the new artwork does not change their physics.
+axis. These are distinct existing inputs in `source/input.js` and
+`source/simulation/native-input.js`; the new artwork does not change their physics.
 The bonus button uses the existing **Ctrl / bonus** action. Simultaneous wheel,
 pedal and bonus touches must remain independent.
 

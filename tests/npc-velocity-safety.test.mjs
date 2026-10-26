@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {captureNPCLinearVelocity,resetNewlyNonfiniteNPCVelocity} from '../src/simulation/npc-velocity-safety.js';
-import {applyNativeAICatchup} from '../src/simulation/native-ai.js';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {captureNPCLinearVelocity,resetNewlyNonfiniteNPCVelocity} from '../source/simulation/npc-velocity-safety.js';
+import {applyNativeAICatchup} from '../source/simulation/native-ai.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const read=path=>fs.readFileSync(new URL('../'+path,import.meta.url));
 const json=path=>JSON.parse(read(path));

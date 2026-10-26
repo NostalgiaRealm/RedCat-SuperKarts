@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {createNativeSceneryRotations} from '../src/simulation/native-scenery-hazards.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {createNativeSceneryRotations} from '../source/simulation/native-scenery-hazards.js';
 const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
 const config=JSON.parse(read('config.json')),manifest=JSON.parse(read('manifest.json')),cars=JSON.parse(read('cars.json'));
 const make=(id,options={})=>new RaceSimulation({config,manifest,cars,track:JSON.parse(read(`tracks/etappe${id}.json`)),

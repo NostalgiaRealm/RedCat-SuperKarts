@@ -1,0 +1,3 @@
+; 00471bb8 TfrmDebrief_btnOkClick
+00471bb8	e803000000	CALL 0x00471bc0
+00471bbd	c3	RET

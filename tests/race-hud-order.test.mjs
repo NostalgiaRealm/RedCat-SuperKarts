@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceHud} from '../src/race-hud.js';
-import {getHudStringSpec} from '../src/hud-text.js';
+import {RaceHud} from '../source/race-hud.js';
+import {getHudStringSpec} from '../source/hud-text.js';
 const config=JSON.parse(fs.readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 function fixture(){
   const hud=new RaceHud({getContext:()=>({})},config,{});

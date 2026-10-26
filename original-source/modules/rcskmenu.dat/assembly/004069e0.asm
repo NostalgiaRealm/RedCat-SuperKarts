@@ -1,0 +1,2 @@
+; 004069e0 USER32.DLL::LoadIconA
+004069e0	ff2568f54700	JMP dword ptr [0x0047f568]

@@ -1,0 +1,2 @@
+; 00406588 GDI32.DLL::GetObjectA
+00406588	ff25fcf34700	JMP dword ptr [0x0047f3fc]

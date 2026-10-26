@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "date": "2026-10-26",
+  "scope": "Synthetic fixtures only; no user data read or written. Released v0.9.0 adapters independently accept and round-trip the fixture before current compatibility tests.",
+  "version": "0.9.0",
+  "sourceCommit": "7914febbb4dca21531f2eff70833cc1dc0804c60",
+  "releasedAdapters": {
+    "src/race-save.js": {
+      "sha256": "d8db62f6754d00589d45bfe1690b1898eb7b6a1ffd5739ec8999c2b5d18bdf77",
+      "readWriteRoundTrip": "passed"
+    },
+    "src/settings.js": {
+      "sha256": "5510676a88490a15a3d985a378d4f9b529c14fecd9d05a2742ec1ff205edda1c",
+      "readWriteRoundTrip": "passed"
+    }
+  },
+  "focusedTestCommand": "node --test tests/storage-compatibility.test.mjs tests/race-save.test.mjs tests/platform.test.mjs tests/multisample-settings.test.mjs tests/native-display-dialog.test.mjs",
+  "focusedTests": 22,
+  "passed": 22,
+  "origin": "rcsk://game",
+  "profileDirectory": "appData/RedCat SuperKarts",
+  "storageKeys": [
+    "rcsk.race-save.v1",
+    "rcsk.settings.v1",
+    "rcsk.selection.v1",
+    "rcsk.firsttime.main",
+    "rcsk.firsttime.characters",
+    "rcsk.firsttime.countries",
+    "rcsk.firsttime.adventure"
+  ],
+  "changes": [
+    "Resolve default localStorage inside exception handling; unavailable storage cannot abort menu startup",
+    "Use normalized editable defaults after corrupt or unavailable settings",
+    "Move pure sample-count choice into settings without changing its body"
+  ],
+  "browser": {
+    "status": "passed",
+    "checks": 5,
+    "errors": 0,
+    "evidence": "evidence/code-efficiency/storage-browser.json"
+  },
+  "reviewedFiles": [
+    "src/race-save.js",
+    "src/settings.js",
+    "src/main.js (persistence and loading paths)",
+    "src/simulation/native-adventure.js",
+    "src/simulation/native-results.js",
+    "src/native-control-settings.js",
+    "src/native-display-settings.js",
+    "src/multisample-renderer.js",
+    "electron/main.mjs",
+    "electron/runtime.mjs",
+    "electron/game-protocol.mjs",
+    "electron-builder.json",
+    "tools/bundle.mjs",
+    "tools/build.mjs",
+    "tools/serve.mjs",
+    "tools/server-runtime.mjs",
+    "tools/verify-desktop-package.mjs",
+    "tools/sync-version.mjs"
+  ],
+  "preservation": [
+    "Existing settings/race-save/selection/firsttime key strings and JSON shapes retained",
+    "Original profile/score/result serialization unchanged",
+    "Browser origin and default port retained; script bundling does not change storage origin",
+    "Electron APP_NAME, GAME_ORIGIN, userData and sessionData paths retained",
+    "Source and distributed desktop modes use the same origin/profile; no real profile accessed by tests"
+  ]
+}

@@ -1,0 +1,2 @@
+; 00406a00 USER32.DLL::MapVirtualKeyA
+00406a00	ff2558f54700	JMP dword ptr [0x0047f558]

@@ -1,0 +1,2 @@
+; 00406820 USER32.DLL::GetClientRect
+00406820	ff2544f64700	JMP dword ptr [0x0047f644]

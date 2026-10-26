@@ -1,0 +1,18 @@
+; 0041ff8c FUN_0041ff8c
+0041ff8c	55	PUSH EBP
+0041ff8d	8bec	MOV EBP,ESP
+0041ff8f	51	PUSH ECX
+0041ff90	53	PUSH EBX
+0041ff91	56	PUSH ESI
+0041ff92	57	PUSH EDI
+0041ff93	8b450c	MOV EAX,dword ptr [EBP + 0xc]
+0041ff96	83c00c	ADD EAX,0xc
+0041ff99	8945fc	MOV dword ptr [EBP + -0x4],EAX
+0041ff9c	648b1d00000000	MOV EBX,dword ptr FS:[0x0]
+0041ffa3	8b03	MOV EAX,dword ptr [EBX]
+0041ffa5	64a300000000	MOV FS:[0x0],EAX
+0041ffab	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0041ffae	8b5d0c	MOV EBX,dword ptr [EBP + 0xc]
+0041ffb1	8b63fc	MOV ESP,dword ptr [EBX + -0x4]
+0041ffb4	8b6dfc	MOV EBP,dword ptr [EBP + -0x4]
+0041ffb7	ffe0	JMP EAX

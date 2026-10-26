@@ -1,0 +1,3 @@
+; 0044cab0 FUN_0044cab0
+0044cab0	8b4170	MOV EAX,dword ptr [ECX + 0x70]
+0044cab3	c3	RET

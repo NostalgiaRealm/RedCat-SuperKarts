@@ -1,0 +1,591 @@
+{
+  "status": "pass",
+  "recordedAt": "2026-10-26T22:40:43.067962+00:00",
+  "scope": "All authored Markdown guides; launch and folder-layout references, status/historical boundaries, local links/anchors and npm script names. Targeted content review supplements the mechanical checks; this is not a new verification of every native reverse-engineering claim.",
+  "checks": {
+    "markdownFiles": 76,
+    "localLinksAndAnchors": 482,
+    "npmScriptReferences": 80,
+    "errors": 0
+  },
+  "findingsFixed": [
+    "Editable port module references now use source; generated runtime paths remain src.",
+    "Normal browser and desktop launch guides now describe automatic runtime refresh and the absence of a live watcher.",
+    "Added source/test purpose guides and a central folder guide, distinguishing the native original-source reference.",
+    "Browser inspection documentation uses explicit --inspect-source; normal game loading remains bundled.",
+    "Version instructions now reference source/version.js and regeneration rather than copying standalone version modules.",
+    "Removed stale import-map/direct-source startup claims from current hosting and desktop instructions.",
+    "Corrected HUD canvas description to layout-only; actual HUD pixels use opaque RGB565 composition.",
+    "Electron download is attributed to npm ci, not the first game launch.",
+    "Clarified historical source-only publication and recovery-delivery notes after the later 0.9.0 desktop release.",
+    "Frozen checkpoint verification commands and old src hashes remain explicitly historical.",
+    "Startup RNG consumer note now links implemented construction-order integration instead of implying an open task."
+  ],
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "f39d614ae8a7492eb66490ac3ee6f69cb5929720f04d7f9cf1b074694628b7ea",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "PLAN.md",
+      "sha256": "9fd6cb504c08f346ab54dbe0f3b2780896a876be0abe007f43a8ee0b611cbfae",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "README.md",
+      "sha256": "fbc5fcd1c3bd0c0e09b0bc8e652778f7ebc950514a6606213954dcbfc9738f60",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/README.md",
+      "sha256": "4324f9a50863ea98617f9ab57655034745c1049f0b7d1656caf6afa5161cba94",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/code-efficiency.md",
+      "sha256": "fee619af07d42c58e1abba97911dff85a35ccc5825e356baee52c8db51690fe0",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/desktop.md",
+      "sha256": "883a8528d382ef92794abb79747886cacc5f8a3fb97f34536e42b68aef85416d",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/development.md",
+      "sha256": "74c4f431d9fbe66457eadf665ba1680bff1e37c0130142fc77b2fd21fc410c08",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/feature-parity.md",
+      "sha256": "853f7d5919b59ce3bcb0ab0ef664fd12bc00f1c4e479d79974f7d1b1b4dcce40",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/full-race-results.md",
+      "sha256": "fdf386fbff65758bce1a2d10005dcd3baa5310d70d532463ad3e0bc71a5a43a4",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/full-source-audit-gameplay.md",
+      "sha256": "78409d94685fb2c71c31627f2203ed8ebf0cb555491603af0a6b9fba6116cffd",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/full-source-audit-presentation.md",
+      "sha256": "3e01d4345840fd136a04b42684e96fc815ad1eccda5153ca65972874e34a58d1",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/full-source-audit.md",
+      "sha256": "2de1561900dd860a12a909e484e2df7c981d1d7607bfeea507a104a7d20461dc",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/history/reconstruction-plan.md",
+      "sha256": "0b3e13563f3c789ed2e12ec71699cc62603df7d8b9c24484eb4a358d242fddcc",
+      "category": "historical checkpoint or release",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/history/validation-overview.md",
+      "sha256": "a438e95f7e670f96291226249348d109ad2940b16a7e989a7f3f5582c99c4f50",
+      "category": "historical checkpoint or release",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/hosting.md",
+      "sha256": "2a6aad51735a022cbb953fcdfb2f7086d63b6fe2bf215957edac88b8b85c52b0",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/more-settings.md",
+      "sha256": "e44a5864cd82b15a1fad0a7c947c0f24ce0fec5c0e534b08f98b0d656ce94fd9",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/original-behavior.md",
+      "sha256": "fe4e6287b1a56ea3981ece0d05e01ae5232345c1719dc212523c45401304b619",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/player-stuck-recovery.md",
+      "sha256": "66f86ea5470e267c6db7bce51aae2d0d83d9c0257dfae7efa037e177a835ddbe",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/releases/v0.1.0.md",
+      "sha256": "1bf92f27750d07fd113fc44ec1eab6c6503a7f97c55467fb347f5b367e0b728f",
+      "category": "historical checkpoint or release",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/releases/v0.9.0.md",
+      "sha256": "f274658a343ace2e09a49792df493b42a73e6451202ac4bfe3bc2b90eab5b824",
+      "category": "historical checkpoint or release",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/remaining-work.md",
+      "sha256": "1a14eedab3111b327ef9c9beec78b601e5753d0632f4508d21c34933e9d03d77",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-ai.md",
+      "sha256": "76baea443f189b1ff382d3458ced1ffc6dc7b8a088be6d2dd099e877520e4664",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-assets.md",
+      "sha256": "c6e57573d1c20ca82eee27dc232be0e191b05e3d4a619406166f770dfb74e1ba",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-bubble-shells.md",
+      "sha256": "3f19275424f7fc30ae9c2f155e56b8f27e97df887c1964a38615d68b9bded445",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-camera-speed.md",
+      "sha256": "7420ac8125461c47d60e53df11ce660f23ddd5c5572e9d63beba95070ce323e5",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-character-voice.md",
+      "sha256": "99e668ed9b2224d81f17cfffb1eac77fa119c7ca47d1bd8c572b953590a1e821",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-countdown.md",
+      "sha256": "db81f7375150450c4b4f63849ef130be87f9435ba26bacfb3e2e028bce7c9e63",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-driven-validation.md",
+      "sha256": "bae3fc8881004b8b4b86d1fb4fca450aab652e83e93cc2e0ddba11701d462c28",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-engine-start.md",
+      "sha256": "55fdf175995452c5508d30c5a19d6a74a8f4ce4a2f73767a259eb8c45a47d33b",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-environment-rescue.md",
+      "sha256": "a49f551fbf3c4ab13839eb824992811e74e876230ccf82f7d7e0152446a76f41",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-followup-audit.md",
+      "sha256": "1f2c685ca847187c94f51cbe29904b33abc6ac9856e9a6ae4cdd8b7e3d5d8bbd",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-frame-cadence.md",
+      "sha256": "f7f579193dc1c19c319211349acf0005fa7463b84e3abfa37db47879658a394d",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-full-race-matrix.md",
+      "sha256": "dbbf308ef3343540583625cbde080d88eddb971fbdd37ac42afcd31475082c12",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-gameplay.md",
+      "sha256": "4596f9dcf0c07bd431430c1d10bca430b2d97ab7fe4c3dbe32563ec3b9e4b9e0",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-germany-timed-completion.md",
+      "sha256": "8f329248860549c8eaa1ca6f3e8b09ee79dc8cefa3909bc1f30d31ec8c278e9e",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-help-navigation.md",
+      "sha256": "e5f680a5456aff5986541db0d651f3148944be48215035c183a242eae68c2f47",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-hud-arrows.md",
+      "sha256": "aa7fb15dfdabfd3cfeefa486777e3aacc9a8d2df520b439c1f5cd82a7c85532d",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-hud-framebuffer.md",
+      "sha256": "a5d19d9aa9e9055683443344d5e05b5c4b55cb7f32242be3054fdd12f136c17f",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-hud-modes.md",
+      "sha256": "5cd578016714765752b28fbf41a869395e26c090fdc123e1896553af7a3caae9",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-hud-notice-audit.md",
+      "sha256": "f7b4e21319f0a3891eb56915e85d98d439b6e5191fdb61d4d79a8b139fd7e9e7",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-kart-collision.md",
+      "sha256": "e822417482fa2efa56f2f070b8bb14ba45d68cfcf8d1b311950caf7589f4210a",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-kart-shadows.md",
+      "sha256": "e00672cf3cd475e6c0d28c2a57cfbe8c3b5f7a7a431daafa7122751cf0478ba2",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-lap-display.md",
+      "sha256": "5693e2ba7c8e4b6aa3cafea4adaa8e74afee4ed8fa04c33e9de46683d450a286",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-legacy-features.md",
+      "sha256": "6e0995b6852b39620dcc0b0badaba28629ebe7d05f152195084a2ef181fa8d10",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-menu-audio.md",
+      "sha256": "f6e9b3b632000c08debf16afa9ed6a56177a21cc7428b0801160ae397860a235",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-menu-greeting.md",
+      "sha256": "a57fec262d6876d47686dd38e30495ae174c01f38d1016cf99e709be47469a48",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-menu-settings.md",
+      "sha256": "454fe92b45e1c2ba4a1b7f5b78479a906b54caf149fab613b487a6fcc7f739c3",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-native-texture-precision.md",
+      "sha256": "95832fc830d00e4693ebcfcc72f531e0f733b4acafeac7f3b26d6534303fdb19",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-nl-timed-completion.md",
+      "sha256": "67aeb200e60b931f4b5b1726cfb4e3a1e15075548518bb52cfa56bfeeea734f6",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-npc-vertical-overflow.md",
+      "sha256": "5847a92fab262c37ffe7396615e7c22928f8843975f693aa15c93bebae749e83",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-player-jump.md",
+      "sha256": "e64aa9cc0323f7a8ba94a41aed2fc1f56d9bf83437834827c9138ec27ecfc2df",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-player-recovery-regressions.md",
+      "sha256": "cf419da5e1a7a35e1fc6a3f7ff1054a01b49a11677557e76da85f479f72816b6",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-powerup-audio.md",
+      "sha256": "1d2363d60a772d642eb1036638a8a3fb9f8d80df13a58035aad18791481dd65a",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-presentation-cadence.md",
+      "sha256": "8124af3388d08bf59307381f485d466f39f5682335473fab923f0d5dd42c37f4",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-quit-requester.md",
+      "sha256": "c1e176b50b37bcfdc9cc9ebf62b0501ba6cf32938b9662e40a09b332770bd8c6",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-race-completion.md",
+      "sha256": "3e1e46b2705f13eba84bcc454e65d3efdbf896703240d5d35a56b94eeaf21ce3",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-race-sound-coverage.md",
+      "sha256": "5b1771fb46dcc61650cf1a787f85db399493dd5bb3e47b85f7ecde0c716beb85",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-render-audit.md",
+      "sha256": "0f048339803e797faadf0dd2d8e503e45a6c292eea26d524d350177437c9e054",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-scenery-collision.md",
+      "sha256": "ce4e237594cb66257c570d4eb814b9a84fe5e81e60792b7afd2dec92037ea7be",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-startup-upgrades.md",
+      "sha256": "ec09660d84f1336e9706bbda409d561891223d44aa9a3368e25467c808d03323",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-startup.md",
+      "sha256": "cbd5914a6f0e82c85882b952460c5d2e0fb76df47ae7013b0861133b94b34710",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-streams-squash-order.md",
+      "sha256": "16ff6fcb7952444b129c96e8ce2f7fa1c4cf509c950e556baed66126361be28a",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-streams.md",
+      "sha256": "fe0bac8ebc04d077e1d35b1b29b7aa62687b5ddd2e9be94d98874733f6df41da",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-texture-effects.md",
+      "sha256": "836cf6a98001d4d180b80af935c5588b21389f7d258a52d6cf83c5206b4c959d",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-texture-key.md",
+      "sha256": "8ce0bf214740f1e679a87a0bba04ed61acb7fd95f7ecb0dd87ec489985038572",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-texture-keying-inventory.md",
+      "sha256": "083e0b956b4402d0f20b8cbb7de65227b182d641c0418b3a29d1e3b539551803",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-touch-controls.md",
+      "sha256": "d89dc3d682b5e3d0294979ad7ee926fa4d92939dc27967138e545a89eb9f0ac4",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-track-surfaces.md",
+      "sha256": "81056b2818ca94ba447b00694a5e3fb3e3da61edb1205cffc3fdd3a2973bbbec",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/research-variable-update-timing.md",
+      "sha256": "5332bf1e91f35f0a743ebed762454cbfe2a5742d552b90d85fa8fc3b7720e786",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/research-weather-integration.md",
+      "sha256": "387bba9d432702df4b98b6c49397ccb111c4de9a62e241bbc6386fb7e77eac25",
+      "category": "subsystem evidence and reproduction",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "docs/runtime-layout.md",
+      "sha256": "a8b62f386aa79a09e749bd51e0fb9621802a9c4cfbe15079dd77bc0456555cb4",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "docs/validation.md",
+      "sha256": "4bda4855cf5700d766db68f745164f153828af2d664738f043545c509b011940",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "original-source/README.md",
+      "sha256": "de9bfa9bbe9f4a89e1d5c316f6eb5eb1e1df8bbf7d8e824cf5d1db5287cd4f94",
+      "category": "native reference provenance",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "public/assets/touch/ATTRIBUTION.md",
+      "sha256": "a04fc67d815aa55f34468c8b606b176f772dccfae6f8d31842124a2305ed51aa",
+      "category": "artwork attribution",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": false
+    },
+    {
+      "path": "source/README.md",
+      "sha256": "8e12f9217185b8791a432a137036f58c4d365b12fa45c6b405ef0a515f3a3c4c",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    },
+    {
+      "path": "tests/README.md",
+      "sha256": "fb30ec8b733648d0ef2d83ccdf971f2fff061b5f18005448d4d02814adaf25b2",
+      "category": "current setup, maintenance or status guide",
+      "review": "layout paths, current-versus-historical claims, local references and commands",
+      "changedSinceEfficiencyCheckpoint": true
+    }
+  ],
+  "errors": [],
+  "preservedTextRecords": [
+    {
+      "path": "docs/request.txt",
+      "sha256": "1fabb799c5b27118030ef64825492f6d7556c3564a72cc6f87310f8d27628fcf",
+      "policy": "Original request, generation provenance, license or checksum record; preserved verbatim rather than rewritten as current setup instructions."
+    },
+    {
+      "path": "public/assets/touch/bonus-prompt.txt",
+      "sha256": "718a35358841b2c5d1ef7e5846552d18c5982e5a0e72652b474abc1ef9597ec6",
+      "policy": "Original request, generation provenance, license or checksum record; preserved verbatim rather than rewritten as current setup instructions."
+    },
+    {
+      "path": "public/assets/touch/bonus-edit-prompt.txt",
+      "sha256": "40e922da3cecdc3025b0fad2264ceea9ef7168d6cd1b08549d8c3a3e35846e34",
+      "policy": "Original request, generation provenance, license or checksum record; preserved verbatim rather than rewritten as current setup instructions."
+    },
+    {
+      "path": "public/assets/touch/CC0-1.0.txt",
+      "sha256": "a2010f343487d3f7618affe54f789f5487602331c0a8d03f49e9a7c547cf0499",
+      "policy": "Original request, generation provenance, license or checksum record; preserved verbatim rather than rewritten as current setup instructions."
+    },
+    {
+      "path": "original-source/SHA256SUMS.txt",
+      "sha256": "9ae28c7f7baac2ea8a80cad4329ee4cc62fcb84e904b1a5e8b3ac3993692493f",
+      "policy": "Original request, generation provenance, license or checksum record; preserved verbatim rather than rewritten as current setup instructions."
+    }
+  ],
+  "limits": [
+    "External URLs were retained but not exhaustively network-tested.",
+    "Generated native C/assembly, evidence JSON and copied dependency documentation were not rewritten.",
+    "No gameplay suite or package build is claimed by this documentation audit."
+  ]
+}

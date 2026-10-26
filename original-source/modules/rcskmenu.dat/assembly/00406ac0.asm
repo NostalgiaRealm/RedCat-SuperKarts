@@ -1,0 +1,2 @@
+; 00406ac0 USER32.DLL::SetFocus
+00406ac0	ff25f8f44700	JMP dword ptr [0x0047f4f8]

@@ -1,0 +1,212 @@
+/*
+ * FUN_0046f250 at 0046f250
+ * undefined FUN_0046f250(void)
+ * Address ranges: 0046f250-0046f5e1
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void __fastcall FUN_0046f250(int param_1)
+
+{
+  char cVar1;
+  uint uVar2;
+  uint uVar3;
+  char *pcVar4;
+  undefined4 *puVar5;
+  char *pcVar6;
+  undefined1 local_4c [4];
+  undefined4 *local_48;
+  undefined1 local_3c [4];
+  char *local_38;
+  undefined1 local_2c [4];
+  undefined4 *local_28;
+  undefined1 local_1c [4];
+  char *local_18;
+  void *local_c;
+  undefined1 *puStack_8;
+  int local_4;
+  
+  local_4 = 0xffffffff;
+  puStack_8 = &LAB_004d07a4;
+  local_c = ExceptionList;
+  ExceptionList = &local_c;
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f5fc4;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  FUN_0040b540(s_D__work_rcsk_Code_game_Rco_Stati_004f5fc4,~uVar2 - 1);
+  local_4 = 0;
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = &DAT_00544b78;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  FUN_0040b540(&DAT_00544b78,~uVar2 - 1);
+  local_4._0_1_ = 1;
+  FUN_00464530(*(undefined4 *)(param_1 + 0x10),local_3c,local_4c,0xcb);
+  local_4 = (uint)local_4._1_3_ << 8;
+  FUN_0040b4f0(1);
+  local_4 = 0xffffffff;
+  FUN_0040b4f0(1);
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f5ff0;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  FUN_0040b540(s_D__work_rcsk_Code_game_Rco_Stati_004f5ff0,~uVar2 - 1);
+  local_4 = 2;
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = &DAT_00544b7c;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  FUN_0040b540(&DAT_00544b7c,~uVar2 - 1);
+  local_4._0_1_ = 3;
+  FUN_00464530(*(undefined4 *)(param_1 + 0x14),local_3c,local_4c,0xcc);
+  local_4 = CONCAT31(local_4._1_3_,2);
+  FUN_0040b4f0(1);
+  local_4 = 0xffffffff;
+  FUN_0040b4f0(1);
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f601c;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  uVar2 = ~uVar2 - 1;
+  cVar1 = FUN_0040b600(uVar2,1);
+  if (cVar1 != '\0') {
+    pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f601c;
+    for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *(undefined4 *)local_38 = *(undefined4 *)pcVar4;
+      pcVar4 = pcVar4 + 4;
+      local_38 = local_38 + 4;
+    }
+    for (uVar3 = uVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *local_38 = *pcVar4;
+      pcVar4 = pcVar4 + 1;
+      local_38 = local_38 + 1;
+    }
+    FUN_0040b5e0(uVar2);
+  }
+  local_4 = 4;
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = (char *)&DAT_00544b80;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  uVar2 = ~uVar2 - 1;
+  cVar1 = FUN_0040b600(uVar2,1);
+  if (cVar1 != '\0') {
+    puVar5 = &DAT_00544b80;
+    for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *local_48 = *puVar5;
+      puVar5 = puVar5 + 1;
+      local_48 = local_48 + 1;
+    }
+    for (uVar3 = uVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *(undefined1 *)local_48 = *(undefined1 *)puVar5;
+      puVar5 = (undefined4 *)((int)puVar5 + 1);
+      local_48 = (undefined4 *)((int)local_48 + 1);
+    }
+    FUN_0040b5e0(uVar2);
+  }
+  local_4._0_1_ = 5;
+  FUN_00464530(*(undefined4 *)(param_1 + 0x18),local_4c,local_3c,0xcd);
+  local_4 = CONCAT31(local_4._1_3_,4);
+  FUN_0040b4f0(1);
+  local_4 = 0xffffffff;
+  FUN_0040b4f0(1);
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f6048;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  uVar2 = ~uVar2 - 1;
+  cVar1 = FUN_0040b600(uVar2,1);
+  if (cVar1 != '\0') {
+    pcVar4 = s_D__work_rcsk_Code_game_Rco_Stati_004f6048;
+    pcVar6 = local_18;
+    for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *(undefined4 *)pcVar6 = *(undefined4 *)pcVar4;
+      pcVar4 = pcVar4 + 4;
+      pcVar6 = pcVar6 + 4;
+    }
+    for (uVar3 = uVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *pcVar6 = *pcVar4;
+      pcVar4 = pcVar4 + 1;
+      pcVar6 = pcVar6 + 1;
+    }
+    FUN_0040b5e0(uVar2);
+  }
+  local_4 = 6;
+  FUN_0040b4f0(0);
+  uVar2 = 0xffffffff;
+  pcVar4 = (char *)&DAT_00544b84;
+  do {
+    if (uVar2 == 0) break;
+    uVar2 = uVar2 - 1;
+    cVar1 = *pcVar4;
+    pcVar4 = pcVar4 + 1;
+  } while (cVar1 != '\0');
+  uVar2 = ~uVar2 - 1;
+  cVar1 = FUN_0040b600(uVar2,1);
+  if (cVar1 != '\0') {
+    puVar5 = &DAT_00544b84;
+    for (uVar3 = uVar2 >> 2; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *local_28 = *puVar5;
+      puVar5 = puVar5 + 1;
+      local_28 = local_28 + 1;
+    }
+    for (uVar3 = uVar2 & 3; uVar3 != 0; uVar3 = uVar3 - 1) {
+      *(undefined1 *)local_28 = *(undefined1 *)puVar5;
+      puVar5 = (undefined4 *)((int)puVar5 + 1);
+      local_28 = (undefined4 *)((int)local_28 + 1);
+    }
+    FUN_0040b5e0(uVar2);
+  }
+  local_4._0_1_ = 7;
+  FUN_00464530(*(undefined4 *)(param_1 + 0x1c),local_2c,local_1c,0xce);
+  local_4 = CONCAT31(local_4._1_3_,6);
+  FUN_0040b4f0(1);
+  if (local_18 != (char *)0x0) {
+    cVar1 = local_18[-1];
+    if ((cVar1 != '\0') && (cVar1 != -1)) {
+      local_18[-1] = cVar1 + -1;
+      ExceptionList = local_c;
+      return;
+    }
+    FUN_004bc150(local_18 + -1);
+  }
+  ExceptionList = local_c;
+  return;
+}
+

@@ -1,0 +1,2 @@
+; 00406aa8 USER32.DLL::SetCapture
+00406aa8	ff2504f54700	JMP dword ptr [0x0047f504]

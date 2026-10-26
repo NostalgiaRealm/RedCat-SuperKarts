@@ -1,0 +1,2 @@
+; 00406708 USER32.DLL::ClientToScreen
+00406708	ff25d0f64700	JMP dword ptr [0x0047f6d0]

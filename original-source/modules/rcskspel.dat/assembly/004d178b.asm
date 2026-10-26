@@ -1,0 +1,4 @@
+; 004d178b Unwind@004d178b
+004d178b	8b4df0	MOV ECX,dword ptr [EBP + -0x10]
+004d178e	83c15e	ADD ECX,0x5e
+004d1791	e9da47f3ff	JMP 0x00405f70

@@ -1,0 +1,2 @@
+; 00406930 USER32.DLL::GetWindowDC
+00406930	ff25c0f54700	JMP dword ptr [0x0047f5c0]

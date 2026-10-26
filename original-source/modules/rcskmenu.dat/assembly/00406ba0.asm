@@ -1,0 +1,2 @@
+; 00406ba0 USER32.DLL::WinHelpA
+00406ba0	ff2588f44700	JMP dword ptr [0x0047f488]

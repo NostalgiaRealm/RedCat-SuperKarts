@@ -1,0 +1,2 @@
+; 00493180 thunk_FUN_0048faf0
+00493180	e96bc9ffff	JMP 0x0048faf0

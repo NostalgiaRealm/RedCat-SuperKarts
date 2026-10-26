@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NATIVE_MINIMAP_TRANSFORMS, nativeMinimapPosition, nativeMinimapRacers } from '../src/simulation/native-minimap.js';
+import { NATIVE_MINIMAP_TRANSFORMS, nativeMinimapPosition, nativeMinimapRacers } from '../source/simulation/native-minimap.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/minimap-fixtures.json',import.meta.url)));
 test('all six minimap transform records match original PE bytes exactly',()=>{
   assert.deepEqual(NATIVE_MINIMAP_TRANSFORMS,fixtures.transforms);

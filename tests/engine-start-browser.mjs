@@ -18,7 +18,7 @@ try{
   // Observe the actual WebAudio service. No camera, countdown or sound state is
   // changed; the real menu flow and normal browser animation loop run below.
   await page.evaluate(async()=>{
-    const {NativeRaceAudio}=await import('/src/native-race-audio.js');
+    const {NativeRaceAudio}=await import('/source/native-race-audio.js');
     const execute=NativeRaceAudio.prototype.execute;
     window.engineStartTrace=[];
     NativeRaceAudio.prototype.execute=function(commands){
@@ -85,7 +85,7 @@ try{
   report.status='failed';report.failure=String(error.stack||error);throw error;
 }finally{
   report.sourceHashes=Object.fromEntries(await Promise.all(
-    ['src/engine-audio.js','src/native-race-audio.js','src/driving-view.js','src/race-simulation.js']
+    ['source/engine-audio.js','source/native-race-audio.js','source/driving-view.js','source/race-simulation.js']
       .map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
   report.scope='Actual menu launch, authored opening camera, countdown and WebAudio playback. No native Wine race rendering comparison; source timing is established by original instruction fixtures.';
   await writeFile('evidence/audio/browser-engine-start.json',JSON.stringify(report,null,2)+'\n');

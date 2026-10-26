@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import fs from 'node:fs';
-import {KartVisual} from '../src/race-visuals.js';
-import {advanceNativeKartColor} from '../src/simulation/native-kart-color.js';
+import {KartVisual} from '../source/race-visuals.js';
+import {advanceNativeKartColor} from '../source/simulation/native-kart-color.js';
 const load=name=>JSON.parse(fs.readFileSync(new URL(`../public/assets/${name}.json`,import.meta.url)));
 const config=load('config'),manifest=load('manifest');
 

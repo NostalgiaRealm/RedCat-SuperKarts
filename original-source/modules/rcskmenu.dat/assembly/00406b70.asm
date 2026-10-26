@@ -1,0 +1,2 @@
+; 00406b70 USER32.DLL::TranslateMDISysAccel
+00406b70	ff25a0f44700	JMP dword ptr [0x0047f4a0]

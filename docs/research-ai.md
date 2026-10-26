@@ -11,7 +11,7 @@ Decompiled functions, instruction exports and executable fixtures are under
 
 ## Connected implementation
 
-`src/simulation/native-ai-driver.js` exports `NativeAIDriver` for the active
+`source/simulation/native-ai-driver.js` exports `NativeAIDriver` for the active
 racer transition table and `NativeWaypointOccupancy` for shared waypoint lists.
 The constructor requires the original racer table records, track/geometry,
 an explicit rail collision adapter, original efficiency value, shared

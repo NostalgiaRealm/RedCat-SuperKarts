@@ -1,0 +1,2 @@
+; 004159a8 COMCTL32.DLL::ImageList_BeginDrag
+004159a8	ff2544f74700	JMP dword ptr [0x0047f744]

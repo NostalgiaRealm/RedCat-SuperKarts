@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeRescuePositionFree} from '../src/simulation/native-rescue.js';
-import {nativeRectangleOverlap} from '../src/simulation/native-collision.js';
+import {nativeRescuePositionFree} from '../source/simulation/native-rescue.js';
+import {nativeRectangleOverlap} from '../source/simulation/native-collision.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL(
   '../evidence/race-completion/france-native-rescue-overlap.json',import.meta.url)));

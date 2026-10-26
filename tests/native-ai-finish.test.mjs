@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { prepareNativeAIFinished } from '../src/simulation/native-ai.js';
-import { recordNativeNPCFinish } from '../src/simulation/native-ai-items.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { parseRacerTable } from '../src/simulation/native-tables.js';
+import { prepareNativeAIFinished } from '../source/simulation/native-ai.js';
+import { recordNativeNPCFinish } from '../source/simulation/native-ai-items.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { parseRacerTable } from '../source/simulation/native-tables.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/ai-finish-fixtures.json',import.meta.url)));
 const tables=Array.from({length:3},(_,i)=>parseRacerTable(new Uint8Array(readFileSync(new URL(`../public/assets/racer-tables/cars${i}.dat`,import.meta.url)))));
 test('360 original finished-NPC movement updates match with all three racer tables at both precisions',()=>{

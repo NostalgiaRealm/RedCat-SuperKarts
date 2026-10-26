@@ -1,7 +1,7 @@
 import {readFile} from 'node:fs/promises';
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
-import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeCountryInfoSound,nativeMenuBindingKey} from '../src/menu-sound-events.js';
+import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeCountryInfoSound,nativeMenuBindingKey} from '../source/menu-sound-events.js';
 const fixture=JSON.parse(await readFile(new URL('../evidence/native/menu-audio-fixtures.json',import.meta.url)));
 
 test('original shell navigation, race announcements and all country narrations',()=>{

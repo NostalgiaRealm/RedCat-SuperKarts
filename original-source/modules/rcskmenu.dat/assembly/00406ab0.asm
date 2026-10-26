@@ -1,0 +1,2 @@
+; 00406ab0 USER32.DLL::SetClassLongA
+00406ab0	ff2500f54700	JMP dword ptr [0x0047f500]

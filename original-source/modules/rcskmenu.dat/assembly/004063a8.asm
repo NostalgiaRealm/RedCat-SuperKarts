@@ -1,0 +1,2 @@
+; 004063a8 KERNEL32.DLL::GlobalHandle
+004063a8	ff25b4f24700	JMP dword ptr [0x0047f2b4]

@@ -1,0 +1,23 @@
+/*
+ * FUN_004700c0 at 004700c0
+ * undefined FUN_004700c0(void)
+ * Address ranges: 004700c0-004700e5
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+/* WARNING: Globals starting with '_' overlap smaller symbols at the same address */
+
+void FUN_004700c0(void)
+
+{
+  undefined4 uVar1;
+  undefined4 *in_FS_OFFSET;
+  undefined1 auStack_10 [12];
+  
+  uVar1 = *in_FS_OFFSET;
+  *in_FS_OFFSET = auStack_10;
+  _DAT_0047e23c = _DAT_0047e23c + -1;
+  *in_FS_OFFSET = uVar1;
+  return;
+}
+

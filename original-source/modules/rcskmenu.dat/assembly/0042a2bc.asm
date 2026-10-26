@@ -1,0 +1,5 @@
+; 0042a2bc FUN_0042a2bc
+0042a2bc	88501c	MOV byte ptr [EAX + 0x1c],DL
+0042a2bf	8b4004	MOV EAX,dword ptr [EAX + 0x4]
+0042a2c2	e8d9040000	CALL 0x0042a7a0
+0042a2c7	c3	RET

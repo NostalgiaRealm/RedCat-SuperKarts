@@ -1,0 +1,4 @@
+; 00478694 TfrmAdventBrief_btnBackClick
+00478694	c680d402000002	MOV byte ptr [EAX + 0x2d4],0x2
+0047869b	e87864fbff	CALL 0x0042eb18
+004786a0	c3	RET

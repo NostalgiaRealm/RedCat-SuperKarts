@@ -1,0 +1,7 @@
+; 0041efc0 FUN_0041efc0
+0041efc0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0041efc4	99	CDQ
+0041efc5	8901	MOV dword ptr [ECX],EAX
+0041efc7	895104	MOV dword ptr [ECX + 0x4],EDX
+0041efca	8bc1	MOV EAX,ECX
+0041efcc	c20400	RET 0x4

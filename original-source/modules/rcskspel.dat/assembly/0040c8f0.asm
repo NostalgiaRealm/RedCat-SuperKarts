@@ -1,0 +1,3 @@
+; 0040c8f0 FUN_0040c8f0
+0040c8f0	8b4108	MOV EAX,dword ptr [ECX + 0x8]
+0040c8f3	c3	RET

@@ -1,0 +1,4 @@
+; 0048ec20 FUN_0048ec20
+0048ec20	8a442404	MOV AL,byte ptr [ESP + 0x4]
+0048ec24	88410c	MOV byte ptr [ECX + 0xc],AL
+0048ec27	c20400	RET 0x4

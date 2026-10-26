@@ -1,0 +1,11 @@
+; 0043fdcc FUN_0043fdcc
+0043fdcc	53	PUSH EBX
+0043fdcd	6683b8fa00000000	CMP word ptr [EAX + 0xfa],0x0
+0043fdd5	7412	JZ 0x0043fde9
+0043fdd7	8bca	MOV ECX,EDX
+0043fdd9	8bd8	MOV EBX,EAX
+0043fddb	8bd0	MOV EDX,EAX
+0043fddd	8b83fc000000	MOV EAX,dword ptr [EBX + 0xfc]
+0043fde3	ff93f8000000	CALL dword ptr [EBX + 0xf8]
+0043fde9	5b	POP EBX
+0043fdea	c3	RET

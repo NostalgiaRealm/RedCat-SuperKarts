@@ -1,0 +1,9 @@
+; 004bfa20 FUN_004bfa20
+004bfa20	83ec10	SUB ESP,0x10
+004bfa23	d9c9	FXCH
+004bfa25	dd1c24	FSTP double ptr [ESP]
+004bfa28	dd542408	FST double ptr [ESP + 0x8]
+004bfa2c	8b44240c	MOV EAX,dword ptr [ESP + 0xc]
+004bfa30	e80d000000	CALL 0x004bfa42
+004bfa35	83c410	ADD ESP,0x10
+004bfa38	c3	RET

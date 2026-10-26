@@ -1,0 +1,26 @@
+; 004bfdaf FUN_004bfdaf
+004bfdaf	56	PUSH ESI
+004bfdb0	57	PUSH EDI
+004bfdb1	8b7c240c	MOV EDI,dword ptr [ESP + 0xc]
+004bfdb5	8bf1	MOV ESI,ECX
+004bfdb7	c7063c374d00	MOV dword ptr [ESI],0x4d373c
+004bfdbd	ff37	PUSH dword ptr [EDI]
+004bfdbf	e8ac0f0000	CALL 0x004c0d70
+004bfdc4	40	INC EAX
+004bfdc5	50	PUSH EAX
+004bfdc6	e823eaffff	CALL 0x004be7ee
+004bfdcb	59	POP ECX
+004bfdcc	894604	MOV dword ptr [ESI + 0x4],EAX
+004bfdcf	85c0	TEST EAX,EAX
+004bfdd1	59	POP ECX
+004bfdd2	740a	JZ 0x004bfdde
+004bfdd4	ff37	PUSH dword ptr [EDI]
+004bfdd6	50	PUSH EAX
+004bfdd7	e814540000	CALL 0x004c51f0
+004bfddc	59	POP ECX
+004bfddd	59	POP ECX
+004bfdde	c7460801000000	MOV dword ptr [ESI + 0x8],0x1
+004bfde5	8bc6	MOV EAX,ESI
+004bfde7	5f	POP EDI
+004bfde8	5e	POP ESI
+004bfde9	c20400	RET 0x4

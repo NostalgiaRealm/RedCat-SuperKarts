@@ -1,0 +1,3 @@
+; 004cdd12 Unwind@004cdd12
+004cdd12	8d4d84	LEA ECX,[EBP + -0x7c]
+004cdd15	e996d7f3ff	JMP 0x0040b4b0

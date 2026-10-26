@@ -1,0 +1,2 @@
+; 0048a160 thunk_FUN_00489f50
+0048a160	e9ebfdffff	JMP 0x00489f50

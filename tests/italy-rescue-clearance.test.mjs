@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
-import {nativeRescuePositionFree} from '../src/simulation/native-rescue.js';
+import {nativeRescuePositionFree} from '../source/simulation/native-rescue.js';
 
 const fixture = JSON.parse(readFileSync(new URL(
   '../evidence/race-completion/italy-native-rescue.json', import.meta.url)));

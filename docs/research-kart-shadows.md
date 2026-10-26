@@ -116,7 +116,8 @@ its road height being exactly 20, and reflected MSAA edge samples being identica
 are retained separately; those were test assumptions, not additional game bugs.
 
 Run `re-python tools/native-shadow-audit.py`, the focused Node tests, and
-`node tests/kart-shadow-browser.mjs` against the local server to reproduce.
+`node tests/kart-shadow-browser.mjs` against the inspection server to reproduce
+(`npm run dev -- --inspect-source`; see [development checks](development.md)).
 The asset check uses the existing asset-preparation Python for Pillow and the
 existing analysis Python for Unicorn. Original files remain read-only.
 

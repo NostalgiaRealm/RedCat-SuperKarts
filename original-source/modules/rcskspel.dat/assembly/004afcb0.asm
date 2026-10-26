@@ -1,0 +1,3 @@
+; 004afcb0 FUN_004afcb0
+004afcb0	a0f4646a00	MOV AL,[0x006a64f4]
+004afcb5	c3	RET

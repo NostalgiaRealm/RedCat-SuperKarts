@@ -1,0 +1,3 @@
+; 004cd282 Unwind@004cd282
+004cd282	8d8d64ffffff	LEA ECX,[EBP + 0xffffff64]
+004cd288	e923e2f3ff	JMP 0x0040b4b0

@@ -1,0 +1,8 @@
+; 004ced5a Unwind@004ced5a
+004ced5a	8b45cc	MOV EAX,dword ptr [EBP + -0x34]
+004ced5d	83e001	AND EAX,0x1
+004ced60	85c0	TEST EAX,EAX
+004ced62	0f8408000000	JZ 0x004ced70
+004ced68	8d4de4	LEA ECX,[EBP + -0x1c]
+004ced6b	e940c7f3ff	JMP 0x0040b4b0
+004ced70	c3	RET

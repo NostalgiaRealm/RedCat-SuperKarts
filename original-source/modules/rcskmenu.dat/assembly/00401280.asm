@@ -1,0 +1,2 @@
+; 00401280 USER32.DLL::CharNextA
+00401280	ff25e8f14700	JMP dword ptr [0x0047f1e8]

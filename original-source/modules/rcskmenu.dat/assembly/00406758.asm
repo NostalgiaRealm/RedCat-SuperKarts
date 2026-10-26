@@ -1,0 +1,2 @@
+; 00406758 USER32.DLL::DestroyIcon
+00406758	ff25a8f64700	JMP dword ptr [0x0047f6a8]

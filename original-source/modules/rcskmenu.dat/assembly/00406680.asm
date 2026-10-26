@@ -1,0 +1,2 @@
+; 00406680 GDI32.DLL::SetStretchBltMode
+00406680	ff2580f34700	JMP dword ptr [0x0047f380]

@@ -15,9 +15,9 @@ try{
   await page.evaluate(()=>rcsk.viewer.clock.pause());
   const pixels=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {StreamVisuals}=await import('/src/race-visuals.js');
-    const {createNativeJetFlare,updateNativeJetFlare}=await import('/src/simulation/native-streams.js');
-    const {createNativeMeshMaterial}=await import('/src/asset-materials.js');
+    const {StreamVisuals}=await import('/source/race-visuals.js');
+    const {createNativeJetFlare,updateNativeJetFlare}=await import('/source/simulation/native-streams.js');
+    const {createNativeMeshMaterial}=await import('/source/asset-materials.js');
     const original=rcsk.viewer,manifest=(await original.resources)[1];
     const renderer=new THREE.WebGLRenderer({antialias:false,preserveDrawingBuffer:true});
     renderer.setSize(512,512);renderer.setClearColor(0);

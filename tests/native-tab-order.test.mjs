@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeFormTabOrder,nativeNavigationOrder,nativeOrderedChildren} from '../src/native-tab-order.js';
+import {nativeFormTabOrder,nativeNavigationOrder,nativeOrderedChildren} from '../source/native-tab-order.js';
 const forms=JSON.parse(fs.readFileSync(new URL('../public/assets/ui/forms.json',import.meta.url)));
 const fixtures=JSON.parse(fs.readFileSync(new URL('../evidence/native/tab-order-fixtures.json',import.meta.url)));
 function find(item,name){return item.name===name?item:item.children.map(child=>find(child,name)).find(Boolean);}

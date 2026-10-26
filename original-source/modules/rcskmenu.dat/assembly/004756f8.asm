@@ -1,0 +1,4 @@
+; 004756f8 TfrmAdventureMain_btnBackClick
+004756f8	c680d402000002	MOV byte ptr [EAX + 0x2d4],0x2
+004756ff	e81494fbff	CALL 0x0042eb18
+00475704	c3	RET

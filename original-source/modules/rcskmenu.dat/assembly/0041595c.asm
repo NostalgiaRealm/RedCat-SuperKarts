@@ -1,0 +1,2 @@
+; 0041595c COMCTL32.DLL::ImageList_GetImageCount
+0041595c	ff2564f74700	JMP dword ptr [0x0047f764]

@@ -1,0 +1,2 @@
+; 00406390 KERNEL32.DLL::GlobalDeleteAtom
+00406390	ff25c0f24700	JMP dword ptr [0x0047f2c0]

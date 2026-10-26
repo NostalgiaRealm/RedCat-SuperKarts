@@ -1,0 +1,3 @@
+; 004cfe92 Unwind@004cfe92
+004cfe92	8d4d94	LEA ECX,[EBP + -0x6c]
+004cfe95	e916b6f3ff	JMP 0x0040b4b0

@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {NativeRaceLifecycle, NativeRaceResultGate, NativeRacePauseGate,
-  nativeRacePauseRequest, nativeQuitRequesterChoice} from '../src/simulation/native-race-lifecycle.js';
-import {NativeGameTimers} from '../src/simulation/native-game-timers.js';
+  nativeRacePauseRequest, nativeQuitRequesterChoice} from '../source/simulation/native-race-lifecycle.js';
+import {NativeGameTimers} from '../source/simulation/native-game-timers.js';
 const f=JSON.parse(readFileSync(new URL('../evidence/native/race-lifecycle-fixtures.json',import.meta.url)));
 
 test('Original success/failure delays, held-key loops, Shift and tick wrap match',()=>{

@@ -1,0 +1,2 @@
+; 00455920 WINMM.DLL::sndPlaySoundA
+00455920	ff2578f74700	JMP dword ptr [0x0047f778]

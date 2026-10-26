@@ -1,0 +1,5 @@
+; 004beb1f FUN_004beb1f
+004beb1f	58	POP EAX
+004beb20	59	POP ECX
+004beb21	870424	XCHG dword ptr [ESP],EAX
+004beb24	ffe0	JMP EAX

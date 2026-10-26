@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {getNativeSpatialAudioCommands, getNativeSoundListener, nativePanGains,nativeObjectCallbackCount} from '../src/spatial-audio.js';
+import {getNativeSpatialAudioCommands, getNativeSoundListener, nativePanGains,nativeObjectCallbackCount} from '../source/spatial-audio.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/spatial-audio-fixtures.json', import.meta.url)));
 
 test('spatial distance, pan, doppler and playback match original instructions', () => {

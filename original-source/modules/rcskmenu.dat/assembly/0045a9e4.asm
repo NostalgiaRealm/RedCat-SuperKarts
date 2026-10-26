@@ -1,0 +1,3 @@
+; 0045a9e4 FUN_0045a9e4
+0045a9e4	885010	MOV byte ptr [EAX + 0x10],DL
+0045a9e7	c3	RET

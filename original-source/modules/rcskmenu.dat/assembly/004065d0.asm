@@ -1,0 +1,2 @@
+; 004065d0 GDI32.DLL::GetWindowOrgEx
+004065d0	ff25d8f34700	JMP dword ptr [0x0047f3d8]

@@ -1,0 +1,2 @@
+; 00406a50 USER32.DLL::RegisterClassA
+00406a50	ff2530f54700	JMP dword ptr [0x0047f530]

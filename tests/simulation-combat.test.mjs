@@ -1,15 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeBonusCombat } from '../src/simulation/native-combat.js';
-import { NativeBonusPickups, NativeRandom, nativeTrackPickups } from '../src/simulation/native-bonus.js';
-import { NativePlayerMotion } from '../src/simulation/native-motion.js';
-import { NativeRailCollision } from '../src/simulation/native-collision.js';
-import { createNativeTrack } from '../src/simulation/native-track.js';
-import { nativePlayerStart } from '../src/simulation/native-start.js';
-import { parsePhysicsTable } from '../src/simulation/native-tables.js';
-import { nativeProjectileFacing, advanceNativeProjectile } from '../src/simulation/native-projectile.js';
-import { SimulationClock } from '../src/simulation/clock.js';
+import { NativeBonusCombat } from '../source/simulation/native-combat.js';
+import { NativeBonusPickups, NativeRandom, nativeTrackPickups } from '../source/simulation/native-bonus.js';
+import { NativePlayerMotion } from '../source/simulation/native-motion.js';
+import { NativeRailCollision } from '../source/simulation/native-collision.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
+import { nativePlayerStart } from '../source/simulation/native-start.js';
+import { parsePhysicsTable } from '../source/simulation/native-tables.js';
+import { nativeProjectileFacing, advanceNativeProjectile } from '../source/simulation/native-projectile.js';
+import { SimulationClock } from '../source/simulation/clock.js';
 
 const json = path => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const config = json('../public/assets/config.json');

@@ -1,0 +1,2 @@
+; 00406918 USER32.DLL::GetSystemMetrics
+00406918	ff25c8f54700	JMP dword ptr [0x0047f5c8]

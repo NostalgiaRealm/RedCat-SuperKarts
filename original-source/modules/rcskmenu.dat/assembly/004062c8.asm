@@ -1,0 +1,2 @@
+; 004062c8 KERNEL32.DLL::FormatMessageA
+004062c8	ff2524f34700	JMP dword ptr [0x0047f324]

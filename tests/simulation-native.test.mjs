@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createNativeInputState, updateNativeInput } from '../src/simulation/native-input.js';
-import { parsePhysicsTable, parseRacerTable } from '../src/simulation/native-tables.js';
-import { slipAngle, tireLateralForce, enginePower, driveForce, resistanceForce, handbrakeForce, nativeReverseClamp } from '../src/simulation/native-forces.js';
-import { SimulationClock, NativeDeltaFilter, RaceClock } from '../src/simulation/clock.js';
-import { calculateNativePlayerForces } from '../src/simulation/native-player.js';
+import { createNativeInputState, updateNativeInput } from '../source/simulation/native-input.js';
+import { parsePhysicsTable, parseRacerTable } from '../source/simulation/native-tables.js';
+import { slipAngle, tireLateralForce, enginePower, driveForce, resistanceForce, handbrakeForce, nativeReverseClamp } from '../source/simulation/native-forces.js';
+import { SimulationClock, NativeDeltaFilter, RaceClock } from '../source/simulation/clock.js';
+import { calculateNativePlayerForces } from '../source/simulation/native-player.js';
 
 const inventory = JSON.parse(readFileSync(new URL('../evidence/gameplay/inventory.json', import.meta.url)));
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-fixtures.json', import.meta.url)));

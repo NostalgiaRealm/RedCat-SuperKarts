@@ -1,0 +1,3 @@
+; 00402df4 FUN_00402df4
+00402df4	8b00	MOV EAX,dword ptr [EAX]
+00402df6	c3	RET

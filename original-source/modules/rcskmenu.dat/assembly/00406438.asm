@@ -1,0 +1,2 @@
+; 00406438 KERNEL32.DLL::SetThreadLocale
+00406438	ff256cf24700	JMP dword ptr [0x0047f26c]

@@ -1,0 +1,16 @@
+/*
+ * FUN_0040afc8 at 0040afc8
+ * undefined FUN_0040afc8(void)
+ * Address ranges: 0040afc8-0040afd6
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+uint __fastcall FUN_0040afc8(undefined4 param_1,undefined4 param_2)
+
+{
+  uint3 uVar1;
+  
+  uVar1 = CONCAT21((short)((uint)param_2 >> 0x10),(char)param_2);
+  return (uint)uVar1 | CONCAT31(uVar1,(char)((uint)param_2 >> 8)) << 0x18;
+}
+

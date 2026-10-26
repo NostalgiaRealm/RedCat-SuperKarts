@@ -1,0 +1,2 @@
+; 00406728 USER32.DLL::CreateWindowExA
+00406728	ff25c0f64700	JMP dword ptr [0x0047f6c0]

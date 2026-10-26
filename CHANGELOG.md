@@ -1,5 +1,59 @@
 # Changelog
 
+## 1.0.0 — 2026-10-26
+
+Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
+Apple Silicon. The complete `original-source/` reference is published with the
+source on GitHub and GitLab and included in release source archives. See the
+[1.0.0 release notes](docs/releases/1.0.0.md).
+
+### Changed and fixed
+
+- Moved editable port modules and the HTML/CSS inputs into `source/`, with a
+  purpose guide. `src/` now contains generated runtime bundles; normal browser
+  and desktop launches refresh and use them. Added `npm run bundle` for a local
+  runtime refresh and updated documentation for the separate folders.
+- Combined generated JavaScript into lazy-loaded bundles while keeping editable
+  source modules. Added `npm run preview` and deferred renderer/AI loading from
+  menus; existing save keys, formats and desktop profiles are unchanged.
+- Reduced redundant HUD uploads and temporary transform/effect/item allocations.
+- Shared browser/desktop file serving and fixed canceled track loads returning
+  after Back. Hardened settings fallback without migrating valid saves.
+- Reorganized documentation and corrected stale setup/status instructions while
+  preserving historical evidence. See [the efficiency review](docs/code-efficiency.md).
+- Movies start immediately, retrying muted when the browser blocks sound.
+  A bottom-left **Geluid inschakelen** button enables audio without restarting
+  playback and enters fullscreen if needed. Removed the intro Start button
+  and its overlapping startup notice.
+- Added the original runtime's recovered C/assembly in `original-source/`,
+  with input hashes, reproducible export tooling and explicit analysis limits.
+- Restored original menu entry focus and name-entry Return-key release timing.
+- Corrected bonus/turbo and engine-sound ordering within the player update.
+- Restored sound continuity during native Pause/Quit screens and music restart
+  polling; retained host focus-loss suspension across pending pause dismissal.
+  See [the separate original-code comparison](docs/full-source-audit.md).
+
+### Distribution and compatibility
+
+- Version 1.0.0 appears in **Instellingen → Meer instellingen** and desktop
+  package metadata. `package.json` remains the version authority.
+- Existing settings, Adventure profiles, unlocks, high scores and records keep
+  their storage formats, browser origins and desktop profile location. No save
+  reset or manual migration is required.
+- Every release update must continue publishing the entire `original-source/`
+  folder to both repositories and include it in source archives. These are
+  recovered C-like pseudocode, assembly and provenance, not the original
+  developers' authored source project.
+
+### Release validation boundary
+
+No tests, gameplay runs, package verification or build checks are run for this
+release, as requested. Packages are built and published without those checks.
+Earlier focused source and compatibility results remain historical evidence;
+they do not establish that these 1.0.0 packages have been tested. Existing
+original-game parity and target-device limits remain documented in
+[remaining work](docs/remaining-work.md).
+
 ## 0.9.0 — 2026-10-25
 
 Source update since the published 0.1.0 release. All prepared assets needed

@@ -1,0 +1,3 @@
+; 0041bd50 FUN_0041bd50
+0041bd50	ff4004	INC dword ptr [EAX + 0x4]
+0041bd53	c3	RET

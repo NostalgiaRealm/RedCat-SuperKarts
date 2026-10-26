@@ -1,0 +1,5 @@
+; 00477d6c TfrmLandInfo_imgPhoto4Click
+00477d6c	0fb6802c030000	MOVZX EAX,byte ptr [EAX + 0x32c]
+00477d73	8a048587c54700	MOV AL,byte ptr [EAX*0x4 + 0x47c587]
+00477d7a	e8a149feff	CALL 0x0045c720
+00477d7f	c3	RET

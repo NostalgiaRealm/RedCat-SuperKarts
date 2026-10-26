@@ -1,0 +1,2 @@
+; 00406590 GDI32.DLL::GetPaletteEntries
+00406590	ff25f8f34700	JMP dword ptr [0x0047f3f8]

@@ -1,0 +1,12 @@
+; 0049ebe0 FUN_0049ebe0
+0049ebe0	56	PUSH ESI
+0049ebe1	8bf1	MOV ESI,ECX
+0049ebe3	8b0e	MOV ECX,dword ptr [ESI]
+0049ebe5	85c9	TEST ECX,ECX
+0049ebe7	740c	JZ 0x0049ebf5
+0049ebe9	8b01	MOV EAX,dword ptr [ECX]
+0049ebeb	6a03	PUSH 0x3
+0049ebed	ff10	CALL dword ptr [EAX]
+0049ebef	c70600000000	MOV dword ptr [ESI],0x0
+0049ebf5	5e	POP ESI
+0049ebf6	c3	RET

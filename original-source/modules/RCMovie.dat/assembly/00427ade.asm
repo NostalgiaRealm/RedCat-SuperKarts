@@ -1,0 +1,2 @@
+; 00427ade KERNEL32.DLL::RtlUnwind
+00427ade	ff25e4804200	JMP dword ptr [0x004280e4]

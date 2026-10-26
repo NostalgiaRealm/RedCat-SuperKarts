@@ -1,0 +1,12 @@
+; 0046d9c0 FUN_0046d9c0
+0046d9c0	8bc1	MOV EAX,ECX
+0046d9c2	8b4c2408	MOV ECX,dword ptr [ESP + 0x8]
+0046d9c6	8b11	MOV EDX,dword ptr [ECX]
+0046d9c8	8910	MOV dword ptr [EAX],EDX
+0046d9ca	8b11	MOV EDX,dword ptr [ECX]
+0046d9cc	81c2f80f0000	ADD EDX,0xff8
+0046d9d2	89480c	MOV dword ptr [EAX + 0xc],ECX
+0046d9d5	895004	MOV dword ptr [EAX + 0x4],EDX
+0046d9d8	8b542404	MOV EDX,dword ptr [ESP + 0x4]
+0046d9dc	895008	MOV dword ptr [EAX + 0x8],EDX
+0046d9df	c20800	RET 0x8

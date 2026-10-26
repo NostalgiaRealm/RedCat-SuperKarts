@@ -1,0 +1,7 @@
+; 004ad0f0 FUN_004ad0f0
+004ad0f0	8bc1	MOV EAX,ECX
+004ad0f2	33c9	XOR ECX,ECX
+004ad0f4	894804	MOV dword ptr [EAX + 0x4],ECX
+004ad0f7	8908	MOV dword ptr [EAX],ECX
+004ad0f9	894808	MOV dword ptr [EAX + 0x8],ECX
+004ad0fc	c3	RET

@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import {nativeRaceSettings} from '../src/simulation/native-race.js';
-import {nativeAdventureQualification} from '../src/simulation/native-adventure.js';
+import {nativeRaceSettings} from '../source/simulation/native-race.js';
+import {nativeAdventureQualification} from '../source/simulation/native-adventure.js';
 const file='evidence/full-race-matrix/timed-nl-authored-opening-3.json';
 const read=p=>JSON.parse(fs.readFileSync(p));
 const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');

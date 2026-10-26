@@ -1,0 +1,3 @@
+; 0043eb58 FUN_0043eb58
+0043eb58	88504d	MOV byte ptr [EAX + 0x4d],DL
+0043eb5b	c3	RET

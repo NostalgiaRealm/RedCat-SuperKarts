@@ -1,11 +1,11 @@
 import {predictClosedLoop} from '../tests/helpers/private-closed-loop-driving.mjs';
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import { RaceSimulation } from '../src/race-simulation.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS } from '../src/simulation/clock.js';
+import { RaceSimulation } from '../source/race-simulation.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS } from '../source/simulation/clock.js';
 import { RouteTestDriver } from '../tests/helpers/private-projected-line-driver.mjs';
-import { nativeAdventureQualification } from '../src/simulation/native-adventure.js';
+import { nativeAdventureQualification } from '../source/simulation/native-adventure.js';
 import {validationSourceDependencies} from './validation-source-dependencies.mjs';
 
 const root = new URL('../', import.meta.url), assets = new URL('public/assets/', root);
@@ -26,7 +26,7 @@ async function sourceSnapshot() {
       else if (entry.isFile()) paths.push(path);
     }
   }
-  await visit('src');
+  await visit('source');
   return Object.fromEntries(await Promise.all(paths.sort().map(async path =>
     [path, crypto.createHash('sha256').update(await fs.readFile(new URL(path, root))).digest('hex')])));
 }

@@ -1,0 +1,2 @@
+; 00455918 WINMM.DLL::mciSendCommandA
+00455918	ff257cf74700	JMP dword ptr [0x0047f77c]

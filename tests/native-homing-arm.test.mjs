@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createNativeHomingArm, updateNativeHomingArm, NativeHomingArms,
-  advanceNativeArmQueue} from '../src/simulation/native-homing-arm.js';
+  advanceNativeArmQueue} from '../source/simulation/native-homing-arm.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/arm-fixtures.json', import.meta.url)));
 const fields = ['active', 'scale', 'count', 'growthAngle', 'angle', 'initialDistanceSquared', 'colors', 'vertices'];

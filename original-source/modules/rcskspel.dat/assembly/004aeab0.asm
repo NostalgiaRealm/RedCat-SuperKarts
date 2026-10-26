@@ -1,0 +1,29 @@
+; 004aeab0 FUN_004aeab0
+004aeab0	56	PUSH ESI
+004aeab1	8bf1	MOV ESI,ECX
+004aeab3	83be9801000001	CMP dword ptr [ESI + 0x198],0x1
+004aeaba	7417	JZ 0x004aead3
+004aeabc	68b1000000	PUSH 0xb1
+004aeac1	68c8e44f00	PUSH 0x4fe4c8
+004aeac6	6898e44f00	PUSH 0x4fe498
+004aeacb	e810140000	CALL 0x004afee0
+004aead0	83c40c	ADD ESP,0xc
+004aead3	8bce	MOV ECX,ESI
+004aead5	e856fdffff	CALL 0x004ae830
+004aeada	85c0	TEST EAX,EAX
+004aeadc	7410	JZ 0x004aeaee
+004aeade	8b4604	MOV EAX,dword ptr [ESI + 0x4]
+004aeae1	f6c401	TEST AH,0x1
+004aeae4	741b	JZ 0x004aeb01
+004aeae6	8b86a0000000	MOV EAX,dword ptr [ESI + 0xa0]
+004aeaec	5e	POP ESI
+004aeaed	c3	RET
+004aeaee	8b86d0000000	MOV EAX,dword ptr [ESI + 0xd0]
+004aeaf4	f6c401	TEST AH,0x1
+004aeaf7	7408	JZ 0x004aeb01
+004aeaf9	8b866c010000	MOV EAX,dword ptr [ESI + 0x16c]
+004aeaff	5e	POP ESI
+004aeb00	c3	RET
+004aeb01	83c8ff	OR EAX,0xffffffff
+004aeb04	5e	POP ESI
+004aeb05	c3	RET

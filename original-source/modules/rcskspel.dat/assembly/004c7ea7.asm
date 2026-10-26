@@ -1,0 +1,33 @@
+; 004c7ea7 FUN_004c7ea7
+004c7ea7	55	PUSH EBP
+004c7ea8	8bec	MOV EBP,ESP
+004c7eaa	833dcc37500000	CMP dword ptr [0x005037cc],0x0
+004c7eb1	7529	JNZ 0x004c7edc
+004c7eb3	ff7514	PUSH dword ptr [EBP + 0x14]
+004c7eb6	dd450c	FLD double ptr [EBP + 0xc]
+004c7eb9	51	PUSH ECX
+004c7eba	51	PUSH ECX
+004c7ebb	dd1c24	FSTP double ptr [ESP]
+004c7ebe	51	PUSH ECX
+004c7ebf	51	PUSH ECX
+004c7ec0	d9ee	FLDZ
+004c7ec2	dd1c24	FSTP double ptr [ESP]
+004c7ec5	dd450c	FLD double ptr [EBP + 0xc]
+004c7ec8	51	PUSH ECX
+004c7ec9	51	PUSH ECX
+004c7eca	dd1c24	FSTP double ptr [ESP]
+004c7ecd	ff7508	PUSH dword ptr [EBP + 0x8]
+004c7ed0	6a01	PUSH 0x1
+004c7ed2	e885050000	CALL 0x004c845c
+004c7ed7	83c424	ADD ESP,0x24
+004c7eda	5d	POP EBP
+004c7edb	c3	RET
+004c7edc	68ffff0000	PUSH 0xffff
+004c7ee1	c705e8666b0021000000	MOV dword ptr [0x006b66e8],0x21
+004c7eeb	ff7514	PUSH dword ptr [EBP + 0x14]
+004c7eee	e8dc070000	CALL 0x004c86cf
+004c7ef3	dd450c	FLD double ptr [EBP + 0xc]
+004c7ef6	59	POP ECX
+004c7ef7	59	POP ECX
+004c7ef8	5d	POP EBP
+004c7ef9	c3	RET

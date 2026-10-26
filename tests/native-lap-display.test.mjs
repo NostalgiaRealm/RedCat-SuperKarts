@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeLapDisplay} from '../src/simulation/native-lap-display.js';
+import {NativeLapDisplay} from '../source/simulation/native-lap-display.js';
 
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/lap-display-fixtures.json',import.meta.url)));
 test('Lap display matches original initialization and every mode/precision hold callback',()=>{

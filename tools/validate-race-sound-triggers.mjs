@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {writeFile} from 'node:fs/promises';
@@ -12,7 +13,7 @@ try{
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
   await page.locator('#world').click();
   const report=await page.evaluate(async()=>{
-    const {deactivateNativeProjectile}=await import('/src/simulation/native-projectile.js');
+    const {deactivateNativeProjectile}=await import('/source/simulation/native-projectile.js');
     const view=rcsk.viewer,sim=view.simulation,audio=view.audio;
     view.clock.pause();await audio.resume();
     const starts=[],requests=[],execute=audio.execute.bind(audio),request=audio.requestVoice.bind(audio);

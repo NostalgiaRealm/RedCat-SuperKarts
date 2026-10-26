@@ -1,0 +1,3 @@
+; 0042ac20 FUN_0042ac20
+0042ac20	8b4110	MOV EAX,dword ptr [ECX + 0x10]
+0042ac23	c3	RET

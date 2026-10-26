@@ -1,0 +1,2 @@
+; 004065f8 GDI32.DLL::PatBlt
+004065f8	ff25c4f34700	JMP dword ptr [0x0047f3c4]

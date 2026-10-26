@@ -1,0 +1,2 @@
+; 004060ec KERNEL32.DLL::TlsSetValue
+004060ec	ff2520f24700	JMP dword ptr [0x0047f220]

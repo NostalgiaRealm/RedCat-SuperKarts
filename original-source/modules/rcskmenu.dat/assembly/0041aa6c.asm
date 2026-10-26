@@ -1,0 +1,15 @@
+; 0041aa6c FUN_0041aa6c
+0041aa6c	53	PUSH EBX
+0041aa6d	8bd8	MOV EBX,EAX
+0041aa6f	66837b0a00	CMP word ptr [EBX + 0xa],0x0
+0041aa74	7408	JZ 0x0041aa7e
+0041aa76	8bd3	MOV EDX,EBX
+0041aa78	8b430c	MOV EAX,dword ptr [EBX + 0xc]
+0041aa7b	ff5308	CALL dword ptr [EBX + 0x8]
+0041aa7e	837b1000	CMP dword ptr [EBX + 0x10],0x0
+0041aa82	7408	JZ 0x0041aa8c
+0041aa84	8b4310	MOV EAX,dword ptr [EBX + 0x10]
+0041aa87	8b10	MOV EDX,dword ptr [EAX]
+0041aa89	ff520c	CALL dword ptr [EDX + 0xc]
+0041aa8c	5b	POP EBX
+0041aa8d	c3	RET

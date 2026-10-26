@@ -51,7 +51,7 @@ an identical repeated clock sample can have a tiny signed raw delta. The
 fixture verifies both precisions explicitly; it does not identify an unknown
 historical graphics driver's FPU setting.
 
-`NativeEngineTimer` in `src/simulation/clock.js` implements this arithmetic.
+`NativeEngineTimer` in `source/simulation/clock.js` implements this arithmetic.
 The live-host API is:
 
 ```js

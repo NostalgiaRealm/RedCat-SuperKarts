@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {getNativeEngineAudioSpec, createNativeEngineAudio, startNativeEngineAudio,
   updateNativeEngineAudio, stopNativeEngineAudio, nativeSoundVolume, nativeSoundFrequency,
-  nativeWavSampleRate} from '../src/engine-audio.js';
+  nativeWavSampleRate} from '../source/engine-audio.js';
 
 const load = file => JSON.parse(fs.readFileSync(new URL(`../${file}`, import.meta.url)));
 const fixture = load('evidence/native/engine-audio-fixtures.json');

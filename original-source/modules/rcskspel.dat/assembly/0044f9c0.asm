@@ -1,0 +1,4 @@
+; 0044f9c0 FUN_0044f9c0
+0044f9c0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0044f9c4	89416c	MOV dword ptr [ECX + 0x6c],EAX
+0044f9c7	c20400	RET 0x4

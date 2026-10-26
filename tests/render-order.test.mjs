@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeObjectRenderOrder,nativeRoadDrawGroups,NATIVE_RENDER_ORDER} from '../src/render-order.js';
+import {nativeObjectRenderOrder,nativeRoadDrawGroups,NATIVE_RENDER_ORDER} from '../source/render-order.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/render-order-fixtures.json',import.meta.url)));
 test('36 original accelerated object submissions keep each shadow immediately before its own kart',()=>{
   for(const c of fixture.objects){

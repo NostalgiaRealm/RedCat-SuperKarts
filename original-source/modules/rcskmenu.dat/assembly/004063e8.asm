@@ -1,0 +1,2 @@
+; 004063e8 KERNEL32.DLL::LockResource
+004063e8	ff2594f24700	JMP dword ptr [0x0047f294]

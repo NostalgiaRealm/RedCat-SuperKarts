@@ -1,0 +1,2 @@
+; 00406340 KERNEL32.DLL::GetModuleHandleA
+00406340	ff25e8f24700	JMP dword ptr [0x0047f2e8]

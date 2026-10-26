@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {integrateNativeEuler} from '../src/simulation/native-integrator.js';
+import {integrateNativeEuler} from '../source/simulation/native-integrator.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/cadence-quantization.json', import.meta.url)));
 

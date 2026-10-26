@@ -1,0 +1,2 @@
+; 004ad6a0 FUN_004ad6a0
+004ad6a0	c3	RET

@@ -1,0 +1,2 @@
+; 004067e8 USER32.DLL::EqualRect
+004067e8	ff2560f64700	JMP dword ptr [0x0047f660]

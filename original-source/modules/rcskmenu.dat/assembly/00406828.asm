@@ -1,0 +1,2 @@
+; 00406828 USER32.DLL::GetClipboardData
+00406828	ff2540f64700	JMP dword ptr [0x0047f640]

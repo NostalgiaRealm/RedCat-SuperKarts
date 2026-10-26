@@ -1,0 +1,3 @@
+; 0044f9d0 FUN_0044f9d0
+0044f9d0	8b416c	MOV EAX,dword ptr [ECX + 0x6c]
+0044f9d3	c3	RET

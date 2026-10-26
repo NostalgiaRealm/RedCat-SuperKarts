@@ -1,0 +1,4 @@
+; 0044caa0 FUN_0044caa0
+0044caa0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0044caa4	894170	MOV dword ptr [ECX + 0x70],EAX
+0044caa7	c20400	RET 0x4

@@ -160,7 +160,11 @@ JavaScript tests, seven browser checks and byte comparison of 6830 copied
 runtime/asset files in the rebuilt 6841-file package. Earlier failures and
 the successful pre-safety Germany/Italy runs remain retained separately.
 
-Reproduce the driven checks and verification:
+The following commands record how that historical checkpoint was verified.
+The final verifier requires its frozen source/runtime hashes; a build from the
+current checkout cannot reproduce those hashes. Run new driven checks with a
+new report path to keep the retained checkpoint intact. See
+[development checks](development.md) for current validation guidance.
 
 ```sh
 RCSK_DRIVEN_CASES='1,0,0' RCSK_DRIVEN_MAX_MS=1800000 RCSK_DRIVEN_REPORT=evidence/race-completion/final-germany.json node tools/validate-driven-races.mjs

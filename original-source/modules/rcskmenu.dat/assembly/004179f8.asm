@@ -1,0 +1,4 @@
+; 004179f8 FUN_004179f8
+004179f8	8b4010	MOV EAX,dword ptr [EAX + 0x10]
+004179fb	8a401a	MOV AL,byte ptr [EAX + 0x1a]
+004179fe	c3	RET

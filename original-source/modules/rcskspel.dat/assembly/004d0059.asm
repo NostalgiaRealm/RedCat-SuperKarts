@@ -1,0 +1,3 @@
+; 004d0059 Unwind@004d0059
+004d0059	8d8df8feffff	LEA ECX,[EBP + 0xfffffef8]
+004d005f	e94cb4f3ff	JMP 0x0040b4b0

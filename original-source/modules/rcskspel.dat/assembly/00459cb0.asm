@@ -1,0 +1,3 @@
+; 00459cb0 FUN_00459cb0
+00459cb0	8b4150	MOV EAX,dword ptr [ECX + 0x50]
+00459cb3	c3	RET

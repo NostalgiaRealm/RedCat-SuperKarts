@@ -1,0 +1,2 @@
+; 00415998 COMCTL32.DLL::ImageList_DrawEx
+00415998	ff254cf74700	JMP dword ptr [0x0047f74c]

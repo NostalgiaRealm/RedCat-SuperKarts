@@ -1,0 +1,2 @@
+; 00406458 KERNEL32.DLL::VirtualQuery
+00406458	ff255cf24700	JMP dword ptr [0x0047f25c]

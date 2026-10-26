@@ -1,0 +1,2 @@
+; 00406a28 USER32.DLL::PeekMessageA
+00406a28	ff2544f54700	JMP dword ptr [0x0047f544]

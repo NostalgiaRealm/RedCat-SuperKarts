@@ -1,0 +1,3 @@
+; 00430cd0 FUN_00430cd0
+00430cd0	ff05b8ba5300	INC dword ptr [0x0053bab8]
+00430cd6	c3	RET

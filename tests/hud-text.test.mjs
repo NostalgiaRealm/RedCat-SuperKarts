@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import {getHudFont, getHudStringSpec, nativeGlyphCenters, layoutHudText,
-  formatRaceTime, formatCountdownTime, getRaceHudText} from '../src/hud-text.js';
+  formatRaceTime, formatCountdownTime, getRaceHudText} from '../source/hud-text.js';
 
 const json = file => JSON.parse(fs.readFileSync(new URL(file, import.meta.url)));
 const config = json('../public/assets/config.json');

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeRaceState, nativeRaceSettings, nativeSectorDistance, nativeCrossedTriggers } from '../src/simulation/native-race.js';
+import { NativeRaceState, nativeRaceSettings, nativeSectorDistance, nativeCrossedTriggers } from '../source/simulation/native-race.js';
 
 const read = path => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const fixtures = read('../evidence/gameplay/native-race-fixtures.json');

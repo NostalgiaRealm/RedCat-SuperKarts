@@ -1,0 +1,17 @@
+; 0040d8d1 FUN_0040d8d1
+0040d8d1	55	PUSH EBP
+0040d8d2	8bec	MOV EBP,ESP
+0040d8d4	51	PUSH ECX
+0040d8d5	c745fc00000000	MOV dword ptr [EBP + -0x4],0x0
+0040d8dc	eb09	JMP 0x0040d8e7
+0040d8de	8b45fc	MOV EAX,dword ptr [EBP + -0x4]
+0040d8e1	83c001	ADD EAX,0x1
+0040d8e4	8945fc	MOV dword ptr [EBP + -0x4],EAX
+0040d8e7	837dfc0a	CMP dword ptr [EBP + -0x4],0xa
+0040d8eb	7d10	JGE 0x0040d8fd
+0040d8ed	8b4dfc	MOV ECX,dword ptr [EBP + -0x4]
+0040d8f0	c7048df0224300ffffffff	MOV dword ptr [ECX*0x4 + 0x4322f0],0xffffffff
+0040d8fb	ebe1	JMP 0x0040d8de
+0040d8fd	8be5	MOV ESP,EBP
+0040d8ff	5d	POP EBP
+0040d900	c3	RET

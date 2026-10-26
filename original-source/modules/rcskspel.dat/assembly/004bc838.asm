@@ -1,0 +1,15 @@
+; 004bc838 std::basic_streambuf<char,std::char_traits<char>_>::uflow
+004bc838	56	PUSH ESI
+004bc839	8bf1	MOV ESI,ECX
+004bc83b	8b06	MOV EAX,dword ptr [ESI]
+004bc83d	ff5010	CALL dword ptr [EAX + 0x10]
+004bc840	83f8ff	CMP EAX,-0x1
+004bc843	7504	JNZ 0x004bc849
+004bc845	0bc0	OR EAX,EAX
+004bc847	5e	POP ESI
+004bc848	c3	RET
+004bc849	8bce	MOV ECX,ESI
+004bc84b	e813060000	CALL 0x004bce63
+004bc850	0fb600	MOVZX EAX,byte ptr [EAX]
+004bc853	5e	POP ESI
+004bc854	c3	RET

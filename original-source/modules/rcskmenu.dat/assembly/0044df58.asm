@@ -1,0 +1,4 @@
+; 0044df58 FUN_0044df58
+0044df58	8b4004	MOV EAX,dword ptr [EAX + 0x4]
+0044df5b	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+0044df5e	c3	RET

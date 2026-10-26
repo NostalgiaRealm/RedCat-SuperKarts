@@ -1,0 +1,2 @@
+; 004064b8 GDI32.DLL::CreateCompatibleDC
+004064b8	ff2564f44700	JMP dword ptr [0x0047f464]

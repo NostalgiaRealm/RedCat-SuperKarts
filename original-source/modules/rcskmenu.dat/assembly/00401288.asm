@@ -1,0 +1,2 @@
+; 00401288 KERNEL32.DLL::ExitProcess
+00401288	ff25a0f14700	JMP dword ptr [0x0047f1a0]

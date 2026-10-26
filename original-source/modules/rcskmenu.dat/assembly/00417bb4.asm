@@ -1,0 +1,4 @@
+; 00417bb4 FUN_00417bb4
+00417bb4	8b4010	MOV EAX,dword ptr [EAX + 0x10]
+00417bb7	8b4014	MOV EAX,dword ptr [EAX + 0x14]
+00417bba	c3	RET

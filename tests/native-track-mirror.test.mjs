@@ -2,10 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import * as THREE from 'three';
-import {presentNativeRaceCamera} from '../src/render-transforms.js';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {nativeAnalogFromNormalized} from '../src/simulation/native-input.js';
+import {presentNativeRaceCamera} from '../source/render-transforms.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {nativeAnalogFromNormalized} from '../source/simulation/native-input.js';
 
 const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
 const config=JSON.parse(read('config.json')),manifest=JSON.parse(read('manifest.json')),cars=JSON.parse(read('cars.json'));

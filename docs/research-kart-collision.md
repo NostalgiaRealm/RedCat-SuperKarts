@@ -30,12 +30,12 @@ therefore supplies planar normals.
 
 Implementation:
 
-- `src/simulation/native-kart-contact.js`: paired impulse.
-- `src/simulation/native-collision.js`: candidate order, original sweeps, paired
+- `source/simulation/native-kart-contact.js`: paired impulse.
+- `source/simulation/native-collision.js`: candidate order, original sweeps, paired
   contact identity and response dispatch.
-- `src/simulation/native-motion.js` and `native-ai-driver.js`: response at the
+- `source/simulation/native-motion.js` and `native-ai-driver.js`: response at the
   original post-integration/pre-ground position.
-- `src/race-simulation.js`: shared body list in creation order.
+- `source/race-simulation.js`: shared body list in creation order.
 
 Reproduce the bounded native comparisons:
 

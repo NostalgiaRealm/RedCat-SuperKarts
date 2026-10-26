@@ -1,0 +1,2 @@
+; 004063d8 KERNEL32.DLL::LoadLibraryA
+004063d8	ff259cf24700	JMP dword ptr [0x0047f29c]

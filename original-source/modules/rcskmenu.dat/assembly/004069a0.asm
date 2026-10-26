@@ -1,0 +1,2 @@
+; 004069a0 USER32.DLL::IsRectEmpty
+004069a0	ff2588f54700	JMP dword ptr [0x0047f588]

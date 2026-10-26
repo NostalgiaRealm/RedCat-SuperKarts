@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {getNativeGameplayHudNotificationId as notificationId} from '../src/hud-gameplay-events.js';
-import {getNativeNotificationEvent} from '../src/hud-notifications.js';
+import {getNativeGameplayHudNotificationId as notificationId} from '../source/hud-gameplay-events.js';
+import {getNativeNotificationEvent} from '../source/hud-notifications.js';
 
 const config = JSON.parse(fs.readFileSync(new URL('../public/assets/config.json', import.meta.url)));
 

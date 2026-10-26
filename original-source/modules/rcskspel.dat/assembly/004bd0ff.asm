@@ -1,0 +1,6 @@
+; 004bd0ff FUN_004bd0ff
+004bd0ff	8b01	MOV EAX,dword ptr [ECX]
+004bd101	83c104	ADD ECX,0x4
+004bd104	8b4004	MOV EAX,dword ptr [EAX + 0x4]
+004bd107	c74408fccc354d00	MOV dword ptr [EAX + ECX*0x1 + -0x4],0x4d35cc
+004bd10f	e9ff020000	JMP 0x004bd413

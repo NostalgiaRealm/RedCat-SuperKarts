@@ -1,0 +1,2 @@
+; 00406518 GDI32.DLL::ExcludeClipRect
+00406518	ff2534f44700	JMP dword ptr [0x0047f434]

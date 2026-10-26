@@ -1,0 +1,2 @@
+; 004159e0 COMCTL32.DLL::ImageList_GetDragImage
+004159e0	ff2528f74700	JMP dword ptr [0x0047f728]

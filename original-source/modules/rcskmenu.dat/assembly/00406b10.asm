@@ -1,0 +1,2 @@
+; 00406b10 USER32.DLL::SetWindowLongA
+00406b10	ff25d0f44700	JMP dword ptr [0x0047f4d0]

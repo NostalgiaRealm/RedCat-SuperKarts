@@ -1,0 +1,12 @@
+; 004bc7ec std::locale::~locale
+004bc7ec	8b09	MOV ECX,dword ptr [ECX]
+004bc7ee	85c9	TEST ECX,ECX
+004bc7f0	7411	JZ 0x004bc803
+004bc7f2	e80d000000	CALL 0x004bc804
+004bc7f7	85c0	TEST EAX,EAX
+004bc7f9	7408	JZ 0x004bc803
+004bc7fb	8b10	MOV EDX,dword ptr [EAX]
+004bc7fd	6a01	PUSH 0x1
+004bc7ff	8bc8	MOV ECX,EAX
+004bc801	ff12	CALL dword ptr [EDX]
+004bc803	c3	RET

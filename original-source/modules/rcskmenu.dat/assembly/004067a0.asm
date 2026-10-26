@@ -1,0 +1,2 @@
+; 004067a0 USER32.DLL::DrawMenuBar
+004067a0	ff2584f64700	JMP dword ptr [0x0047f684]

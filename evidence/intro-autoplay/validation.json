@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-26",
+  "status": "passed",
+  "scope": "Source-only movie autoplay, audio activation and whole-game fullscreen; published packages unchanged.",
+  "behaviorReference": "Live Spookkasteel source: src/intro-playback.js; audible play attempt, muted retry, gesture-based audio activation and stale-promise invalidation.",
+  "focusedTests": {
+    "command": "node --test tests/movie-playback.test.mjs",
+    "passed": 7
+  },
+  "browser": {
+    "command": "RCSK_URL=http://127.0.0.1:4184 node tests/startup-browser.mjs --intro-only",
+    "passed": 8,
+    "report": "evidence/intro-autoplay/browser.json"
+  },
+  "limits": [
+    "No races or full suite.",
+    "No rebuilt/static/Electron packages.",
+    "No publication.",
+    "Policy denials are controlled fixtures; actual playback and mouse, touch and keyboard paths are exercised in Chromium."
+  ],
+  "sha256": {
+    "index.html": "c2e02f3dc15a4d10ed47bd89607fe512e51432531f2f044800eab59db9718b8a",
+    "src/main.js": "e802d3cc2605f5e70c7f7fdbcab0da057f181dcf14a853f8dde7a89a9e2040f9",
+    "src/movie-playback.js": "b742b07ccc3ebbae621ee8cfbd853a0abb16e2b615b862a6acb9a513e12d6d7d",
+    "src/style.css": "0b531fad3158dafef15a7ab9533a7a4509bce2c187cb67b85cba0af7eb030660",
+    "tests/movie-playback.test.mjs": "0e55042d756e00767d43a40731137d7fd4a441b44ef8c5a70ea909dd2963f4dc",
+    "tests/startup-browser.mjs": "3cd2e4d76c157487d5dba7ece7382e74266cd22551266d9573ae40d1e6ad1f6a",
+    "tests/desktop.mjs": "88f6d6c9dcff145f2014a9afeab256b2859f56d3289a3b01c1e05e763b2d7572"
+  },
+  "fullscreen": {
+    "gestureOrder": "Unmute and play before requesting fullscreen, without awaiting either API.",
+    "target": "document.documentElement",
+    "alreadyFullscreen": "No new request.",
+    "deniedOrUnsupported": "Audio playback continues.",
+    "browserGestures": [
+      "mouse",
+      "touch",
+      "Enter",
+      "Space"
+    ]
+  }
+}

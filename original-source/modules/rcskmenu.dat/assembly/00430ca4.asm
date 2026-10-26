@@ -1,0 +1,2 @@
+; 00430ca4 thunk_FUN_00430ca9
+00430ca4	eb03	JMP 0x00430ca9

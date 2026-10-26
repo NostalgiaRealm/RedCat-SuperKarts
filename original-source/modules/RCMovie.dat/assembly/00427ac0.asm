@@ -1,0 +1,2 @@
+; 00427ac0 AVIFIL32.DLL::AVIStreamRelease
+00427ac0	ff2514804200	JMP dword ptr [0x00428014]

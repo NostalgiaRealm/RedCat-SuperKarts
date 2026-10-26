@@ -1,0 +1,9 @@
+; 0047cee0 FUN_0047cee0
+0047cee0	6a30	PUSH 0x30
+0047cee2	e807190400	CALL 0x004be7ee
+0047cee7	8b4c2408	MOV ECX,dword ptr [ESP + 0x8]
+0047ceeb	8b54240c	MOV EDX,dword ptr [ESP + 0xc]
+0047ceef	83c404	ADD ESP,0x4
+0047cef2	894804	MOV dword ptr [EAX + 0x4],ECX
+0047cef5	89502c	MOV dword ptr [EAX + 0x2c],EDX
+0047cef8	c20800	RET 0x8

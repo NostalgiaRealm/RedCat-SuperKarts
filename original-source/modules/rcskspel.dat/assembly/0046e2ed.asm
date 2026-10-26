@@ -1,0 +1,9 @@
+; 0046e2ed Catch@0046e2ed
+0046e2ed	8b4dec	MOV ECX,dword ptr [EBP + -0x14]
+0046e2f0	8b01	MOV EAX,dword ptr [ECX]
+0046e2f2	ff5004	CALL dword ptr [EAX + 0x4]
+0046e2f5	50	PUSH EAX
+0046e2f6	e8e51b0400	CALL 0x004afee0
+0046e2fb	83c404	ADD ESP,0x4
+0046e2fe	b8dce24600	MOV EAX,0x46e2dc
+0046e303	c3	RET

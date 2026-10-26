@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -9,7 +10,7 @@ try {
   await page.setContent('<button id="start">Start original engine</button>');
   await page.evaluate(async () => {
     const [{NativeRaceAudio}, config, manifest] = await Promise.all([
-      import('/src/native-race-audio.js'), fetch('/assets/config.json').then(r => r.json()),
+      import('/source/native-race-audio.js'), fetch('/assets/config.json').then(r => r.json()),
       fetch('/assets/manifest.json').then(r => r.json()),
     ]);
     window.audioTest = {config, manifest, NativeRaceAudio};

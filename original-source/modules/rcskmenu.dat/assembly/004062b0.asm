@@ -1,0 +1,2 @@
+; 004062b0 KERNEL32.DLL::FindClose
+004062b0	ff2530f34700	JMP dword ptr [0x0047f330]

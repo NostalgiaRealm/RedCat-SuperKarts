@@ -1,0 +1,10 @@
+; 0040fed8 FUN_0040fed8
+0040fed8	8b5004	MOV EDX,dword ptr [EAX + 0x4]
+0040fedb	85d2	TEST EDX,EDX
+0040fedd	740a	JZ 0x0040fee9
+0040fedf	8b5208	MOV EDX,dword ptr [EDX + 0x8]
+0040fee2	92	XCHG EAX,EDX
+0040fee3	e824f8ffff	CALL 0x0040f70c
+0040fee8	c3	RET
+0040fee9	83c8ff	OR EAX,0xffffffff
+0040feec	c3	RET

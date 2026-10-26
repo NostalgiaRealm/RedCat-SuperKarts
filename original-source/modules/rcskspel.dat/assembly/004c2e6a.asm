@@ -1,0 +1,68 @@
+; 004c2e6a FUN_004c2e6a
+004c2e6a	55	PUSH EBP
+004c2e6b	8bec	MOV EBP,ESP
+004c2e6d	51	PUSH ECX
+004c2e6e	51	PUSH ECX
+004c2e6f	833d74676b0000	CMP dword ptr [0x006b6774],0x0
+004c2e76	56	PUSH ESI
+004c2e77	57	PUSH EDI
+004c2e78	7421	JZ 0x004c2e9b
+004c2e7a	ff7524	PUSH dword ptr [EBP + 0x24]
+004c2e7d	ff7520	PUSH dword ptr [EBP + 0x20]
+004c2e80	ff7518	PUSH dword ptr [EBP + 0x18]
+004c2e83	ff7514	PUSH dword ptr [EBP + 0x14]
+004c2e86	ff7510	PUSH dword ptr [EBP + 0x10]
+004c2e89	ff750c	PUSH dword ptr [EBP + 0xc]
+004c2e8c	ff7508	PUSH dword ptr [EBP + 0x8]
+004c2e8f	e890bdffff	CALL 0x004bec24
+004c2e94	83c41c	ADD ESP,0x1c
+004c2e97	85c0	TEST EAX,EAX
+004c2e99	7573	JNZ 0x004c2f0e
+004c2e9b	8b7d1c	MOV EDI,dword ptr [EBP + 0x1c]
+004c2e9e	8d45f8	LEA EAX,[EBP + -0x8]
+004c2ea1	50	PUSH EAX
+004c2ea2	8d45fc	LEA EAX,[EBP + -0x4]
+004c2ea5	50	PUSH EAX
+004c2ea6	57	PUSH EDI
+004c2ea7	ff7520	PUSH dword ptr [EBP + 0x20]
+004c2eaa	ff7518	PUSH dword ptr [EBP + 0x18]
+004c2ead	e89bbeffff	CALL 0x004bed4d
+004c2eb2	83c414	ADD ESP,0x14
+004c2eb5	8bf0	MOV ESI,EAX
+004c2eb7	8b45fc	MOV EAX,dword ptr [EBP + -0x4]
+004c2eba	3b45f8	CMP EAX,dword ptr [EBP + -0x8]
+004c2ebd	734f	JNC 0x004c2f0e
+004c2ebf	3b3e	CMP EDI,dword ptr [ESI]
+004c2ec1	7c43	JL 0x004c2f06
+004c2ec3	3b7e04	CMP EDI,dword ptr [ESI + 0x4]
+004c2ec6	7f3e	JG 0x004c2f06
+004c2ec8	8b460c	MOV EAX,dword ptr [ESI + 0xc]
+004c2ecb	8b4e10	MOV ECX,dword ptr [ESI + 0x10]
+004c2ece	c1e004	SHL EAX,0x4
+004c2ed1	03c1	ADD EAX,ECX
+004c2ed3	8b48f4	MOV ECX,dword ptr [EAX + -0xc]
+004c2ed6	85c9	TEST ECX,ECX
+004c2ed8	7406	JZ 0x004c2ee0
+004c2eda	80790800	CMP byte ptr [ECX + 0x8],0x0
+004c2ede	7526	JNZ 0x004c2f06
+004c2ee0	6a01	PUSH 0x1
+004c2ee2	83c0f0	ADD EAX,-0x10
+004c2ee5	ff7524	PUSH dword ptr [EBP + 0x24]
+004c2ee8	ff7520	PUSH dword ptr [EBP + 0x20]
+004c2eeb	56	PUSH ESI
+004c2eec	6a00	PUSH 0x0
+004c2eee	50	PUSH EAX
+004c2eef	ff7518	PUSH dword ptr [EBP + 0x18]
+004c2ef2	ff7514	PUSH dword ptr [EBP + 0x14]
+004c2ef5	ff7510	PUSH dword ptr [EBP + 0x10]
+004c2ef8	ff750c	PUSH dword ptr [EBP + 0xc]
+004c2efb	ff7508	PUSH dword ptr [EBP + 0x8]
+004c2efe	e80a010000	CALL 0x004c300d
+004c2f03	83c42c	ADD ESP,0x2c
+004c2f06	ff45fc	INC dword ptr [EBP + -0x4]
+004c2f09	83c614	ADD ESI,0x14
+004c2f0c	eba9	JMP 0x004c2eb7
+004c2f0e	5f	POP EDI
+004c2f0f	5e	POP ESI
+004c2f10	c9	LEAVE
+004c2f11	c3	RET

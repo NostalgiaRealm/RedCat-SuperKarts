@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import {getDrivingAnimationRequests, getPlayerLookAnimationRequests,
-  getPlayerAnimationEventRequests, advanceDriverAnimation} from '../src/player-assets.js';
-import {createNativeMeshAnimation} from '../src/asset-animation.js';
+  getPlayerAnimationEventRequests, advanceDriverAnimation} from '../source/player-assets.js';
+import {createNativeMeshAnimation} from '../source/asset-animation.js';
 
 const json = path => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 const fixtures = json('../evidence/native/player-animation-fixtures.json');

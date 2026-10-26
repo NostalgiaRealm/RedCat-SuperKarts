@@ -1,0 +1,3 @@
+; 00473f64 TfrmSelectChar_btnMainStopClick
+00473f64	e803000000	CALL 0x00473f6c
+00473f69	c3	RET

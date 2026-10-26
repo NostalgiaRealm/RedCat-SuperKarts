@@ -1,7 +1,7 @@
 // Test controller only: forecast copies never write actual race state.
 import {copyPlayerForRailForecast,advancePrivateRailFrame,PrivateDynamicContact} from './private-native-contact-forecast.mjs';
-import {tireLateralForce,resistanceForce} from '../../src/simulation/native-forces.js';
-import {selectNativeSector,sampleNativeTrack} from '../../src/simulation/native-track.js';
+import {tireLateralForce,resistanceForce} from '../../source/simulation/native-forces.js';
+import {selectNativeSector,sampleNativeTrack} from '../../source/simulation/native-track.js';
 const wrap=v=>Math.atan2(Math.sin(v),Math.cos(v)),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function project(track,line,b){
   let best=null,offset=0;

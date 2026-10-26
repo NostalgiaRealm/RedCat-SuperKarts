@@ -1,0 +1,2 @@
+; 00406410 KERNEL32.DLL::SetCurrentDirectoryA
+00406410	ff2580f24700	JMP dword ptr [0x0047f280]

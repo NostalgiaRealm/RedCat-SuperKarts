@@ -1,0 +1,2 @@
+; 00406318 KERNEL32.DLL::GetFullPathNameA
+00406318	ff25fcf24700	JMP dword ptr [0x0047f2fc]

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeBonusCombat} from '../src/simulation/native-combat.js';
-import {NativeCharacterVoices} from '../src/simulation/native-character-voice.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {NativeBonusCombat} from '../source/simulation/native-combat.js';
+import {NativeCharacterVoices} from '../source/simulation/native-character-voice.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const read = path => JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const fixture = read('../evidence/native/powerup-sound-flow-fixtures.json');

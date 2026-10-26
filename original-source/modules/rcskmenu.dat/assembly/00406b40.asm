@@ -1,0 +1,2 @@
+; 00406b40 USER32.DLL::ShowCursor
+00406b40	ff25b8f44700	JMP dword ptr [0x0047f4b8]

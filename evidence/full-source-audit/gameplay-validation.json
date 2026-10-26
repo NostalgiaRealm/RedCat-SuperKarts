@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-26",
+  "scope": "Source-only caller/input ordering correction and original course dispatch audit. No full races, full test suite, packages or publication.",
+  "nativeInstructionTraces": 24,
+  "nativeTraceFile": "evidence/native/player-frame-order-fixtures.json",
+  "originalDataAudit": "evidence/full-source-audit/gameplay-dispatch.json",
+  "tests": [
+    {
+      "command": "node --test tests/native-player-frame-order.test.mjs tests/native-jump-composition.test.mjs tests/race-hud-order.test.mjs tests/simulation-native.test.mjs tests/native-analog.test.mjs",
+      "passed": 23,
+      "failed": 0
+    },
+    {
+      "command": "node --test tests/native-player-recurrence.test.mjs tests/simulation-combat.test.mjs tests/native-race-lifecycle.test.mjs",
+      "passed": 18,
+      "failed": 0
+    }
+  ],
+  "sourceHashes": {
+    "src/simulation/native-input.js": "adf5a872488a29ddd30340e97c15a3faf2d409e5ee40d5639f5d76ebeca11856",
+    "src/simulation/native-motion.js": "3292ad9bf72ed972adeb2246b4151d76436b26dd6566a9c988cabf4b7b87f74e",
+    "src/race-simulation.js": "e10d71df8dc3c56408365ee6c71439d9af3fbc15b4edd5ec1eaf0642dea7e1eb",
+    "tools/native-player-frame-order-fixtures.py": "4c85d67c0c70f44be4beedf6854cea5192de32e96ff30ed346fb83950a41bee9",
+    "tools/audit-gameplay-dispatch.py": "1532883095c32093fbab3b381ddf5014d651e987353579f047d54c4a0985674a",
+    "tests/native-player-frame-order.test.mjs": "e160cf4c45181266fa653ba34178e39a7403df6166520e05b2c17bba041faf3e"
+  }
+}

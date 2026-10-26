@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeAIHeadingError, updateNativeAIControls, updateNativeAISpeed, updateNativeAISteering, updateNativeAIRacerMotion } from '../src/simulation/native-ai.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
-import { parseRacerTable } from '../src/simulation/native-tables.js';
+import { nativeAIHeadingError, updateNativeAIControls, updateNativeAISpeed, updateNativeAISteering, updateNativeAIRacerMotion } from '../source/simulation/native-ai.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
+import { parseRacerTable } from '../source/simulation/native-tables.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/ai-fixtures.json', import.meta.url)));
 const inventory = JSON.parse(readFileSync(new URL('../evidence/gameplay/inventory.json', import.meta.url)));
 const tables = [0, 1, 2].map(i => {

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeWeather, getNativeWeatherSpec} from '../src/simulation/native-weather.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeWeather, getNativeWeatherSpec} from '../source/simulation/native-weather.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/weather-fixtures.json', import.meta.url)));
 const config = JSON.parse(fs.readFileSync(new URL('../public/assets/config.json', import.meta.url)));
 

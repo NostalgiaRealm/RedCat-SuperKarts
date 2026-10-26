@@ -2,7 +2,7 @@
 // This writes its own audit artifact; it does not regenerate the matrix or summary.
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import { nativeAdventureQualification } from '../src/simulation/native-adventure.js';
+import { nativeAdventureQualification } from '../source/simulation/native-adventure.js';
 
 const root = new URL('../', import.meta.url);
 const folder = 'evidence/full-race-matrix/';

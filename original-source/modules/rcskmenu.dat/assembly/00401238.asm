@@ -1,0 +1,2 @@
+; 00401238 KERNEL32.DLL::GetFileSize
+00401238	ff25c4f14700	JMP dword ptr [0x0047f1c4]

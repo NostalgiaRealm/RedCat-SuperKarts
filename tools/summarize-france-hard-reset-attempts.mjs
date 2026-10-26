@@ -1,3 +1,4 @@
+// Summarizes frozen historical evidence; src/ keys are the paths recorded then.
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 

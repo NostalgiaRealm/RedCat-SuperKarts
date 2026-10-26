@@ -1,0 +1,2 @@
+; 00406850 USER32.DLL::GetDesktopWindow
+00406850	ff252cf64700	JMP dword ptr [0x0047f62c]

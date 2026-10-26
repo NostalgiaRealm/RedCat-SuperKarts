@@ -61,7 +61,7 @@ try{
     assert.ok(driving.sequences.some(name=>name.includes('steer_')),`character${character} visible lean`);
     await page.screenshot({path:`evidence/animations/character-${character}-driven.png`});
     const events=await page.evaluate(async()=>{
-      const {createDriverAnimation}=await import('/src/player-assets.js');
+      const {createDriverAnimation}=await import('/source/player-assets.js');
       const view=rcsk.viewer,sim=view.simulation,visual=view.playerVisual,index=sim.actors.length-1;
       const results=[];
       for(const callback of [0x4362f0,0x411830,0x411b40,0x411e50,0x412090]){

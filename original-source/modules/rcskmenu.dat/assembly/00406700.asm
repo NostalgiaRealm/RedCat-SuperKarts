@@ -1,0 +1,2 @@
+; 00406700 USER32.DLL::CheckMenuItem
+00406700	ff25d4f64700	JMP dword ptr [0x0047f6d4]

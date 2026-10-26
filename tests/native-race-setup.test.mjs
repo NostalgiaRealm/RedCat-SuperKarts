@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeRaceRoster, nativeRaceGrid, nativeRaceSetup, NativeAIProgress } from '../src/simulation/native-race-setup.js';
-import { createNativeTrack } from '../src/simulation/native-track.js';
+import { nativeRaceRoster, nativeRaceGrid, nativeRaceSetup, NativeAIProgress } from '../source/simulation/native-race-setup.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
 const read = name => JSON.parse(readFileSync(new URL(`../${name}`, import.meta.url)));
 const config = read('public/assets/config.json');
 const tracks = Array.from({ length: 6 }, (_, i) => read(`public/assets/tracks/etappe${i}.json`));

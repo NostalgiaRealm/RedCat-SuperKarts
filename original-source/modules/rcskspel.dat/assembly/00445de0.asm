@@ -1,0 +1,3 @@
+; 00445de0 FUN_00445de0
+00445de0	8b4120	MOV EAX,dword ptr [ECX + 0x20]
+00445de3	c3	RET

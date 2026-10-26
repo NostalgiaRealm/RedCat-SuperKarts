@@ -1,0 +1,6 @@
+; 00479cec TfrmIntro_FormMouseDown
+00479cec	55	PUSH EBP
+00479ced	8bec	MOV EBP,ESP
+00479cef	e8244efbff	CALL 0x0042eb18
+00479cf4	5d	POP EBP
+00479cf5	c20c00	RET 0xc

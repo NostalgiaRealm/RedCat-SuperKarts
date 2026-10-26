@@ -1,0 +1,5 @@
+; 00470d68 TfrmAdventWin_TimerTimer
+00470d68	80b8ec02000000	CMP byte ptr [EAX + 0x2ec],0x0
+00470d6f	7505	JNZ 0x00470d76
+00470d71	e8a2ddfbff	CALL 0x0042eb18
+00470d76	c3	RET

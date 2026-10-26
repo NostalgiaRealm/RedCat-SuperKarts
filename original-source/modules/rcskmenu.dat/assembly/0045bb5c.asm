@@ -1,0 +1,3 @@
+; 0045bb5c FUN_0045bb5c
+0045bb5c	885005	MOV byte ptr [EAX + 0x5],DL
+0045bb5f	c3	RET

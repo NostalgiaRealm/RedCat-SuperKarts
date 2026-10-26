@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -11,9 +12,9 @@ try{
   await mkdir('evidence/race-effects',{recursive:true});
   const shadow=await page.evaluate(async()=>{
     const [{TrackViewer},{KartShadowVisual,FinishFlagVisual},{getPlayerVisualSpec},{createNativeTrack},
-      {setNativeMatrix},THREE,{createNativeMeshMaterial},{nativeObjectRenderOrder}]=await Promise.all([import('/src/world.js'),import('/src/race-visuals.js'),
-      import('/src/player-assets.js'),import('/src/simulation/native-track.js'),import('/src/render-transforms.js'),
-      import('three'),import('/src/asset-materials.js'),import('/src/render-order.js')]);
+      {setNativeMatrix},THREE,{createNativeMeshMaterial},{nativeObjectRenderOrder}]=await Promise.all([import('/source/world.js'),import('/source/race-visuals.js'),
+      import('/source/player-assets.js'),import('/source/simulation/native-track.js'),import('/source/render-transforms.js'),
+      import('three'),import('/source/asset-materials.js'),import('/source/render-order.js')]);
     window.viewer=new TrackViewer(document.querySelector('canvas'));
     viewer.renderer.setSize(960,720,false);await viewer.load(0);viewer.clock.pause();
     const [config,manifest]=await viewer.resources,spec=getPlayerVisualSpec(config,manifest,0,0);

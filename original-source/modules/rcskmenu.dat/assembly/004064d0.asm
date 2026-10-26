@@ -1,0 +1,2 @@
+; 004064d0 GDI32.DLL::CreateFontIndirectA
+004064d0	ff2558f44700	JMP dword ptr [0x0047f458]

@@ -1,0 +1,2 @@
+; 00406a78 USER32.DLL::RemoveMenu
+00406a78	ff251cf54700	JMP dword ptr [0x0047f51c]

@@ -1,0 +1,2 @@
+; 00406740 USER32.DLL::DefWindowProcA
+00406740	ff25b4f64700	JMP dword ptr [0x0047f6b4]

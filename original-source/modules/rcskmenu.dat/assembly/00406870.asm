@@ -1,0 +1,2 @@
+; 00406870 USER32.DLL::GetKeyNameTextA
+00406870	ff251cf64700	JMP dword ptr [0x0047f61c]

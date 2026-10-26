@@ -1,10 +1,11 @@
-# Remaining work — 22 October 2026
+# Remaining work
 
-This audit compares current source, original-file research and retained
-validation records. The initial audit ran no races, tests or builds; its
-23 October follow-up is recorded below. The published source base is
-`ef2d30b5ccdabc260fcc7a628688d51266216cf1`; local corrections are listed below.
-Historical test results retain their recorded source and platform scope.
+This is the maintained list of validation gaps and optional work. The initial
+22 October 2026 audit compared source, original-file research and retained
+records at published base `ef2d30b5ccdabc260fcc7a628688d51266216cf1`; it ran no
+races, tests or builds. Later corrections are dated below. That commit is the
+initial audit baseline, not a claim about the current checkout. Historical
+results retain their recorded source and platform scope.
 
 ## Rendering and test follow-up — 23 October 2026
 
@@ -30,7 +31,7 @@ The `v0.9.0` source update collects the movie-layout correction, HUD renderer,
 Help navigation, redesigned touch controls, menu speech/flow fixes, power-up
 audio audit and test/documentation updates for GitHub and GitLab.
 See the [changelog](../CHANGELOG.md) and [source release notes](releases/v0.9.0.md).
-The [movie CSS](../src/style.css) preserves the complete original 4:3 image;
+The [movie CSS](../source/style.css) preserves the complete original 4:3 image;
 its earlier check covered all 11 movies at six viewport shapes plus pixel checks
 and intro skipping. The subsequent 0.9.0 packaging follow-up publishes Linux,
 Windows and both Mac architectures, with matching payloads, a focused Linux
@@ -41,7 +42,23 @@ The stale setup, settings-location and rendering notes found during this audit
 are corrected in the documentation update accompanying this file. Their
 superseded implementation claims are not additional open gameplay defects.
 
+## Code and documentation follow-up — 26 October 2026
+
+The [efficiency review](code-efficiency.md) combines distributed JavaScript into
+lazy-loaded bundles, reduces redundant runtime work and consolidates current
+documentation without removing historical evidence. Focused source, bundle and
+save-compatibility checks pass, including short drives on all six courses.
+Existing save locations and formats are preserved. This is source maintenance;
+it does not resolve the full-race, native-reference or physical-device gaps below.
+The subsequent [folder separation](runtime-layout.md) makes every normal launch
+use generated runtime files, with editable modules kept in `source/`.
+
 ## Remaining validation
+
+The [26 October original-code comparison](full-source-audit.md) adds the complete
+five-module decompilation reference and fixes newly confirmed menu entry,
+name-release, bonus/engine order and pause/music differences. Its focused
+instruction/browser checks do not replace the broader validation below.
 
 | Priority | Work | Evidence and limits |
 | --- | --- | --- |

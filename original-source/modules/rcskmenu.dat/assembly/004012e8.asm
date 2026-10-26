@@ -1,0 +1,2 @@
+; 004012e8 KERNEL32.DLL::GetThreadLocale
+004012e8	ff2574f14700	JMP dword ptr [0x0047f174]

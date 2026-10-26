@@ -1,0 +1,2 @@
+; 0040d8ce KERNEL32.DLL::TlsSetValue
+0040d8ce	ff2584134100	JMP dword ptr [0x00411384]

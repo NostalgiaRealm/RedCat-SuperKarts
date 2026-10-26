@@ -1,0 +1,3 @@
+; 004ce966 Unwind@004ce966
+004ce966	8d4d94	LEA ECX,[EBP + -0x6c]
+004ce969	e942cbf3ff	JMP 0x0040b4b0

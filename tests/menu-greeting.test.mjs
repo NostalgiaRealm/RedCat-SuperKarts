@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {nativeMenuFirstTime,nativeMainMenuGreeting} from '../src/menu-sound-events.js';
+import {nativeMenuFirstTime,nativeMainMenuGreeting} from '../source/menu-sound-events.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/menu-greeting-fixtures.json',import.meta.url)));
 const config=JSON.parse(fs.readFileSync(new URL('../public/assets/config.json',import.meta.url)));

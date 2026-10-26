@@ -21,8 +21,8 @@ try{
     await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
     await page.locator('#world').click();
     const result=await page.evaluate(async character=>{
-      const {deactivateNativeProjectile}=await import('/src/simulation/native-projectile.js');
-      const {nativeBonusVisual}=await import('/src/simulation/native-bonus.js');
+      const {deactivateNativeProjectile}=await import('/source/simulation/native-projectile.js');
+      const {nativeBonusVisual}=await import('/source/simulation/native-bonus.js');
       const view=rcsk.viewer,sim=view.simulation,audio=view.audio;
       view.clock.pause();await audio.resume();
       // No shipped OMP track places type7. Exercise that supported native

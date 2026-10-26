@@ -1,0 +1,3 @@
+; 004bc69b FUN_004bc69b
+004bc69b	c7013c354d00	MOV dword ptr [ECX],0x4d353c
+004bc6a1	e9ca190000	JMP 0x004be070

@@ -5,10 +5,10 @@ import {createHash} from 'node:crypto';
 
 const output=process.env.RCSK_HUD_TIMING_OUTPUT||'evidence/hud-timing/browser';
 await mkdir(output,{recursive:true});
-const files=['src/main.js','src/input.js','src/driving-view.js','src/race-hud.js',
-  'src/hud-text.js','src/hud-notifications.js','src/hud-gameplay-events.js',
-  'src/race-requester.js','src/native-quit-requester.js','src/style.css',
-  'src/simulation/native-lap-display.js','src/simulation/native-race-lifecycle.js',
+const files=['source/main.js','source/input.js','source/driving-view.js','source/race-hud.js',
+  'source/hud-text.js','source/hud-notifications.js','source/hud-gameplay-events.js',
+  'source/race-requester.js','source/native-quit-requester.js','source/style.css',
+  'source/simulation/native-lap-display.js','source/simulation/native-race-lifecycle.js',
   'public/assets/config.json','tests/hud-timing-browser.mjs'];
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,
   createHash('sha256').update(await readFile(file)).digest('hex')])));

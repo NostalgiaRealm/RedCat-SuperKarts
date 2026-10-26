@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {applyNativeRailContact} from '../src/simulation/native-collision.js';
+import {applyNativeRailContact} from '../source/simulation/native-collision.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/collision-fixtures.json',import.meta.url)));
 for(const precision of [24,53]) test(`Native rail contact response ${precision}-bit`,()=>{
  for(const [i,c] of fixtures.cases.entries()){
@@ -10,7 +10,7 @@ for(const precision of [24,53]) test(`Native rail contact response ${precision}-
   for(const [k,v]of Object.entries(c.expected)) assert.equal(k==='impulse'?result.impulse:state[k],v,`case${i} ${k}`);
  }
 });
-import {nativePointRectangleSweep,nativeRectangleSweep} from '../src/simulation/native-collision.js';
+import {nativePointRectangleSweep,nativeRectangleSweep} from '../source/simulation/native-collision.js';
 const sweeps=JSON.parse(readFileSync(new URL('../evidence/native/sweep-fixtures.json',import.meta.url)));
 for(const precision of [24,53]){
  test(`Native point sweep ${precision}-bit`,()=>{
@@ -28,7 +28,7 @@ for(const precision of [24,53]){
   }
  });
 }
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
 const rails=JSON.parse(readFileSync(new URL('../evidence/native/rail-fixtures.json',import.meta.url)));
 for(const precision of [24,53])test(`Native composed rail sweep ${precision}-bit`,()=>{
  for(const [i,c]of rails.cases.entries()){
@@ -40,7 +40,7 @@ for(const precision of [24,53])test(`Native composed rail sweep ${precision}-bit
   assert.deepEqual(a.contact,e.contact,`case${i} contact`);assert.deepEqual(a.velocityOverride??null,e.velocityOverride,`case${i} override`);
  }
 });
-import {nativeRailRectangle} from '../src/simulation/native-collision.js';
+import {nativeRailRectangle} from '../source/simulation/native-collision.js';
 const railLoads=JSON.parse(readFileSync(new URL('../evidence/native/rail-loader-fixtures.json',import.meta.url)));
 for(const precision of[24,53])test(`Native CMP rail loader ${precision}-bit`,()=>{
  for(const[i,c]of railLoads.cases.entries()){

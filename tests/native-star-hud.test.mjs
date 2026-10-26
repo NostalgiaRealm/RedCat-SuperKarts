@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {createNativeStarHudConfig,getNativeStarHudCommands} from '../src/simulation/native-star-hud.js';
-import {getHudMeshSpec,projectNativeHudPoint} from '../src/hud-mesh.js';
+import {createNativeStarHudConfig,getNativeStarHudCommands} from '../source/simulation/native-star-hud.js';
+import {getHudMeshSpec,projectNativeHudPoint} from '../source/hud-mesh.js';
 
 const read=name=>JSON.parse(fs.readFileSync(new URL('../'+name,import.meta.url)));
 const fixture=read('evidence/native/star-hud-fixtures.json');

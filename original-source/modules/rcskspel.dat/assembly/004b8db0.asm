@@ -1,0 +1,11 @@
+; 004b8db0 FUN_004b8db0
+004b8db0	8b0d20b96a00	MOV ECX,dword ptr [0x006ab920]
+004b8db6	a11cb96a00	MOV EAX,[0x006ab91c]
+004b8dbb	3bc8	CMP ECX,EAX
+004b8dbd	7d0a	JGE 0x004b8dc9
+004b8dbf	8bc1	MOV EAX,ECX
+004b8dc1	41	INC ECX
+004b8dc2	890d20b96a00	MOV dword ptr [0x006ab920],ECX
+004b8dc8	c3	RET
+004b8dc9	83c8ff	OR EAX,0xffffffff
+004b8dcc	c3	RET

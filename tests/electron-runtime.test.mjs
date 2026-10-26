@@ -13,10 +13,13 @@ async function fixture(t,packaged=false){
   const paths=gamePaths({packaged,appPath:workspace,resourcesPath:path.join(workspace,'resources')});
   const put=async(file,data)=>{await mkdir(path.dirname(file),{recursive:true});await writeFile(file,data);};
   const map='{"imports":{"three":"/node_modules/three/build/three.module.js"}}';
-  const html=`<!doctype html><script type="importmap">${map}</script><script type="module" src="/src/main.js"></script>`;
+  const html='<!doctype html><script type="module" src="/src/main.js"></script>';
   await put(path.join(paths.root,'index.html'),html);
-  await put(path.join(paths.root,'src/main.js'),'import * as THREE from "three";');
+  await put(path.join(paths.root,'src/main.js'),'export const bundled=true;');
   await put(path.join(paths.root,'src/style.css'),'body{color:white}');
+  await put(path.join(paths.root,'runtime-manifest.json'),JSON.stringify({format:'rcsk-runtime-v1',entry:'src/main.js',files:['src/main.js','src/style.css','src/chunks/race.js']}));
+  await put(path.join(paths.root,'src/chunks/race.js'),'export const race=true;');
+  await put(path.join(paths.root,'source/main.js'),'export const editable=true;');
   for(const file of ['build/three.module.js','build/three.core.js','examples/jsm/controls/OrbitControls.js'])
     await put(path.join(paths.root,'node_modules/three',file),'export const fixture=true;');
   for(const file of ['ui/forms.json','menu/manifest.json','config.json','manifest.json'])await put(path.join(paths.assetsRoot,file),'{}');
@@ -35,7 +38,7 @@ test('desktop source and packaged paths share origin but resolve their own asset
     const root=await handle(request('/?skipIntro'));
     assert.equal(root.status,200);assert.equal(await root.text(),files.html);
     assert.match(root.headers.get('content-type'),/^text\/html/);
-    for(const route of ['/src/main.js','/src/style.css','/assets/ui/forms.json','/node_modules/three/build/three.core.js','/node_modules/three/examples/jsm/controls/OrbitControls.js']){
+    for(const route of ['/src/main.js','/src/style.css','/assets/ui/forms.json','/src/chunks/race.js']){
       const response=await handle(request(route));assert.equal(response.status,200,route);await response.arrayBuffer();
     }
     const binary=await handle(request('/assets/data/cars0.dat'));
@@ -85,7 +88,7 @@ test('protocol refuses other origins, methods, traversal, private trees and syml
     assert.equal((await handle({url,method:'GET',headers:new Headers()})).status,403,url);
   const post=await handle(request('/',{method:'POST'}));assert.equal(post.status,405);assert.equal(post.headers.get('allow'),'GET, HEAD');
   for(const route of ['/electron/main.mjs','/tools/serve.mjs','/docs/secret.txt','/package.json',
-    '/node_modules/electron/index.js','/node_modules/three/package.json','/assets/.private.json',
+    '/source/main.js','/node_modules/electron/index.js','/node_modules/three/package.json','/node_modules/three/build/three.core.js','/assets/.private.json',
     '/assets/..%2F..%2Fsecret.txt','/assets/%5C..%5Csecret.txt','/assets/invalid%00.png','/src/../secret.txt'])
     assert.equal((await handle(request(route))).status,403,route);
   assert.equal((await handle({url:'rcsk://game/assets/%zz',method:'GET',headers:new Headers()})).status,400);
@@ -119,8 +122,8 @@ test('launcher keeps stable profiles, constrained startup and sandboxed renderer
 });
 
 test('desktop startup identifies absent browser runtime before opening a blank window',async t=>{
-  const files=await fixture(t);await rm(path.join(files.root,'node_modules/three/build/three.core.js'));
+  const files=await fixture(t);await rm(path.join(files.root,'src/chunks/race.js'));
   await assert.rejects(assertGameRuntime(files),error=>{
-    assert.match(error.message,/three\.core\.js/);assert.match(error.message,/npm ci/);return true;
+    assert.match(error.message,/src\/chunks\/race\.js/);assert.match(error.message,/npm run bundle/);return true;
   });
 });

@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {nativeEnvironmentRescueRequired,nativeEnvironmentRescueWaypoint,
   createNativeRescue,updateNativeRescue,nativeRescueNearestSector,
-  nativeRescueDestination} from '../src/simulation/native-rescue.js';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {selectNativeSector} from '../src/simulation/native-track.js';
+  nativeRescueDestination} from '../source/simulation/native-rescue.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {selectNativeSector} from '../source/simulation/native-track.js';
 
 const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/regressions/environment-rescue-fixtures.json',import.meta.url)));

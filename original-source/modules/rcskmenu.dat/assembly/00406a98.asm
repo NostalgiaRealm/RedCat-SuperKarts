@@ -1,0 +1,2 @@
+; 00406a98 USER32.DLL::SendMessageA
+00406a98	ff250cf54700	JMP dword ptr [0x0047f50c]

@@ -1,0 +1,2 @@
+; 00406638 GDI32.DLL::SelectObject
+00406638	ff25a4f34700	JMP dword ptr [0x0047f3a4]

@@ -49,8 +49,8 @@ try{
   await page.reload();await form('TFRMMAIN');
   await check('Outer OK persists MSAA and flight across reload',async()=>{const s=await settings();assert.equal(s.msaaEnabled,true);assert.equal(s.msaaSamples,8);assert.equal(s.freeFlight,true);});
   const previous=await page.evaluate(async()=>{
-    const {readRaceSave,writeRaceSave}=await import('/src/race-save.js');const save=readRaceSave();
-    const {createNativeAdventureProfile}=await import('/src/simulation/native-adventure.js');
+    const {readRaceSave,writeRaceSave}=await import('/source/race-save.js');const save=readRaceSave();
+    const {createNativeAdventureProfile}=await import('/source/simulation/native-adventure.js');
     save.profiles[4]=createNativeAdventureProfile('Bewaren',{slot:4});save.profiles[4].matrix[1][1]=1;save.selectedSlot=4;
     save.boards[2][0]={name:'Beste',character:2,totalRaceMs:123456,bestLapMs:23456,difficulty:2};save.bestTimes.lap_record_e2=23456;
     save.locks=[false,true,true,true,true,true];writeRaceSave(save);return save;

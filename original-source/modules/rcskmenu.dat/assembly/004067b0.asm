@@ -1,0 +1,2 @@
+; 004067b0 USER32.DLL::EnableMenuItem
+004067b0	ff257cf64700	JMP dword ptr [0x0047f67c]

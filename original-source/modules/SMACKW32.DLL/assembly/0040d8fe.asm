@@ -1,0 +1,2 @@
+; 0040d8fe KERNEL32.DLL::GetStdHandle
+0040d8fe	ff255c134100	JMP dword ptr [0x0041135c]

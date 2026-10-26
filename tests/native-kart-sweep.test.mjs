@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/kart-sweep-fixtures.json',import.meta.url)));
 test('dynamic sweeps, paired contact order and player slide match original x86',()=>{

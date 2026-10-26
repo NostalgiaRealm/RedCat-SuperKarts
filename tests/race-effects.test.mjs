@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {getNativeKartShadowSpec, getNativeKartShadowPose} from '../src/kart-shadow.js';
-import {getNativeFinishFlagSpec, NativeFinishFlag} from '../src/finish-flag.js';
+import {getNativeKartShadowSpec, getNativeKartShadowPose} from '../source/kart-shadow.js';
+import {getNativeFinishFlagSpec, NativeFinishFlag} from '../source/finish-flag.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/race-effect-fixtures.json', import.meta.url)));
 const manifest = JSON.parse(fs.readFileSync(new URL('../public/assets/manifest.json', import.meta.url)));
 

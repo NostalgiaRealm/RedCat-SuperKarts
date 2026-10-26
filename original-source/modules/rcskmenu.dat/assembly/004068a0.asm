@@ -1,0 +1,2 @@
+; 004068a0 USER32.DLL::GetMenu
+004068a0	ff2504f64700	JMP dword ptr [0x0047f604]

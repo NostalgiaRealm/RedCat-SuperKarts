@@ -1,6 +1,6 @@
 // Test-driver prediction, not an alternate native NPC implementation.
 // Routes and every future pose are private copies; no AI decisions/RNG run here.
-import {selectNativeSector} from '../../src/simulation/native-track.js';
+import {selectNativeSector} from '../../source/simulation/native-track.js';
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const wrap=v=>Math.atan2(Math.sin(v),Math.cos(v));
 

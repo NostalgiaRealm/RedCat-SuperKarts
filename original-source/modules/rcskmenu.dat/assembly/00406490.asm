@@ -1,0 +1,2 @@
+; 00406490 GDI32.DLL::CombineRgn
+00406490	ff2578f44700	JMP dword ptr [0x0047f478]

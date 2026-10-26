@@ -1,0 +1,2 @@
+; 004068b0 USER32.DLL::GetMenuItemID
+004068b0	ff25fcf54700	JMP dword ptr [0x0047f5fc]

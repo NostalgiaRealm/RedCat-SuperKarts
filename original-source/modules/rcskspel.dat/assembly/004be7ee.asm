@@ -1,0 +1,7 @@
+; 004be7ee operator_new
+004be7ee	6a01	PUSH 0x1
+004be7f0	ff742408	PUSH dword ptr [ESP + 0x8]
+004be7f4	e83e170000	CALL 0x004bff37
+004be7f9	59	POP ECX
+004be7fa	59	POP ECX
+004be7fb	c3	RET

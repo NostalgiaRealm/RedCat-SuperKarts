@@ -1,0 +1,2 @@
+; 004064f8 GDI32.DLL::CreateSolidBrush
+004064f8	ff2544f44700	JMP dword ptr [0x0047f444]

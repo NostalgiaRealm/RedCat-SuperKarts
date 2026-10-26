@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeHudSamplerState} from '../src/simulation/native-hud-sampler.js';
+import {NativeHudSamplerState} from '../source/simulation/native-hud-sampler.js';
 
 const fixture=JSON.parse(fs.readFileSync(new URL(
   '../evidence/native/hud-sampler-fixtures.json',import.meta.url)));

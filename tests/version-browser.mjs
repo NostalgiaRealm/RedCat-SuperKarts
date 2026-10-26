@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {chromium} from 'playwright';
-import {GAME_VERSION} from '../src/version.js';
+import {GAME_VERSION} from '../source/version.js';
 
 const pkg=JSON.parse(await readFile('package.json','utf8'));
 const lock=JSON.parse(await readFile('package-lock.json','utf8'));
@@ -52,7 +52,7 @@ try{
 finally{
   await browser.close();
   report.sha256={};
-  for(const file of ['package.json','package-lock.json','src/version.js','src/main.js','src/style.css',
+  for(const file of ['package.json','package-lock.json','source/version.js','source/main.js','source/style.css',
     'tools/sync-version.mjs','tests/version-browser.mjs','CHANGELOG.md','docs/releases/v0.9.0.md']){
     report.sha256[file]=createHash('sha256').update(await readFile(file)).digest('hex');
   }

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {calculateNativePlayerForces} from '../src/simulation/native-player.js';
-import {integrateNativeEuler, quantizeNativePlanarVelocity} from '../src/simulation/native-integrator.js';
-import {parsePhysicsTable} from '../src/simulation/native-tables.js';
+import {calculateNativePlayerForces} from '../source/simulation/native-player.js';
+import {integrateNativeEuler, quantizeNativePlanarVelocity} from '../source/simulation/native-integrator.js';
+import {parsePhysicsTable} from '../source/simulation/native-tables.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/gameplay/native-player-recurrence.json', import.meta.url)));
 const tables = [0, 1, 2].map(i => parsePhysicsTable(fs.readFileSync(
   new URL(`../public/assets/physics/phys${i}.dat`, import.meta.url))));

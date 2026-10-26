@@ -1,0 +1,8 @@
+; 0041cdec FUN_0041cdec
+0041cdec	8bc8	MOV ECX,EAX
+0041cdee	8b4120	MOV EAX,dword ptr [ECX + 0x20]
+0041cdf1	8b4020	MOV EAX,dword ptr [EAX + 0x20]
+0041cdf4	99	CDQ
+0041cdf5	33c2	XOR EAX,EDX
+0041cdf7	2bc2	SUB EAX,EDX
+0041cdf9	c3	RET

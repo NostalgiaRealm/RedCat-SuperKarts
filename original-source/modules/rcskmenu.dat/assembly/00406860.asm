@@ -1,0 +1,2 @@
+; 00406860 USER32.DLL::GetForegroundWindow
+00406860	ff2524f64700	JMP dword ptr [0x0047f624]

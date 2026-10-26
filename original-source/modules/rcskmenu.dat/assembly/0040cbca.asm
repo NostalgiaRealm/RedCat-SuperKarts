@@ -1,0 +1,14 @@
+; 0040cbca FUN_0040cbca
+0040cbca	33c0	XOR EAX,EAX
+0040cbcc	33d2	XOR EDX,EDX
+0040cbce	ac	LODSB ESI
+0040cbcf	2c3a	SUB AL,0x3a
+0040cbd1	040a	ADD AL,0xa
+0040cbd3	730f	JNC 0x0040cbe4
+0040cbd5	da0d50c34000	FIMUL dword ptr [0x0040c350]
+0040cbdb	8945fc	MOV dword ptr [EBP + -0x4],EAX
+0040cbde	da45fc	FIADD dword ptr [EBP + -0x4]
+0040cbe1	42	INC EDX
+0040cbe2	ebea	JMP 0x0040cbce
+0040cbe4	4e	DEC ESI
+0040cbe5	c3	RET

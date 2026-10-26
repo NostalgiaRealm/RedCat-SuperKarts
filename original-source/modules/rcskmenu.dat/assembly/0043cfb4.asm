@@ -1,0 +1,14 @@
+; 0043cfb4 FUN_0043cfb4
+0043cfb4	53	PUSH EBX
+0043cfb5	8bd8	MOV EBX,EAX
+0043cfb7	8b4338	MOV EAX,dword ptr [EBX + 0x38]
+0043cfba	8b10	MOV EDX,dword ptr [EAX]
+0043cfbc	ff5248	CALL dword ptr [EDX + 0x48]
+0043cfbf	85c0	TEST EAX,EAX
+0043cfc1	740d	JZ 0x0043cfd0
+0043cfc3	8b4338	MOV EAX,dword ptr [EBX + 0x38]
+0043cfc6	8b10	MOV EDX,dword ptr [EAX]
+0043cfc8	ff5248	CALL dword ptr [EDX + 0x48]
+0043cfcb	e840a00000	CALL 0x00447010
+0043cfd0	5b	POP EBX
+0043cfd1	c3	RET

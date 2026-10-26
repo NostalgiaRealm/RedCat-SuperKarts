@@ -1,0 +1,2 @@
+; 0040d8c2 KERNEL32.DLL::VirtualFree
+0040d8c2	ff258c134100	JMP dword ptr [0x0041138c]

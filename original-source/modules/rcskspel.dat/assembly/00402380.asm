@@ -1,0 +1,6 @@
+; 00402380 FUN_00402380
+00402380	8bc1	MOV EAX,ECX
+00402382	c700ffffffff	MOV dword ptr [EAX],0xffffffff
+00402388	c74004ffffffff	MOV dword ptr [EAX + 0x4],0xffffffff
+0040238f	c7400800000000	MOV dword ptr [EAX + 0x8],0x0
+00402396	c3	RET

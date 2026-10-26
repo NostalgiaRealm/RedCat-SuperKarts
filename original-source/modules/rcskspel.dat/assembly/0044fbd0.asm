@@ -1,0 +1,3 @@
+; 0044fbd0 FUN_0044fbd0
+0044fbd0	8d4104	LEA EAX,[ECX + 0x4]
+0044fbd3	c3	RET

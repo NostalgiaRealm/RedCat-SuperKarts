@@ -1,0 +1,4 @@
+; 00460b78 TfrmRequester_btnOkClick
+00460b78	c680d402000004	MOV byte ptr [EAX + 0x2d4],0x4
+00460b7f	e894dffcff	CALL 0x0042eb18
+00460b84	c3	RET

@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { NativeRandom, collectNativeBonus, advanceNativePickup, applyNativeTurbo, nativeBonusOverlap,
   nativeEnabledBonuses, nativeCanCollectBonus, NativeBonusPickups, nativeTrackPickups,
-  nativeBonusParameters, updateNativeOwnedBonusVisual } from '../src/simulation/native-bonus.js';
-import { SimulationClock } from '../src/simulation/clock.js';
+  nativeBonusParameters, updateNativeOwnedBonusVisual } from '../source/simulation/native-bonus.js';
+import { SimulationClock } from '../source/simulation/clock.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-bonus-fixtures.json', import.meta.url)));
 const config = JSON.parse(readFileSync(new URL('../public/assets/config.json', import.meta.url)))['game.ini'].bonus_data;
 

@@ -1,0 +1,6 @@
+; 004c9bcf FUN_004c9bcf
+004c9bcf	833dc8696b0000	CMP dword ptr [0x006b69c8],0x0
+004c9bd6	750b	JNZ 0x004c9be3
+004c9bd8	e807000000	CALL 0x004c9be4
+004c9bdd	ff05c8696b00	INC dword ptr [0x006b69c8]
+004c9be3	c3	RET

@@ -1,0 +1,2 @@
+; 00406b68 USER32.DLL::TrackPopupMenu
+00406b68	ff25a4f44700	JMP dword ptr [0x0047f4a4]

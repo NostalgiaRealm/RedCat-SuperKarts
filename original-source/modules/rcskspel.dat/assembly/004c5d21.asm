@@ -1,0 +1,9 @@
+; 004c5d21 FUN_004c5d21
+004c5d21	50	PUSH EAX
+004c5d22	83ec2c	SUB ESP,0x2c
+004c5d25	db7c240c	FSTP extended double ptr [ESP + 0xc]
+004c5d29	db3c24	FSTP extended double ptr [ESP]
+004c5d2c	e8fff7ffff	CALL 0x004c5530
+004c5d31	83c42c	ADD ESP,0x2c
+004c5d34	58	POP EAX
+004c5d35	c3	RET

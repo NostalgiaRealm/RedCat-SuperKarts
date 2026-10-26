@@ -1,9 +1,9 @@
 /** Read-only control-driven France contact capture; no simulation state writes. */
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
 import {RouteTestDriver} from '../tests/helpers/route-test-driver.mjs';
 const read=async path=>JSON.parse(await fs.readFile(new URL(`../public/assets/${path}`,import.meta.url)));
 const [config,manifest,cars,track]=await Promise.all(['config.json','manifest.json','cars.json','tracks/etappe3.json'].map(read));

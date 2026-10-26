@@ -1,0 +1,4 @@
+; 00458eac FUN_00458eac
+00458eac	83e27f	AND EDX,0x7f
+00458eaf	8b449004	MOV EAX,dword ptr [EAX + EDX*0x4 + 0x4]
+00458eb3	c3	RET

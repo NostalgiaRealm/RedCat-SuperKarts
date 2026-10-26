@@ -1,0 +1,3 @@
+; 0044cf60 FUN_0044cf60
+0044cf60	8b4174	MOV EAX,dword ptr [ECX + 0x74]
+0044cf63	c3	RET

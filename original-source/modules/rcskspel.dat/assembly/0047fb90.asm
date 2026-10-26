@@ -1,0 +1,4 @@
+; 0047fb90 FUN_0047fb90
+0047fb90	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0047fb94	89416c	MOV dword ptr [ECX + 0x6c],EAX
+0047fb97	c20400	RET 0x4

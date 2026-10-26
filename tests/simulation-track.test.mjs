@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createNativeTrack, sampleNativeTrack } from '../src/simulation/native-track.js';
-import { nativePlayerStart } from '../src/simulation/native-start.js';
+import { createNativeTrack, sampleNativeTrack } from '../source/simulation/native-track.js';
+import { nativePlayerStart } from '../source/simulation/native-start.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-track-fixtures.json', import.meta.url)));
 
 test('960 sector and triangle selections match native instructions on all six original tracks', () => {

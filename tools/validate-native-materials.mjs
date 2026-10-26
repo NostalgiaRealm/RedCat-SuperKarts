@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {writeFile,mkdir} from 'node:fs/promises';
@@ -7,10 +8,10 @@ try{
   const page=await browser.newPage();
   const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+'/assets/manifest.json');
-  await page.setContent('<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js"}}</script>');
+  await page.setContent('<script type="importmap">{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}</script>');
   const checks=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {createNativeMeshMaterial,applyNativeByteColorPipeline}=await import('/src/asset-materials.js');
+    const {createNativeMeshMaterial,applyNativeByteColorPipeline}=await import('/source/asset-materials.js');
     const renderer=new THREE.WebGLRenderer({alpha:false,antialias:false,preserveDrawingBuffer:true});
     renderer.setSize(8,8);renderer.outputColorSpace=THREE.SRGBColorSpace;
     // A deliberately non-native renderer default must not tone-map these assets.

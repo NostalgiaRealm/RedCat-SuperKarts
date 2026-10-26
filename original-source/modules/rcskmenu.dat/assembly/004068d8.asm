@@ -1,0 +1,2 @@
+; 004068d8 USER32.DLL::GetParent
+004068d8	ff25e8f54700	JMP dword ptr [0x0047f5e8]

@@ -1,0 +1,6 @@
+; 004cdc15 Unwind@004cdc15
+004cdc15	8b45e4	MOV EAX,dword ptr [EBP + -0x1c]
+004cdc18	50	PUSH EAX
+004cdc19	e832e5feff	CALL 0x004bc150
+004cdc1e	59	POP ECX
+004cdc1f	c3	RET

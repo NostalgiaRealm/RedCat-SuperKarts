@@ -1,0 +1,2 @@
+; 004069d8 USER32.DLL::LoadCursorA
+004069d8	ff256cf54700	JMP dword ptr [0x0047f56c]

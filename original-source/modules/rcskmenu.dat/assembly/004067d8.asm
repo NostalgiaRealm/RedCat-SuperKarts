@@ -1,0 +1,2 @@
+; 004067d8 USER32.DLL::EnumThreadWindows
+004067d8	ff2568f64700	JMP dword ptr [0x0047f668]

@@ -1,0 +1,3 @@
+; 0041efb0 FUN_0041efb0
+0041efb0	8d4121	LEA EAX,[ECX + 0x21]
+0041efb3	c3	RET

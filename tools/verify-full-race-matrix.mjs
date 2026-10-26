@@ -3,8 +3,8 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
-import {nativeAdventureQualification} from '../src/simulation/native-adventure.js';
-import {nativeRaceSettings} from '../src/simulation/native-race.js';
+import {nativeAdventureQualification} from '../source/simulation/native-adventure.js';
+import {nativeRaceSettings} from '../source/simulation/native-race.js';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const base='evidence/full-race-matrix';
@@ -14,7 +14,9 @@ const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const digest=file=>sha(read(file));
 const files=directory=>fs.readdirSync(path.join(root,directory),{withFileTypes:true})
   .flatMap(entry=>entry.isDirectory()?files(`${directory}/${entry.name}`):[`${directory}/${entry.name}`]).sort();
-const runtime=Object.fromEntries(['index.html',...files('src')].map(file=>[file,digest(file)]));
+// Compare authored modules, not generated bundles: the headless driving harness
+// executes source/ directly. Older src/ evidence intentionally fails this check.
+const runtime=Object.fromEntries(files('source').map(file=>[file,digest(file)]));
 const config=json('public/assets/config.json');
 const candidates=new Map(),attempts=[],rejectedReports=[];
 for(const file of files(base).filter(file=>file.endsWith('.json'))){
@@ -23,7 +25,7 @@ for(const file of files(base).filter(file=>file.endsWith('.json'))){
   if(report.format!=='superkarts-control-only-races-v1'||!report.completedAt)continue;
   const source=report.sourceAtStart??{};
   const changedRuntime=Object.keys(runtime).filter(file=>file!=='index.html'&&source[file]!==runtime[file]);
-  const changedTest=Object.keys(source).filter(file=>!file.startsWith('src/'))
+  const changedTest=Object.keys(source).filter(file=>!file.startsWith('source/'))
     .filter(file=>!fs.existsSync(path.join(root,file))||digest(file)!==source[file]);
   const changedAssets=Object.entries(report.assetSha256??{})
     .filter(([file,hash])=>digest(`public/assets/${file}`)!==hash).map(([file])=>file);
@@ -57,9 +59,9 @@ for(const file of files(base).filter(file=>file.endsWith('.json'))){
   }
   const missingRecordedCounters=report.runs.some(run=>
     !Number.isInteger(run.opponents)||!run.events||!Array.isArray(run.lapEvents));
-  // The shipped main loop caps the whole update at 40 Hz, and the browser
-  // deliberately uses its 25 ms reference cadence. Faster standalone kernel
-  // experiments are useful diagnostics, but cannot prove browser completion.
+  // These deterministic driving records use a 25 ms reference cadence. The
+  // game's native-style update gate can use longer elapsed steps while rendering
+  // stays unlocked; this fixed-step evidence does not prove every browser cadence.
   const differentCadence=report.cadenceMs!==25;
   const valid=changedRuntime.length===0&&changedTest.length===0&&changedAssets.length===0
     &&missingAssetHashes.length===0&&missingDependencyHashes.length===0&&invalidInputHashes.length===0

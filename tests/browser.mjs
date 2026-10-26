@@ -151,7 +151,7 @@ try{
   await check('orientation changes return to original landscape layout',()=>{});
   // Actual multi-contact touch dispatch on a separate explicit input harness.
   await page.evaluate(async()=>{
-    const {InputController}=await import('/src/input.js');window.touchTest=new InputController();
+    const {InputController}=await import('/source/input.js');window.touchTest=new InputController();
     const a=document.createElement('button'),b=document.createElement('button');
     a.id='touch-a';b.id='touch-b';a.textContent='Gas';b.textContent='Links';
     a.style.cssText='position:fixed;left:20px;top:100px;width:100px;height:100px;z-index:100';b.style.cssText='position:fixed;left:200px;top:100px;width:100px;height:100px;z-index:100';

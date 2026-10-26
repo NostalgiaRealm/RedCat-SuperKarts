@@ -1,0 +1,5 @@
+; 00460f00 TfrmRequester_FormShow
+00460f00	8b90ec020000	MOV EDX,dword ptr [EAX + 0x2ec]
+00460f06	8b80e4020000	MOV EAX,dword ptr [EAX + 0x2e4]
+00460f0c	e86be7fdff	CALL 0x0043f67c
+00460f11	c3	RET

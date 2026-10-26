@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { parseRacerTable, applyNativeRaceTypeTable } from '../src/simulation/native-tables.js';
+import { parseRacerTable, applyNativeRaceTypeTable } from '../source/simulation/native-tables.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/ai-difficulty-fixtures.json',import.meta.url)));
 const tables=Array.from({length:3},(_,i)=>parseRacerTable(new Uint8Array(readFileSync(new URL(`../public/assets/racer-tables/cars${i}.dat`,import.meta.url)))));
 test('original duel-race difficulty modifier changes precisely the first ten records of each shipped table',()=>{

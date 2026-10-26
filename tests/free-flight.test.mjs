@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {advanceFreeFlight,roadFlightPose} from '../src/simulation/free-flight.js';
-import {InputState,InputController} from '../src/input.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {advanceFreeFlight,roadFlightPose} from '../source/simulation/free-flight.js';
+import {InputState,InputController} from '../source/input.js';
 
 const read=path=>fs.readFileSync(new URL('../'+path,import.meta.url));
 const json=path=>JSON.parse(read(path));

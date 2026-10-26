@@ -1,0 +1,4 @@
+; 00477ff0 FUN_00477ff0
+00477ff0	8b01	MOV EAX,dword ptr [ECX]
+00477ff2	894104	MOV dword ptr [ECX + 0x4],EAX
+00477ff5	c3	RET

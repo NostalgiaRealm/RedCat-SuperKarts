@@ -1,0 +1,25 @@
+; 004c17ce FUN_004c17ce
+004c17ce	55	PUSH EBP
+004c17cf	8bec	MOV EBP,ESP
+004c17d1	83ec18	SUB ESP,0x18
+004c17d4	dd05a83a4d00	FLD double ptr [0x004d3aa8]
+004c17da	dd5df8	FSTP double ptr [EBP + -0x8]
+004c17dd	dd05a03a4d00	FLD double ptr [0x004d3aa0]
+004c17e3	dd5df0	FSTP double ptr [EBP + -0x10]
+004c17e6	dd45f0	FLD double ptr [EBP + -0x10]
+004c17e9	dc75f8	FDIV double ptr [EBP + -0x8]
+004c17ec	dc4df8	FMUL double ptr [EBP + -0x8]
+004c17ef	dc6df0	FSUBR double ptr [EBP + -0x10]
+004c17f2	dd5de8	FSTP double ptr [EBP + -0x18]
+004c17f5	dd45e8	FLD double ptr [EBP + -0x18]
+004c17f8	dc1de0244d00	FCOMP double ptr [0x004d24e0]
+004c17fe	dfe0	FNSTSW AX
+004c1800	9e	SAHF
+004c1801	7605	JBE 0x004c1808
+004c1803	6a01	PUSH 0x1
+004c1805	58	POP EAX
+004c1806	c9	LEAVE
+004c1807	c3	RET
+004c1808	33c0	XOR EAX,EAX
+004c180a	c9	LEAVE
+004c180b	c3	RET

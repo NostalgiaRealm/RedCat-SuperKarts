@@ -1,0 +1,2 @@
+; 0046bbc0 FUN_0046bbc0
+0046bbc0	c3	RET

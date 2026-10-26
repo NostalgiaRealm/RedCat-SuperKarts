@@ -1,0 +1,3 @@
+; 00412a70 FUN_00412a70
+00412a70	b8fdffffff	MOV EAX,0xfffffffd
+00412a75	c3	RET

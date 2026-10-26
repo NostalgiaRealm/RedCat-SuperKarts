@@ -1,0 +1,3 @@
+; 004cd190 Unwind@004cd190
+004cd190	8d4da4	LEA ECX,[EBP + -0x5c]
+004cd193	e918e3f3ff	JMP 0x0040b4b0

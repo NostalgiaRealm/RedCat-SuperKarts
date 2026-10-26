@@ -1,0 +1,2 @@
+; 004069a8 USER32.DLL::IsWindow
+004069a8	ff2584f54700	JMP dword ptr [0x0047f584]

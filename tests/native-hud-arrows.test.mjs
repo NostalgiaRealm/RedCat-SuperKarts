@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeHudArrows,NATIVE_ARROW_ALPHA} from '../src/simulation/native-hud-arrows.js';
-import {NativeRaceState} from '../src/simulation/native-race.js';
+import {NativeHudArrows,NATIVE_ARROW_ALPHA} from '../source/simulation/native-hud-arrows.js';
+import {NativeRaceState} from '../source/simulation/native-race.js';
 
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/hud-arrows-fixtures.json',import.meta.url)));
 test('Original arrow state, visibility and tint match both x87 precision captures',()=>{

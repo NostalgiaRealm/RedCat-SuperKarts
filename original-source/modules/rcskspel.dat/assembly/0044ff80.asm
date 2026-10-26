@@ -1,0 +1,3 @@
+; 0044ff80 FUN_0044ff80
+0044ff80	8b4104	MOV EAX,dword ptr [ECX + 0x4]
+0044ff83	c3	RET

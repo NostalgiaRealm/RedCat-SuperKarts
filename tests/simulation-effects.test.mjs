@@ -1,8 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { updateNativeHitEffect, initializeNativeHitEffect } from '../src/simulation/native-bonus-effects.js';
-import { NativeRandom } from '../src/simulation/native-random.js';
+import { updateNativeHitEffect, initializeNativeHitEffect } from '../source/simulation/native-bonus-effects.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
 
 const fixtures = JSON.parse(await readFile(new URL('../evidence/gameplay/native-effect-fixtures.json', import.meta.url)));
 

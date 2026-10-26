@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { integrateNativeEuler, nativeTrigTable, nativeIntegrationSchedule } from '../src/simulation/native-integrator.js';
+import { integrateNativeEuler, nativeTrigTable, nativeIntegrationSchedule } from '../source/simulation/native-integrator.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/integrator-fixtures.json', import.meta.url)));
 for (const precision of [24,53]) {
   test(`Native ${precision}-bit trig tables match original x86 generator`, () => {

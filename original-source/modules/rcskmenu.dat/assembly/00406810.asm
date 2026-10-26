@@ -1,0 +1,2 @@
+; 00406810 USER32.DLL::GetCapture
+00406810	ff254cf64700	JMP dword ptr [0x0047f64c]

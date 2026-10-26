@@ -1,0 +1,3 @@
+; 004bd6fd FUN_004bd6fd
+004bd6fd	8bc1	MOV EAX,ECX
+004bd6ff	c20800	RET 0x8

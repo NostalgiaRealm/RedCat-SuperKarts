@@ -1,0 +1,11 @@
+; 004777a0 CRect::CRect
+004777a0	8b542408	MOV EDX,dword ptr [ESP + 0x8]
+004777a4	8bc1	MOV EAX,ECX
+004777a6	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+004777aa	8908	MOV dword ptr [EAX],ECX
+004777ac	8b4c240c	MOV ECX,dword ptr [ESP + 0xc]
+004777b0	895004	MOV dword ptr [EAX + 0x4],EDX
+004777b3	8b542410	MOV EDX,dword ptr [ESP + 0x10]
+004777b7	894808	MOV dword ptr [EAX + 0x8],ECX
+004777ba	89500c	MOV dword ptr [EAX + 0xc],EDX
+004777bd	c21000	RET 0x10

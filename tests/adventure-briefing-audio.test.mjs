@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {nativeAdventureBriefingSound} from '../src/menu-sound-events.js';
+import {nativeAdventureBriefingSound} from '../source/menu-sound-events.js';
 
 const read=async path=>JSON.parse(await readFile(new URL(path,import.meta.url)));
 const fixture=await read('../evidence/native/adventure-briefing-audio-fixtures.json');

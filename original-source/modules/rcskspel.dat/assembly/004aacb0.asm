@@ -1,0 +1,5 @@
+; 004aacb0 FUN_004aacb0
+004aacb0	68c0ac4a00	PUSH 0x4aacc0
+004aacb5	e89a390100	CALL 0x004be654
+004aacba	59	POP ECX
+004aacbb	c3	RET

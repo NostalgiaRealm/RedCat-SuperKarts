@@ -1,0 +1,15 @@
+; 0046fdc4 TfrmSelectCountry_btnLeftClick
+0046fdc4	53	PUSH EBX
+0046fdc5	8bd8	MOV EBX,EAX
+0046fdc7	80bb3803000000	CMP byte ptr [EBX + 0x338],0x0
+0046fdce	741d	JZ 0x0046fded
+0046fdd0	b201	MOV DL,0x1
+0046fdd2	b030	MOV AL,0x30
+0046fdd4	e88fc8feff	CALL 0x0045c668
+0046fdd9	fe8b38030000	DEC byte ptr [EBX + 0x338]
+0046fddf	8bc3	MOV EAX,EBX
+0046fde1	e866faffff	CALL 0x0046f84c
+0046fde6	8bc3	MOV EAX,EBX
+0046fde8	e8d7feffff	CALL 0x0046fcc4
+0046fded	5b	POP EBX
+0046fdee	c3	RET

@@ -1,0 +1,2 @@
+; 0041597c COMCTL32.DLL::ImageList_GetBkColor
+0041597c	ff2554f74700	JMP dword ptr [0x0047f754]

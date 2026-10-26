@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativePlayerMotion } from '../src/simulation/native-motion.js';
-import { SimulationClock } from '../src/simulation/clock.js';
-import { parsePhysicsTable } from '../src/simulation/native-tables.js';
-import { createNativeTrack } from '../src/simulation/native-track.js';
-import { nativePlayerStart } from '../src/simulation/native-start.js';
-import { NativeRailCollision } from '../src/simulation/native-collision.js';
+import { NativePlayerMotion } from '../source/simulation/native-motion.js';
+import { SimulationClock } from '../source/simulation/clock.js';
+import { parsePhysicsTable } from '../source/simulation/native-tables.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
+import { nativePlayerStart } from '../source/simulation/native-start.js';
+import { NativeRailCollision } from '../source/simulation/native-collision.js';
 
 const data = JSON.parse(readFileSync(new URL('../evidence/gameplay/inventory.json', import.meta.url)));
 const source = data.binaryTables.find(table => table.source === 'Phys1.dat');

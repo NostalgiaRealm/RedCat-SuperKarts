@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {nativeSceneryIsSolid, nativeSceneryPhysics} from '../src/simulation/native-scenery-contact.js';
+import {nativeSceneryIsSolid, nativeSceneryPhysics} from '../source/simulation/native-scenery-contact.js';
 
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const read=name=>JSON.parse(fs.readFileSync(path.join(root,'public/assets',name),'utf8'));

@@ -1,0 +1,122 @@
+/*
+ * FUN_00451810 at 00451810
+ * undefined FUN_00451810(void)
+ * Address ranges: 00451810-00451f5a
+ * Origin: Ghidra decompiler; identifiers and types may be inferred.
+ */
+
+void __thiscall FUN_00451810(undefined4 *param_1,undefined4 param_2,undefined1 *param_3)
+
+{
+  char cVar1;
+  undefined1 *puVar2;
+  undefined4 uVar3;
+  uint uVar4;
+  void *local_c;
+  undefined1 *puStack_8;
+  undefined4 local_4;
+  
+  puStack_8 = &LAB_004cdc4c;
+  local_c = ExceptionList;
+  local_4 = 0;
+  ExceptionList = &local_c;
+  FUN_004afce0(s_CBonusController__LoadIniFile_004f1584);
+  puVar2 = &DAT_004d2404;
+  if (param_3 != (undefined1 *)0x0) {
+    puVar2 = param_3;
+  }
+  FUN_004b1d60(puVar2);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_MAX_BONUS_LEVEL_004f15a4);
+  FUN_0044fdf0(uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET0_SPEED_004f15b4);
+  FUN_004568d0(1,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET1_SPEED_004f15c4);
+  FUN_004568d0(2,uVar3);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET0_LIFETIME_004f15d4);
+  FUN_00456780(2,1,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET1_LIFETIME_004f15e8);
+  FUN_00456780(2,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET2_LIFETIME_004f15fc);
+  FUN_00456780(2,3,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BULLET3_LIFETIME_004f1610);
+  FUN_00456780(1,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_WEAPON_INVINCE_TIME_004f1624);
+  FUN_00456980((float)uVar4 * 0.001);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_WEAPON0_LOCK_RANGE_004f1638);
+  FUN_00456920(1,1,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_WEAPON1_LOCK_RANGE_004f164c);
+  FUN_00456920(1,2,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_WEAPON2_LOCK_RANGE_004f1660);
+  FUN_00456920(1,3,uVar3);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_FLY_TIME0_004f1674);
+  FUN_00456710(2,1,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_FLY_TIME1_004f1688);
+  FUN_00456710(2,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_FLY_TIME2_004f169c);
+  FUN_00456710(2,3,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_STICK_TIME0_004f16b0);
+  FUN_00456710(4,1,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_STICK_TIME1_004f16c0);
+  FUN_00456710(4,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_STICK_TIME2_004f16d0);
+  FUN_00456710(4,3,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_TURN_TIME0_004f16e0);
+  FUN_00456710(3,1,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_TURN_TIME1_004f16f0);
+  FUN_00456710(3,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_TURN_TIME2_004f1700);
+  FUN_00456710(3,3,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_ROCKET_TURN_TIME0_004f1710);
+  FUN_00456710(1,1,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_ROCKET_TURN_TIME1_004f1724);
+  FUN_00456710(1,2,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_ROCKET_TURN_TIME2_004f1738);
+  FUN_00456710(1,3,(float)uVar4 * 0.001);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_SPEEDFACTOR00_004f174c);
+  FUN_004567f0(4,1,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_SPEEDFACTOR10_004f1760);
+  FUN_004567f0(4,2,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_SPEEDFACTOR11_004f1774);
+  FUN_00456860(4,2,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_SPEEDFACTOR20_004f1788);
+  FUN_004567f0(4,3,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_GUM_SPEEDFACTOR21_004f179c);
+  FUN_00456860(4,3,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_SPEED_FACTOR0_004f17b0);
+  FUN_00456860(2,1,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_SPEED_FACTOR1_004f17c8);
+  FUN_00456860(2,2,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BUBBLE_SPEED_FACTOR2_004f17e0);
+  FUN_00456860(2,3,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_SPEED_FACTOR0_004f17f8);
+  FUN_00456860(3,1,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_SPEED_FACTOR1_004f180c);
+  FUN_00456860(3,2,(float)uVar4 * 0.01);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_OIL_SPEED_FACTOR2_004f1820);
+  FUN_00456860(3,3,(float)uVar4 * 0.01);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_WEAPON_ROTATION_SPEED_004f1834);
+  FUN_004504c0(uVar3);
+  uVar4 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BONUS_RESPAWN_TIME_004f184c);
+  FUN_00453f80((float)uVar4 * 0.001);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BONUS_TURBO_FACTOR0_004f1860);
+  FUN_00453da0(1,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BONUS_TURBO_FACTOR1_004f1874);
+  FUN_00453da0(2,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BONUS_TURBO_FACTOR2_004f1888);
+  FUN_00453da0(3,uVar3);
+  uVar3 = FUN_004b1ed0(s_BONUS_DATA_004f1220,s_BONUS_TIMEOUT_PICKUP_NEXT_004f189c);
+  *param_1 = uVar3;
+  FUN_00430dd0(uVar3,0x3c,5000,s_D__work_rcsk_Code_game_Bon_Main__004f18b8,0x2e1);
+  if (param_3 != (undefined1 *)0x0) {
+    cVar1 = param_3[-1];
+    if ((cVar1 != '\0') && (cVar1 != -1)) {
+      param_3[-1] = cVar1 + -1;
+      ExceptionList = local_c;
+      return;
+    }
+    FUN_004bc150(param_3 + -1);
+  }
+  ExceptionList = local_c;
+  return;
+}
+

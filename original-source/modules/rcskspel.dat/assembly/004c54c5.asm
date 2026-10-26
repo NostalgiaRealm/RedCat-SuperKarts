@@ -1,0 +1,15 @@
+; 004c54c5 __ctrandisp1
+004c54c5	55	PUSH EBP
+004c54c6	8bec	MOV EBP,ESP
+004c54c8	81c460fdffff	ADD ESP,0xfffffd60
+004c54ce	53	PUSH EBX
+004c54cf	ff750c	PUSH dword ptr [EBP + 0xc]
+004c54d2	ff7508	PUSH dword ptr [EBP + 0x8]
+004c54d5	e817000000	CALL 0x004c54f1
+004c54da	83c408	ADD ESP,0x8
+004c54dd	9bd9bd5cffffff	FSTCW word ptr [EBP + 0xffffff5c]
+004c54e4	e8d7c8ffff	CALL 0x004c1dc0
+004c54e9	e8a0feffff	CALL 0x004c538e
+004c54ee	5b	POP EBX
+004c54ef	c9	LEAVE
+004c54f0	c3	RET

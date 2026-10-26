@@ -1,0 +1,2 @@
+; 004060e4 KERNEL32.DLL::TlsGetValue
+004060e4	ff2524f24700	JMP dword ptr [0x0047f224]

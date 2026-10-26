@@ -1,0 +1,2 @@
+; 00401278 KERNEL32.DLL::WriteFile
+00401278	ff25a4f14700	JMP dword ptr [0x0047f1a4]

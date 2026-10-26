@@ -1,0 +1,2 @@
+; 004013bc KERNEL32.DLL::LocalFree
+004013bc	ff2548f14700	JMP dword ptr [0x0047f148]

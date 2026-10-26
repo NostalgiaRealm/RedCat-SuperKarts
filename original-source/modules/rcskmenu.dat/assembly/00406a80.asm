@@ -1,0 +1,2 @@
+; 00406a80 USER32.DLL::RemovePropA
+00406a80	ff2518f54700	JMP dword ptr [0x0047f518]

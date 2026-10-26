@@ -1,0 +1,2 @@
+; 00406948 USER32.DLL::GetWindowRect
+00406948	ff25b4f54700	JMP dword ptr [0x0047f5b4]

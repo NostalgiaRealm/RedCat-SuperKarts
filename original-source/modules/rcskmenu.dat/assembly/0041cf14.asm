@@ -1,0 +1,7 @@
+; 0041cf14 FUN_0041cf14
+0041cf14	8b4020	MOV EAX,dword ptr [EAX + 0x20]
+0041cf17	83780800	CMP dword ptr [EAX + 0x8],0x0
+0041cf1b	7506	JNZ 0x0041cf23
+0041cf1d	8b5014	MOV EDX,dword ptr [EAX + 0x14]
+0041cf20	895008	MOV dword ptr [EAX + 0x8],EDX
+0041cf23	c3	RET

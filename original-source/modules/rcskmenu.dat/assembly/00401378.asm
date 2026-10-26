@@ -1,0 +1,2 @@
+; 00401378 OLEAUT32.DLL::VariantChangeTypeEx
+00401378	ff2500f24700	JMP dword ptr [0x0047f200]

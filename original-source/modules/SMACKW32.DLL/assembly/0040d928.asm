@@ -1,0 +1,2 @@
+; 0040d928 KERNEL32.DLL::SetConsoleCtrlHandler
+0040d928	ff256c134100	JMP dword ptr [0x0041136c]

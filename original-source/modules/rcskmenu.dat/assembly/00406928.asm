@@ -1,0 +1,2 @@
+; 00406928 USER32.DLL::GetWindow
+00406928	ff25ecf54700	JMP dword ptr [0x0047f5ec]

@@ -1,0 +1,2 @@
+; 00406770 USER32.DLL::DispatchMessageA
+00406770	ff259cf64700	JMP dword ptr [0x0047f69c]

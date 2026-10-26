@@ -7,6 +7,11 @@ on:
         description: Existing version tag and draft release to package
         required: true
         type: string
+      skip_build_checks:
+        description: Build and upload without version or packaged-payload checks
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -29,6 +34,7 @@ jobs:
     env:
       RCSK_RELEASE_TAG: ${{ inputs.tag }}
       RCSK_BUILD_ARCH: ${{ matrix.arch }}
+      RCSK_SKIP_BUILD_CHECKS: ${{ inputs.skip_build_checks && '1' || '0' }}
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
     steps:
@@ -43,13 +49,14 @@ jobs:
           node-version: '24'
           cache: npm
       - name: Check version metadata and existing release
+        if: ${{ !inputs.skip_build_checks }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import {readFile} from 'node:fs/promises';
-          import {GAME_VERSION} from './src/version.js';
+          import {GAME_VERSION} from './source/version.js';
           const pkg=JSON.parse(await readFile('package.json','utf8'));
           assert.equal(process.env.RCSK_RELEASE_TAG,'v'+pkg.version);
           assert.equal(GAME_VERSION,pkg.version);
@@ -63,12 +70,19 @@ jobs:
         run: |
           npx --no-install electron-builder --mac "--$RCSK_BUILD_ARCH" --publish never \
             "-c.directories.output=release/macos-$RCSK_BUILD_ARCH"
-      - name: Upload packages and payload integrity report
+      - name: Upload packages
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "$RCSK_RELEASE_TAG" \
             "release/macos-$RCSK_BUILD_ARCH/"*.dmg \
             "release/macos-$RCSK_BUILD_ARCH/"*.zip \
+            --repo "$GITHUB_REPOSITORY"
+      - name: Upload payload integrity report
+        if: ${{ !inputs.skip_build_checks }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload "$RCSK_RELEASE_TAG" \
             "release/macos-$RCSK_BUILD_ARCH/"integrity-darwin-*.json \
             --repo "$GITHUB_REPOSITORY"

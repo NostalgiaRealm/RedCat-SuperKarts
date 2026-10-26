@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 import * as THREE from 'three';
 import {getNativeMaterialSpec, nativeVertexRGBA, nativeColorAttribute,
-  createNativeMeshMaterial, configureNativeTextureColorKey} from '../src/asset-materials.js';
+  createNativeMeshMaterial, configureNativeTextureColorKey} from '../source/asset-materials.js';
 
 const read = path => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 const native = read('../evidence/native/material-fixtures.json');

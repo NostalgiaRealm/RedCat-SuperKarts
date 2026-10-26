@@ -1,0 +1,2 @@
+; 004067c0 USER32.DLL::EnableWindow
+004067c0	ff2574f64700	JMP dword ptr [0x0047f674]

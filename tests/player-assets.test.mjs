@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import {getPlayerVisualSpec, getDrivingAnimationRequests, createDriverAnimation,
-  requestDriverAnimation, advanceDriverAnimation} from '../src/player-assets.js';
+  requestDriverAnimation, advanceDriverAnimation} from '../source/player-assets.js';
 
 const json = path => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 const config = json('../public/assets/config.json');

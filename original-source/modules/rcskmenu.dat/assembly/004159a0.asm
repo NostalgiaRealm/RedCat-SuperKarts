@@ -1,0 +1,2 @@
+; 004159a0 COMCTL32.DLL::ImageList_Remove
+004159a0	ff2548f74700	JMP dword ptr [0x0047f748]

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {calculateNativePlayerForces} from '../src/simulation/native-player.js';
-import {parsePhysicsTable} from '../src/simulation/native-tables.js';
-import {nativeRacePlayerOptions,nativeMenuOpponentCount} from '../src/simulation/native-race-options.js';
+import {calculateNativePlayerForces} from '../source/simulation/native-player.js';
+import {parsePhysicsTable} from '../source/simulation/native-tables.js';
+import {nativeRacePlayerOptions,nativeMenuOpponentCount} from '../source/simulation/native-race-options.js';
 const read=name=>JSON.parse(readFileSync(new URL(`../${name}`,import.meta.url)));
 const fixtures=read('evidence/native/player-phase-fixtures.json');
 const inventory=read('evidence/gameplay/inventory.json');

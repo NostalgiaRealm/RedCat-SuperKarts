@@ -1,0 +1,2 @@
+; 004012f0 KERNEL32.DLL::LoadLibraryExA
+004012f0	ff2570f14700	JMP dword ptr [0x0047f170]

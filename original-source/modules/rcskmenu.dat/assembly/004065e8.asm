@@ -1,0 +1,2 @@
+; 004065e8 GDI32.DLL::MaskBlt
+004065e8	ff25ccf34700	JMP dword ptr [0x0047f3cc]

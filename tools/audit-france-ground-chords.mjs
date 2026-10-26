@@ -1,12 +1,12 @@
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
-import {NativeSceneryBodies,nativeSceneryRectangle} from '../src/simulation/native-scenery-contact.js';
-import {createNativeTrack,sampleNativeTrack} from '../src/simulation/native-track.js';
-import {nativeSectorDistance} from '../src/simulation/native-race.js';
-import {nativeYawTrig} from '../src/simulation/native-ground.js';
-import {getPlayerVisualSpec} from '../src/player-assets.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
+import {NativeSceneryBodies,nativeSceneryRectangle} from '../source/simulation/native-scenery-contact.js';
+import {createNativeTrack,sampleNativeTrack} from '../source/simulation/native-track.js';
+import {nativeSectorDistance} from '../source/simulation/native-race.js';
+import {nativeYawTrig} from '../source/simulation/native-ground.js';
+import {getPlayerVisualSpec} from '../source/player-assets.js';
 import {validationSourceDependencies} from './validation-source-dependencies.mjs';
 const root=new URL('../',import.meta.url),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 const inputs={};

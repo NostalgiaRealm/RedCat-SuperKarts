@@ -35,8 +35,8 @@ in an INI, and a reachable gameplay trigger are separate evidence.
   their visual/controller integration and focused validation are recorded
   separately in the gameplay investigation.
 
-`src/race-simulation.js` owns the deterministic requests and random calls.
-`src/driving-view.js` connects these to the decoded transport, preserving the
+`source/race-simulation.js` owns the deterministic requests and random calls.
+`source/driving-view.js` connects these to the decoded transport, preserving the
 old listener for scenery and the new listener for character FIFO service.
 
 ## Browser evidence

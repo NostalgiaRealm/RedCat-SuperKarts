@@ -1,0 +1,2 @@
+; 00406970 USER32.DLL::InsertMenuItemA
+00406970	ff25a0f54700	JMP dword ptr [0x0047f5a0]

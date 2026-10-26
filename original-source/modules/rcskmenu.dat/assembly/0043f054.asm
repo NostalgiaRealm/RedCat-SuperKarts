@@ -1,0 +1,12 @@
+; 0043f054 FUN_0043f054
+0043f054	8b4830	MOV ECX,dword ptr [EAX + 0x30]
+0043f057	890a	MOV dword ptr [EDX],ECX
+0043f059	8b4834	MOV ECX,dword ptr [EAX + 0x34]
+0043f05c	894a04	MOV dword ptr [EDX + 0x4],ECX
+0043f05f	8b4830	MOV ECX,dword ptr [EAX + 0x30]
+0043f062	034838	ADD ECX,dword ptr [EAX + 0x38]
+0043f065	894a08	MOV dword ptr [EDX + 0x8],ECX
+0043f068	8b4834	MOV ECX,dword ptr [EAX + 0x34]
+0043f06b	03483c	ADD ECX,dword ptr [EAX + 0x3c]
+0043f06e	894a0c	MOV dword ptr [EDX + 0xc],ECX
+0043f071	c3	RET

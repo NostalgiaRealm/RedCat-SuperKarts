@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {getNativeHudCameraSpec,nativeHudCompositeTransform,nativeHudElementTransform,
-  getHudMeshSpec,projectNativeHudPoint} from '../src/hud-mesh.js';
+  getHudMeshSpec,projectNativeHudPoint} from '../source/hud-mesh.js';
 const read=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url)));
 const fixture=read('../evidence/native/hud-transform-fixtures.json');
 const config=read('../public/assets/config.json'),manifest=read('../public/assets/manifest.json');

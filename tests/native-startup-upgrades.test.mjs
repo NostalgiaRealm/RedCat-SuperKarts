@@ -1,11 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {nativeRacePlayerOptions,initializeNativeRacePlayerOptions} from '../src/simulation/native-race-options.js';
-import {nativeRaceTimerSetup} from '../src/simulation/native-game-timers.js';
-import {parseRacerTable} from '../src/simulation/native-tables.js';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {nativeRacePlayerOptions,initializeNativeRacePlayerOptions} from '../source/simulation/native-race-options.js';
+import {nativeRaceTimerSetup} from '../source/simulation/native-game-timers.js';
+import {parseRacerTable} from '../source/simulation/native-tables.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const read=path=>readFileSync(new URL(`../${path}`,import.meta.url));
 const json=path=>JSON.parse(read(path));

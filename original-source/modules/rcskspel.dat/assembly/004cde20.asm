@@ -1,0 +1,3 @@
+; 004cde20 Unwind@004cde20
+004cde20	8d4d94	LEA ECX,[EBP + -0x6c]
+004cde23	e988d6f3ff	JMP 0x0040b4b0

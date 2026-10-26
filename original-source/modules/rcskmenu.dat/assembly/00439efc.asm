@@ -1,0 +1,5 @@
+; 00439efc FUN_00439efc
+00439efc	8b4028	MOV EAX,dword ptr [EAX + 0x28]
+00439eff	0fb64030	MOVZX EAX,byte ptr [EAX + 0x30]
+00439f03	8a8014b84700	MOV AL,byte ptr [EAX + 0x47b814]
+00439f09	c3	RET

@@ -1,0 +1,2 @@
+; 00401348 OLEAUT32.DLL::SysAllocStringLen
+00401348	ff2518f24700	JMP dword ptr [0x0047f218]

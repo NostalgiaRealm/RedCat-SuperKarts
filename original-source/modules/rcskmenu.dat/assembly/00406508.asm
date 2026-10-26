@@ -1,0 +1,2 @@
+; 00406508 GDI32.DLL::DeleteEnhMetaFile
+00406508	ff253cf44700	JMP dword ptr [0x0047f43c]

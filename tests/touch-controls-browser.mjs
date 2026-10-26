@@ -162,7 +162,7 @@ try{
         });
         const timeScale=layout.text('string_laptime').scale??layout.scale;
         const timeEntry=v.hud.glyphs.strings.get('string_laptime'),timePosition=timeEntry.meshes[0].geometry.attributes.position;
-        const {layoutHudText}=await import('/src/hud-text.js'),nativeTimeGlyph=layoutHudText(timeEntry.spec,v.hud.text.string_laptime)[0];
+        const {layoutHudText}=await import('/source/hud-text.js'),nativeTimeGlyph=layoutHudText(timeEntry.spec,v.hud.text.string_laptime)[0];
         const timeGlyphHeight=Math.abs(timePosition.getY(2)-timePosition.getY(0));
         const digitEntry=v.hud.glyphs.strings.get('string_laptime_value');
         const digitHeights=digitEntry.meshes.filter(mesh=>mesh.visible).map(mesh=>{const p=mesh.geometry.attributes.position;return Math.abs(p.getY(2)-p.getY(0));});
@@ -201,7 +201,7 @@ try{
   assert.deepEqual(await page.evaluate(()=>rcsk.viewer.errors),[]);assert.deepEqual(report.errors,[]);report.status='passed';
 }catch(error){report.status='failed';report.failure=String(error.stack||error);await page.screenshot({path:output+'/failure.png'}).catch(()=>{});throw error;}
 finally{
-  report.sourceHashes=Object.fromEntries(await Promise.all(['index.html','src/input.js','src/main.js','src/style.css','src/race-hud-layout.js','src/hud-text-renderer.js','tests/touch-controls-browser.mjs'].map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
+  report.sourceHashes=Object.fromEntries(await Promise.all(['index.html','source/input.js','source/main.js','source/style.css','source/race-hud-layout.js','source/hud-text-renderer.js','tests/touch-controls-browser.mjs'].map(async file=>[file,createHash('sha256').update(await readFile(file)).digest('hex')])));
   await writeFile(output+(firstCheck===1?'/browser.json':firstCheck===8?'/browser-remaining.json':`/browser-from-${firstCheck}.json`),JSON.stringify(report,null,2)+'\n');await browser.close();
 }
 console.log(`Touch browser: ${report.checks.length} checks passed`);

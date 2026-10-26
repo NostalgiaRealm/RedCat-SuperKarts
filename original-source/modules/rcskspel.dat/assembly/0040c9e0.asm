@@ -1,0 +1,10 @@
+; 0040c9e0 FUN_0040c9e0
+0040c9e0	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+0040c9e4	83c128	ADD ECX,0x28
+0040c9e7	8b10	MOV EDX,dword ptr [EAX]
+0040c9e9	8911	MOV dword ptr [ECX],EDX
+0040c9eb	8b5004	MOV EDX,dword ptr [EAX + 0x4]
+0040c9ee	895104	MOV dword ptr [ECX + 0x4],EDX
+0040c9f1	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+0040c9f4	894108	MOV dword ptr [ECX + 0x8],EAX
+0040c9f7	c20400	RET 0x4

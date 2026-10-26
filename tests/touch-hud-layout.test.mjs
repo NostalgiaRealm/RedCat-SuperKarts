@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {raceHudLayout} from '../src/race-hud-layout.js';
-import {getHudMeshSpec,projectNativeHudPoint} from '../src/hud-mesh.js';
-import {getHudStringSpec,layoutHudText} from '../src/hud-text.js';
+import {raceHudLayout} from '../source/race-hud-layout.js';
+import {getHudMeshSpec,projectNativeHudPoint} from '../source/hud-mesh.js';
+import {getHudStringSpec,layoutHudText} from '../source/hud-text.js';
 
 const read=name=>JSON.parse(fs.readFileSync(new URL('../public/assets/'+name,import.meta.url)));
 const config=read('config.json'),manifest=read('manifest.json');

@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { advanceNativeKartColor, nativeKartBrightness, sampleNativeKartGroundColor } from '../src/simulation/native-kart-color.js';
-import { createNativeTrack } from '../src/simulation/native-track.js';
+import { advanceNativeKartColor, nativeKartBrightness, sampleNativeKartGroundColor } from '../source/simulation/native-kart-color.js';
+import { createNativeTrack } from '../source/simulation/native-track.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/kart-color-fixtures.json', import.meta.url)));
 test('600 original kart color updates and opaque-child propagation', () => {

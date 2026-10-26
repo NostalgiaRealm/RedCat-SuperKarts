@@ -1,0 +1,2 @@
+; 00406920 USER32.DLL::GetTopWindow
+00406920	ff25c4f54700	JMP dword ptr [0x0047f5c4]

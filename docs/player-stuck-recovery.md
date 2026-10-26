@@ -51,7 +51,10 @@ traffic guarantee. `validation.json` records the final focused check counts.
 
 The running AppImage exposed no debugging connection, so its exact kart state
 was not read. Its process and race were left untouched. Per the user's later
-instruction, this delivery changes source only: no full test-suite rerun,
+instruction, that initial delivery changed source only: no full test-suite rerun,
 browser build, AppImage or other desktop package was produced. Existing
-`dist/` and `release/` files retain the earlier source checkpoint. Launch from
-source with `npm start` or `npm run desktop` to use this fix.
+`dist/` and `release/` files then retained the earlier source checkpoint.
+The fix was subsequently included in the [0.9.0 packages](releases/v0.9.0.md).
+To run current checkout changes, use `npm start` or `npm run desktop`; both
+refresh and execute the local runtime bundles described in the
+[folder guide](runtime-layout.md).

@@ -1,0 +1,2 @@
+; 00474880 TfrmMain_FormCreate
+00474880	c3	RET

@@ -1,0 +1,2 @@
+; 00406398 KERNEL32.DLL::GlobalFree
+00406398	ff25bcf24700	JMP dword ptr [0x0047f2bc]

@@ -1,0 +1,2 @@
+; 00406338 KERNEL32.DLL::GetModuleFileNameA
+00406338	ff25ecf24700	JMP dword ptr [0x0047f2ec]

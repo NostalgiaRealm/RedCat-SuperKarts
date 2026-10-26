@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeExplosions} from '../src/simulation/native-explosions.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeExplosions} from '../source/simulation/native-explosions.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/native/explosion-fixtures.json',import.meta.url)));
 test('original rocket ring constructor RNG, lifetime, following and indexed draw geometry',()=>{
   for(const trace of fixture.traces) {

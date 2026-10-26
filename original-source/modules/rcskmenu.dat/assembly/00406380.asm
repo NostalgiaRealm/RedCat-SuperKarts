@@ -1,0 +1,2 @@
+; 00406380 KERNEL32.DLL::GlobalAddAtomA
+00406380	ff25c8f24700	JMP dword ptr [0x0047f2c8]

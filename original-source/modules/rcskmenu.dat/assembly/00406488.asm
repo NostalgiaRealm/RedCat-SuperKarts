@@ -1,0 +1,2 @@
+; 00406488 GDI32.DLL::BitBlt
+00406488	ff257cf44700	JMP dword ptr [0x0047f47c]

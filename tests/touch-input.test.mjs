@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {InputController,touchWheelInput} from '../src/input.js';
-import {createNativeInputState,nativeAnalogFromNormalized,updateNativeAnalogInput,updateNativeInput} from '../src/simulation/native-input.js';
+import {InputController,touchWheelInput} from '../source/input.js';
+import {createNativeInputState,nativeAnalogFromNormalized,updateNativeAnalogInput,updateNativeInput} from '../source/simulation/native-input.js';
 
 const bounds={left:100,top:200,width:200,height:200};
 const empty={throttle:0,brake:0,steer:0,handbrake:0,bonus:0};

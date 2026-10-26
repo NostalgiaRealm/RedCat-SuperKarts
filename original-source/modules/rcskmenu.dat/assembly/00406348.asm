@@ -1,0 +1,2 @@
+; 00406348 KERNEL32.DLL::GetPrivateProfileStringA
+00406348	ff25e4f24700	JMP dword ptr [0x0047f2e4]

@@ -1,0 +1,2 @@
+; 00406790 USER32.DLL::DrawIcon
+00406790	ff258cf64700	JMP dword ptr [0x0047f68c]

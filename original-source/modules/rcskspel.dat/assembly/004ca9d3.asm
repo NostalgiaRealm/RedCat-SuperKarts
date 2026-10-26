@@ -1,0 +1,22 @@
+; 004ca9d3 FUN_004ca9d3
+004ca9d3	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+004ca9d7	56	PUSH ESI
+004ca9d8	57	PUSH EDI
+004ca9d9	8b5008	MOV EDX,dword ptr [EAX + 0x8]
+004ca9dc	8b4804	MOV ECX,dword ptr [EAX + 0x4]
+004ca9df	8bf2	MOV ESI,EDX
+004ca9e1	8bf9	MOV EDI,ECX
+004ca9e3	c1e61f	SHL ESI,0x1f
+004ca9e6	d1e9	SHR ECX,0x1
+004ca9e8	0bce	OR ECX,ESI
+004ca9ea	894804	MOV dword ptr [EAX + 0x4],ECX
+004ca9ed	8b08	MOV ECX,dword ptr [EAX]
+004ca9ef	c1e71f	SHL EDI,0x1f
+004ca9f2	d1e9	SHR ECX,0x1
+004ca9f4	d1ea	SHR EDX,0x1
+004ca9f6	0bcf	OR ECX,EDI
+004ca9f8	5f	POP EDI
+004ca9f9	895008	MOV dword ptr [EAX + 0x8],EDX
+004ca9fc	8908	MOV dword ptr [EAX],ECX
+004ca9fe	5e	POP ESI
+004ca9ff	c3	RET

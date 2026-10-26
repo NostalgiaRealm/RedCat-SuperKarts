@@ -1,0 +1,2 @@
+; 00406280 KERNEL32.DLL::DeleteCriticalSection
+00406280	ff2548f34700	JMP dword ptr [0x0047f348]

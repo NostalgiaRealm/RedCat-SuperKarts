@@ -1,0 +1,2 @@
+; 00406808 USER32.DLL::GetActiveWindow
+00406808	ff2550f64700	JMP dword ptr [0x0047f650]

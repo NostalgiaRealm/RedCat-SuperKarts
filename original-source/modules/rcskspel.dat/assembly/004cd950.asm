@@ -1,0 +1,4 @@
+; 004cd950 Unwind@004cd950
+004cd950	8b4df0	MOV ECX,dword ptr [EBP + -0x10]
+004cd953	83c120	ADD ECX,0x20
+004cd956	e955dbf3ff	JMP 0x0040b4b0

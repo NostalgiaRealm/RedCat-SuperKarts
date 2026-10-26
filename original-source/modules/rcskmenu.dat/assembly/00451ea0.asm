@@ -1,0 +1,4 @@
+; 00451ea0 FUN_00451ea0
+00451ea0	8b4024	MOV EAX,dword ptr [EAX + 0x24]
+00451ea3	8b803c040000	MOV EAX,dword ptr [EAX + 0x43c]
+00451ea9	c3	RET

@@ -1,0 +1,4 @@
+; 0044b878 FUN_0044b878
+0044b878	8b10	MOV EDX,dword ptr [EAX]
+0044b87a	ff5274	CALL dword ptr [EDX + 0x74]
+0044b87d	c3	RET

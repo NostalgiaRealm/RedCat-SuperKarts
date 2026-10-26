@@ -1,0 +1,2 @@
+; 00401240 KERNEL32.DLL::GetStdHandle
+00401240	ff25c0f14700	JMP dword ptr [0x0047f1c0]

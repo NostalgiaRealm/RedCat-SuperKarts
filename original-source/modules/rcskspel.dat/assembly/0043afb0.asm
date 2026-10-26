@@ -1,0 +1,17 @@
+; 0043afb0 FUN_0043afb0
+0043afb0	8b4c2404	MOV ECX,dword ptr [ESP + 0x4]
+0043afb4	8b542408	MOV EDX,dword ptr [ESP + 0x8]
+0043afb8	3bca	CMP ECX,EDX
+0043afba	7415	JZ 0x0043afd1
+0043afbc	8b44240c	MOV EAX,dword ptr [ESP + 0xc]
+0043afc0	56	PUSH ESI
+0043afc1	8b31	MOV ESI,dword ptr [ECX]
+0043afc3	83c104	ADD ECX,0x4
+0043afc6	8930	MOV dword ptr [EAX],ESI
+0043afc8	83c004	ADD EAX,0x4
+0043afcb	3bca	CMP ECX,EDX
+0043afcd	75f2	JNZ 0x0043afc1
+0043afcf	5e	POP ESI
+0043afd0	c3	RET
+0043afd1	8b44240c	MOV EAX,dword ptr [ESP + 0xc]
+0043afd5	c3	RET

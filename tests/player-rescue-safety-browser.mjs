@@ -21,10 +21,10 @@ try{
   await page.waitForFunction(()=>rcsk.state.page==='driving',null,{timeout:60000});
   const initial=await page.evaluate(async()=>{
     const view=rcsk.viewer,sim=view.simulation,body=view.motion.body,track=view.track;
-    const {nativeRescueNearestSector,nativeRescueHeading,nativeRescueDestination}=await import('/src/simulation/native-rescue.js');
-    const {sampleNativeTrack}=await import('/src/simulation/native-track.js');
-    const {nativeRotationMatrix}=await import('/src/simulation/native-transform.js');
-    const {rescuePlacementClear}=await import('/src/simulation/rescue-safety.js');
+    const {nativeRescueNearestSector,nativeRescueHeading,nativeRescueDestination}=await import('/source/simulation/native-rescue.js');
+    const {sampleNativeTrack}=await import('/source/simulation/native-track.js');
+    const {nativeRotationMatrix}=await import('/source/simulation/native-transform.js');
+    const {rescuePlacementClear}=await import('/source/simulation/rescue-safety.js');
     view.clock.pause();
     function place(target,position){
       sim.occupancy.remove(target);

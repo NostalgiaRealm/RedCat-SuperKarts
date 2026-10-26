@@ -1,0 +1,2 @@
+; 00455d70 DDRAW.DLL::DirectDrawCreate
+00455d70	ff2588f74700	JMP dword ptr [0x0047f788]

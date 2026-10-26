@@ -1,0 +1,2 @@
+; 00401228 KERNEL32.DLL::GetFileType
+00401228	ff25ccf14700	JMP dword ptr [0x0047f1cc]

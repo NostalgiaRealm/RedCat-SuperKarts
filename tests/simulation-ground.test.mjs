@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { createNativeGroundState, NativeGroundClock, updateNativeGround, updateNativeWheelPose } from '../src/simulation/native-ground.js';
+import { createNativeGroundState, NativeGroundClock, updateNativeGround, updateNativeWheelPose } from '../source/simulation/native-ground.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-ground-fixtures.json', import.meta.url)));
 const exact = (a, b, label) => assert.ok(a === b, `${label}: ${a} != ${b}`);

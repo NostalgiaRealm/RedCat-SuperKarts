@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeDeltaFilter} from '../src/simulation/clock.js';
-import {nativePathDurationTicks} from '../src/scenery-paths.js';
+import {NativeDeltaFilter} from '../source/simulation/clock.js';
+import {nativePathDurationTicks} from '../source/scenery-paths.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/camera-clock-fixtures.json',import.meta.url)));
 
 test('original timer initialization fixes all six startup path durations before the first race update',()=>{

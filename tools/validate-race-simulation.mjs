@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
 import crypto from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
 import {validationSourceDependencies} from './validation-source-dependencies.mjs';
 
 const assets=new URL('../public/assets/',import.meta.url);
@@ -18,7 +18,7 @@ async function sourceSnapshot(){
       if(entry.isDirectory())await visit(path);else if(entry.isFile())paths.push(path);
     }
   }
-  await visit('src');
+  await visit('source');
   return Object.fromEntries(await Promise.all(paths.sort().map(async path=>
     [path,crypto.createHash('sha256').update(await fs.readFile(new URL(path,project))).digest('hex')])));
 }

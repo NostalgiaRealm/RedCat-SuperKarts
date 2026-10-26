@@ -1,0 +1,18 @@
+; 004a3bd0 FUN_004a3bd0
+004a3bd0	56	PUSH ESI
+004a3bd1	8bf1	MOV ESI,ECX
+004a3bd3	8d4e14	LEA ECX,[ESI + 0x14]
+004a3bd6	e815950000	CALL 0x004ad0f0
+004a3bdb	33c0	XOR EAX,EAX
+004a3bdd	8906	MOV dword ptr [ESI],EAX
+004a3bdf	894604	MOV dword ptr [ESI + 0x4],EAX
+004a3be2	894608	MOV dword ptr [ESI + 0x8],EAX
+004a3be5	89460c	MOV dword ptr [ESI + 0xc],EAX
+004a3be8	894610	MOV dword ptr [ESI + 0x10],EAX
+004a3beb	894624	MOV dword ptr [ESI + 0x24],EAX
+004a3bee	894628	MOV dword ptr [ESI + 0x28],EAX
+004a3bf1	89462c	MOV dword ptr [ESI + 0x2c],EAX
+004a3bf4	894630	MOV dword ptr [ESI + 0x30],EAX
+004a3bf7	8bc6	MOV EAX,ESI
+004a3bf9	5e	POP ESI
+004a3bfa	c3	RET

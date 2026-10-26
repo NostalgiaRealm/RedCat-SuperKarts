@@ -1,0 +1,2 @@
+; 00406510 GDI32.DLL::DeleteObject
+00406510	ff2538f44700	JMP dword ptr [0x0047f438]

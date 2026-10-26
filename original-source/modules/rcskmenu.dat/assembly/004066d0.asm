@@ -1,0 +1,2 @@
+; 004066d0 USER32.DLL::CharLowerA
+004066d0	ff25ecf64700	JMP dword ptr [0x0047f6ec]

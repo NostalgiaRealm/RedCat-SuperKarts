@@ -1,0 +1,3 @@
+; 0045bb54 FUN_0045bb54
+0045bb54	885004	MOV byte ptr [EAX + 0x4],DL
+0045bb57	c3	RET

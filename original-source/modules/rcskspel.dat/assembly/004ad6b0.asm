@@ -1,0 +1,18 @@
+; 004ad6b0 FUN_004ad6b0
+004ad6b0	8bc1	MOV EAX,ECX
+004ad6b2	33c9	XOR ECX,ECX
+004ad6b4	8988a8000000	MOV dword ptr [EAX + 0xa8],ECX
+004ad6ba	8988a4000000	MOV dword ptr [EAX + 0xa4],ECX
+004ad6c0	8988ac000000	MOV dword ptr [EAX + 0xac],ECX
+004ad6c6	89486c	MOV dword ptr [EAX + 0x6c],ECX
+004ad6c9	894870	MOV dword ptr [EAX + 0x70],ECX
+004ad6cc	894874	MOV dword ptr [EAX + 0x74],ECX
+004ad6cf	894878	MOV dword ptr [EAX + 0x78],ECX
+004ad6d2	89487c	MOV dword ptr [EAX + 0x7c],ECX
+004ad6d5	898884000000	MOV dword ptr [EAX + 0x84],ECX
+004ad6db	898888000000	MOV dword ptr [EAX + 0x88],ECX
+004ad6e1	89888c000000	MOV dword ptr [EAX + 0x8c],ECX
+004ad6e7	898894000000	MOV dword ptr [EAX + 0x94],ECX
+004ad6ed	898898000000	MOV dword ptr [EAX + 0x98],ECX
+004ad6f3	89889c000000	MOV dword ptr [EAX + 0x9c],ECX
+004ad6f9	c3	RET

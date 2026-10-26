@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createNativeHudNotifications,showNativeHudNotification,stopNativeHudNotification,
-  updateNativeHudNotifications,getNativeNotificationEvent} from '../src/hud-notifications.js';
+  updateNativeHudNotifications,getNativeNotificationEvent} from '../source/hud-notifications.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/hud-notification-fixtures.json',import.meta.url)));
 const config = JSON.parse(fs.readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 

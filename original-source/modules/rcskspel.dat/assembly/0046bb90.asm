@@ -1,0 +1,2 @@
+; 0046bb90 thunk_FUN_0046bba0
+0046bb90	e90b000000	JMP 0x0046bba0

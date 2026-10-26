@@ -15,10 +15,13 @@ domain, upload account and hosting directory.
 | Build computer | Node.js 24, npm, this project's source and complete prepared `public/assets/` |
 | Hosting | A static web host or VPS, control of the subdomain's DNS, HTTPS, and support for the files and response types below |
 | Storage | Allow at least 1 GB per deployed copy; the current payload is approximately 420 MiB, with thousands of files and original video/audio |
-| Player | A browser with WebGL 2, JavaScript modules/import maps, Web Audio and H.264/AAC video playback |
+| Player | A browser with WebGL 2, JavaScript modules, Web Audio and H.264/AAC video playback |
 
 Check the host's file-count, individual-file-size and bandwidth limits as well
 as its storage allowance; players also download original movies and audio.
+Normal browser and desktop launches use generated bundles without import maps.
+Editable modules live in `source/`; they are not uploaded or loaded by the game.
+See [the folder guide](runtime-layout.md) for local refresh and inspection commands.
 
 The Git repository and published source release include the complete prepared
 `public/assets/` folder, including menu fonts and converted movies. A fresh
@@ -48,41 +51,45 @@ Run `npm ci` when installing dependencies or when the lockfile changes. Run
 current source and prepared assets. Existing desktop packages and an older
 `dist/` do not automatically receive later source changes.
 
-The output must keep this structure:
+The build combines the source modules and the needed Three.js code into a small
+set of generated files. The menu loads the renderer only when needed. Source
+maps retain readable debugging references; original assets are copied unchanged.
+Keep the entire generated output together:
 
 ```text
 dist/
   index.html
+  runtime-manifest.json
   src/
     main.js
+    main.js.map
     style.css
-    ...
+    chunks/
+      ...
   assets/
     config.json
     manifest.json
     menu/
     media/
     ...
-  node_modules/
-    three/
-      build/
-        three.module.js
-        three.core.js
-      examples/jsm/controls/
-        OrbitControls.js
-        ...
 ```
 
-Upload everything inside `dist/`, including its small `node_modules/three/`
-tree. The build selects the required Three.js files; uploading the project's
-entire development `node_modules/` is unnecessary. Preserve file names and
-letter case, and keep files at their original URLs.
+Upload everything inside `dist/`. The generated chunk names may change with
+source changes; do not select individual JavaScript files to upload. The build
+includes the required library code, so a separate `node_modules/three/` tree is
+no longer needed in a new deployment. Preserve file names and letter case.
+Include `runtime-manifest.json`: it records the generated runtime files and
+sizes. Preview and Electron use its file list to reject missing generated
+chunks before launching; package verification separately checks payload bytes.
 
-The game currently uses paths beginning with `/`, including `/src/main.js`,
-`/assets/` and `/node_modules/three/`. Therefore `index.html` must be at the
-subdomain's web root. Hosting it at `/dist/` or `/game/` requires code/path
-changes; adding an HTML `<base>` tag alone does not fix those absolute paths.
-The physical folder on the server may have any name.
+The game uses paths beginning with `/`, including `/src/main.js` and `/assets/`.
+Therefore `index.html` must be at the subdomain's web root. Hosting it at `/dist/`
+or `/game/` requires code/path changes; adding an HTML `<base>` tag alone does
+not fix those absolute paths. The physical folder on the server may have any name.
+
+Before uploading, stop any local game server using port 4173 and run `npm run preview`.
+It serves the completed `dist/` at the same `http://127.0.0.1:4173/` origin as
+`npm start`, keeping that browser's existing saves. It does not rebuild on edits.
 
 ## Connect the subdomain and upload
 
@@ -195,7 +202,7 @@ Check that the host or CDN preserves these responses:
 | File | Expected response type |
 | --- | --- |
 | `.html` | `text/html` |
-| `.js` | `text/javascript` or `application/javascript`, including the Three.js modules |
+| `.js` | `text/javascript` or `application/javascript`, including every generated JavaScript chunk |
 | `.css` | `text/css` |
 | `.json` | `application/json` |
 | `.mp4` | `video/mp4` |
@@ -211,15 +218,14 @@ preserve byte-range requests for movies. A request for the first 32 bytes should
 receive `206 Partial Content`, a matching `Content-Range`, and 32 bytes of data. [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests)
 
 The examples use `Cache-Control: no-cache`: browsers may retain files but must
-revalidate before reuse. This suits the current stable file names, which lack
-content hashes. Avoid long-lived `immutable` caching for this deployment.
+revalidate before reuse. This covers the stable entry and asset names as well as generated chunks.
+Avoid long-lived `immutable` caching for the whole deployment.
 When using a CDN, apply the same policy and purge old content on updates. [Caddy response headers](https://caddyserver.com/docs/caddyfile/directives/header)
 
 Preserve the prepared assets without host-side transcoding or image optimization.
 Keep all assets on the same subdomain. The current build needs no cross-origin
-asset setup. Disable hosting rules that exclude or block the shipped
-`node_modules/three/` paths, and avoid automatic script rewriting/bundling that
-changes the module/import-map loading order.
+asset setup. Avoid host-side script rewriting or rebundling: deploy the generated
+JavaScript chunks and their imports together as produced by the build.
 
 ## Check the deployed game
 
@@ -228,26 +234,24 @@ Run these against your actual subdomain:
 ```sh
 curl -I https://karts.example.com/
 curl -I https://karts.example.com/src/main.js
-curl -I https://karts.example.com/node_modules/three/build/three.module.js
-curl -I https://karts.example.com/node_modules/three/build/three.core.js
-curl -I https://karts.example.com/node_modules/three/examples/jsm/controls/OrbitControls.js
 curl -I https://karts.example.com/assets/menu/manifest.json
 curl -sS -D - -o /dev/null -H 'Range: bytes=0-31' https://karts.example.com/assets/media/intro.mp4
 curl -I https://karts.example.com/assets/this-file-does-not-exist.json
 ```
 
-The first six requests should return 200 with the correct types. The range
+The first three requests should return 200 with the correct types. The range
 request should return 206 and `Content-Length: 32`. The deliberately missing
 file should return 404, not 200 with HTML.
 
-Open the site in a browser, allow playback with **Start** if prompted, then
-check the original menu, a QuickRace, music/effects and a page reload. Developer
-tools should show no missing assets or module MIME errors. `/?skipIntro` opens
+Open the site in a browser. The intro starts automatically; if sound is blocked,
+use **Geluid inschakelen** at the bottom left. This also enters fullscreen.
+Check the original menu, a QuickRace, music/effects and a page reload. Developer
+tools should show no missing assets, generated chunks or module MIME errors. `/?skipIntro` opens
 the menu directly when diagnosing startup.
 
 | Symptom | Check |
 | --- | --- |
-| Empty or blue screen | Missing/blocked Three.js files, a wrong document root, JavaScript served as HTML, or a host Content Security Policy blocking the inline import map in `index.html` |
+| Empty or blue screen | Missing/blocked generated JavaScript chunks, a wrong document root, JavaScript served as HTML, or a host Content Security Policy blocking scripts |
 | Movies fail or cannot seek | MP4 MIME type, byte-range responses and proxy/CDN handling |
 | Missing artwork, fonts or sound | Incomplete `assets/` upload, changed letter case, or wrong MIME types |
 | HTTP visitors lack controller support | Use the HTTPS URL and redirect HTTP to it |

@@ -1,0 +1,2 @@
+; 004067f0 USER32.DLL::FillRect
+004067f0	ff255cf64700	JMP dword ptr [0x0047f65c]

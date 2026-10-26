@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {nativeBonusOverlap} from '../src/simulation/native-bonus.js';
-import {selectPlayerRecoveryDestination} from '../src/simulation/player-recovery-position.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {nativeBonusOverlap} from '../source/simulation/native-bonus.js';
+import {selectPlayerRecoveryDestination} from '../source/simulation/player-recovery-position.js';
 
 const read=name=>fs.readFileSync(new URL('../public/assets/'+name,import.meta.url));
 const json=name=>JSON.parse(read(name));

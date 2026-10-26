@@ -1,0 +1,2 @@
+; 00406a08 USER32.DLL::MapWindowPoints
+00406a08	ff2554f54700	JMP dword ptr [0x0047f554]

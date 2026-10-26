@@ -1,0 +1,16 @@
+; 0043eed0 FUN_0043eed0
+0043eed0	53	PUSH EBX
+0043eed1	56	PUSH ESI
+0043eed2	8bd8	MOV EBX,EAX
+0043eed4	8b4338	MOV EAX,dword ptr [EBX + 0x38]
+0043eed7	50	PUSH EAX
+0043eed8	52	PUSH EDX
+0043eed9	8b4b34	MOV ECX,dword ptr [EBX + 0x34]
+0043eedc	8bc3	MOV EAX,EBX
+0043eede	8b5330	MOV EDX,dword ptr [EBX + 0x30]
+0043eee1	8b30	MOV ESI,dword ptr [EAX]
+0043eee3	ff567c	CALL dword ptr [ESI + 0x7c]
+0043eee6	808b8800000008	OR byte ptr [EBX + 0x88],0x8
+0043eeed	5e	POP ESI
+0043eeee	5b	POP EBX
+0043eeef	c3	RET

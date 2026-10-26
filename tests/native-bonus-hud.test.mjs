@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NATIVE_BONUS_HUD_ORIGIN, NativeBonusHud, updateNativeBonusHud } from '../src/simulation/native-bonus-hud.js';
+import { NATIVE_BONUS_HUD_ORIGIN, NativeBonusHud, updateNativeBonusHud } from '../source/simulation/native-bonus-hud.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/bonus-hud-fixtures.json', import.meta.url)));
 test('960 complete native bonus HUD callbacks preserve restart, interpolation and final visibility at both precisions', () => {
   assert.deepEqual(NATIVE_BONUS_HUD_ORIGIN, fixtures.origin);

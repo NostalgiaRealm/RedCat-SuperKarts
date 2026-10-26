@@ -1,0 +1,3 @@
+; 0045bb68 FUN_0045bb68
+0045bb68	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+0045bb6b	c3	RET

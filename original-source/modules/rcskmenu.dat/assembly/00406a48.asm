@@ -1,0 +1,2 @@
+; 00406a48 USER32.DLL::RedrawWindow
+00406a48	ff2534f54700	JMP dword ptr [0x0047f534]

@@ -1,0 +1,2 @@
+; 004067a8 USER32.DLL::DrawTextA
+004067a8	ff2580f64700	JMP dword ptr [0x0047f680]

@@ -1,0 +1,2 @@
+; 00406760 USER32.DLL::DestroyMenu
+00406760	ff25a4f64700	JMP dword ptr [0x0047f6a4]

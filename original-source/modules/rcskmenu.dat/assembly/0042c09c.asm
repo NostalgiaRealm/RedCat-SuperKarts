@@ -1,0 +1,29 @@
+; 0042c09c FUN_0042c09c
+0042c09c	55	PUSH EBP
+0042c09d	8bec	MOV EBP,ESP
+0042c09f	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042c0a2	8b40f8	MOV EAX,dword ptr [EAX + -0x8]
+0042c0a5	8b4008	MOV EAX,dword ptr [EAX + 0x8]
+0042c0a8	50	PUSH EAX
+0042c0a9	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042c0ac	8b40f8	MOV EAX,dword ptr [EAX + -0x8]
+0042c0af	8b4004	MOV EAX,dword ptr [EAX + 0x4]
+0042c0b2	50	PUSH EAX
+0042c0b3	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042c0b6	8b40f8	MOV EAX,dword ptr [EAX + -0x8]
+0042c0b9	8b00	MOV EAX,dword ptr [EAX]
+0042c0bb	50	PUSH EAX
+0042c0bc	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042c0bf	8b40fc	MOV EAX,dword ptr [EAX + -0x4]
+0042c0c2	8b803c020000	MOV EAX,dword ptr [EAX + 0x23c]
+0042c0c8	50	PUSH EAX
+0042c0c9	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042c0cc	8b40fc	MOV EAX,dword ptr [EAX + -0x4]
+0042c0cf	8b805c020000	MOV EAX,dword ptr [EAX + 0x25c]
+0042c0d5	50	PUSH EAX
+0042c0d6	e80da6fdff	CALL 0x004066e8
+0042c0db	8b5508	MOV EDX,dword ptr [EBP + 0x8]
+0042c0de	8b52f8	MOV EDX,dword ptr [EDX + -0x8]
+0042c0e1	89420c	MOV dword ptr [EDX + 0xc],EAX
+0042c0e4	5d	POP EBP
+0042c0e5	c3	RET

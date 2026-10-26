@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../src/simulation/clock.js';
-import {nativeCrossedTriggers} from '../src/simulation/native-race.js';
-import {nativeProjectileFacing} from '../src/simulation/native-projectile.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
+import {nativeCrossedTriggers} from '../source/simulation/native-race.js';
+import {nativeProjectileFacing} from '../source/simulation/native-projectile.js';
 import {RouteTestDriver} from './helpers/private-projected-line-driver.mjs';
 import {createPrivateRaceSnapshotter} from './helpers/private-race-snapshot.mjs';
 

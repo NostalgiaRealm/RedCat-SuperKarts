@@ -1,0 +1,3 @@
+; 004618fc TfrmControlSettings_btnOkClick
+004618fc	e803000000	CALL 0x00461904
+00461901	c3	RET

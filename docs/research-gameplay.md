@@ -1,5 +1,11 @@
 # Gameplay evidence and recovered subsystems
 
+[Documentation index](README.md) · [Movement](#native-data-layouts-and-movement) ·
+[Race timing](#lap-and-time-gate-state) · [Input](#timing-and-input) ·
+[Pickups and weapons](#pickups-projectiles-and-hit-effects) ·
+[Results and progression](#results-scores-and-adventure-progression) ·
+[Verification limits](#verification-and-limits)
+
 This document records the investigation in stages. Native input, forces,
 wheel/ground contact, integration, collision, race rules, opponents, bonuses and
 progression now have connected implementations. Later sections supersede the
@@ -36,7 +42,11 @@ and `unicorn` modules. Tests only need Node and the retained evidence files.
 It executes original x86 instructions in memory; it never patches the original
 installation. The fixture records the exact executable SHA-256.
 
-Native exports are under `evidence/native/rcskspel.dat/functions/`.
+The consolidated native export is under
+[`original-source/modules/rcskspel.dat/`](../original-source/modules/rcskspel.dat/).
+Earlier investigation exports remain referenced as
+`evidence/native/rcskspel.dat/functions/`; the [export README](../original-source/README.md)
+explains which generated reference files are included and how to reproduce them.
 Address references in this document are virtual addresses in that executable.
 Do not use a decompiler's inferred types or missing `__ftol` arguments as evidence
 of a different algorithm. The brake ramp is one concrete instance where
@@ -126,7 +136,7 @@ bytes, and `Phys<difficulty>.dat` into `0x505b60`, 20 records of `0xac` bytes.
 Three Phys files and four cars files are shipped. The parser preserves every
 field and only names fields justified by native labels or consumers.
 
-`src/simulation/native-tables.js` recovers:
+`source/simulation/native-tables.js` recovers:
 
 - Phys offsets `+00..20`: weight, front/rear weight share, wheel radius,
   front/rear axle-to-CG distance, air surface, maximum steer angle, max brake
@@ -143,7 +153,7 @@ The active `stuur_model=0` player path is
 simpler AI/racer speed path at `0x414470`. Player reverse clamp is **-15 native
 speed units**; AI's separate limit is **-13.333**. These must not be conflated.
 
-`src/simulation/native-forces.js` implements isolated native kernels:
+`source/simulation/native-forces.js` implements isolated native kernels:
 
 | Kernel | Native evidence |
 | --- | --- |
@@ -684,7 +694,7 @@ whole-race baseline, and does not negate the instruction-level cases above.
 
 ## Results, scores and adventure progression
 
-`src/simulation/native-results.js` reproduces the original completion writes
+`source/simulation/native-results.js` reproduces the original completion writes
 from `0x42c4c0`, including the exact `BEST TIMES` section name. Aborted races
 write only `PLAYER.finished=0`; existing time/result fields are left untouched.
 Completed races save player damage, total time, rank, collected stars and best
@@ -719,7 +729,7 @@ completion writers,500 score lookups,500 insertions and528 native time-component
 evaluations. Filesystem writes, timer reads and string-reference assignment are
 named boundaries; all six result tests pass.
 
-`src/simulation/native-adventure.js` loads the original24 entries from
+`source/simulation/native-adventure.js` loads the original24 entries from
 `shellimg.dat [ADVSEQUENCE]`. The six normal races are followed by six time
 trials, six star races and six duels in the original country order. The
 zero-based rank limits are4,2,0 for Easy, Normal and Hard. The type-specific

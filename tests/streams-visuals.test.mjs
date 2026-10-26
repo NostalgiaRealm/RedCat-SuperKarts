@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from 'three';
 import fs from 'node:fs';
-import {StreamVisuals} from '../src/race-visuals.js';
-import {NativeStreams} from '../src/simulation/native-streams.js';
+import {StreamVisuals} from '../source/race-visuals.js';
+import {NativeStreams} from '../source/simulation/native-streams.js';
 const manifest=JSON.parse(fs.readFileSync(new URL('../public/assets/manifest.json',import.meta.url)));
 test('stream renderer copies native strips once with additive depth-writing draw order',async()=>{
   const body={position:[0,20,0],matrix:[1,0,0,0,1,0,0,0,1]};

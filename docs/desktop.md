@@ -21,10 +21,15 @@ npm ci
 npm run desktop
 ```
 
-`node --version` should report `v24.x`. The first desktop launch downloads the
-pinned Electron runtime if it is not cached. Subsequent starts only need `npm run desktop` unless
+`node --version` should report `v24.x`. Installing dependencies with `npm ci`
+downloads the pinned Electron runtime if it is not cached. Subsequent starts only need `npm run desktop` unless
 dependencies were removed or changed. Do not omit development dependencies:
 Electron and the packager are development tools used by these commands.
+
+Each `npm run desktop` refreshes the generated runtime from the editable
+`source/` inputs before opening Electron. The game executes `src/` bundles;
+it does not directly load the individual authoring modules. No separate static
+build or asset copy is required. See [the folder guide](runtime-layout.md).
 
 The Git repository and published source release include the complete prepared
 `public/assets/` folder, including fonts and converted movies. A fresh checkout
@@ -55,12 +60,13 @@ npm run desktop -- --skip-intro
 
 ## Build packages
 
-Ready-to-run [v0.9.0 packages](releases/v0.9.0.md) are available on
-[GitHub](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v0.9.0)
-and [GitLab](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v0.9.0):
+Ready-to-run [v1.0.0 packages](releases/1.0.0.md) are available on
+[GitHub](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.0)
+and [GitLab](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.0):
 Linux x64 AppImage/archive, Windows x64 installer/ZIP, and separate macOS
-Intel and Apple Silicon DMG/ZIP packages. The release includes its changelog,
-build metadata and checksums. The commands below create packages locally.
+Intel and Apple Silicon DMG/ZIP packages. The release includes its changelog, build metadata and checksums. Version
+1.0.0 is built and published without tests or build checks at the user's
+request. The commands below describe normal local packaging.
 
 Run the commands from the project root after installing dependencies. They use
 the included prepared assets. Outputs go to `release/`. The scripts explicitly
@@ -80,11 +86,16 @@ universal binary. A package includes Electron, so its recipient does not need
 Node.js, npm, Python, the original Windows executable, or a local web server.
 Packaging refreshes the static game staging folder and icons automatically.
 The configuration is [electron-builder.json](../electron-builder.json).
-Before archiving, the build verifies every staged game file byte-for-byte and
-checks the wrapper's contents. Missing Three.js modules or media stop the build.
-The resulting `release/integrity-<platform>-<arch>.json` records this check.
+By default, before archiving, the build verifies every staged game file
+byte-for-byte and checks the wrapper's contents. Version 1.0.0 skips this
+verification as part of its explicit no-tests/no-build-checks release scope,
+using `RCSK_SKIP_BUILD_CHECKS=1`. The generated `runtime-manifest.json` records
+runtime files and sizes, and Electron checks that every listed chunk is present
+before launching the bundled game. The package verifier separately compares
+payload bytes. Missing generated JavaScript chunks or media stop the build.
+Normal checked builds record it in `release/integrity-<platform>-<arch>.json`.
 Artifact names include version, OS and architecture, for example
-`RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage`.
+`RedCat-SuperKarts-1.0.0-linux-x86_64.AppImage`.
 
 ### Linux
 
@@ -104,8 +115,8 @@ Use the equivalent package for another distribution if the build requests it.
 Launch the generated AppImage after making it executable:
 
 ```sh
-chmod +x release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage
-./release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage
+chmod +x release/RedCat-SuperKarts-1.0.0-linux-x86_64.AppImage
+./release/RedCat-SuperKarts-1.0.0-linux-x86_64.AppImage
 ```
 
 Adjust the version in the filename after a version change. The unpacked test
@@ -209,14 +220,23 @@ Remove-Item Env:RCSK_USER_DATA
 
 The wrapper is stored in `app.asar`; its files are `electron/**`, package
 metadata and the desktop icon. The game is copied separately into `resources/game/` (inside the app's
-`Contents/Resources/` on macOS): the entry page, `src/`, prepared assets and the
-required Three.js runtime modules. Movies and audio are served locally from
+`Contents/Resources/` on macOS): the entry page, generated `src/` entry/chunks,
+source maps, stylesheet, `runtime-manifest.json` and prepared assets. The required Three.js code is
+included in those JavaScript chunks. Movies and audio are served locally from
 these packaged files. The packaging scripts generate this payload through
 `npm run build`; the resulting `dist/` contents become `resources/game/`.
+The local launcher also runs generated bundles, refreshed by `npm run desktop`.
+Editable `source/` files are build inputs and are excluded from the package.
+Both paths keep
+`rcsk://game/` and the same profile/storage format, so bundling does not require
+players to move or reset existing saves. See [loading and build changes](code-efficiency.md).
 
 Original installers/executables, raw extraction folders, native research,
 evidence, tests and development dependencies are not part of the game resource
-payload. The prepared original artwork, sound, fonts
+payload. The complete `original-source/` reference is distributed separately
+with the repository/source archives on both release hosts, on this and every
+future release; it is not needed inside the desktop application's game payload.
+See [release publication policy](releases/README.md). The prepared original artwork, sound, fonts
 and movies retain their owners' rights; packaging does not change their license
 or grant redistribution rights.
 
@@ -257,6 +277,14 @@ by the local unsigned/ad-hoc validation. The packaging scripts still do not
 publish the resulting files.
 
 ## Validation scope
+
+### Version 1.0.0 packages — 26 October 2026
+
+The 1.0.0 release creates and publishes desktop packages without tests, launch
+checks, payload verification or other build checks, as explicitly requested.
+Successful packaging is not gameplay validation. Historical source and package
+results below remain tied to their original checkpoints and are not repeated
+or relabeled as 1.0.0 results. See [the release notes](releases/1.0.0.md).
 
 ### Version 0.9.0 packages — 25 October 2026
 
@@ -318,7 +346,7 @@ To repeat the Linux checks in an isolated display, install `xvfb-run`,
 ```sh
 npm test
 bash tools/run-desktop-test-linux.sh
-RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-0.9.0-linux-x86_64.AppImage" \
+RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-1.0.0-linux-x86_64.AppImage" \
   bash tools/run-desktop-test-linux.sh
 ```
 

@@ -1,0 +1,6 @@
+; 0040aecc FUN_0040aecc
+0040aecc	8bc2	MOV EAX,EDX
+0040aece	8bda	MOV EBX,EDX
+0040aed0	8afa	MOV BH,DL
+0040aed2	c1cb18	ROR EBX,0x18
+0040aed5	c3	RET

@@ -1,0 +1,2 @@
+; 00406528 GDI32.DLL::GdiFlush
+00406528	ff252cf44700	JMP dword ptr [0x0047f42c]

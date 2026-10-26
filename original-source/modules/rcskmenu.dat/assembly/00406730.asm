@@ -1,0 +1,2 @@
+; 00406730 USER32.DLL::DefFrameProcA
+00406730	ff25bcf64700	JMP dword ptr [0x0047f6bc]

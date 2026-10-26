@@ -19,7 +19,7 @@ observation of the complete Windows game.
 ## Format compatibility
 
 The Spookkasteel `docs/asset-formats.md`, `docs/menu-media.md`,
-`tools/extract_menu.py`, `src/main.js` and `src/render-quality.js` were consulted
+`tools/extract_menu.py`, `source/main.js` and `source/render-quality.js` were consulted
 before implementation. SuperKarts has racing maps rather than GBSP levels.
 Its archives share the uint16-count/24-byte name-and-offset record layout;
 level, actor, script and movement compatibility is not established.
@@ -105,8 +105,10 @@ the help paragraph/default/cancel buttons are hidden and Start moves to
 384,410. The separate settings mode hides the start-info checkbox instead.
 
 `RCSK.HLP` provides 13 original topics, 46 images, internal links and original
-formatting. HelpDeco reports unresolved browse-chain metadata; the converted
-topic content and nine explicit internal links are validated separately.
+formatting. The [Help follow-up](research-help-navigation.md) verifies the nine
+explicit links and 13 keyword mappings directly from the HLP. The old HelpDeco
+browse-chain warnings are resolved: every browse pointer is the no-link sentinel,
+so the source has no authored Next/Previous sequence to reconstruct.
 
 Menu sounds include loose CD files in `data/shellsnd` and `Media/sounds`.
 Five referenced filenames are absent from all supplied sources; no sounds
@@ -154,12 +156,15 @@ The native menu ignores a race result when PLAYER.finished is zero, including
 the normal timeout path. Highscores compare best-lap time strictly, across
 difficulties; the original time formatter's rounding quirks are preserved.
 
-The supplied race settings retain motor, tyre and gearbox values of one.
-No reachable upgrade purchase menu exists in the supplied flow; the native
-collision-damage increment routine is a single return instruction. Those
-values must not be silently replaced with zero or treated as
-new difficulty controls. NPC grip also reads the player's tyre/low-speed
-turn globals; `research-ai.md` records this cross-racer dependency.
+The supplied race settings load motor, tyre and gearbox values of one. The
+later player constructor clears all six upgrade switches before active
+movement, NPC setup and timer initialization. Preserve both the loaded values
+and that reset; [constructor evidence](research-startup-upgrades.md) supersedes
+the earlier assumption that the loaded values stay active. These switches are
+not difficulty controls. No reachable upgrade purchase menu exists in the
+shipped flow, and the collision-damage increment routine is a single return.
+NPC grip also reads the player's tyre/low-speed turn globals;
+[opponent research](research-ai.md) records this cross-racer dependency.
 
 ## Platform adaptations
 

@@ -1,0 +1,2 @@
+; 004063b8 KERNEL32.DLL::GlobalSize
+004063b8	ff25acf24700	JMP dword ptr [0x0047f2ac]

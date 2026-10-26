@@ -1,0 +1,23 @@
+; 004bea1e FUN_004bea1e
+004bea1e	55	PUSH EBP
+004bea1f	8bec	MOV EBP,ESP
+004bea21	6aff	PUSH -0x1
+004bea23	6800374d00	PUSH 0x4d3700
+004bea28	68a42a4c00	PUSH 0x4c2aa4
+004bea2d	64a100000000	MOV EAX,FS:[0x0]
+004bea33	50	PUSH EAX
+004bea34	64892500000000	MOV dword ptr FS:[0x0],ESP
+004bea3b	51	PUSH ECX
+004bea3c	51	PUSH ECX
+004bea3d	53	PUSH EBX
+004bea3e	56	PUSH ESI
+004bea3f	57	PUSH EDI
+004bea40	8965e8	MOV dword ptr [EBP + -0x18],ESP
+004bea43	8365fc00	AND dword ptr [EBP + -0x4],0x0
+004bea47	ff4d10	DEC dword ptr [EBP + 0x10]
+004bea4a	781b	JS 0x004bea67
+004bea4c	8b4d08	MOV ECX,dword ptr [EBP + 0x8]
+004bea4f	2b4d0c	SUB ECX,dword ptr [EBP + 0xc]
+004bea52	894d08	MOV dword ptr [EBP + 0x8],ECX
+004bea55	ff5514	CALL dword ptr [EBP + 0x14]
+004bea58	ebed	JMP 0x004bea47

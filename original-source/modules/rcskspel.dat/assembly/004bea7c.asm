@@ -1,0 +1,8 @@
+; 004bea7c FUN_004bea7c
+004bea7c	8b442404	MOV EAX,dword ptr [ESP + 0x4]
+004bea80	8b00	MOV EAX,dword ptr [EAX]
+004bea82	813863736de0	CMP dword ptr [EAX],0xe06d7363
+004bea88	7403	JZ 0x004bea8d
+004bea8a	33c0	XOR EAX,EAX
+004bea8c	c3	RET
+004bea8d	e9ea400000	JMP 0x004c2b7c

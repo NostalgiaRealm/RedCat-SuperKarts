@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeFailureCamera} from '../src/simulation/native-camera.js';
+import {NativeFailureCamera} from '../source/simulation/native-camera.js';
 const f=JSON.parse(readFileSync(new URL('../evidence/native/failure-camera-fixtures.json',import.meta.url)));
 test('60 original phase6 camera setups and720 post-render orbit transforms match exactly',()=>{
  for(const [i,c] of f.cases.entries()){

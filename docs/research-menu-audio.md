@@ -102,7 +102,7 @@ up to their sound wrappers:32 navigation cases,12 race-mode announcements,
 30 country-information cases and256 key classifications. The fixture records
 the original menu binary digest. UI/string/sound-device boundaries are explicit;
 this is not a native menu listening session. All330 cases match
-`src/menu-sound-events.js`.
+`source/menu-sound-events.js`.
 
 `tests/menu-audio-browser.mjs` follows actual menu controls and records real
 HTML media `playing` events with decoded duration and ready state. Its57

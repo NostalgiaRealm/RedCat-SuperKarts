@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NativeEngineTimer} from '../src/simulation/clock.js';
-import {createNativeInputState,updateNativeInput} from '../src/simulation/native-input.js';
-import {PlayerStuckRecovery} from '../src/simulation/player-stuck-recovery.js';
+import {NativeEngineTimer} from '../source/simulation/clock.js';
+import {createNativeInputState,updateNativeInput} from '../source/simulation/native-input.js';
+import {PlayerStuckRecovery} from '../source/simulation/player-stuck-recovery.js';
 
 test('native float cap from the real clock is accepted by digital input at startup and after stalls',()=>{
   const timer=new NativeEngineTimer({absoluteSeconds:60});

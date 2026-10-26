@@ -1,0 +1,9 @@
+; 00494b70 FUN_00494b70
+00494b70	d9442404	FLD float ptr [ESP + 0x4]
+00494b74	d8493c	FMUL float ptr [ECX + 0x3c]
+00494b77	d8a9dc000000	FSUBR float ptr [ECX + 0xdc]
+00494b7d	d9442408	FLD float ptr [ESP + 0x8]
+00494b81	d84944	FMUL float ptr [ECX + 0x44]
+00494b84	dee9	FSUBP
+00494b86	d87140	FDIV float ptr [ECX + 0x40]
+00494b89	c20800	RET 0x8

@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
-import {getSoundSpec} from '../src/asset-animation.js';
-import {getNativeScenerySounds,getNativeReactiveSounds} from '../src/spatial-audio.js';
-import {NativeVoiceController} from '../src/native-voice-controller.js';
-import {NATIVE_DIRECT_RACE_SOUNDS} from '../src/native-race-audio.js';
+import {getSoundSpec} from '../source/asset-animation.js';
+import {getNativeScenerySounds,getNativeReactiveSounds} from '../source/spatial-audio.js';
+import {NativeVoiceController} from '../source/native-voice-controller.js';
+import {NATIVE_DIRECT_RACE_SOUNDS} from '../source/native-race-audio.js';
 
 const read = path => fs.readFile(path,'utf8').then(JSON.parse);
 const [config,manifest,decode,voices,menu,media,race,mixing] = await Promise.all([
@@ -42,46 +42,46 @@ const callsites=(await fs.readFile('evidence/native/rcskspel.dat/calls.tsv','utf
 const coverage=[
   {category:'Menu navigation, selection, options, country information and debrief voices',
     native:['rcskmenu45c518','rcskmenu45c668','rcskmenu45c720'],
-    runtime:['src/menu-audio.js','src/main.js'],evidence:['menu-playback.json'],
+    runtime:['source/menu-audio.js','source/main.js'],evidence:['menu-playback.json'],
     limits:'Five referenced menu WAV names are absent from both supplied sources; menu-sources.json retains them without substitutes.'},
   {category:'Movies and six looping race music streams',
     native:['RCMovie SmackOpen','42d7d0','48ec20','48ef80','431610','48f010'],
-    runtime:['src/main.js','src/game-audio.js'],evidence:['media-playback.json'],
+    runtime:['source/main.js','source/game-audio.js'],evidence:['media-playback.json'],
     limits:'Music follows original DirectShow gain conversion; movie sound uses its original full source level. Browser codec output is not an original sound-card recording.'},
   {category:'Player starter, engine layers and gear effect',
-    native:['418950','418c10','418c80'],runtime:['src/engine-audio.js','src/native-race-audio.js'],
+    native:['418950','418c10','418c80'],runtime:['source/engine-audio.js','source/native-race-audio.js'],
     evidence:['browser-engine.json','browser-mixing.json'],limits:'Original car0 settings are used for all karts. Cylinder scheduler418ad0 is gated off by the empty shipped Cylinders sample list.'},
   {category:'Tyre loop and pitch',
-    native:['432240','432190'],runtime:['src/skid-audio.js','src/driving-view.js'],
+    native:['432240','432190'],runtime:['source/skid-audio.js','source/driving-view.js'],
     evidence:['browser-engine.json'],limits:'SFXVOLUME gates the handler; controller enable gates a new start. Existing loop pitch/stop order is preserved.'},
   {category:'Ambient attached and moving scenery',
-    native:['43f020','43b790','49da60','447210'],runtime:['src/spatial-audio.js','src/native-race-audio.js'],
+    native:['43f020','43b790','49da60','447210'],runtime:['source/spatial-audio.js','source/native-race-audio.js'],
     evidence:['browser-spatial.json'],limits:'311 independent attached sources; hidden callbacks preserve already playing audio, path stop explicitly stops it. Previous listener snapshot is used.'},
   {category:'Reactive cones and props',
-    native:['43e140','43b760','43fe80','43b790'],runtime:['src/simulation/native-scenery-reactions.js','src/native-race-audio.js'],
+    native:['43e140','43b760','43fe80','43b790'],runtime:['source/simulation/native-scenery-reactions.js','source/native-race-audio.js'],
     evidence:['browser-spatial.json','race-trigger-playback.json'],limits:'174 independent PION_HIT_CAR clones, one nonloop spatial update at launch. No shared global impact source.'},
   {category:'Pickup and five weapon firing effects',
-    native:['4540c0','4542c0','455490','451640'],runtime:['src/bonus-audio.js','src/simulation/native-bonus.js','src/simulation/native-combat.js'],
+    native:['4540c0','4542c0','455490','451640'],runtime:['source/bonus-audio.js','source/simulation/native-bonus.js','source/simulation/native-combat.js'],
     evidence:['race-trigger-playback.json','browser-voices.json'],limits:'Player-only EFFECTS queue. Static random type7 requests absent GOT_BONUS; collectible type6 requests absent GOT_EURO. These are preserved original missing names.'},
   {category:'Hits, passing, catchup, boost, pickup and attacker/victim character speech',
     native:['40d9c0','4106b0','40d260','40de60','411830','411b40','411e50','412090','437c40','437ff0..4387e0','440a90'],
-    runtime:['src/simulation/native-character-voice.js','src/native-voice-controller.js','src/native-race-audio.js'],
+    runtime:['source/simulation/native-character-voice.js','source/native-voice-controller.js','source/native-race-audio.js'],
     evidence:['browser-voices.json','race-trigger-playback.json'],limits:'Native selector/chance RNG and request ordering are tested separately against original instructions; 327 logical bank entries reach actual sources. Not every random speech branch is reached by a complete driven race.'},
   {category:'Lap and record announcements, countdown and time gates',
     native:['430610','464a70','42f170','441e70','442570'],
-    runtime:['src/simulation/native-character-voice.js','src/simulation/native-countdown.js','src/race-simulation.js'],
+    runtime:['source/simulation/native-character-voice.js','source/simulation/native-countdown.js','source/race-simulation.js'],
     evidence:['browser-voices.json'],limits:'COMM announcements use effects FIFO10; STARTSE1..4,TIME_TICK,CHECKPOINT are direct effects with native repeat suppression.'},
   {category:'Player contact and scrape',
-    native:['434c40','4350b0','434ea0','434f20'],runtime:['src/native-crash-audio.js','src/race-simulation.js'],
+    native:['434c40','4350b0','434ea0','434f20'],runtime:['source/native-crash-audio.js','source/race-simulation.js'],
     evidence:['browser-voices.json'],limits:'840 original selector cases and192 contact-latch cases verify shared RNG and duplicate callbacks. Seven direct effect sources preload before contact.'},
   {category:'Recovery disappearance/reappearance',
-    native:['48ca60','437ea0','437b10'],runtime:['src/simulation/native-rescue.js','src/simulation/native-character-voice.js'],
+    native:['48ca60','437ea0','437b10'],runtime:['source/simulation/native-rescue.js','source/simulation/native-character-voice.js'],
     evidence:['race-trigger-playback.json'],limits:'DISAPP/REAPP go to recovered racer logical voice FIFO at pre-update frame3, with no chance or RNG draw.'},
   {category:'Homing-rocket warning beeps',
-    native:['456440','486b20','486ea0','4879c0'],runtime:['src/simulation/native-homing-arm.js','src/arm-audio.js'],
+    native:['456440','486b20','486ea0','4879c0'],runtime:['source/simulation/native-homing-arm.js','source/arm-audio.js'],
     evidence:['race-trigger-playback.json'],limits:'Actual target-player arm ratio, strict float32 .1 timer and .4/.7 thresholds;1200 instruction cases includeNaN/Infinity. Queues after current voice service.'},
   {category:'Hardwired Space sound',
-    native:['42f9c0'],runtime:['src/native-key-audio.js','src/race-simulation.js'],
+    native:['42f9c0'],runtime:['source/native-key-audio.js','source/race-simulation.js'],
     evidence:['race-trigger-playback.json'],limits:'Native available-character-index to racer-index mismatch, missing CLAXON replacement and directKT4 preserved, outside debug guard.'},
 ];
 const report={

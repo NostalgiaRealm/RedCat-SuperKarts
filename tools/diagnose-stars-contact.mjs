@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 
 const file=process.argv[2]??'evidence/full-race-matrix/stars-difficulty0-attempt1.json';
 const trackIndex=Number(process.argv[3]??0),difficulty=Number(process.argv[4]??0);

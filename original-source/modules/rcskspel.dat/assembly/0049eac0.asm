@@ -1,0 +1,2 @@
+; 0049eac0 thunk_FUN_0049ebe0
+0049eac0	e91b010000	JMP 0x0049ebe0

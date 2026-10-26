@@ -1,0 +1,2 @@
+; 00406400 KERNEL32.DLL::OutputDebugStringA
+00406400	ff2588f24700	JMP dword ptr [0x0047f288]

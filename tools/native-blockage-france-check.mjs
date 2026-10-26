@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
-import {integrateNativeEuler,quantizeNativePlanarVelocity} from '../src/simulation/native-integrator.js';
-import {nativeRotationMatrix} from '../src/simulation/native-transform.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
+import {integrateNativeEuler,quantizeNativePlanarVelocity} from '../source/simulation/native-integrator.js';
+import {nativeRotationMatrix} from '../source/simulation/native-transform.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/race-completion/france-native-frame-fixtures.json',import.meta.url)));
 const track={collision:[],route:Array.from({length:187},()=>({collisionIndices:[]}))};
 const zero={lateralForce:0,verticalForce:0,longitudinalForce:0,torque:0};

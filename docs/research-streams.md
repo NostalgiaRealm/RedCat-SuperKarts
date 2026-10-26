@@ -1,6 +1,6 @@
 # Original racer and projectile streams
 
-`src/simulation/native-streams.js` implements the two separate controllers
+`source/simulation/native-streams.js` implements the two separate controllers
 from the shipped `rcskspel.dat`: the growing ribbon (`0x489400` family,
 manager `0x48a480`) and its attached rotating flare (`0x488100` family,
 manager `0x488a90`). Neither consumes the shared random stream.

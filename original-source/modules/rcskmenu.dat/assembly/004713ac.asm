@@ -1,0 +1,5 @@
+; 004713ac TfrmStarAnim_TimerTimer
+004713ac	80b8ec02000000	CMP byte ptr [EAX + 0x2ec],0x0
+004713b3	7505	JNZ 0x004713ba
+004713b5	e85ed7fbff	CALL 0x0042eb18
+004713ba	c3	RET

@@ -1,10 +1,14 @@
+// Historical checkpoint verifier: the recorded src/ hashes and copy-layout
+// assertions below belong to its frozen evidence snapshot, before source/ was
+// separated from bundled runtime output. Use the matching historical checkout;
+// do not regenerate these records as evidence of the current runtime.
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
-import {nativeRaceSettings} from '../src/simulation/native-race.js';
+import {nativeRaceSettings} from '../source/simulation/native-race.js';
 
 const root=fileURLToPath(new URL('../',import.meta.url)),base='evidence/full-race-matrix';
 const read=file=>fs.readFileSync(path.join(root,file));

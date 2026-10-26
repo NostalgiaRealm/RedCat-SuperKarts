@@ -1,0 +1,2 @@
+; 00406b98 USER32.DLL::WaitMessage
+00406b98	ff258cf44700	JMP dword ptr [0x0047f48c]

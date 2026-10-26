@@ -4,6 +4,90 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Runtime folder separation — 26 October 2026
+
+The [folder guide](runtime-layout.md) documents the subsequent move of editable
+modules and HTML/CSS inputs into `source/`. Normal launches refresh and run the
+generated `src/` bundles; source-module inspection is an explicit test mode.
+This is separate from the earlier efficiency checkpoint below. Its historical
+hashes and test counts are retained, not relabeled after the move.
+The [consolidated layout record](../evidence/runtime-layout/validation.json)
+records 24 distinct focused Node checks, including unchanged save formats,
+compilation-failure recovery, concurrent refreshes and stable debugging maps.
+The [current runtime browser report](../evidence/runtime-layout/bundle-browser.json)
+passes eight focused groups, including save continuation, a short England drive
+and Linux Electron relaunch/race loading. Two diagnostic HUD groups also pass
+(120 pixel comparisons and three MSAA configurations). The 124 relocated
+JavaScript/CSS files remain byte-identical to their pre-move contents.
+This work does not repeat full races or create desktop packages.
+The [documentation audit](../evidence/runtime-layout/docs-audit.json)
+records the guide inventory and consistency checks.
+
+## Code and loading efficiency — 26 October 2026
+
+The [efficiency review](code-efficiency.md) records generated JavaScript bundles,
+menu loading changes, reduced HUD/effect allocations, shared file serving and
+documentation cleanup. Editable source modules and original assets remain;
+existing browser and desktop saves require no migration.
+
+Focused checks cover native results/timers, HUD pixels and resources, effects,
+save compatibility, bundled output and file serving. The final browser/Electron
+checks include same-origin saved-game continuation, intro playback, canceled
+loading, six short course drives and a Linux desktop relaunch. The review
+links the commands, measured scope and consolidated evidence. These checks
+created temporary JavaScript output only: they did not refresh `dist/`, create
+desktop packages, publish, rerun the full suite or complete full races. Earlier
+checkpoints below retain their original source hashes and results.
+
+## Original-code comparison — 26 October 2026
+
+The [separate comparison document](full-source-audit.md) records the five-module
+original-code export, intentional differences and confirmed corrections. All
+10,354 identified functions have recovered C-like output; 422,295 decoded
+instructions were checked against original bytes. This is inspection
+pseudocode, not the original authored source or proof of complete equivalence.
+Warnings and unclassified executable regions remain explicitly recorded.
+
+Focused validation passed 98 original-instruction traces, 47 Node tests and
+17 Chromium source-browser check groups. The browser checks cover menu entry,
+name acceptance, native pause/quit audio, music completion and focus-loss
+recovery. Fresh parses of all six route files and six driving graphs match
+the prepared data, and all 16 positive shipped route markers have accounted
+dispatch paths. The final integration reviews found no further actionable
+issue in these changed paths.
+
+The [consolidated record](../evidence/full-source-audit/validation.json) links
+the reports and records source hashes. No full races, broad test suite,
+desktop builds or publication were repeated. These results do not supersede
+the native Windows race, historical GPU or physical-device validation gaps.
+The previously completed intro changes below remain a separate checkpoint.
+
+## Intro autoplay source update — 26 October 2026
+
+The shared intro/reward player now starts immediately and retries muted when
+audible autoplay is blocked, following the Spookkasteel port's interaction.
+The Start button and its startup notice are removed. **Geluid inschakelen**
+sits at the bottom left when audio activation is needed; mouse, touch, Enter
+and Space enable sound without rewinding or skipping the movie. The same
+activation requests fullscreen for the whole game unless already fullscreen.
+Audio starts first so fullscreen does not consume its gesture; an unsupported
+or denied fullscreen request leaves movie/audio playback running. Movie gain
+and the complete original aspect ratio are retained. Stopped/replaced movies
+invalidate pending play results so they cannot restart playback or mute a
+newer reward movie.
+
+Seven focused playback tests and eight Chromium browser checks pass, covering
+allowed audio, blocked audible/muted autoplay, portrait/landscape controls,
+natural completion, skipping and fullscreen entry from mouse/touch/keyboard.
+The unit checks also cover existing fullscreen and request denial. The
+policy rejections are explicit fixtures;
+the video playback and input gestures use the browser's actual media/DOM paths.
+The commands are `node --test tests/movie-playback.test.mjs` and
+`node tests/startup-browser.mjs --intro-only`. See
+`evidence/intro-autoplay/browser.json`. No races, broad suite, builds or
+publication were performed for this source-only follow-up; published 0.9.0
+packages retain their earlier source.
+
 ## Version 0.9.0 desktop publication — 25 October 2026
 
 The source-only publication below is supplemented by eight packages: Linux
@@ -56,8 +140,10 @@ is `evidence/runtime/movie-aspect/validation.json` (ignored, not distributed).
 The movie fix is included in `v0.9.0`, but not in the earlier `v0.1.0` source
 tag. No package was rebuilt for it.
 
-The published source release includes all prepared assets and no desktop
-builds. Packaging results below describe the earlier local checkpoint only.
+At that 22 October checkpoint, the published source release included all
+prepared assets but no desktop downloads. The later 0.9.0 desktop publication
+above supersedes that distribution status. Packaging results below describe
+the earlier local checkpoint only.
 
 ## Source-only power-up audio audit — 25 October 2026
 
@@ -153,25 +239,30 @@ GPU/audio/controller testing and full races are outside this integration check.
 At that checkpoint, Linux AppImage/tar.gz and Windows x64 NSIS/ZIP packages were
 built locally. Each staged 6,844 game files checked byte-for-byte, plus the
 narrowly scoped wrapper. The then-current browser `dist/` was refreshed and
-included the startup correction below. These packages do not include later
-source changes and are not attached to the public source release.
-Windows packages are cross-built, with native execution unverified. macOS Intel
-and Apple Silicon build instructions/configuration are supplied; Mac packages,
-native runs, signing and notarization have not been validated here. See
-`desktop.md` for platform commands and limitations.
+included the startup correction below. Those initial packages did not include
+later source changes and were not
+attached to the initial source-only release. The later 0.9.0 publication above
+supersedes that distribution state: both Mac architectures were packaged and
+ad-hoc signed on macOS, with all four platform payloads verified. Native
+Windows/macOS gameplay, publisher signing and notarization remain unverified.
+See [desktop scope](desktop.md#validation-scope) for the separate checkpoints.
 
 ## Earlier source-server startup correction
 
 Missing `node_modules/three` prevented the browser import graph from evaluating,
 leaving an empty blue screen. The pinned dependencies were restored with
-`npm ci`; the server now checks its three required library files before listening
-and reports the installation command when they are absent. The noninteractive
-autoplay notice also lets clicks reach the Start button beneath it.
+`npm ci`; the server then checked its three required library files before
+listening and reported the installation command when they were absent. Current
+normal launch commands bundle those dependencies before starting, and runtime
+preflight checks the generated manifest and files. At that earlier checkpoint,
+the noninteractive autoplay notice also let clicks reach
+the Start button beneath it. The later [intro autoplay update](#intro-autoplay-source-update--26-october-2026)
+removed both elements and supplies the separate audio/fullscreen button.
 
 The focused records are in `evidence/startup-blue-screen/`: three server
 preflight tests plus Chromium and Firefox intro/menu/race checks. This source
-startup fix does not require rebuilding or restarting an already running server
-after restoring dependencies. The static build was not refreshed at that
+startup fix did not require rebuilding or restarting the then-current direct
+source server after restoring dependencies. The static build was not refreshed at that
 checkpoint; the later desktop integration above now includes this correction.
 
 ## Earlier shadow and extra-settings checkpoint

@@ -5,7 +5,7 @@ import {createHash} from 'node:crypto';
 
 const output=process.env.RCSK_CADENCE_OUTPUT||'evidence/variable-cadence/browser';
 await mkdir(output,{recursive:true});
-const sourceFiles=(await readdir('src',{recursive:true})).filter(file=>/\.(js|css)$/.test(file)).map(file=>'src/'+file);
+const sourceFiles=(await readdir('source',{recursive:true})).filter(file=>/\.(js|css)$/.test(file)).map(file=>'source/'+file);
 const files=[...sourceFiles,'tests/variable-cadence-browser.mjs',
   'tests/native-timing-consumers.test.mjs','public/assets/config.json'];
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,

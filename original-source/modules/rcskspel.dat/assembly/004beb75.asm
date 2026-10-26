@@ -1,0 +1,28 @@
+; 004beb75 FUN_004beb75
+004beb75	55	PUSH EBP
+004beb76	8bec	MOV EBP,ESP
+004beb78	83ec04	SUB ESP,0x4
+004beb7b	53	PUSH EBX
+004beb7c	56	PUSH ESI
+004beb7d	57	PUSH EDI
+004beb7e	fc	CLD
+004beb7f	8945fc	MOV dword ptr [EBP + -0x4],EAX
+004beb82	33c0	XOR EAX,EAX
+004beb84	50	PUSH EAX
+004beb85	50	PUSH EAX
+004beb86	50	PUSH EAX
+004beb87	ff75fc	PUSH dword ptr [EBP + -0x4]
+004beb8a	ff7514	PUSH dword ptr [EBP + 0x14]
+004beb8d	ff7510	PUSH dword ptr [EBP + 0x10]
+004beb90	ff750c	PUSH dword ptr [EBP + 0xc]
+004beb93	ff7508	PUSH dword ptr [EBP + 0x8]
+004beb96	e88d400000	CALL 0x004c2c28
+004beb9b	83c420	ADD ESP,0x20
+004beb9e	894514	MOV dword ptr [EBP + 0x14],EAX
+004beba1	5f	POP EDI
+004beba2	5e	POP ESI
+004beba3	5b	POP EBX
+004beba4	8b4514	MOV EAX,dword ptr [EBP + 0x14]
+004beba7	8be5	MOV ESP,EBP
+004beba9	5d	POP EBP
+004bebaa	c3	RET

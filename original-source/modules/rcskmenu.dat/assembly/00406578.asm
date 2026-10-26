@@ -1,0 +1,2 @@
+; 00406578 GDI32.DLL::GetEnhMetaFileHeader
+00406578	ff2504f44700	JMP dword ptr [0x0047f404]

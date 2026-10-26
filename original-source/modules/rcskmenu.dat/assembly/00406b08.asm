@@ -1,0 +1,2 @@
+; 00406b08 USER32.DLL::SetTimer
+00406b08	ff25d4f44700	JMP dword ptr [0x0047f4d4]

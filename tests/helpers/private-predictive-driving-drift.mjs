@@ -1,8 +1,8 @@
 // Private controller: candidate futures own their scalar state. Sweeps query
 // the original colliders without resolving contacts or writing game bodies.
-import {calculateNativePlayerForces} from '../../src/simulation/native-player.js';
-import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../src/simulation/native-integrator.js';
-import {selectNativeSector,sampleNativeTrack} from '../../src/simulation/native-track.js';
+import {calculateNativePlayerForces} from '../../source/simulation/native-player.js';
+import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../source/simulation/native-integrator.js';
+import {selectNativeSector,sampleNativeTrack} from '../../source/simulation/native-track.js';
 const wrap=value=>Math.atan2(Math.sin(value),Math.cos(value));
 export function predictSteering(motion,target,input,{frames=24,slipWeight=1,rateWeight=.3}={}){
   const live=motion.body,angle=live.yaw*Math.PI/2048;

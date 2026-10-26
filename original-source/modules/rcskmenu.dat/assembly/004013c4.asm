@@ -1,0 +1,2 @@
+; 004013c4 KERNEL32.DLL::VirtualAlloc
+004013c4	ff2544f14700	JMP dword ptr [0x0047f144]

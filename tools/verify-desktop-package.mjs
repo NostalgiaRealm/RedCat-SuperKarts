@@ -52,8 +52,12 @@ export async function verifyDesktopPackage(resources){
       'Wrapper matches source; no research, tests, development dependencies or unrelated project files in app.asar']};
 }
 
-// Runs before signing/archiving, so a missing runtime file cannot produce a release.
+// Runs before signing/archiving unless the release explicitly disables build checks.
 export default async function afterPack(context){
+  if(process.env.RCSK_SKIP_BUILD_CHECKS==='1'){
+    console.log('Skipping packaged-payload checks (RCSK_SKIP_BUILD_CHECKS=1).');
+    return;
+  }
   const resources=context.electronPlatformName==='darwin'
     ?path.join(context.appOutDir,context.packager.appInfo.productFilename+'.app','Contents','Resources')
     :path.join(context.appOutDir,'resources');

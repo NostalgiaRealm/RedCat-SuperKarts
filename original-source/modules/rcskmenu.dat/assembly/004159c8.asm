@@ -1,0 +1,2 @@
+; 004159c8 COMCTL32.DLL::ImageList_DragMove
+004159c8	ff2534f74700	JMP dword ptr [0x0047f734]

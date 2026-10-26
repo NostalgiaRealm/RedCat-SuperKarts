@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeStartCountdown,nativeCountdownY} from '../src/simulation/native-countdown.js';
+import {NativeStartCountdown,nativeCountdownY} from '../source/simulation/native-countdown.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/countdown-fixtures.json',import.meta.url)));
 for(const trace of fixtures.traces)test(`Original countdown ${trace.precision}-bit ${trace.name}`,()=>{
   const countdown=new NativeStartCountdown({precision:trace.precision});

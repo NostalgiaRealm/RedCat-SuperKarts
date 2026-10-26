@@ -1,0 +1,2 @@
+; 004068c0 USER32.DLL::GetMenuState
+004068c0	ff25f4f54700	JMP dword ptr [0x0047f5f4]

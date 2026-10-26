@@ -26,6 +26,12 @@ the full original 4:3 image. See [remaining work](remaining-work.md) for the
 [HUD precision/smoke-test follow-up](research-hud-framebuffer.md). Tests listed below are retained results, not a fresh
 whole-project pass on today's source.
 
+The [26 October original-code comparison](full-source-audit.md) adds a
+five-module decompilation reference and corrects confirmed menu focus,
+name-entry, player update and pause/music ordering differences. It includes
+fresh route/drive-data comparisons and focused source checks; it does not
+replace the historical full-race results with a new whole-game parity claim.
+
 | System/content | Original evidence | Implementation | Native comparison |
 | --- | --- | --- | --- |
 | Launcher → intro → menu → race | Native process handoff + Wine working-copy trace | Intro/menu/selection/race/results connected | Startup confirmed; original QuickRace/browser flow passes in source and static build; native full-process race comparison unavailable |

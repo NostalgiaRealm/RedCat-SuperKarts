@@ -1,0 +1,2 @@
+; 00401300 KERNEL32.DLL::lstrcpyA
+00401300	ff256cf14700	JMP dword ptr [0x0047f16c]

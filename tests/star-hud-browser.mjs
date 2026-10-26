@@ -6,8 +6,8 @@ import {createHash} from 'node:crypto';
 const output=process.env.RCSK_STAR_HUD_OUTPUT||'evidence/star-hud/browser';
 await mkdir(output,{recursive:true});
 const report={status:'running',scope:'Source-only software-WebGL browser regression. Twelve distinct original pickup contacts pass through NativeBonusPickups.step with the original cooldown; the live kart is not teleported and the star count is never assigned. This is controlled pickup/HUD coverage, not a full race.',checks:[],errors:[]};
-const files=['src/race-hud-meshes.js','src/race-hud-layout.js','src/simulation/native-star-hud.js',
-  'src/simulation/native-bonus.js','tests/star-hud-browser.mjs',
+const files=['source/race-hud-meshes.js','source/race-hud-layout.js','source/simulation/native-star-hud.js',
+  'source/simulation/native-bonus.js','tests/star-hud-browser.mjs',
   'public/assets/config.json','public/assets/meshes/ovrlster.json','public/assets/meshes/ovrlvlag.json',
   'public/assets/textures/overlay1.tga.png'];
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,

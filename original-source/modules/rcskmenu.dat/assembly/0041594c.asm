@@ -1,0 +1,2 @@
+; 0041594c COMCTL32.DLL::ImageList_Create
+0041594c	ff256cf74700	JMP dword ptr [0x0047f76c]

@@ -37,7 +37,7 @@ bindings. The control dialog saves independently of Options, as the native
 nested `46b828` call does.
 
 `showSettings`, `showControlSettings`, the source start-info predicate and input
-capture in `src/main.js` use the pure `src/native-control-settings.js` model.
+capture in `source/main.js` use the pure `source/native-control-settings.js` model.
 At this audit's original checkpoint, browser settings had an additional entry
 inside the restored display dialog. The later requested
 [Meer instellingen change](more-settings.md) supersedes that placement: the
@@ -53,7 +53,7 @@ back. `46a87c` Cancel closes without changing that copy. `46a8a0` OK calls
 `46a884` selects the first, **Algemeen**, tab even though the design-time DFM
 names Problemen as its active page.
 
-`src/native-display-settings.js` reads the original form's captions, grouping,
+`source/native-display-settings.js` reads the original form's captions, grouping,
 dimensions and control positions. These were ordinary Windows widgets, not
 missing custom button art. Its HTML widgets are a platform adaptation; it does
 not claim pixel-identical Windows control drawing. The original hidden
@@ -74,7 +74,7 @@ decompiler's `45b334` output ends early at a nested exception-handler boundary,
 so that tail is also checked against disassembly.
 
 The runtime mapping lives separately in
-`src/simulation/native-display-settings.js`; the root renderer applies gamma
+`source/simulation/native-display-settings.js`; the root renderer applies gamma
 before sampling, including keyed textures and the original HUD font atlases.
 These are specific original settings, not a blanket shader opacity switch.
 The runtime/controller gates and pixel checks are documented by the renderer
@@ -144,7 +144,7 @@ and setter `445938`; the latter stores the target while the form is loading.
 Omitted container orders therefore cannot be treated as zero. The source
 `TTransparentControl` ancestor chain is `TCustomTransparentControl`,
 `TCustomControl`, `TWinControl`; its unexposed order preserves insertion order.
-`src/native-tab-order.js` reconstructs this algorithm per parent, then flattens
+`source/native-tab-order.js` reconstructs this algorithm per parent, then flattens
 its children for the browser. Explicit `TabStop=false` is excluded. Added
 keyboard accessibility for source clickable images remains after the authored
 controls rather than changing their relative order.

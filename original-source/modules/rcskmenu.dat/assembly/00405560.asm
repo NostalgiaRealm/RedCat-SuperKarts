@@ -1,0 +1,2 @@
+; 00405560 KERNEL32.DLL::GetCurrentThreadId
+00405560	ff252cf14700	JMP dword ptr [0x0047f12c]

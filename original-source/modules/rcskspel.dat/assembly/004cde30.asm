@@ -1,0 +1,3 @@
+; 004cde30 Unwind@004cde30
+004cde30	8d4d84	LEA ECX,[EBP + -0x7c]
+004cde33	e978d6f3ff	JMP 0x0040b4b0

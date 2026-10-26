@@ -1,0 +1,2 @@
+; 00406908 USER32.DLL::GetSysColor
+00406908	ff25d0f54700	JMP dword ptr [0x0047f5d0]

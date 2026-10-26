@@ -1,0 +1,2 @@
+; 00406568 GDI32.DLL::GetDeviceCaps
+00406568	ff250cf44700	JMP dword ptr [0x0047f40c]

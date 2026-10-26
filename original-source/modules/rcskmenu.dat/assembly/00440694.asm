@@ -1,0 +1,13 @@
+; 00440694 FUN_00440694
+00440694	8b0a	MOV ECX,dword ptr [EDX]
+00440696	894830	MOV dword ptr [EAX + 0x30],ECX
+00440699	8b4a04	MOV ECX,dword ptr [EDX + 0x4]
+0044069c	894834	MOV dword ptr [EAX + 0x34],ECX
+0044069f	8b4a08	MOV ECX,dword ptr [EDX + 0x8]
+004406a2	2b0a	SUB ECX,dword ptr [EDX]
+004406a4	894838	MOV dword ptr [EAX + 0x38],ECX
+004406a7	8b4a0c	MOV ECX,dword ptr [EDX + 0xc]
+004406aa	2b4a04	SUB ECX,dword ptr [EDX + 0x4]
+004406ad	89483c	MOV dword ptr [EAX + 0x3c],ECX
+004406b0	e8dbe6ffff	CALL 0x0043ed90
+004406b5	c3	RET

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {normalizeSettings,readSettings,writeSettings} from '../src/settings.js';
-import {chooseMultisampleCount,supportedMultisampleCounts} from '../src/multisample-renderer.js';
+import {normalizeSettings,readSettings,writeSettings} from '../source/settings.js';
+import {chooseMultisampleCount,supportedMultisampleCounts} from '../source/multisample-renderer.js';
 
 test('MSAA and free-flight defaults preserve old saves and reject invalid persisted values',()=>{
   for(const source of [{},{msaaEnabled:'yes',msaaSamples:16,freeFlight:1}]){

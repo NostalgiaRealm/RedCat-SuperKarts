@@ -1,0 +1,13 @@
+; 0040bfc8 FUN_0040bfc8
+0040bfc8	ff4820	DEC dword ptr [EAX + 0x20]
+0040bfcb	83782000	CMP dword ptr [EAX + 0x20],0x0
+0040bfcf	750f	JNZ 0x0040bfe0
+0040bfd1	8b5024	MOV EDX,dword ptr [EAX + 0x24]
+0040bfd4	895020	MOV dword ptr [EAX + 0x20],EDX
+0040bfd7	33d2	XOR EDX,EDX
+0040bfd9	895024	MOV dword ptr [EAX + 0x24],EDX
+0040bfdc	c6403400	MOV byte ptr [EAX + 0x34],0x0
+0040bfe0	83c004	ADD EAX,0x4
+0040bfe3	50	PUSH EAX
+0040bfe4	e8e7a3ffff	CALL 0x004063d0
+0040bfe9	c3	RET

@@ -1,0 +1,9 @@
+; 004d1a94 Unwind@004d1a94
+004d1a94	8b45f0	MOV EAX,dword ptr [EBP + -0x10]
+004d1a97	83e001	AND EAX,0x1
+004d1a9a	85c0	TEST EAX,EAX
+004d1a9c	0f840b000000	JZ 0x004d1aad
+004d1aa2	8b4dec	MOV ECX,dword ptr [EBP + -0x14]
+004d1aa5	83c108	ADD ECX,0x8
+004d1aa8	e9eeabfeff	JMP 0x004bc69b
+004d1aad	c3	RET

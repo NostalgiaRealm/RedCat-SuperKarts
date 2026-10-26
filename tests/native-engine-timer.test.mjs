@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {NativeEngineTimer} from '../src/simulation/clock.js';
+import {NativeEngineTimer} from '../source/simulation/clock.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/variable-timing-fixtures.json',import.meta.url)));
 
 test('18 original absolute-clock traces match every store and returned delta at24/53bit',()=>{

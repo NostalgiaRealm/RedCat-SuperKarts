@@ -7,9 +7,9 @@ await mkdir(output,{recursive:true});
 const browser=await chromium.launch({executablePath:process.env.CHROME_PATH||'/usr/bin/google-chrome',
   headless:true,args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--autoplay-policy=no-user-gesture-required']});
 const report={status:'running',scope:'Isolated source browser with software WebGL. Controlled clear road pose, then standard gamepad input; no forced enqueue or relocation. Real frame-loop recovery, original visuals and actual WebAudio source starts. Negative cases use accelerated 25ms DrivingView callbacks.',checks:[],errors:[]};
-const sourceFiles=['src/race-simulation.js','src/simulation/player-stuck-recovery.js',
-  'src/simulation/player-recovery-position.js','src/simulation/native-rescue.js',
-  'src/simulation/native-bonus.js','src/driving-view.js',
+const sourceFiles=['source/race-simulation.js','source/simulation/player-stuck-recovery.js',
+  'source/simulation/player-recovery-position.js','source/simulation/native-rescue.js',
+  'source/simulation/native-bonus.js','source/driving-view.js',
   'tests/helpers/england-tyre-fixture.mjs','tests/player-recovery-integration.test.mjs',
   'tests/player-recovery-browser.mjs'];
 const hashes=async()=>Object.fromEntries(await Promise.all(sourceFiles.map(async file=>[file,
@@ -58,9 +58,9 @@ try{
   await load();
   const initial=await page.evaluate(async()=>{
     const view=rcsk.viewer,sim=view.simulation,b=view.motion.body;
-    const {nativeRotationMatrix}=await import('/src/simulation/native-transform.js');
-    const {sampleNativeTrack}=await import('/src/simulation/native-track.js');
-    const {rescuePlacementClear}=await import('/src/simulation/rescue-safety.js');
+    const {nativeRotationMatrix}=await import('/source/simulation/native-transform.js');
+    const {sampleNativeTrack}=await import('/source/simulation/native-track.js');
+    const {rescuePlacementClear}=await import('/source/simulation/rescue-safety.js');
     b.position.splice(0,3,-7027,0,6317);
     Object.assign(b,{yaw:512,pitch:0,roll:0,sector:124,previousSector:124,waypoint:589,
       forwardSpeed:0,lateralSpeed:0,verticalSpeed:0,yawRate:0,pitchRate:0,rollRate:0});
@@ -117,7 +117,7 @@ try{
   const final=await page.evaluate(async()=>{
     const v=rcsk.viewer,sim=v.simulation,b=v.motion.body;v.clock.pause();
     v.updatePresentation(1);v.renderScene();v.hud.render();
-    const {isSafePlayerRecoveryPose}=await import('/src/simulation/player-recovery-position.js');
+    const {isSafePlayerRecoveryPose}=await import('/source/simulation/player-recovery-position.js');
     return {...recoveryProbe,recoveries:sim.playerRecovery.recoveries,lastRecovery:sim.playerRecovery.lastRecovery,
       position:[...b.position],speed:b.forwardSpeed,activeRescue:!!sim.rescue.get(b),
       travelledAfterRecovery:Math.hypot(b.x-recoveryProbe.finishedPosition[0],b.z-recoveryProbe.finishedPosition[2]),

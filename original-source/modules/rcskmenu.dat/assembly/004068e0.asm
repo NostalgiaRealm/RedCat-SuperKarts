@@ -1,0 +1,2 @@
+; 004068e0 USER32.DLL::GetPropA
+004068e0	ff25e4f54700	JMP dword ptr [0x0047f5e4]

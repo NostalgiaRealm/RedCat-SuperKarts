@@ -1,0 +1,4 @@
+; 0040fff8 FUN_0040fff8
+0040fff8	33d2	XOR EDX,EDX
+0040fffa	e8b5feffff	CALL 0x0040feb4
+0040ffff	c3	RET

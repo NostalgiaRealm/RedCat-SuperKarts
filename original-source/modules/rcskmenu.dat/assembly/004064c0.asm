@@ -1,0 +1,2 @@
+; 004064c0 GDI32.DLL::CreateDIBSection
+004064c0	ff2560f44700	JMP dword ptr [0x0047f460]

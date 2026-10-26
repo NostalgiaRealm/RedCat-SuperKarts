@@ -1,0 +1,3 @@
+; 0044bbec FUN_0044bbec
+0044bbec	8a8007020000	MOV AL,byte ptr [EAX + 0x207]
+0044bbf2	c3	RET

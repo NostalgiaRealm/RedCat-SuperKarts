@@ -1,10 +1,10 @@
 import fs from 'node:fs';
-import {RaceSimulation} from '../../src/race-simulation.js';
-import {NativeRandom} from '../../src/simulation/native-random.js';
-import {nativeRotationMatrix} from '../../src/simulation/native-transform.js';
-import {sampleNativeTrack} from '../../src/simulation/native-track.js';
-import {isSafePlayerRecoveryPose} from '../../src/simulation/player-recovery-position.js';
-import {rescuePlacementClear} from '../../src/simulation/rescue-safety.js';
+import {RaceSimulation} from '../../source/race-simulation.js';
+import {NativeRandom} from '../../source/simulation/native-random.js';
+import {nativeRotationMatrix} from '../../source/simulation/native-transform.js';
+import {sampleNativeTrack} from '../../source/simulation/native-track.js';
+import {isSafePlayerRecoveryPose} from '../../source/simulation/player-recovery-position.js';
+import {rescuePlacementClear} from '../../source/simulation/rescue-safety.js';
 
 const root=new URL('../../',import.meta.url);
 const read=name=>fs.readFileSync(new URL('public/assets/'+name,root));

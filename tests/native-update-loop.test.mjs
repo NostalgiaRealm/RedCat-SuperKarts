@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NativeUpdateClock} from '../src/simulation/clock.js';
-import {NativeUpdateLoop} from '../src/native-update-loop.js';
+import {NativeUpdateClock} from '../source/simulation/clock.js';
+import {NativeUpdateLoop} from '../source/native-update-loop.js';
 
 function host({work=()=>{},beforeUpdate}={}){
   let time=0,id=0;const pending=new Map(),calls=[];

@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { updateNativeProjectileFlight, NativeFireGate, selectNativeProjectileTarget,
-  nativeProjectileLaunchPose, nativeProjectileFacing, hatchNativeBubbles } from '../src/simulation/native-projectile.js';
+  nativeProjectileLaunchPose, nativeProjectileFacing, hatchNativeBubbles } from '../source/simulation/native-projectile.js';
 
 const fixtures = JSON.parse(await readFile(new URL('../evidence/gameplay/native-projectile-fixtures.json', import.meta.url)));
 

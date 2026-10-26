@@ -1,0 +1,2 @@
+; 0040d89e KERNEL32.DLL::CreateEventA
+0040d89e	ff2524134100	JMP dword ptr [0x00411324]

@@ -1,0 +1,2 @@
+; 004066a8 GDI32.DLL::StretchBlt
+004066a8	ff256cf34700	JMP dword ptr [0x0047f36c]

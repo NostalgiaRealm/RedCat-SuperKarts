@@ -1,0 +1,7 @@
+; 004cc99d FUN_004cc99d
+004cc99d	ff742408	PUSH dword ptr [ESP + 0x8]
+004cc9a1	ff742408	PUSH dword ptr [ESP + 0x8]
+004cc9a5	6a00	PUSH 0x0
+004cc9a7	e804000000	CALL 0x004cc9b0
+004cc9ac	83c40c	ADD ESP,0xc
+004cc9af	c3	RET

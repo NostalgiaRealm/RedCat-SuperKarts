@@ -5,11 +5,11 @@ import {createHash} from 'node:crypto';
 
 const output=process.env.RCSK_HUD_MODE_OUTPUT||'evidence/hud-mode-audit/browser';
 await mkdir(output,{recursive:true});
-const files=['src/race-hud.js','src/race-hud-meshes.js','src/hud-text.js',
-  'src/hud-text-renderer.js','src/hud-draw-order.js','src/multisample-renderer.js',
-  'src/race-hud-layout.js','src/hud-gameplay-events.js','src/driving-view.js',
-  'src/simulation/native-combat.js','src/simulation/native-star-hud.js',
-  'src/simulation/native-hud-arrows.js','src/simulation/native-race.js',
+const files=['source/race-hud.js','source/race-hud-meshes.js','source/hud-text.js',
+  'source/hud-text-renderer.js','source/hud-draw-order.js','source/multisample-renderer.js',
+  'source/race-hud-layout.js','source/hud-gameplay-events.js','source/driving-view.js',
+  'source/simulation/native-combat.js','source/simulation/native-star-hud.js',
+  'source/simulation/native-hud-arrows.js','source/simulation/native-race.js',
   'public/assets/config.json','tests/hud-modes-browser.mjs'];
 const hashes=async()=>Object.fromEntries(await Promise.all(files.map(async file=>[file,
   createHash('sha256').update(await readFile(file)).digest('hex')])));
@@ -72,7 +72,7 @@ try{
   }
   await load(0);
   const arrows=await page.evaluate(async()=>{
-    const {nativeRotationMatrix}=await import('/src/simulation/native-transform.js');
+    const {nativeRotationMatrix}=await import('/source/simulation/native-transform.js');
     const v=rcsk.viewer,s=v.simulation,h=v.hudMeshes,b=s.motion.body;
     let now=s.wallMs;
     const tick=()=>v.onTick(.025,now+=25);

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
-import {NativeRailCollision} from '../src/simulation/native-collision.js';
-import {createNativeTrack,selectNativeSector,sampleNativeTrack} from '../src/simulation/native-track.js';
+import {NativeRailCollision} from '../source/simulation/native-collision.js';
+import {createNativeTrack,selectNativeSector,sampleNativeTrack} from '../source/simulation/native-track.js';
 const track=JSON.parse(fs.readFileSync('public/assets/tracks/etappe1.json'));
 const cars=JSON.parse(fs.readFileSync('public/assets/cars.json'));
 const world=createNativeTrack(track);

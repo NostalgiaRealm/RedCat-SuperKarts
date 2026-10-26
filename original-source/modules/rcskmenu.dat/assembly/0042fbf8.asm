@@ -1,0 +1,16 @@
+; 0042fbf8 FUN_0042fbf8
+0042fbf8	55	PUSH EBP
+0042fbf9	8bec	MOV EBP,ESP
+0042fbfb	b001	MOV AL,0x1
+0042fbfd	8b5508	MOV EDX,dword ptr [EBP + 0x8]
+0042fc00	837afc00	CMP dword ptr [EDX + -0x4],0x0
+0042fc04	7415	JZ 0x0042fc1b
+0042fc06	8b4508	MOV EAX,dword ptr [EBP + 0x8]
+0042fc09	8b40f8	MOV EAX,dword ptr [EAX + -0x8]
+0042fc0c	8b4024	MOV EAX,dword ptr [EAX + 0x24]
+0042fc0f	8b5508	MOV EDX,dword ptr [EBP + 0x8]
+0042fc12	8b52fc	MOV EDX,dword ptr [EDX + -0x4]
+0042fc15	3b4224	CMP EAX,dword ptr [EDX + 0x24]
+0042fc18	0f95c0	SETNZ AL
+0042fc1b	5d	POP EBP
+0042fc1c	c3	RET

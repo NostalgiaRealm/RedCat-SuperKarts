@@ -1,0 +1,2 @@
+; 004069c8 USER32.DLL::KillTimer
+004069c8	ff2574f54700	JMP dword ptr [0x0047f574]

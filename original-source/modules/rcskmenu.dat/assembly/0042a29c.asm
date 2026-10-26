@@ -1,0 +1,6 @@
+; 0042a29c FUN_0042a29c
+0042a29c	8b4804	MOV ECX,dword ptr [EAX + 0x4]
+0042a29f	c681f801000000	MOV byte ptr [ECX + 0x1f8],0x0
+0042a2a6	c6401e01	MOV byte ptr [EAX + 0x1e],0x1
+0042a2aa	e8d5ffffff	CALL 0x0042a284
+0042a2af	c3	RET

@@ -1,0 +1,2 @@
+; 004013e4 KERNEL32.DLL::LeaveCriticalSection
+004013e4	ff2534f14700	JMP dword ptr [0x0047f134]

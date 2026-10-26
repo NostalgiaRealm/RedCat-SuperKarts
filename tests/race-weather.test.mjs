@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {RaceSimulation} from '../src/race-simulation.js';
-import {NativeRandom} from '../src/simulation/native-random.js';
-import {NATIVE_REFERENCE_UPTIME_MS,NativeDeltaFilter,SimulationClock} from '../src/simulation/clock.js';
-import {nativeProjectileFacing} from '../src/simulation/native-projectile.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
+import {NATIVE_REFERENCE_UPTIME_MS,NativeDeltaFilter,SimulationClock} from '../source/simulation/clock.js';
+import {nativeProjectileFacing} from '../source/simulation/native-projectile.js';
 
 const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
 const config=JSON.parse(read('config.json')),manifest=JSON.parse(read('manifest.json')),cars=JSON.parse(read('cars.json'));

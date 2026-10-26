@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {updateNativeAnalogInput,nativeAnalogFromNormalized} from '../src/simulation/native-input.js';
+import {updateNativeAnalogInput,nativeAnalogFromNormalized} from '../source/simulation/native-input.js';
 const f=JSON.parse(readFileSync(new URL('../evidence/native/analog-fixtures.json',import.meta.url)));
 test('1200 original analog-input calls match exactly, including midpoint, clamp and mirrored steering',()=>{
  for(const c of f.cases){

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {getSoundSpec} from '../src/asset-animation.js';
-import {nativeStaticSoundVolume,nativeAudioControllerChange,nativeAudioLoadSettings} from '../src/audio-mixing.js';
-import {originalMusicGain} from '../src/game-audio.js';
+import {getSoundSpec} from '../source/asset-animation.js';
+import {nativeStaticSoundVolume,nativeAudioControllerChange,nativeAudioLoadSettings} from '../source/audio-mixing.js';
+import {originalMusicGain} from '../source/game-audio.js';
 const read = path => JSON.parse(fs.readFileSync(new URL(path, import.meta.url)));
 const fixture = read('../evidence/native/audio-mixing-fixtures.json');
 const config = read('../public/assets/config.json'), manifest = read('../public/assets/manifest.json');

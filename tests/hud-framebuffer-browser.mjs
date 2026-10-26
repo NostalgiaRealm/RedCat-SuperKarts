@@ -20,9 +20,9 @@ try{
 
   report.synthetic=await page.evaluate(async()=>{
     const THREE=await import('three');
-    const {HudTextRenderer}=await import('/src/hud-text-renderer.js');
-    const {getHudStringSpec,layoutHudText}=await import('/src/hud-text.js');
-    const {MultisampleSceneRenderer}=await import('/src/multisample-renderer.js');
+    const {HudTextRenderer}=await import('/source/hud-text-renderer.js');
+    const {getHudStringSpec,layoutHudText}=await import('/source/hud-text.js');
+    const {MultisampleSceneRenderer}=await import('/source/multisample-renderer.js');
     const view=rcsk.viewer,[config,manifest]=await view.resources;
     const renderer=new THREE.WebGLRenderer({alpha:false,antialias:false,preserveDrawingBuffer:true});
     renderer.setSize(96,96);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.setClearColor(0x5192c7);

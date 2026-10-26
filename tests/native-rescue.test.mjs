@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createNativeRescue, updateNativeRescue, nativeRescueRingPositions,
   NativeRescueController, nativeRescuePositionFree, nativeRescueWaypoint,
-  nativeRescueNearestSector, nativeRescueHeading} from '../src/simulation/native-rescue.js';
-import {getNativeRescueVisualSpec} from '../src/rescue-assets.js';
+  nativeRescueNearestSector, nativeRescueHeading} from '../source/simulation/native-rescue.js';
+import {getNativeRescueVisualSpec} from '../source/rescue-assets.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/rescue-fixtures.json', import.meta.url)));
 const identity = [1, 0, 0, 0, 1, 0, 0, 0, 1];

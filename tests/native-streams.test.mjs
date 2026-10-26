@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { createNativeJetFlare, updateNativeJetFlare, createNativeRibbon,
   updateNativeRibbon, shrinkNativeRibbon, NativeStreams, nativeRacerStreamOptions,
-  nativeProjectileStreamOptions, nativeRibbonDrawPackets } from '../src/simulation/native-streams.js';
+  nativeProjectileStreamOptions, nativeRibbonDrawPackets } from '../source/simulation/native-streams.js';
 
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/native/stream-fixtures.json', import.meta.url)));
 test('post-rescue render poses retain original body ownership and native geometry', () => {

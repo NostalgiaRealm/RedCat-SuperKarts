@@ -37,8 +37,10 @@ The scene canvas explicitly requests an opaque WebGL2 context. Three r186
 otherwise creates an alpha-bearing canvas even when its renderer option says
 `alpha:false`; native shadow blending then leaves alpha below one, causing the
 browser compositor to brighten the completed RGB image. The final canvas now
-presents opaque RGB with MSAA enabled or disabled. The separate transparent HUD
-canvas keeps its original transparency.
+presents opaque RGB with MSAA enabled or disabled. The transparent HUD DOM
+canvas supplies layout dimensions only; actual HUD pixels share the opaque
+RGB565 composition path described in the
+[HUD rendering follow-up](research-hud-framebuffer.md).
 
 ## Cheats
 
@@ -66,13 +68,16 @@ succeeded. Cancelling a settings draft does not undo this explicit action.
 The bottom of **Meer instellingen** shows **Versie 0.9.0**. The version belongs
 to this reconstruction, separately from the original game's release year.
 `package.json` is the authoritative version metadata for npm and Electron.
-The checked-in `src/version.js` module supplies the same value to browser and
-desktop menus; static builds already copy it with the rest of `src/`.
+The checked-in `source/version.js` module supplies the same value to browser
+and desktop menus through the generated runtime bundles.
 
 For a future source version, run `npm version <version> --no-git-tag-version`.
 The npm version hook refreshes the menu module automatically. Commit
-`package.json`, `package-lock.json`, `src/version.js` and the changelog together.
+`package.json`, `package-lock.json`, `source/version.js` and the changelog together.
 If editing package metadata manually, run `node tools/sync-version.mjs` too.
+Refresh local bundles with `npm run bundle` or the next normal launch; use
+`npm run build` before distributing a website. Generated files are not the
+place to edit the version.
 
 ## Evidence and scope
 
@@ -95,8 +100,11 @@ Focused browser reports are retained in
 Reproduce with `npm test`, `node tests/multisample-browser.mjs`,
 `node tests/more-settings-browser.mjs`, `node tests/free-flight-browser.mjs`,
 and `node tests/kart-shadow-browser.mjs`, with the local server running.
-After rebuilding, `node tools/verify-more-settings.mjs` verifies the retained
-reports, frozen runtime hashes and every build copy. The first broad driving
+Browser inspections require `npm run dev -- --inspect-source`; see the
+[test guide](../tests/README.md). `node tools/verify-more-settings.mjs` verifies
+the retained reports, frozen runtime hashes and every build copy only at its
+original checkpoint. It is not a current-checkout validation command; rebuilding
+today does not reproduce those old hashes. The first broad driving
 test exposed a stale expectation of positive steering on mirrored Italy;
 the corrected test uses the original negative sign. That initial failure is
 retained alongside the passing 15-check rerun, with no production change.

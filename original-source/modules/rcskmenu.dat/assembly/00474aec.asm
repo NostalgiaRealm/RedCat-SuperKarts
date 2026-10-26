@@ -1,0 +1,6 @@
+; 00474aec TfrmMain_btnMainHelpClick
+00474aec	a16cc84700	MOV EAX,[0x0047c86c]
+00474af1	8b00	MOV EAX,dword ptr [EAX]
+00474af3	ba01000000	MOV EDX,0x1
+00474af8	e84bddfbff	CALL 0x00432848
+00474afd	c3	RET

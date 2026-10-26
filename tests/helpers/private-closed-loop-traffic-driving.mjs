@@ -1,9 +1,9 @@
 // Test controller only: forecast copies never write actual race state.
 // This variant extrapolates copied obstacle poses; it is not a native AI prediction.
-import {calculateNativePlayerForces} from '../../src/simulation/native-player.js';
-import {tireLateralForce,resistanceForce} from '../../src/simulation/native-forces.js';
-import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../src/simulation/native-integrator.js';
-import {selectNativeSector,sampleNativeTrack} from '../../src/simulation/native-track.js';
+import {calculateNativePlayerForces} from '../../source/simulation/native-player.js';
+import {tireLateralForce,resistanceForce} from '../../source/simulation/native-forces.js';
+import {integrateNativeEuler,quantizeNativePlanarVelocity,nativeIntegrationSchedule} from '../../source/simulation/native-integrator.js';
+import {selectNativeSector,sampleNativeTrack} from '../../source/simulation/native-track.js';
 const wrap=v=>Math.atan2(Math.sin(v),Math.cos(v)),clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 function project(track,line,b){
   let best=null,offset=0;

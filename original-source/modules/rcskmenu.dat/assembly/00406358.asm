@@ -1,0 +1,2 @@
+; 00406358 KERNEL32.DLL::GetSystemInfo
+00406358	ff25dcf24700	JMP dword ptr [0x0047f2dc]

@@ -1,0 +1,2 @@
+; 00404cb4 thunk_FUN_004043f8
+00404cb4	e93ff7ffff	JMP 0x004043f8

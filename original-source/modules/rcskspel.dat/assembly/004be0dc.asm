@@ -1,0 +1,17 @@
+; 004be0dc FUN_004be0dc
+004be0dc	56	PUSH ESI
+004be0dd	57	PUSH EDI
+004be0de	8bf9	MOV EDI,ECX
+004be0e0	8b771c	MOV ESI,dword ptr [EDI + 0x1c]
+004be0e3	85f6	TEST ESI,ESI
+004be0e5	7412	JZ 0x004be0f9
+004be0e7	ff7604	PUSH dword ptr [ESI + 0x4]
+004be0ea	57	PUSH EDI
+004be0eb	ff742414	PUSH dword ptr [ESP + 0x14]
+004be0ef	ff5608	CALL dword ptr [ESI + 0x8]
+004be0f2	8b36	MOV ESI,dword ptr [ESI]
+004be0f4	83c40c	ADD ESP,0xc
+004be0f7	ebea	JMP 0x004be0e3
+004be0f9	5f	POP EDI
+004be0fa	5e	POP ESI
+004be0fb	c20400	RET 0x4

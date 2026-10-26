@@ -1,0 +1,2 @@
+; 00406278 KERNEL32.DLL::CreateThread
+00406278	ff254cf34700	JMP dword ptr [0x0047f34c]

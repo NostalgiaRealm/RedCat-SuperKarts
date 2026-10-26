@@ -1,0 +1,2 @@
+; 00406368 KERNEL32.DLL::GetTickCount
+00406368	ff25d4f24700	JMP dword ptr [0x0047f2d4]

@@ -1,0 +1,2 @@
+; 00406640 GDI32.DLL::SelectPalette
+00406640	ff25a0f34700	JMP dword ptr [0x0047f3a0]

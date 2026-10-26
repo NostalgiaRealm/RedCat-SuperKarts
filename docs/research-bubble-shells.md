@@ -26,8 +26,8 @@ when its previous state is 25. Cleanup only detaches if the previous bubble
 visibility byte is set. This precedes the new hit initialization and the NPC
 priority/voice processing. A finished NPC's ignored hit does not detach.
 
-The independent implementation is `src/simulation/native-bubble-attachments.js`;
-`src/bubble-visuals.js` binds its captured state to the original mesh, texture
+The independent implementation is `source/simulation/native-bubble-attachments.js`;
+`source/bubble-visuals.js` binds its captured state to the original mesh, texture
 and material. Optional `NativeBonusCombat.onBubbleAttach/Detach` callbacks
 preserve the hit and cleanup boundaries. No random numbers are consumed.
 Core binding must call the manager before scenery and racers, then capture

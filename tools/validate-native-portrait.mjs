@@ -1,3 +1,4 @@
+// Module-level browser diagnostic: start tools/serve.mjs with --inspect-source.
 import {chromium} from 'playwright';
 import assert from 'node:assert/strict';
 import {mkdir, writeFile} from 'node:fs/promises';
@@ -11,7 +12,7 @@ try {
   await page.setContent('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/src/style.css"><div id="screen"></div>');
   await page.evaluate(async () => {
     const [{NativeMenu}, {adaptNativePortrait}, forms, manifest, config] = await Promise.all([
-      import('/src/native-menu.js'), import('/src/native-portrait.js'),
+      import('/source/native-menu.js'), import('/source/native-portrait.js'),
       fetch('/assets/ui/forms.json').then(r=>r.json()), fetch('/assets/manifest.json').then(r=>r.json()),
       fetch('/assets/config.json').then(r=>r.json()),
     ]);

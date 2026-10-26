@@ -1,0 +1,2 @@
+; 004062d0 KERNEL32.DLL::FreeLibrary
+004062d0	ff2520f34700	JMP dword ptr [0x0047f320]

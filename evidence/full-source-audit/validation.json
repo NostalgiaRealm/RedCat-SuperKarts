@@ -1,0 +1,142 @@
+{
+  "date": "2026-10-26",
+  "recordedAt": "2026-10-26T20:03:20.971676+00:00",
+  "sourceBaseCommit": "4386c34a77af4df695f39ced3556b2b19216a467",
+  "scope": "Recovered original-code export and bounded comparison/fixes in current source. Counts below are focused checks, not complete behavioral equivalence or native Windows gameplay validation.",
+  "priorWorkingTreeChanges": "Intro/reward autoplay, muted fallback, fullscreen audio activation, associated docs and tests existed before this comparison and remain. Their earlier 7 unit and 8 browser checks are not counted here.",
+  "originalModulesSha256": {
+    "RCMovie.dat": "2f38f352cbe0af983f9b95bf78eec1edeefc25fd8f727bc67155ba57996d25f7",
+    "RCSK.exe": "245757e4029e11500f7dddfa956a4a36dfc40341a39dab38ed770da9792e39ac",
+    "SMACKW32.DLL": "a6dd2b992865c38c2da537129bdea2572bbcf7300c779e45ef8d2b0292ff8fb1",
+    "rcskmenu.dat": "1b6872290010d6357db1b63d6691498b52f8d3def0083e5b42e816a2b7366733",
+    "rcskspel.dat": "68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f"
+  },
+  "originalCopiesStillMatch": true,
+  "decompilation": {
+    "modules": 5,
+    "identified_functions": 10354,
+    "decompiled_functions": 10354,
+    "assembly_fallbacks": 0,
+    "decompiler_warning_functions": 1205,
+    "instructions_verified_against_original": 422295,
+    "instruction_bytes_verified": 1299164,
+    "instruction_bytes_outside_functions": 26525,
+    "executable_bytes_without_instructions": 290596,
+    "indexedFilesInChecksumManifest": 20822,
+    "checksPassed": true,
+    "coverageMeaning": "Every identified function exported; warnings, unassigned instructions and undecoded executable ranges remain explicit."
+  },
+  "nativeInstructionTraces": {
+    "counts": {
+      "menuFocus": 56,
+      "nameEntry": 15,
+      "playerFrameOrder": 24,
+      "pauseAudio": 3
+    },
+    "total": 98,
+    "boundaries": "Original byte execution with explicitly stubbed widget, clock, audio, physics or platform services. Not whole-process race execution."
+  },
+  "nodeTests": {
+    "runs": [
+      {
+        "command": "node --test tests/native-player-frame-order.test.mjs tests/native-jump-composition.test.mjs tests/race-hud-order.test.mjs tests/simulation-native.test.mjs tests/native-analog.test.mjs",
+        "passed": 23,
+        "failed": 0
+      },
+      {
+        "command": "node --test tests/native-player-recurrence.test.mjs tests/simulation-combat.test.mjs tests/native-race-lifecycle.test.mjs",
+        "passed": 18,
+        "failed": 0
+      },
+      {
+        "command": "node --test tests/native-pause-audio.test.mjs tests/audio-mixing.test.mjs",
+        "passed": 6,
+        "failed": 0
+      }
+    ],
+    "passed": 47,
+    "failed": 0
+  },
+  "sourceBrowserChecks": {
+    "runs": [
+      {
+        "command": "RCSK_URL=http://127.0.0.1:4184 node tests/menu-entry-browser.mjs",
+        "passedGroups": 8,
+        "errors": []
+      },
+      {
+        "command": "RCSK_URL=http://127.0.0.1:4184 node tests/pause-audio-browser.mjs",
+        "passedGroups": 9,
+        "errors": []
+      }
+    ],
+    "totalPassedGroups": 17,
+    "boundaries": "Chromium source server; accelerated menu audio, controlled end-of-music seek and synthetic focus events as disclosed in individual reports."
+  },
+  "courseData": {
+    "tracks": 6,
+    "completeRouteAndDriveDataSets": 12,
+    "allRecordsMatchOriginal": true,
+    "positiveRouteMarkerValues": 16,
+    "allMarkersAccountedFor": true
+  },
+  "integrationReviews": {
+    "gameplay": "No additional actionable issue after final read-only input/turbo/engine/HUD integration review.",
+    "presentation": "Final review fixed pending pause cancellation resuming after focus loss; all nine browser groups include the corrected behavior."
+  },
+  "intentionalDifferences": "See docs/full-source-audit.md: modern hosts/input/rendering/settings, unlocked rendering, authorized recovery, autoplay/fullscreen and focus-loss safety retained.",
+  "notPerformed": [
+    "Complete race matrix",
+    "Full test suite",
+    "Desktop or static build",
+    "Version bump",
+    "Commit, push or release",
+    "Native Windows race framebuffer/audio comparison",
+    "Physical mobile/controller or Windows/macOS gameplay validation"
+  ],
+  "reportSha256": {
+    "original-source/verification.json": "e3b59df3f2995aaa486ed276741c49ee7a19422f792fb61a9f23cf0b883a245e",
+    "original-source/input-manifest.json": "1804c1a548955227d1c4f090f4f3f535b4da00c7ffaa1b79494dcf97846c8f71",
+    "original-source/reference-data.json": "0505a82e6d6bde57d2b932dbea5453803723e789a8d24cb4c8d3c37fd63444ad",
+    "original-source/SHA256SUMS.txt": "9ae28c7f7baac2ea8a80cad4329ee4cc62fcb84e904b1a5e8b3ac3993692493f",
+    "docs/evidence/original-port-index.json": "01da5b9f3ee998295717a0757e432e10b1c9466100dc3493775644acd0047870",
+    "evidence/full-source-audit/rea-character-form.json": "d4762dbf639a604905213bd0c4d7bd8de7eb4d404b33f23cb9e6dc36cf1bd4ce",
+    "evidence/full-source-audit/menu-entry-native.json": "b608aa9408eadcdd779f2cb3d6787a4b91af221cb327e2853533f87616120a8d",
+    "evidence/full-source-audit/menu-entry-browser.json": "167dcf2f86566181eeb4fb73251f92fd57133561424f450c107624b12983c41b",
+    "evidence/full-source-audit/gameplay-dispatch.json": "ab514d27d3e5bc5a55a097b8aabb7c433c4dad99fea380494fd463ffb2dadc43",
+    "evidence/full-source-audit/gameplay-validation.json": "88451400f66f0afaf9f0a3496445ba644f0ad670b69ee3e29d664afbfed229ea",
+    "evidence/native/player-frame-order-fixtures.json": "9416926405b2b0ab047c28b092832c12f5c298fae2f5eb9a3be41a3c18975b9a",
+    "evidence/native/pause-audio-fixtures.json": "e575af4d29a8a21c067ad98c5fc21531030337a34a6813c6d03e9b608595883d",
+    "evidence/full-source-audit/pause-audio/browser.json": "a16eb75ae31dbb2ba15b377cc7caed90dbc65083e4c618ba4e1fb593963fe335"
+  },
+  "sourceSha256": {
+    "src/main.js": "0a9d3cfa8502ad48d79af096a0ce3a684c40979edb931e4a2e6071986c5149da",
+    "src/driving-view.js": "1976dae30a909600b23d951efea7aa4c8e942ba5bb4edf808106a98a947fab47",
+    "src/game-audio.js": "e51f2f21d3ceb8c4f2171eb71b1df6c4e76cd07852ff5bdd56bb631d2fcae9d8",
+    "src/race-simulation.js": "e10d71df8dc3c56408365ee6c71439d9af3fbc15b4edd5ec1eaf0642dea7e1eb",
+    "src/simulation/native-input.js": "adf5a872488a29ddd30340e97c15a3faf2d409e5ee40d5639f5d76ebeca11856",
+    "src/simulation/native-motion.js": "3292ad9bf72ed972adeb2246b4151d76436b26dd6566a9c988cabf4b7b87f74e",
+    "src/simulation/native-results.js": "3830bf91d96abc95c3cda80d8554b116cfdd052f69f99a41d2cdf9857c148559",
+    "src/movie-playback.js": "b742b07ccc3ebbae621ee8cfbd853a0abb16e2b615b862a6acb9a513e12d6d7d",
+    "index.html": "c2e02f3dc15a4d10ed47bd89607fe512e51432531f2f044800eab59db9718b8a",
+    "src/style.css": "0b531fad3158dafef15a7ab9533a7a4509bce2c187cb67b85cba0af7eb030660",
+    "tests/menu-entry-browser.mjs": "202e30b3e6c336e2f93cac5060bb499834086773c47eeda8f254a731cab32c7c",
+    "tests/native-player-frame-order.test.mjs": "e160cf4c45181266fa653ba34178e39a7403df6166520e05b2c17bba041faf3e",
+    "tests/native-pause-audio.test.mjs": "02fd02afbebb70c8b7854fb890db66a90db0caadb01b061fb07f3ff26c2664a5",
+    "tests/pause-audio-browser.mjs": "d3932d8f7971099e432adbfb51a0baccf920867bc2c0db7a58f864c5b1a32e5d",
+    "tools/index-original-port.py": "a5ff0ebb41a1cada6bd967cd463282631d86006a475197233662b71d2def5e5b",
+    "tools/native-menu-entry-fixtures.py": "855be0d8d0b154a975f0a4a4d7ff9a176a8dc6cadfebe4ede7149787e106b152",
+    "tools/native-player-frame-order-fixtures.py": "4c85d67c0c70f44be4beedf6854cea5192de32e96ff30ed346fb83950a41bee9",
+    "tools/native-pause-audio-fixtures.py": "f1628b0df8da18d60655ffaba1bcccf4765e4e8028831808dd266bd80d1e30c8",
+    "tools/audit-gameplay-dispatch.py": "1532883095c32093fbab3b381ddf5014d651e987353579f047d54c4a0985674a",
+    "docs/full-source-audit.md": "2de1561900dd860a12a909e484e2df7c981d1d7607bfeea507a104a7d20461dc",
+    "docs/full-source-audit-gameplay.md": "2c3c7c35cd182db1c51f22e68bdb552eb2b6e801b50490e46b8d7c863c59246b",
+    "docs/full-source-audit-presentation.md": "3e01d4345840fd136a04b42684e96fc815ad1eccda5153ca65972874e34a58d1",
+    "docs/validation.md": "b02e0b9d5db13fc208f3c215ff2d9a872228f93aa4a178f6e39721b5fff02ff8",
+    "docs/feature-parity.md": "853f7d5919b59ce3bcb0ab0ef664fd12bc00f1c4e479d79974f7d1b1b4dcce40",
+    "docs/remaining-work.md": "db761d82d2b6ee3085ed1779b8b0decda3634123e5a29d06f14efa9269d1207a",
+    "README.md": "23d2025035a52a9598c406855b984a5043cc044af9dc964c39fa0173cdc0fe70",
+    "CHANGELOG.md": "b43673f824e890a1f2e041e5340482eba87b6a9e9ab60f75db8ae1fa4fcfb36d"
+  },
+  "recordChecksPassed": true
+}

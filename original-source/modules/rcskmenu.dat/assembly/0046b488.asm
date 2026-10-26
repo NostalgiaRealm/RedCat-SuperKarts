@@ -1,0 +1,4 @@
+; 0046b488 TfrmOptions_btnBackClick
+0046b488	c680d402000002	MOV byte ptr [EAX + 0x2d4],0x2
+0046b48f	e88436fcff	CALL 0x0042eb18
+0046b494	c3	RET

@@ -1,0 +1,34 @@
+; 004bee0a __local_unwind2
+004bee0a	53	PUSH EBX
+004bee0b	56	PUSH ESI
+004bee0c	57	PUSH EDI
+004bee0d	8b442410	MOV EAX,dword ptr [ESP + 0x10]
+004bee11	50	PUSH EAX
+004bee12	6afe	PUSH -0x2
+004bee14	68e8ed4b00	PUSH 0x4bede8
+004bee19	64ff3500000000	PUSH dword ptr FS:[0x0]
+004bee20	64892500000000	MOV dword ptr FS:[0x0],ESP
+004bee27	8b442420	MOV EAX,dword ptr [ESP + 0x20]
+004bee2b	8b5808	MOV EBX,dword ptr [EAX + 0x8]
+004bee2e	8b700c	MOV ESI,dword ptr [EAX + 0xc]
+004bee31	83feff	CMP ESI,-0x1
+004bee34	742e	JZ 0x004bee64
+004bee36	3b742424	CMP ESI,dword ptr [ESP + 0x24]
+004bee3a	7428	JZ 0x004bee64
+004bee3c	8d3476	LEA ESI,[ESI + ESI*0x2]
+004bee3f	8b0cb3	MOV ECX,dword ptr [EBX + ESI*0x4]
+004bee42	894c2408	MOV dword ptr [ESP + 0x8],ECX
+004bee46	89480c	MOV dword ptr [EAX + 0xc],ECX
+004bee49	837cb30400	CMP dword ptr [EBX + ESI*0x4 + 0x4],0x0
+004bee4e	7512	JNZ 0x004bee62
+004bee50	6801010000	PUSH 0x101
+004bee55	8b44b308	MOV EAX,dword ptr [EBX + ESI*0x4 + 0x8]
+004bee59	e840000000	CALL 0x004bee9e
+004bee5e	ff54b308	CALL dword ptr [EBX + ESI*0x4 + 0x8]
+004bee62	ebc3	JMP 0x004bee27
+004bee64	648f0500000000	POP dword ptr FS:[0x0]
+004bee6b	83c40c	ADD ESP,0xc
+004bee6e	5f	POP EDI
+004bee6f	5e	POP ESI
+004bee70	5b	POP EBX
+004bee71	c3	RET

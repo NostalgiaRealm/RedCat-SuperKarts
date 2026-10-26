@@ -1,0 +1,2 @@
+; 0041d404 DDRAW.DLL::DirectDrawEnumerateA
+0041d404	ff2520804200	JMP dword ptr [0x00428020]

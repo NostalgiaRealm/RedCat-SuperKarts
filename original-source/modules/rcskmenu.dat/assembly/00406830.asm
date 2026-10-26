@@ -1,0 +1,2 @@
+; 00406830 USER32.DLL::GetCursor
+00406830	ff253cf64700	JMP dword ptr [0x0047f63c]

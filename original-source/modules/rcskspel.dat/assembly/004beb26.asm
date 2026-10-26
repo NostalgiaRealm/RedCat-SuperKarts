@@ -1,0 +1,30 @@
+; 004beb26 FUN_004beb26
+004beb26	55	PUSH EBP
+004beb27	8bec	MOV EBP,ESP
+004beb29	51	PUSH ECX
+004beb2a	51	PUSH ECX
+004beb2b	53	PUSH EBX
+004beb2c	56	PUSH ESI
+004beb2d	57	PUSH EDI
+004beb2e	64a100000000	MOV EAX,FS:[0x0]
+004beb34	8945f8	MOV dword ptr [EBP + -0x8],EAX
+004beb37	c745fc4eeb4b00	MOV dword ptr [EBP + -0x4],0x4beb4e
+004beb3e	6a00	PUSH 0x0
+004beb40	ff750c	PUSH dword ptr [EBP + 0xc]
+004beb43	ff75fc	PUSH dword ptr [EBP + -0x4]
+004beb46	ff7508	PUSH dword ptr [EBP + 0x8]
+004beb49	e852cd0000	CALL 0x004cb8a0
+004beb4e	8b450c	MOV EAX,dword ptr [EBP + 0xc]
+004beb51	8b4004	MOV EAX,dword ptr [EAX + 0x4]
+004beb54	24fd	AND AL,0xfd
+004beb56	8b4d0c	MOV ECX,dword ptr [EBP + 0xc]
+004beb59	894104	MOV dword ptr [ECX + 0x4],EAX
+004beb5c	64a100000000	MOV EAX,FS:[0x0]
+004beb62	8b5df8	MOV EBX,dword ptr [EBP + -0x8]
+004beb65	8903	MOV dword ptr [EBX],EAX
+004beb67	64891d00000000	MOV dword ptr FS:[0x0],EBX
+004beb6e	5f	POP EDI
+004beb6f	5e	POP ESI
+004beb70	5b	POP EBX
+004beb71	c9	LEAVE
+004beb72	c20800	RET 0x8

@@ -1,0 +1,2 @@
+; 0049dc50 thunk_FUN_0049dcb0
+0049dc50	e95b000000	JMP 0x0049dcb0

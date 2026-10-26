@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createNativeMeshAnimation,advanceNativeMeshAnimation,createNativeRotation,advanceNativeRotation,
-  getSceneryAnimation,getSkySpec,placementExistsInMode,getTrackMusic} from '../src/asset-animation.js';
+  getSceneryAnimation,getSkySpec,placementExistsInMode,getTrackMusic} from '../source/asset-animation.js';
 const json = path => JSON.parse(readFileSync(new URL(path,import.meta.url)));
 const fixtures=json('../evidence/native/animation-fixtures.json');
 

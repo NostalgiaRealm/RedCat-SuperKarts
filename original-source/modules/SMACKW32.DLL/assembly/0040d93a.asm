@@ -1,0 +1,2 @@
+; 0040d93a KERNEL32.DLL::GetVersion
+0040d93a	ff2560134100	JMP dword ptr [0x00411360]

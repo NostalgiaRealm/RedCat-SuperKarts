@@ -54,7 +54,7 @@ safeguard is a deliberate exception to this demonstrated original defect,
 and should not change the native kernel or be described as native behavior.
 
 The composition now applies that explicit exception through
-`src/simulation/npc-velocity-safety.js`: after NPC preparation, a linear
+`source/simulation/npc-velocity-safety.js`: after NPC preparation, a linear
 velocity component that was finite before the call and became nonfinite is
 reset to zero before integration. Finite results are preserved, and existing
 invalid inputs are not concealed. The emitted `npc-velocity-safety` event

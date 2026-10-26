@@ -1,0 +1,2 @@
+; 00406530 GDI32.DLL::GetBitmapBits
+00406530	ff2528f44700	JMP dword ptr [0x0047f428]

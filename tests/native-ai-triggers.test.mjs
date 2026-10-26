@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { applyNativeAITrigger, nativeAITrackMarkers, nativeAIBonusCollected, markNativeNPCWeaponHit } from '../src/simulation/native-ai-items.js';
+import { applyNativeAITrigger, nativeAITrackMarkers, nativeAIBonusCollected, markNativeNPCWeaponHit } from '../source/simulation/native-ai-items.js';
 const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/ai-trigger-fixtures.json',import.meta.url)));
 const tracks=Array.from({length:6},(_,i)=>JSON.parse(readFileSync(new URL(`../public/assets/tracks/etappe${i}.json`,import.meta.url))));
 test('1120 original NPC marker updates retain laps, turbo, speed zones and forced-route flags',()=>{

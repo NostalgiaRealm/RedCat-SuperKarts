@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { NativeRandom } from '../src/simulation/native-random.js';
+import { NativeRandom } from '../source/simulation/native-random.js';
 import { NativeCharacterVoices, nativeCharacterVoiceId, selectNativeVoiceSample,
-  nativePlayerHitSoundRequests } from '../src/simulation/native-character-voice.js';
-import { NativeBonusPickups } from '../src/simulation/native-bonus.js';
+  nativePlayerHitSoundRequests } from '../source/simulation/native-character-voice.js';
+import { NativeBonusPickups } from '../source/simulation/native-bonus.js';
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/native/character-voice-fixtures.json', import.meta.url)));
 
 test('400 original character/commentator selectors retain samples and shared random state', () => {

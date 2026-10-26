@@ -1,0 +1,2 @@
+; 004064a0 GDI32.DLL::CreateBitmap
+004064a0	ff2570f44700	JMP dword ptr [0x0047f470]

@@ -1,0 +1,2 @@
+; 00401218 KERNEL32.DLL::CloseHandle
+00401218	ff25d4f14700	JMP dword ptr [0x0047f1d4]

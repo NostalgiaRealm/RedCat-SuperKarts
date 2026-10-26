@@ -1,0 +1,34 @@
+; 004bdf85 FUN_004bdf85
+004bdf85	b8bc1c4d00	MOV EAX,0x4d1cbc
+004bdf8a	e85d2e0000	CALL 0x004c0dec
+004bdf8f	51	PUSH ECX
+004bdf90	53	PUSH EBX
+004bdf91	8b5d08	MOV EBX,dword ptr [EBP + 0x8]
+004bdf94	56	PUSH ESI
+004bdf95	57	PUSH EDI
+004bdf96	8bf1	MOV ESI,ECX
+004bdf98	53	PUSH EBX
+004bdf99	8975f0	MOV dword ptr [EBP + -0x10],ESI
+004bdf9c	e84b1e0000	CALL 0x004bfdec
+004bdfa1	8a430c	MOV AL,byte ptr [EBX + 0xc]
+004bdfa4	8365fc00	AND dword ptr [EBP + -0x4],0x0
+004bdfa8	83c30c	ADD EBX,0xc
+004bdfab	8d7e0c	LEA EDI,[ESI + 0xc]
+004bdfae	6a00	PUSH 0x0
+004bdfb0	8bcf	MOV ECX,EDI
+004bdfb2	8807	MOV byte ptr [EDI],AL
+004bdfb4	e837d5f4ff	CALL 0x0040b4f0
+004bdfb9	ff3500244d00	PUSH dword ptr [0x004d2400]
+004bdfbf	8bcf	MOV ECX,EDI
+004bdfc1	6a00	PUSH 0x0
+004bdfc3	53	PUSH EBX
+004bdfc4	e8a748f5ff	CALL 0x00412870
+004bdfc9	8b4df4	MOV ECX,dword ptr [EBP + -0xc]
+004bdfcc	c706a8364d00	MOV dword ptr [ESI],0x4d36a8
+004bdfd2	8bc6	MOV EAX,ESI
+004bdfd4	5f	POP EDI
+004bdfd5	5e	POP ESI
+004bdfd6	5b	POP EBX
+004bdfd7	64890d00000000	MOV dword ptr FS:[0x0],ECX
+004bdfde	c9	LEAVE
+004bdfdf	c20400	RET 0x4

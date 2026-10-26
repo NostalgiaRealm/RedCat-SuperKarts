@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {nativeHudPortraitCurve, updateNativeHudPortrait, createNativeHudPortraits,
-  updateNativeHudPortraits, getNativeHudPortraitCommands} from '../src/hud-portraits.js';
-import {getHudMeshSpec} from '../src/hud-mesh.js';
+  updateNativeHudPortraits, getNativeHudPortraitCommands} from '../source/hud-portraits.js';
+import {getHudMeshSpec} from '../source/hud-mesh.js';
 
 const load = name => JSON.parse(fs.readFileSync(new URL(`../${name}`, import.meta.url)));
 const fixtures = load('evidence/native/hud-portrait-fixtures.json');
