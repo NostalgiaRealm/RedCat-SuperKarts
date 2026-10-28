@@ -292,7 +292,10 @@ Signed progress uses `0x404eb0` and `0x493a40`, including the native half-course
 comparison. `0x440e40` arms the finish. `0x440dd0` accepts an armed crossing only
 in phases 0, 7 or 8, counts a lap when previous sector is less than current, and
 disarms it when crossed backwards. `0x440c30` records laps and best times;
-`0x440d70` enters phase 3 when the configured lap count is reached.
+`0x440d70` enters phase 3 when the configured lap count is reached. It also
+pauses race timer 3 and, right after `0x440c30` restarted it, lap timer 0. The
+port pauses timer 0 at that point and the HUD reads it; timer 3's pause is
+represented by the fixed `raceTimeMs`.
 
 The shipped configuration gives all six tracks five laps. Race type 1 loads
 time-gate durations from `track.ini` using `trackIndex * 3 + difficulty`.
@@ -346,8 +349,10 @@ measurement does not establish the intended simulation rate.
 - Throttle ramps +70/sec, max100, immediately clears when released.
 - Brake ramps `truncate(previousBrake + 40×dt)`, max100, clears on release.
 - Steering initially jumps to ±15; increments by
-  `(1−abs(previous)/100)×400×dt`; changing direction first clears to0.
+  `2×(1−abs(previous)×0.01f)×200×dt`; changing direction first clears to0.
 - Release centers at400/sec. Mirrored tracks reverse left/right interpretation.
+- Every float operation rounds to single precision, as under the documented
+  24-bit x87 mode; the `0.01f` constant is the float at `0x4d2480`.
 - Handbrake is an independent button.
 
 **The integer brake step is a concrete frame-rate trap.** At25 ms, holding
@@ -371,6 +376,10 @@ constructors' enabled categories. Time trials disable all bonuses; star modes
 enable stars; the other race modes enable weapons and turbo without stars.
 Pickups scan NPCs before the player, except stars test only the player. The
 strict pickup deadline is `now > previousDeadline`; the shipped timeout is250ms.
+Only opponents arm it: `0x4514e0` passes the loop index to `0x4106b0`, which
+writes the player's own deadline (`+0x100`, read by `0x410650`) only for index
+-1. The player's index N lands in an unread opponent slot, so the player can
+collect consecutive or overlapping pickups (2026-10-28 comparison).
 Duplicate weapons level up to3. NPC pickup levels get one extra increment and
 an additional increment for an odd shared CRT random draw. Random pickups draw
 types1..5. Collected stars never respawn. Other pickups become active after5s
@@ -614,8 +623,9 @@ differences were correctable instruction-order/storage differences, not a
 necessary host boundary. Complete player force calls, force/Euler recurrence,
 ground/wheel callbacks and their recurrence now require exact stored outputs
 at the stated24-bit precision. Only the standalone slip transcendental return
-retains the1e-15 allowance described above; input checks retain their original
-scope. Original graphics-driver precision remains unverified.
+retains the1e-15 allowance described above. Since the 2026-10-28 comparison the
+1,600 keyboard input frames are also exact. Original graphics-driver precision
+remains unverified.
 
 `generate_native_gameplay_fixtures.py` maps the original PE into Unicorn and
 executes `0x433870`, `0x414ff0`, `0x415160`, `0x415410`, `0x415450`, `0x415520`,

@@ -48,11 +48,23 @@ export class NativeGameTimers {
     timer.limitMs = limitMs;
     if (timer.startMs !== 0xffffffff) timer.startMs = nowMs >>> 0;
   }
+  /** 0x42f350 pauses each listed timer with 0x42a2f0, then resumes all with
+   * 0x42a420, which also clears pauses set earlier, such as 0x440d70's. */
   pauseGame(nowMs) {
     for (const index of NATIVE_PAUSED_TIMER_IDS) this.pause(index, nowMs, { required: false });
   }
   resumeGame(nowMs) {
     for (const index of NATIVE_PAUSED_TIMER_IDS) this.resume(index, nowMs, { required: false });
+  }
+  /** Browser host suspensions (focus, menus) have no native counterpart.
+   * They pause only running timers and return those for resumeTimers. */
+  pauseHost(nowMs) {
+    const paused = NATIVE_PAUSED_TIMER_IDS.filter(index => this.timers[index]?.pausedAtMs === 0);
+    for (const index of paused) this.pause(index, nowMs);
+    return paused;
+  }
+  resumeTimers(indices, nowMs) {
+    for (const index of indices) this.resume(index, nowMs, { required: false });
   }
   /** 0x42f980, called when the post-render countdown action changes phase1 to0. */
   startRace(nowMs, { opponentCount, raceType }) {

@@ -72,3 +72,23 @@ Focused checks: `tests/native-lap-display.test.mjs` and
 `tests/hud-text.test.mjs` pass nine tests. Browser integration and its actual
 timer/capture inputs are verified separately. No full suite or release build
 is part of this change.
+
+## Results phase
+
+`00440d70` pauses timer 0 immediately after `00440c30` restarted it on the
+final lap, so after the hold the lap-time string shows the paused, roughly
+zero timer for the rest of phase 3. The port pauses its timer-0 bank entry at
+the `finished` event and the HUD reads that timer instead of the running
+race timer.
+
+The original game pause `0042f350` pauses timers 0, 3, 8 and 9–27 with
+`0042a2f0` (which skips already paused timers) and resumes them all with
+`0042a420`, which also ends a pause set earlier, such as the finish pause.
+That cannot happen during the results phase: `0042f9c0` only opens the P
+pause outside phases 3 and 6 and the Escape requester outside phases 1, 3
+and 6, so the lap time stays frozen until the race ends. The port applies
+the same phase gate to P and Escape. Its own host suspensions (focus loss,
+menus) have no native counterpart; they now pause only running timers and
+resume exactly those, so a focus loss during the results no longer restarts
+the lap timer. The exact formatted text for a zero timer on an original
+Windows machine has not been observed. Focused check: `tests/race-hud-order.test.mjs` (2026-10-28).

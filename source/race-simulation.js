@@ -58,6 +58,8 @@ export class RaceSimulation {
     this.routeOptions=nativeRaceRouteOptions(config);
     this.setup=nativeRaceSetup(config,track,this.world,{
       selectedCharacter:character,trackIndex:track.id,opponentCount,difficulty,raceType:raceMode,
+      // 42c680 reads Race.ini PLAYER.position, last written by a finished race (42c570).
+      previousFinishPosition:Math.trunc(Number(config['race.ini'].player.position))||0,
     });
     this.difficulty=difficulty;
     this.racerCharacters=[...this.setup.opponents.map(spec=>spec.availableIndex),this.setup.player.availableIndex];
@@ -116,6 +118,7 @@ export class RaceSimulation {
     if(!countdown)this.timers.startRace(0,{opponentCount,raceType:raceMode});
     this.occupancy=new NativeWaypointOccupancy(track);
     this.occupancy.insert(this.motion.body);
+    this.motion.occupancy=this.occupancy;
     this.opponents=this.setup.opponents.map(spec=>{
       const actor=new NativeAIDriver({
         track,world:this.world,geometry,start:spec.start,racer:racers[spec.racerRecord],
@@ -135,7 +138,7 @@ export class RaceSimulation {
     this.rankStates=[...this.setup.opponents.map(spec=>({
       objectId:spec.index,distance:this.opponents[spec.index].progress.distance,
       rank:spec.start.rank,finished:false,finishTimeMs:0,
-    })),{distance:0,rank:0,finished:false,finishTimeMs:0}];
+    })),{distance:0,rank:this.setup.player.start.rank,finished:false,finishTimeMs:0}];
     const bodies=[this.motion,...this.opponents].map(actor=>actor.body);
     // Both 4319f0 and 417640 install 434c40. A directed pair can therefore
     // reach the player crash callback twice; the selector owns its 300ms gate.
@@ -329,6 +332,9 @@ export class RaceSimulation {
     }
     for(const event of this.race.events){
       if(event.type==='lap')this.timers.start(0,wallMs);
+      // 440d70 pauses lap timer0 right after 440c30 restarts it; its timer3
+      // pause is represented by the fixed race.raceTimeMs.
+      if(event.type==='finished')this.timers.pause(0,wallMs);
       if(event.type==='time-gate')this.timers.setLimit(18,this.race.remainingMs,wallMs);
       if(event.type==='last-lap')this.voices.gameEvent(5);
       if(event.type==='lap-record')this.voices.gameEvent(6);
@@ -412,9 +418,7 @@ export class RaceSimulation {
         timer=>{this.timers.pause(timer,wallMs);this.npcFinishTimes[timer-9]=this.timers.read(timer,wallMs);});
     }
     this.scenery.integrate(dt,this.callbackRanges);
-    this.occupancy.remove(this.motion.body);
     this.motion.integrate();
-    this.occupancy.insert(this.motion.body);
     for(const actor of this.opponents)actor.integrate();
     if(this.playerCamera.handleKeys(keys,this.race.phase)){
       this.camera=this.playerCamera;
@@ -522,6 +526,8 @@ export class RaceSimulation {
     const resultEvents=this.updateResult(wallMs,keys);
     const beforeExpiry=this.race.events.length;
     this.race.endUpdate(this.timers.read(3,wallMs),{damage:this.damage});
+    // 46ecc0 draws the lap time from timer0, not from race timer3.
+    this.race.lapTimerMs=this.timers.read(0,wallMs);
     for(const event of this.race.events.slice(beforeExpiry))
       if(event.sound)this.onDirectSound?.(event.sound);
     this.lifecycle.gameOverMode=this.race.gameOverMode;
@@ -597,10 +603,15 @@ export class RaceSimulation {
     }
     return this.freeFlightEnabled;
   }
-  pause(wallMs){
+  /** native: the P/Escape pause 42f350, reachable only outside phases 3/6
+   * (42f9c0). Other host suspensions restore exactly the timers they paused,
+   * so 440d70's finish pause survives a focus loss during the results. */
+  pause(wallMs,{native=false}={}){
     this.playerRecovery.reset();
     if(this.freeFlightActive){this.flightPausedAt=wallMs;return;}
-    this.timers.pauseGame(wallMs-this.flightClockOffsetMs);
+    const nowMs=wallMs-this.flightClockOffsetMs;
+    if(native){this.hostPausedTimers=null;this.timers.pauseGame(nowMs);}
+    else this.hostPausedTimers=this.timers.pauseHost(nowMs);
   }
   dispatchAnimation(racer,event){
     const requests=event.callback===0x4362f0
@@ -616,7 +627,10 @@ export class RaceSimulation {
       this.flightClockOffsetMs+=paused;this.flightRawWallMs+=paused;
       delete this.flightPausedAt;return;
     }
-    this.timers.resumeGame(wallMs-this.flightClockOffsetMs);
+    const nowMs=wallMs-this.flightClockOffsetMs;
+    if(this.hostPausedTimers)this.timers.resumeTimers(this.hostPausedTimers,nowMs);
+    else this.timers.resumeGame(nowMs);
+    this.hostPausedTimers=null;
   }
   updateResult(wallMs,keys){
     const events=this.lifecycle.updateResult(wallMs,keys);

@@ -5,6 +5,12 @@ const emptyEntry=()=>({name:'',character:0,totalRaceMs:0,bestLapMs:0,difficulty:
 const empty=()=>({boards:Array.from({length:6},()=>Array.from({length:5},emptyEntry)),
   bestTimes:{},lastResult:null,quickRaceName:'Speler 1',
   profiles:Array(30).fill(null),selectedSlot:-1,locks:null});
+const validPosition=value=>Number.isInteger(value)&&value>=0&&value<=9;
+// Race.ini PLAYER.position survives unfinished races. Saves from before this
+// field only kept it inside a finished lastResult.
+const savedPlayerPosition=save=>validPosition(save.playerPosition)?save.playerPosition
+  :save.lastResult?.PLAYER?.finished&&validPosition(save.lastResult.PLAYER.position)
+    ?save.lastResult.PLAYER.position:undefined;
 
 /** Browser persistence adapter. Original records stay separate from source INIs. */
 export function readRaceSave(storage){
@@ -31,6 +37,7 @@ export function readRaceSave(storage){
       });
     });
     if(value.lastResult&&typeof value.lastResult==='object')result.lastResult=value.lastResult;
+    if(validPosition(value.playerPosition))result.playerPosition=value.playerPosition;
     if(Array.isArray(value.locks)&&value.locks.length===6&&value.locks.every(v=>typeof v==='boolean'))
       result.locks=[...value.locks];
     if(Array.isArray(value.profiles))value.profiles.slice(0,30).forEach((profile,slot)=>{
@@ -64,6 +71,8 @@ export function unlockAllCountries(save,storage){
 }
 
 export function applyRaceResult(save,patch){
+  const position=validPosition(patch.PLAYER?.position)?patch.PLAYER.position:savedPlayerPosition(save);
+  if(position!==undefined)save.playerPosition=position;
   save.lastResult=structuredClone(patch);
   for(const [name,value]of Object.entries(patch['BEST TIMES']??{}))save.bestTimes[name.toLowerCase()]=value;
 }
@@ -76,6 +85,8 @@ export function saveHighscore(save,country,record){
 }
 
 export function configWithRaceSave(config,save){
+  const position=savedPlayerPosition(save);
   return {...config,'race.ini':{...config['race.ini'],
+    player:{...config['race.ini'].player,...(position===undefined?{}:{position:String(position)})},
     'best times':{...config['race.ini']['best times'],...save.bestTimes}}};
 }

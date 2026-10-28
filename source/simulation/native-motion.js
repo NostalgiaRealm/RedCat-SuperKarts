@@ -109,6 +109,7 @@ export class NativePlayerMotion {
     const { force, deltaSeconds } = this.prepared;
     const body = this.body;
     quantizeNativePlanarVelocity(body);
+    this.occupancy?.remove(body);
     const schedule = nativeIntegrationSchedule(deltaSeconds, { player: true, flags: 3 });
     for (let step = 0; step < schedule.count; step++) {
       const collision = this.collision.sample(body, schedule.dt);
@@ -126,6 +127,9 @@ export class NativePlayerMotion {
     // the last sector observed by the race/HUD callback.
     body.previousSector = body.sector;
     body.sector = selectNativeSector(this.world, body.sector, body.x, body.z);
+    // 0x491d30 selects the waypoint (0x4937e0) before the +0x58 ground
+    // callback 0x416650, as the NPC path does.
+    this.occupancy?.insert(body);
     if (!this.groundInitialized) {
       const initial = createNativeGroundState(body, this.ground.wheels);
       initial.wheels.forEach((wheel, i) => { this.ground.wheels[i].position = wheel.position; });

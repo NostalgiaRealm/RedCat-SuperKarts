@@ -131,3 +131,22 @@ test('all six source pickup layouts collect identically across render rates and 
     for (const fps of [31, 60, 120, 144, 240]) assert.deepEqual(run(fps), expected, `track ${trackId}, ${fps} FPS`);
   }
 });
+
+test('0x4106b0 arms the pickup cooldown for opponents only, so the player can collect consecutive pickups', () => {
+  const pickups = [
+    { type: 1, position: [0, 0, 0], radius: 10 },
+    { type: 2, position: [0, 0, 0], radius: 10 },
+  ];
+  const player = new NativeBonusPickups({ pickups, racerCount: 2, raceType: 2, bonusConfig: config, random: new NativeRandom(1) });
+  const away = { position: [1000, 0, 0], radius: 10 }, here = { position: [0, 0, 0], radius: 10 };
+  const playerEvents = player.step(0.025, 0.025, [away, here]);
+  assert.deepEqual(playerEvents.map(event => [event.racer, event.pickup]), [[1, 0], [1, 1]]);
+  assert.equal(player.eligibleAfter[1], 0);
+  const opponent = new NativeBonusPickups({ pickups, racerCount: 2, raceType: 2, bonusConfig: config, random: new NativeRandom(1) });
+  const opponentEvents = opponent.step(0.025, 0.025, [here, away]);
+  assert.deepEqual(opponentEvents.map(event => [event.racer, event.pickup]), [[0, 0]]);
+  const deadline = Math.fround(Math.fround(0.025) + Math.fround(Number(config.bonus_timeout_pickup_next) * Math.fround(0.001)));
+  assert.equal(opponent.eligibleAfter[0], deadline);
+  assert.equal(opponent.step(0.025, deadline, [here, away]).length, 0);
+  assert.deepEqual(opponent.step(0.025, deadline + 0.025, [here, away]).map(event => [event.racer, event.pickup]), [[0, 1]]);
+});

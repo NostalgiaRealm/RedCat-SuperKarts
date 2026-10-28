@@ -2,7 +2,9 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {RaceHud} from '../source/race-hud.js';
-import {getHudStringSpec} from '../source/hud-text.js';
+import {getHudStringSpec,getRaceHudText} from '../source/hud-text.js';
+import {RaceSimulation} from '../source/race-simulation.js';
+import {NativeRandom} from '../source/simulation/native-random.js';
 const config=JSON.parse(fs.readFileSync(new URL('../public/assets/config.json',import.meta.url)));
 function fixture(){
   const hud=new RaceHud({getContext:()=>({})},config,{});
@@ -96,4 +98,33 @@ test('lap holds follow native event8 including reverse crossings, not every lap-
   hud.update(race,.025,{nowSeconds:44.1});
   assert.equal(hud.lapDisplay.state.holdStampSeconds,44,'A new qualifying reverse crossing restarts the hold');
   assert.equal(hud.text.string_laptime_value,'00:00:00');
+});
+
+test('440d70 pauses lap timer0 at the finish, so the results-phase HUD lap time stays frozen',()=>{
+  const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
+  const sim=new RaceSimulation({config,manifest:JSON.parse(read('manifest.json')),cars:JSON.parse(read('cars.json')),
+    track:JSON.parse(read('tracks/etappe0.json')),random:new NativeRandom(0),
+    physicsBytes:read('physics/phys1.dat'),racerBytes:read('racer-tables/cars1.dat')});
+  const {hud}=fixture(),race=sim.race,input={throttle:1,brake:0,steer:0,handbrake:0,bonus:0};
+  let now=0;const step=()=>{now+=25;sim.step(input,.025,now);hud.update(race,.025,{nowSeconds:now/1000});};
+  for(let i=0;i<40;i++)step();
+  assert.equal(race.lapTimerMs,1000);
+  // Cross finish marker14 on the last lap through the real event wiring.
+  race.lapCount=race.lapLimit-1;race.finishArmed=true;
+  const begin=race.beginUpdate.bind(race);
+  race.beginUpdate=(...args)=>{const snapshot=begin(...args);race.beginUpdate=begin;race.trigger(14,{previous:0,current:1});return snapshot;};
+  step();
+  assert.equal(race.finished,true);assert.equal(race.phase,3);
+  for(let i=0;i<160;i++)step();
+  assert.equal(race.phase,3);
+  assert.equal(race.elapsedMs-race.lapStartMs,4000,'race timer3 keeps the port countdown domain');
+  assert.equal(race.lapTimerMs,0);
+  // 42f9c0 refuses P/Escape in phase3, so only a browser host suspension
+  // (focus loss, menu) can pause here; it must not end 440d70's pause.
+  sim.pause(now);now+=1000;sim.resume(now);
+  for(let i=0;i<40;i++)step();
+  assert.equal(sim.lifecycle.running,true,'still inside the results phase');
+  assert.equal(race.lapTimerMs,0);
+  const frozen=getRaceHudText({lapCounter:race.lapCount,totalLaps:race.lapLimit,lapTimeMs:0,bestLapTimeMs:race.bestLapMs});
+  assert.equal(hud.text.string_laptime_value,frozen.string_laptime_value);
 });

@@ -102,7 +102,8 @@ export function nativeRaceGrid(track, world, {
     return { ...chosen, position: [...chosen.position], yaw: heading(world, chosen.sector), rank,
       source: complete ? `TRIGGER_POS_${70 + index}` : 'lane-fallback' };
   });
-  return { player, opponents };
+  // 0x42c680 stores the same clamped value in the live player rank 0x53be60.
+  return { player: { ...player, rank: playerRank }, opponents };
 }
 
 /** 0x403d90 starts at sector minus finish-marker sector;0x409530 adds signed travel. */

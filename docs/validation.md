@@ -4,6 +4,18 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Original-code comparison — 28 October 2026
+
+The [comparison report](original-comparison-2026-10-28.md) records six
+corrections: no pickup cooldown for the player, starting rank from the
+previous finish, whole-percentage volumes, a paused lap timer after the
+finish, waypoint selection before the ground update and single-precision
+keyboard input. One combined run of the edited tests, the bundle check and
+every full-simulation test passed 159 tests. The star HUD and power-up audio
+browser checks were not run because no Chromium is installed. A follow-up
+keeps the finish pause through browser focus suspensions (128 tests passed).
+The full suite, desktop packages and full races were not run.
+
 ## Runtime folder separation — 26 October 2026
 
 The [folder guide](runtime-layout.md) documents the subsequent move of editable

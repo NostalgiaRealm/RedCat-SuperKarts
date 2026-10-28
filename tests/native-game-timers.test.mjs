@@ -39,6 +39,28 @@ test('Native game pause excludes pause duration only from the original timer lis
   }
 });
 
+test('0x42a420 game resume clears an earlier pause; host suspensions leave it in place', () => {
+  const create = () => {
+    const bank = new NativeGameTimers();
+    for (const index of [0, 3]) { bank.initialize(index, 100000); bank.start(index, 1000); }
+    bank.pause(0, 5000); // 0x440d70 at the finish.
+    return bank;
+  };
+  const native = create();
+  native.pauseGame(6000);
+  native.resumeGame(9000);
+  // The finish pause ends: timer0 continues from its frozen 4000 ms.
+  assert.equal(native.read(0, 10000), 5000);
+  assert.equal(native.get(0).pausedAtMs, 0);
+  const host = create();
+  const paused = host.pauseHost(6000);
+  assert.deepEqual(paused, [3]);
+  host.resumeTimers(paused, 9000);
+  assert.equal(host.read(0, 10000), 4000);
+  assert.equal(host.get(0).pausedAtMs, 5000);
+  assert.equal(host.read(3, 10000), 6000);
+});
+
 test('576 complete original race timer initializations and green-light resets match at both precisions', () => {
   const config = JSON.parse(readFileSync(new URL('../public/assets/config.json', import.meta.url)));
   const tables = [0, 1, 2].map(index => parseRacerTable(readFileSync(

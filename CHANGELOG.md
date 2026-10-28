@@ -1,5 +1,26 @@
 # Changelog
 
+## 1.0.1 — 2026-10-28
+
+Source update with six gameplay corrections from a comparison against the
+recovered original code. No desktop packages or release archives were created
+for this version. See the
+[comparison report](docs/original-comparison-2026-10-28.md).
+
+### Fixed
+
+- The player no longer waits 250 ms between bonus pickups; as in the
+  original, only opponents have that cooldown.
+- The starting rank now comes from the previous finished race's position, as
+  the original reads it from Race.ini. Existing saves need no migration.
+- Music and effects volumes of 29, 57 and 58% no longer lose 1%, and the
+  effects volume no longer drops further on each race.
+- The lap time stays frozen after the finish, including when the browser
+  loses focus during the results.
+- The player's waypoint is chosen before the ground update, as for opponents.
+- Keyboard throttle, brake and steering now round like the original's
+  single-precision arithmetic.
+
 ## 1.0.0 — 2026-10-26
 
 Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS

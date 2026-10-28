@@ -3,6 +3,9 @@
 export function nativeAudioPercent(value,fallback=0){
  const number=Number(value);return Number.isFinite(number)?Math.max(0,Math.min(100,Math.trunc(number))):fallback;
 }
+/** Port settings keep slider fractions; the shell slider and Race.ini hold
+ * integers (46b7f0/45b629), so recover the integer before native truncation. */
+export function settingsAudioPercent(fraction){return Math.round(Number(fraction)*100);}
 export function getNativeAudioSettings(config){
  const race=config['race.ini']?.game_settings??{};
  return {musicPercent:nativeAudioPercent(race.mx_volume),effectsPercent:nativeAudioPercent(race.fx_volume),

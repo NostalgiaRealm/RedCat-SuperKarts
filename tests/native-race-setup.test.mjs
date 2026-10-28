@@ -53,3 +53,12 @@ test('AI progress uses signed sector count and resets stationary-sector timer', 
   assert.equal(progress.distance, 0);
   assert.equal(progress.sectorTime, 0);
 });
+
+test('0x42c680 seeds the live player rank from Race.ini PLAYER.position except in race types 1 and 3', () => {
+  for (const [raceType, expected] of [[0, 2], [2, 2], [1, 0], [3, 0]]) {
+    const grid = nativeRaceGrid(tracks[0], worlds[0], { opponentCount: 4, previousFinishPosition: 2, raceType });
+    assert.equal(grid.player.rank, expected, `race type ${raceType}`);
+    assert.deepEqual(grid.opponents.map(racer => racer.rank), [0, 1, 2, 3, 4].filter(rank => rank !== expected));
+  }
+  assert.equal(nativeRaceGrid(tracks[0], worlds[0], { opponentCount: 2, previousFinishPosition: 4 }).player.rank, 2);
+});

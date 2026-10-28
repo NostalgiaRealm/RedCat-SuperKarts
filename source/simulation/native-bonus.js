@@ -230,7 +230,10 @@ export class NativeBonusPickups {
         if(racers[racer].canCollect===false||racers[racer].excludedPickups?.has(index))continue;
         if (!nativeCanCollectBonus(nowSeconds, this.eligibleAfter[racer])
           || !nativeBonusOverlap(racers[racer], pickup)) continue;
-        this.eligibleAfter[racer] = f32(f32(nowSeconds) + cooldown);
+        // 0x4514e0 passes the loop index to 0x4106b0, which only arms the
+        // player's own +0x100 deadline for index -1. The player's index N lands
+        // in an unread opponent slot, so only opponents wait for the cooldown.
+        if (racer !== playerIndex) this.eligibleAfter[racer] = f32(f32(nowSeconds) + cooldown);
         const result = collectNativeBonus(pickup, this.owned[racer], this, {
           player: racer === playerIndex, random: this.random,
           maxLevel: Number(this.config.max_bonus_level),

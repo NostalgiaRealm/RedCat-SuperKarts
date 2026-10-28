@@ -17,7 +17,7 @@ import {NativeBlendState} from './native-blend-state.js';
 import {NativeHudSamplerState} from './simulation/native-hud-sampler.js';
 import {NativeRaceAudio} from './native-race-audio.js';
 import {getNativeSoundListener} from './spatial-audio.js';
-import {nativeAudioLoadSettings} from './audio-mixing.js';
+import {nativeAudioLoadSettings,settingsAudioPercent} from './audio-mixing.js';
 import {NATIVE_REFERENCE_UPTIME_MS} from './simulation/clock.js';
 import {readRaceSave,configWithRaceSave} from './race-save.js';
 import {nativeVisibleChunkStart,nativeVisibleChunkRanges} from './simulation/native-render.js';
@@ -98,7 +98,7 @@ export class DrivingView extends TrackViewer{
     this.hudMeshes.capture(this.motion.body.position);
     this.onLoadProgress?.(4);
     this.music=new TrackMusic(getTrackMusic(manifest,id));
-    this.audio=new NativeRaceAudio(config,manifest,{groupVolume:(this.audioSettings?.effects??1)*100});
+    this.audio=new NativeRaceAudio(config,manifest,{groupVolume:settingsAudioPercent(this.audioSettings?.effects??1)});
     this.nativeAudioSettings=nativeAudioLoadSettings(config);
     await this.audio.prepareVoices(this.simulation.racerCharacters);
     await this.audio.prepareRaceEvents();
@@ -361,21 +361,21 @@ export class DrivingView extends TrackViewer{
   }
   playSound(name){this.audio?.playEvent(name).catch(error=>this.errors.push({sound:name,reason:String(error)}));}
   setAudioSettings(settings){
-    this.audioSettings=settings;this.music?.setVolume(settings.music*100);
+    this.audioSettings=settings;this.music?.setVolume(settingsAudioPercent(settings.music));
     // Reapplying437e30 on an ordinary resume would overwrite the source levels
     // of scenery clones created after the original initial volume write.
-    if(this.audio&&this.audio.groupVolume!==Math.trunc(settings.effects*100))
-      this.audio.setGroupVolume(settings.effects*100);
+    const effects=settingsAudioPercent(settings.effects);
+    if(this.audio&&this.audio.groupVolume!==effects)this.audio.setGroupVolume(effects);
     if(this.simulation&&this.audio)this.simulation.crashAudio.enabled=this.audio.controllerEnabled;
     if(this.active)this.music?.resume();
   }
   resumeAudio(){if(this.active){this.music?.resume();if(!this.simulation?.freeFlightActive)this.audio?.unlock().catch(()=>{});}}
-  suspend({notifyPause=true,pauseAudio=true}={}){
+  suspend({notifyPause=true,pauseAudio=true,nativePause=false}={}){
     const time=performance.now();
     this.input.clear();
     if(this.simulation&&this.pausedAt===null){
       this.pausedAt=time;
-      this.simulation.pause(this.clock.snapshot(time).wallMs);
+      this.simulation.pause(this.clock.snapshot(time).wallMs,{native:nativePause});
       this.pauseNoticeActive=notifyPause;
       if(notifyPause)this.hud?.notify(1,0,{capture:true});
     }

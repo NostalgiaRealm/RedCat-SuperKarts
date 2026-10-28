@@ -77,3 +77,17 @@ test('composed race construction shares initialized options with player, NPC ste
     assert.equal(config['race.ini'].player.motor,'1');
   }
 });
+
+test('composed race construction starts the player rank from the saved finishing position',()=>{
+  const manifest=json('public/assets/manifest.json'),cars=json('public/assets/cars.json');
+  const create=(position,raceMode)=>new RaceSimulation({
+    config:{...config,'race.ini':{...config['race.ini'],player:{...config['race.ini'].player,position}}},
+    manifest,cars,character:1,difficulty:1,raceMode,
+    track:json('public/assets/tracks/etappe1.json'),random:new NativeRandom(0),
+    physicsBytes:read('public/assets/physics/phys1.dat'),racerBytes:read('public/assets/racer-tables/cars1.dat')});
+  const normal=create('2',0);
+  assert.equal(normal.rankStates.at(-1).rank,2);
+  assert.deepEqual(normal.rankStates.slice(0,-1).map(state=>state.rank),[0,1,3,4]);
+  assert.equal(create('2',1).rankStates.at(-1).rank,0);
+  assert.equal(create('0',0).rankStates.at(-1).rank,0);
+});

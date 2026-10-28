@@ -3,9 +3,9 @@
 A reconstruction of the original Windows game using **Three.js**, **Electron**
 and the original supplied assets. Play in a browser or in a desktop window.
 
-**Version 1.0.0** · [Changelog](CHANGELOG.md) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.0) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.0)
+**Version 1.0.1** · [Changelog](CHANGELOG.md) ·
+[GitHub downloads (1.0.0)](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.0) ·
+[GitLab downloads (1.0.0)](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.0)
 
 - **Six circuits**, **four playable characters**, **four active race modes** and
   **three difficulty levels**, with the original menus.
@@ -27,8 +27,10 @@ separates confirmed improvements from validation gaps and optional work.
 
 To inspect how the original worked, see the [recovered C and assembly](original-source/README.md).
 This is decompiled reference code, not the developers' original source project.
-The [source comparison report](docs/full-source-audit.md) records the latest
+The [source comparison report](docs/full-source-audit.md) records the earlier
 confirmed corrections and the intentional port features that were preserved.
+The [28 October 2026 comparison](docs/original-comparison-2026-10-28.md)
+records the latest six corrections.
 
 [Run the game](#run-the-game) · [Controls](#controls) ·
 [Settings and saves](#settings-and-saves) ·

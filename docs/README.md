@@ -50,6 +50,7 @@ now lives at the same relative path under `source/`.
 - [Original-code decompilation and port comparison](full-source-audit.md)
 - [Gameplay source comparison — 26 October 2026](full-source-audit-gameplay.md)
 - [Original-code comparison: presentation and audio](full-source-audit-presentation.md)
+- [Original-code comparison and corrections — 28 October 2026](original-comparison-2026-10-28.md)
 
 ## Original files and startup
 

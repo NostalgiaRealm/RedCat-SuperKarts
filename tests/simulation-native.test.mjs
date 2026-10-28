@@ -35,13 +35,14 @@ test('native table records: verified strides and data coverage', () => {
   assert.throws(() => parseRacerTable(new Uint8Array(2481)), RangeError);
 });
 
-test('1600 portable input updates agree with shipped x86 instructions', () => {
+test('1600 portable input updates match shipped x86 instructions exactly', () => {
   for (const trace of fixtures.inputTraces) {
     const state = createNativeInputState();
     for (const frame of trace.frames) {
       updateNativeInput(state, buttons(frame.mask), frame.delta, trace.mirrored);
-      close(state.throttle, frame.expected.throttle, fixtures.tolerance.inputAbsolute);
-      close(state.steering, frame.expected.steering, fixtures.tolerance.inputAbsolute);
+      // Per-operation single rounding reproduces the 24-bit emulation exactly.
+      assert.equal(state.throttle, frame.expected.throttle);
+      assert.equal(state.steering, frame.expected.steering);
       assert.equal(state.brake, frame.expected.brake);
       assert.equal(state.handbrake, frame.expected.handbrake);
     }

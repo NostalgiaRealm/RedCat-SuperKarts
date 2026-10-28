@@ -46,3 +46,21 @@ test('unlock storage failure leaves the current locks and progress intact',()=>{
   assert.equal(unlockAllCountries(save,{setItem(){throw Error('Storage unavailable');}}),false);
   assert.deepEqual(save,previous);
 });
+
+test('finished positions persist across unfinished races and older saves derive them without rewriting',()=>{
+  const original={'race.ini':{player:{position:'0',damage:'0'},'best times':{}}};
+  const legacy=readRaceSave({getItem:()=>JSON.stringify({lastResult:{PLAYER:{finished:1,position:3}}})});
+  assert.equal('playerPosition' in legacy,false);
+  assert.equal(configWithRaceSave(original,legacy)['race.ini'].player.position,'3');
+  applyRaceResult(legacy,{PLAYER:{finished:0}});
+  assert.equal(legacy.playerPosition,3);
+  assert.equal(configWithRaceSave(original,legacy)['race.ini'].player.position,'3');
+  applyRaceResult(legacy,{PLAYER:{finished:1,position:1}});
+  assert.equal(legacy.playerPosition,1);
+  const storage={value:null,getItem(){return this.value;},setItem(key,value){this.value=value;}};
+  writeRaceSave(legacy,storage);
+  assert.equal(readRaceSave(storage).playerPosition,1);
+  const unfinished=readRaceSave({getItem:()=>JSON.stringify({lastResult:{PLAYER:{finished:0}},playerPosition:12})});
+  assert.equal(configWithRaceSave(original,unfinished)['race.ini'].player.position,'0');
+  assert.equal(original['race.ini'].player.position,'0');
+});

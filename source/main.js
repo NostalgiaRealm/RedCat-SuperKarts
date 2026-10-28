@@ -4,7 +4,7 @@ import {MoviePlayback} from './movie-playback.js';
 import {InputController} from './input.js';
 import {NativeMenu} from './native-menu.js';
 import {MenuAudio} from './menu-audio.js';
-import {NATIVE_MOVIE_GAIN} from './audio-mixing.js';
+import {NATIVE_MOVIE_GAIN,settingsAudioPercent} from './audio-mixing.js';
 import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeAdventureBriefingSound,nativeCountryInfoSound,nativeMenuFirstTime,nativeMainMenuGreeting} from './menu-sound-events.js';
 import {NativeControlDraft,NATIVE_CONTROL_FIELDS,nativeBindingImage,nativeBindingLabel,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from './native-control-settings.js';
 import {createNativeDisplaySettings} from './native-display-settings.js';
@@ -397,7 +397,7 @@ function showSettings(from=returnFromSettings){
       sldMusicVolume:v=>{draft.music=v/100;menuAudio?.generic(17);},sldEffectVolume:v=>{draft.effects=v/100;menuAudio?.generic(18);},
       rdoLowQual:quality('640x480',15),rdoHighQual:quality('800x600',16),
       rdoKeyboard:control(0,9),rdoJoystick:control(2,10),rdoGamepad:control(1,11),chkStartInfo:()=>{draft.startInfo=!draft.startInfo;showSettings(from);}},
-      text:{sldMusicVolume:'Muziekvolume',sldEffectVolume:'Effectvolume'},values:{sldMusicVolume:draft.music*100,sldEffectVolume:draft.effects*100},
+      text:{sldMusicVolume:'Muziekvolume',sldEffectVolume:'Effectvolume'},values:{sldMusicVolume:settingsAudioPercent(draft.music),sldEffectVolume:settingsAudioPercent(draft.effects)},
       selected:[['rdoKeyboard','rdoGamepad','rdoJoystick'][draft.controlType],'chk3dCard',...({'640x480':['rdoLowQual'],'800x600':['rdoHighQual']}[draft.resolution]||[]),...(draft.startInfo?['chkStartInfo']:[])],disabled:['chk3dCard',...(draft.controlType===0?[]:['btnControlsAdvanced'])],hidden:resolutionArt?[]:['imgResPic'],
       properties:{chkStartInfo:{Top:376},lblStartInfo:{Top:392}},
       images:{imgControlPic:`(IMAGEBASE)${['mn_0601a','mn_0603a','mn_0602a'][draft.controlType]}.bmp`,imgResPic:resolutionArt?`(IMAGEBASE)${resolutionArt}.bmp`:''}});
@@ -690,7 +690,7 @@ async function showTrack(id,driving=false,options={}){
     if(serial!==loadSerial||page!=='loading'){loadingViewer.suspend();return;}
     if(!result)return;
     // 437560 repairs enabled FX_VOLUME0 to75 and writes it back to Race.ini.
-    if(driving&&settings.effects*100!==viewer.audio.groupVolume){
+    if(driving&&settingsAudioPercent(settings.effects)!==viewer.audio.groupVolume){
       settings.effects=viewer.audio.groupVolume/100;writeSettings(settings);
     }
     $('track-title').textContent=result.track.name;resumeViewer();
@@ -736,7 +736,7 @@ function back(reason){
     if(!request)return;
     const heldKeys=[...input.state.keys];
     racePause={gate:new NativeRacePauseGate(request),choice:-1};
-    viewer.suspend({notifyPause:request!=='quit',pauseAudio:false});mode='paused';input.setMode('menu');
+    viewer.suspend({notifyPause:request!=='quit',pauseAudio:false,nativePause:true});mode='paused';input.setMode('menu');
     // Preserve physical key releases across the mode switch. The game must
     // not interpret the opening Escape/P as an already released key.
     for(const key of heldKeys)input.state.keys.add(key);

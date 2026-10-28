@@ -222,6 +222,12 @@ an adventure event's explicit settings must be retained.
 tracks. These checks compare native track axes as explicit inputs.
 Marker 69 supplies the player; 70 onward supply NPCs in roster order.
 Fallback placement uses assigned race position and the original lane clamp.
+`0x42c680` reads that position from Race.ini `PLAYER.position` for race types
+0, 2, 4 and 5 (0 for types 1 and 3), clamps it to the opponent count and
+stores it in the live player rank `0x53be60`. `0x42c570` writes the position
+only after a finished race, so it carries over unfinished races. The port keeps
+it as the additive save field `playerPosition` and seeds the player's initial
+rank from it (2026-10-28 comparison).
 `NativeAIProgress` reuses verified signed sector distance. `0x403d90`
 initializes NPC distance to start sector minus the first marker-14 sector
 (`0x440e50`); player distance separately starts at zero. The explicit

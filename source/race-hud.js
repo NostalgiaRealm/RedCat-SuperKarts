@@ -60,7 +60,7 @@ export class RaceHud {
     this.processEvents(race.events,deltaSeconds);
     updateNativeHudNotifications(this.notifications,deltaSeconds);
     const values=getRaceHudText({lapCounter:race.lapCount,totalLaps:race.lapLimit,
-      lapTimeMs:Math.min(race.lapTimerLimitMs,race.elapsedMs-race.lapStartMs),
+      lapTimeMs:race.lapTimerMs??Math.min(race.lapTimerLimitMs,race.elapsedMs-race.lapStartMs),
       bestLapTimeMs:race.bestLapMs,
       countdownTimeMs:race.raceType===1?race.remainingMs:null});
     values.string_laptime_value=this.lapDisplay.update({lapText:values.string_laptime_value,nowSeconds});
