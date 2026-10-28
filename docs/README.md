@@ -123,6 +123,7 @@ now lives at the same relative path under `source/`.
 ## Release notes and historical summaries
 
 - [Publication policy: include all original-source files on both hosts](releases/README.md)
+- [RedCat SuperKarts v1.0.1 — desktop and source release](releases/1.0.1.md)
 - [RedCat SuperKarts v1.0.0 — desktop and source release](releases/1.0.0.md)
 
 - [RedCat SuperKarts v0.9.0 — desktop and source release](releases/v0.9.0.md)

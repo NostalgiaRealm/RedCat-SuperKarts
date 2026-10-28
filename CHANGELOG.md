@@ -1,23 +1,12 @@
 # Changelog
 
-## Unreleased
-
-### Fixed
-
-- Only keys that type a character skip the intro, as in the original: arrow
-  keys and Alt combinations no longer skip it, and Backspace now does.
-  Controller, mouse and touch skipping are unchanged.
-- The race's random number stream now includes the original's draw when the
-  player's record is first used. Normal play looks the same.
-- Saved opponent result times use the opponents' current progress.
-- The unused AI forced-route counter reads the efficiency level, as in the
-  original.
-
 ## 1.0.1 — 2026-10-28
 
-Source update with six gameplay corrections from a comparison against the
-recovered original code. No desktop packages or release archives were created
-for this version. See the
+Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
+Apple Silicon, with ten gameplay and menu corrections from a comparison
+against the recovered original code. Existing saves, profiles, unlocks,
+settings and records keep working without migration. See the
+[1.0.1 release notes](docs/releases/1.0.1.md) and the
 [comparison report](docs/original-comparison-2026-10-28.md).
 
 ### Fixed
@@ -25,14 +14,30 @@ for this version. See the
 - The player no longer waits 250 ms between bonus pickups; as in the
   original, only opponents have that cooldown.
 - The starting rank now comes from the previous finished race's position, as
-  the original reads it from Race.ini. Existing saves need no migration.
+  the original reads it from Race.ini. A new save field carries it over
+  unfinished races; older saves need no migration.
 - Music and effects volumes of 29, 57 and 58% no longer lose 1%, and the
   effects volume no longer drops further on each race.
-- The lap time stays frozen after the finish, including when the browser
-  loses focus during the results.
+- The lap time stays frozen after the finish, including when the browser or
+  desktop window loses focus during the results.
 - The player's waypoint is chosen before the ground update, as for opponents.
-- Keyboard throttle, brake and steering now round like the original's
+- Keyboard throttle, brake and steering round like the original's
   single-precision arithmetic.
+- Only keys that type a character skip the intro: arrow keys and Alt
+  combinations no longer skip it, and Backspace now does. Controller, mouse
+  and touch skipping are unchanged.
+- The race's random number stream includes the original's draw when the
+  player's record is first used. Normal play looks the same.
+- Saved opponent result times use the opponents' current progress.
+- The unused AI forced-route counter reads the efficiency level, as in the
+  original.
+
+### Documentation and tests
+
+- Added the original-code comparison report, with evidence for each fix, the
+  intentional differences kept and the open questions.
+- Added focused tests for each fix and recorded unit and browser validation.
+- Clarified the 1.0.0 publication scope and the source archive command.
 
 ## 1.0.0 — 2026-10-26
 

@@ -33,10 +33,11 @@ dependency; desktop game payloads do not need to contain it.
   Apple Silicon, with architecture identified in each filename.
 - The version's changelog, build metadata and downloadable-file checksums.
 
-After committing the complete source, create both 1.0.0 source archives:
+After committing the complete source, create both source archives for the
+version, for example 1.0.1:
 
 ```sh
-npm run release:source -- --output release/1.0.0
+npm run release:source -- --output release/1.0.1
 ```
 
 Use the matching directory for a later version. The helper does not run tests
@@ -49,14 +50,16 @@ Successful compilation, packaging, publication and checksum generation are
 separate from gameplay validation. Prior evidence must retain its original
 source and platform scope.
 
-For 1.0.0, the user's instruction is to run **no tests or build checks**. Use
+For 1.0.0, the user's instruction was to run **no tests or build checks**. Use
 `RCSK_SKIP_BUILD_CHECKS=1` while packaging and `skip_build_checks: true` for the
 macOS release workflow. Do not run release launch checks, payload verification,
 metadata assertions or archive-content checks. This release-specific exclusion
 does not remove the development checks or change their historical records.
+Version 1.0.1 returns to the normal build checks.
 
 ## Release notes
 
-- [1.0.0 — current desktop and source release](1.0.0.md)
+- [1.0.1 — current desktop and source release](1.0.1.md)
+- [1.0.0 — desktop and source release](1.0.0.md)
 - [0.9.0 — desktop and source release](v0.9.0.md)
 - [0.1.0 — source release](v0.1.0.md)
