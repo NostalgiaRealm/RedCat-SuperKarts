@@ -6,7 +6,10 @@ const fixtures=JSON.parse(readFileSync(new URL('../evidence/native/ai-trigger-fi
 const tracks=Array.from({length:6},(_,i)=>JSON.parse(readFileSync(new URL(`../public/assets/tracks/etappe${i}.json`,import.meta.url))));
 test('1120 original NPC marker updates retain laps, turbo, speed zones and forced-route flags',()=>{
   for(const f of fixtures.triggers){
-    const state={...f.state},body={...f.body};applyNativeAITrigger(body,state,f.marker,f.options);
+    // The generator labels the value it writes to profile +0x8 (0x505938)
+    // drivingStyle; 0x40fe50 stores the efficiency level there.
+    const options={...f.options,efficiencyLevel:f.options.drivingStyle};
+    const state={...f.state},body={...f.body};applyNativeAITrigger(body,state,f.marker,options);
     assert.deepEqual(state,f.expectedState);assert.deepEqual(body,f.expectedBody);
   }
 });

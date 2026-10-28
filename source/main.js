@@ -1,7 +1,7 @@
 import {readSettings,writeSettings,renderDimensions,chooseMultisampleCount} from './settings.js';
 import {GAME_VERSION} from './version.js';
 import {MoviePlayback} from './movie-playback.js';
-import {InputController} from './input.js';
+import {InputController,nativeIntroSkipKey} from './input.js';
 import {NativeMenu} from './native-menu.js';
 import {MenuAudio} from './menu-audio.js';
 import {NATIVE_MOVIE_GAIN,settingsAudioPercent} from './audio-mixing.js';
@@ -763,7 +763,7 @@ function back(reason){
   if(['prompt','score-name','profile-name'].includes(page)){promptReturn?.();return;}
   if(page==='countries')showCharacters();else if(page==='characters'&&playMode==='adventure')showAdventure();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
 }
-function menuKey(key){
+function menuKey(key,source){
   if((mode==='intro'||mode==='reward')&&document.activeElement===$('movie-audio')&&(key==='Enter'||key==='Space')){
     moviePlayback.activate();return;
   }
@@ -776,7 +776,9 @@ function menuKey(key){
     else if(buttons.length)buttons[(buttons.indexOf(document.activeElement)+1)%buttons.length].focus();
     return;
   }
-  if(mode==='intro'){if(!$('movie').paused)finishIntro();else if(key==='Enter'||key==='Space')moviePlayback.activate();return;}
+  // Keyboard skips use the native key-press rule in the keydown listener
+  // below; skipping with any controller button is a browser adaptation.
+  if(mode==='intro'){if(!$('movie').paused){if(source!=='keyboard')finishIntro();}else if(key==='Enter'||key==='Space')moviePlayback.activate();return;}
   const items=nativeNavigationOrder([...screen.querySelectorAll('button,input,select,a[href],[role=button]')].filter(el=>!el.disabled&&el.tabIndex>=0&&el.getClientRects().length));
   const current=document.activeElement,index=items.indexOf(current);
   if(['ArrowRight','ArrowLeft'].includes(key)&&current instanceof HTMLInputElement&&current.type==='range'){
@@ -798,7 +800,7 @@ $('skip-movie').onclick=e=>{e.stopPropagation();finishIntro();};
 $('movie').onended=()=>rewardDone?rewardDone():finishIntro();$('movie').onpointerdown=()=>{if(mode==='intro'&&!$('movie').paused)finishIntro();};
 window.addEventListener('keydown',e=>{
   if(e.target===$('movie-audio')&&(e.code==='Enter'||e.code==='Space'))return;
-  if(mode==='intro'&&!$('movie').paused&&(e.key.length===1||e.key==='Enter'||e.key==='Escape')){e.preventDefault();finishIntro();}
+  if(mode==='intro'&&!$('movie').paused&&nativeIntroSkipKey(e)){e.preventDefault();finishIntro();}
 });
 $('leave-viewer').onclick=showCountries;$('viewer-settings').onclick=()=>showSettings('viewer');
 function requestTouchQuit(){

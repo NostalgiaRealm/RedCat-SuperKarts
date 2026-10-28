@@ -227,6 +227,8 @@ export class NativeBonusPickups {
       if (!wasActive) continue;
       pickup.yaw = f32(f32(Number(this.config.weapon_rotation_speed) * f32(deltaSeconds)) + pickup.yaw);
       for (let racer = pickup.type === 6 ? playerIndex : 0; racer <= playerIndex; racer++) {
+        // 0x410650 fetches the lazily created player record before any test.
+        if (racer === playerIndex) this.onPlayerCheck?.();
         if(racers[racer].canCollect===false||racers[racer].excludedPickups?.has(index))continue;
         if (!nativeCanCollectBonus(nowSeconds, this.eligibleAfter[racer])
           || !nativeBonusOverlap(racers[racer], pickup)) continue;

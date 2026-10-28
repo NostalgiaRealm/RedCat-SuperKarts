@@ -76,8 +76,9 @@ The launcher runs `rcskmenu.dat /FIRST` with the data directory as its working
 directory. The menu plays the intro. Native exit codes 0x28/0x29 hand off to
 `rcskspel.dat` without extra arguments; returning to the menu omits `/FIRST`.
 Static tracing and an isolated Wine 11 Staging working copy corroborate this.
-Any delivered native keypress or mouse button skips the intro; a printable key
-was also observed at runtime.
+Any key that types a character, or any mouse button, skips the intro: the form
+only handles OnKeyPress (`rcskmenu.dat` `0x479cd4`) and OnMouseDown, so arrow
+keys do not skip. A printable key was also observed at runtime.
 
 The main loop enforces at least 25 milliseconds between render iterations.
 It applies one variable, filtered simulation update per iteration rather than

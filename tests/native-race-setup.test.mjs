@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { nativeRaceRoster, nativeRaceGrid, nativeRaceSetup, NativeAIProgress } from '../source/simulation/native-race-setup.js';
+import { nativeRaceRoster, nativeRaceGrid, nativeRaceSetup, NativeAIProgress, nativeAIProfile } from '../source/simulation/native-race-setup.js';
 import { createNativeTrack } from '../source/simulation/native-track.js';
 const read = name => JSON.parse(readFileSync(new URL(`../${name}`, import.meta.url)));
 const config = read('public/assets/config.json');
@@ -61,4 +61,14 @@ test('0x42c680 seeds the live player rank from Race.ini PLAYER.position except i
     assert.deepEqual(grid.opponents.map(racer => racer.rank), [0, 1, 2, 3, 4].filter(rank => rank !== expected));
   }
   assert.equal(nativeRaceGrid(tracks[0], worlds[0], { opponentCount: 2, previousFinishPosition: 4 }).player.rank, 2);
+});
+
+test('0x40fe50 keeps the raw efficiency level at profile +0x8 beside its looked-up rate', () => {
+  const ini = config['npc_ai.ini'];
+  for (let aiId = 0; ini[`person_${aiId}`]; aiId++) {
+    const profile = nativeAIProfile(config, aiId), person = ini[`person_${aiId}`];
+    assert.equal(profile.efficiencyLevel, Number(person.efficiency));
+    assert.equal(profile.efficiency, Number(ini.rcr_global[`efficiency${profile.efficiencyLevel}`]));
+    assert.equal(profile.drivingStyle, Number(person.driving_style));
+  }
 });

@@ -713,7 +713,8 @@ identity is its CHARDATA AI identifier, copied by `0x417aa0` into the result
 record; it is not the renderer's shared kart selection.
 
 `0x417d00` records unfinished opponents' timers and estimates their finish time
-using a signed integer quotient **before** multiplying by the progress deficit.
+from their live progress, using a signed integer quotient **before**
+multiplying by the progress deficit.
 Its duplicate-time adjustment only modifies opponent zero, and compares against
 one record past the active roster. The helper requires this trailing time as an
 explicit boundary value. It preserves divide-by-zero and signed-division

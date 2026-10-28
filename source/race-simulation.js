@@ -181,6 +181,10 @@ export class RaceSimulation {
       pickups:nativeTrackPickups(track,manifest,config),racerCount:this.actors.length,
       raceType:raceMode,bonusConfig:config['game.ini'].bonus_data,random,voices:this.voices,
     });
+    // 435a30 creates the player record on first use, after the 42f930 reseed.
+    // Its first caller is the pickup check, or the first active player update.
+    this.playerRecordCreated=false;
+    this.pickups.onPlayerCheck=()=>this.createPlayerRecord();
     this.combat=new NativeBonusCombat({
       pickups:this.pickups,actors:this.actors,config,manifest,world:this.world,
       // The original primary heap slot +0x3c is uninitialized. A deterministic
@@ -369,7 +373,10 @@ export class RaceSimulation {
         fire=this.combat.playerFire(input.bonus>0,this.nativeTickMs>>>0);
         if(fire?.type==='turbo')this.playerTurboAt=this.nativeTickMs;
       }});
-    if(this.movementActive)this.combat.prepareEffect(this.actors.length-1,dt);
+    if(this.movementActive){
+      this.createPlayerRecord(); // 432f30, before hit effect 435c30.
+      this.combat.prepareEffect(this.actors.length-1,dt);
+    }
     Object.assign(this.playerAnimationState,{forwardSpeed:this.motion.body.forwardSpeed,
       brake:this.motion.controls.brake,handbrake:this.motion.controls.handbrake,
       turboAgeMs:this.nativeTickMs-this.playerTurboAt,
@@ -404,7 +411,7 @@ export class RaceSimulation {
           fire:()=>this.combat.fire(index),rescue:()=>this.rescue.enqueue(actor),
           triggers:{circuit:this.circuit,lapCount:this.race.lapLimit,
             playerForwardSpeed:this.motion.body.forwardSpeed,
-            drivingStyle:profile.drivingStyle,speedLimits:this.speedLimits},
+            efficiencyLevel:profile.efficiencyLevel,speedLimits:this.speedLimits},
         },
       });
       for(const correction of resetNewlyNonfiniteNPCVelocity(actor.body,previousVelocity)){
@@ -603,6 +610,13 @@ export class RaceSimulation {
     }
     return this.freeFlightEnabled;
   }
+  /** 4356f0 -> 40c790 draws rand()%7 into the inactive hit record; 40c820
+   * replaces that record at the first hit, so only the draw is observable. */
+  createPlayerRecord(){
+    if(this.playerRecordCreated)return;
+    this.playerRecordCreated=true;
+    this.pickups.random.next();
+  }
   /** native: the P/Escape pause 42f350, reachable only outside phases 3/6
    * (42f9c0). Other host suspensions restore exactly the timers they paused,
    * so 440d70's finish pause survives a focus loss during the results. */
@@ -641,6 +655,9 @@ export class RaceSimulation {
   }
   resultPatch(completed=this.lifecycle.raceCompleted){
     const opponents=this.rankStates.slice(0,-1);
+    // 417d00 reads live opponent progress after the last update's callbacks;
+    // rank states copied it before this update's NPC progress.
+    if(completed)opponents.forEach((state,i)=>{if(!state.finished)state.distance=this.opponents[i].progress.distance;});
     if(completed)finalizeNativeOpponentResults(opponents,{
       playerDistance:this.race.distance,sectorCount:this.race.track.route.length,lapCount:this.race.lapLimit,
       readTimer:id=>this.timers.read(id,this.wallMs),pauseTimer:id=>this.timers.pause(id,this.wallMs),

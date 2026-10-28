@@ -17,7 +17,9 @@ const inputs={config,manifest,cars,track,physicsBytes:read('physics/phys2.dat'),
   racerBytes:read('racer-tables/cars2.dat'),character:1,difficulty:2,raceMode:1,countdown:true};
 const assetDigest=()=>createHash('sha256').update(JSON.stringify([config,manifest,cars,track])).digest('hex');
 function fresh(){
-  const random=new NativeRandom(0),simulation=new RaceSimulation({...inputs,random});random.seed(6);
+  // Fixture seed only. The 0x435a30 player-record draw shifted the stream;
+  // with seed 6 this scripted bot then missed the train/jump windows in time.
+  const random=new NativeRandom(0),simulation=new RaceSimulation({...inputs,random});random.seed(0);
   return {simulation,filter:new NativeDeltaFilter({uptimeMs:NATIVE_REFERENCE_UPTIME_MS})};
 }
 function advance(state,input,now){

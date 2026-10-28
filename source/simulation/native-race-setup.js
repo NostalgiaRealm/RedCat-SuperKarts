@@ -20,6 +20,8 @@ export function nativeAIProfile(config, aiId) {
   return {
     id: aiId, type: person.type, efficiency: rate('efficiency'), reaction: rate('reaction'),
     massSetting: rate('mass'), drivingStyle: Number(person.driving_style),
+    // Raw level at profile +0x8 (0x40fe50); 0x40e000 reads it, not the rate.
+    efficiencyLevel: Number(person.efficiency),
     bonusAwareness: Number(person.bonus_awareness), preferredBonus: person.pref_bonus,
     catchupMs: Number(global[`catchup${Number(person.driving_style)}`]),
     catchupDurationMs: Number(global[`catchup_dur${Number(person.driving_style)}`]),

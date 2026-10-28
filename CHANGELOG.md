@@ -1,5 +1,18 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Only keys that type a character skip the intro, as in the original: arrow
+  keys and Alt combinations no longer skip it, and Backspace now does.
+  Controller, mouse and touch skipping are unchanged.
+- The race's random number stream now includes the original's draw when the
+  player's record is first used. Normal play looks the same.
+- Saved opponent result times use the opponents' current progress.
+- The unused AI forced-route counter reads the efficiency level, as in the
+  original.
+
 ## 1.0.1 — 2026-10-28
 
 Source update with six gameplay corrections from a comparison against the

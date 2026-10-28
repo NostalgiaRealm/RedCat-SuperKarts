@@ -136,25 +136,151 @@ binary copies and `original-source/` were only read.
   single precision, matching the documented 24-bit x87 mode. All 1,600 frames
   now match exactly. Centring writes a plain 0 instead of −0.
 
-## Confirmed differences left unchanged
+## Confirmed differences initially left unchanged
+
+These were recorded during the first pass. Items 7–10 below later corrected
+the first four; only the damage item remains, because it has no effect.
 
 - **Random draw when the player object is created** (`0x435a30` →
-  `0x4356f0` → `0x40c790`): the port does not consume it. `0x42f930` reseeds
-  the generator from the system time at every race start, so the missing
-  draw is not observable.
+  `0x4356f0` → `0x40c790`): the port did not consume it. The first-pass
+  note that this was unobservable was too broad; see item 8.
 - **AI forced-route counter** (`0x40d5c0`) uses the profile efficiency field;
-  the port uses `6 − drivingStyle` (`source/simulation/native-ai-items.js`).
-  The counter `0x503fc4` is never read and marker 64 is absent from all
-  shipped tracks.
-- **Opponent result estimates** use progress from one update earlier
-  (`0x417d00`). The estimated times are stored but never read back by the
-  original menu or the port.
-- **`PLAYER.damage` carry-over:** the collision damage increment is a single
-  `RET`, so the value is always 0.
-- **Intro skip keys** (`rcskmenu.dat` `0x479cd4` `TfrmIntro_FormKeyPress`):
-  the original only skips on character-producing keys, so arrow keys do not
-  skip and Backspace does. The port skips on arrow keys and ignores
-  Backspace. Not approved for change; it may be a navigation convenience.
+  the port used `6 − drivingStyle`. See item 10.
+- **Opponent result estimates** used progress from one update earlier
+  (`0x417d00`). See item 9.
+- **`PLAYER.damage` carry-over:** unchanged. Race.ini sets the value at load
+  (`0x4354a0`) and it can only decrease afterwards (`0x435640`); the
+  collision increment is a single `RET`. It therefore stays 0 in both games.
+- **Intro skip keys** (`rcskmenu.dat` `0x479cd4`): see item 7.
+
+## Follow-up corrections after 1.0.1
+
+### 7. Intro skip keys
+
+- **Original:** `TfrmIntro` (`rcskmenu.dat`) has `KeyPreview` and only
+  `OnKeyPress` (`0x479cd4`) and `OnMouseDown` (`0x479cec`), both of which close
+  the intro. Windows sends key presses only for keys that type a character
+  (WM_CHAR): letters, digits, Space, Enter, Escape and Backspace. Arrow keys
+  type nothing, and Alt combinations arrive as WM_SYSCHAR instead. The Alt
+  and AltGr behaviour is standard Windows/Delphi handling, not traced in the
+  original code.
+- **Port before:** keyboard arrow keys skipped the intro through
+  `input.js` → `menuKey`; Backspace did not skip and Alt+letter did.
+- **Change:** `nativeIntroSkipKey` in `source/input.js` applies the
+  typed-character rule (AltGr still types). `menuKey` in `source/main.js` now
+  learns whether a menu key came from the keyboard or a controller and leaves
+  keyboard skips to that rule. Controller, mouse and touch skipping are
+  unchanged adaptations. Tab still does not skip; whether it types under the
+  original form's dialog-key handling is unverified. Escape also keeps its
+  separate path through `back()`.
+
+### 8. Missing random draw when the player record is created
+
+- **Original:** `0x435a30` creates the player record on first use. Its
+  constructor `0x4356f0` calls `0x40c790`, which marks the hit record
+  inactive and stores `rand()%7`. A hit (`0x40c820`) replaces the whole
+  record, so only the draw matters. `0x42f930` (`srand(GetTickCount())`,
+  called once from `0x4432a0` before the main loop) runs first, so the draw
+  always shifts the race's random stream.
+- **First caller:** the frame routine `0x42f4c0` calls the bonus update
+  `0x451200` every frame, including during the countdown. For each active
+  pickup, `0x4540c0` calls eligibility `0x410650` for each racer before the
+  overlap test, so in races with pickups the record is created on the first
+  frame. Time trials enable no pickups; there the first caller is the player
+  callback `0x4325b0` at `0x432f30`, inside the movement-active branch after
+  forces `0x414160` and the wheel pass `0x41c0b0`, just before the hit effect
+  `0x435c30`. The other callers cannot come first in the shipped modes:
+  `0x40cde0` only reaches it when an opponent holds an item (`0x452370`),
+  `0x455b00` needs a projectile, and `0x429a90` handles developer keys.
+- **Port before:** no draw.
+- **Change:** `RaceSimulation.createPlayerRecord` draws once, guarded by the
+  data flag `playerRecordCreated`. It runs from a hook that
+  `NativeBonusPickups.step` calls when its loop reaches the player (before
+  the port's soft-lock checks, as 0x410650 always runs), and before the
+  player's `combat.prepareEffect`. The isolated pickup class makes no draw
+  of its own, so its instruction fixtures are unchanged.
+- **Effect:** no visible change in normal play, because the port seeds from
+  the clock. Fixed-seed runs follow a different random stream from the first
+  frame (pickup races) or the green light (time trials).
+
+### 9. Opponent result estimates used old progress
+
+- **Original:** `0x417d00` reads each opponent's live progress after the last
+  update's callbacks.
+- **Port before:** `RaceSimulation.resultPatch` used the rank-state copies,
+  taken before that update's opponent progress.
+- **Change:** unfinished opponents' distances are refreshed from their live
+  progress before the estimate. Only the saved opponent times in RACERS
+  change; the debrief reads ranks only.
+
+### 10. AI forced-route counter read the wrong profile field
+
+- **Original:** `0x40e000` returns `6 − [profile+0x8]`. The profile array at
+  `0x505930` has 0x18-byte records; `0x40fe50` stores `bonus_awareness`,
+  `driving_style` and `efficiency` levels at +0x0, +0x4 and +0x8.
+- **Port before:** `6 − drivingStyle`.
+- **Change:** `nativeAIProfile` also keeps the raw `efficiencyLevel`, and
+  `applyNativeAITrigger` uses it. The existing instruction fixture already
+  wrote its value to `+0x8` (`0x505938`) under the label `drivingStyle`; the
+  test now passes it as `efficiencyLevel`. No shipped track has markers 64/65,
+  so play is unaffected.
+
+### Follow-up validation
+
+- `npm run bundle` regenerated `src/`.
+- New tests: `tests/intro-skip-keys.test.mjs`, `tests/native-player-record.test.mjs`
+  (one draw, from the pickup check during the countdown in race types 0, 2
+  and 3; from the first active update before the hit effect in time trials),
+  a live-progress estimate test in `tests/race-simulation.test.mjs` and a
+  profile-field test in `tests/native-race-setup.test.mjs`.
+- One run of the edited tests, the bundle check and every full-simulation or
+  pickup test: 171 tests, 170 passed. The failure was the France time-trial
+  scenario in `tests/private-race-snapshot.test.mjs`: with fixed seed 6 and
+  the shifted stream, its scripted test bot ran out of time at sector 46 and
+  never reached the train and jump windows it checks. All its clone
+  comparisons that ran still matched. Of the first 40 seeds, 22 reach both
+  windows; the test now uses seed 0, and its file passes (7 tests). This is
+  a test-bot scenario, not evidence about the original deadline.
+- Browser checks: see [browser validation](#browser-validation).
+
+## Browser validation
+
+Run after the follow-up corrections, against the source inspection server
+(`tools/serve.mjs --inspect-source`, which `npm run dev -- --inspect-source`
+starts). Browser: Playwright 1.58.2's
+Chrome for Testing 145.0.7632.6 (installed into `~/.cache/ms-playwright`),
+headless with SwiftShader, passed through `CHROME_PATH`. This is software
+rendering, not display refresh or physical-device testing.
+
+Each of these passed once, with no page errors reported:
+
+| Test | Covers | Result |
+| --- | --- | --- |
+| `star-hud-browser.mjs` | Pickups without the player cooldown (item 1), random draw (item 8) | 7 checks |
+| `powerup-audio-browser.mjs` | Pickup and firing audio after item 1 | 118 cases, 4 characters |
+| `audio-settings-browser.mjs` | Whole-percentage volumes (item 3) | passed |
+| `hud-timing-browser.mjs` | Lap-time display (item 4) | 9 groups |
+| `quickrace-browser.mjs` | Finish, results, debrief, P pause and quit requester (items 2, 4, 9) | passed |
+| `storage-compatibility-browser.mjs` | Existing saves and settings (item 2) | passed |
+| `pause-audio-browser.mjs` | P pause and resume (pause follow-up) | 9 checks |
+| `variable-cadence-browser.mjs` | Input at varying frame rates (item 6) | 10 groups |
+| `driving-browser.mjs` | Driving all six tracks, portrait layout (items 5, 6) | passed |
+| `startup-browser.mjs --intro-only` | Intro autoplay, audio button, Enter/Space skipping (item 7) | passed |
+| `menu-entry-browser.mjs` | Keyboard menu entry and focus (item 7's key routing) | 8 checks |
+| `help-navigation-browser.mjs` | Keyboard Help navigation (item 7's key routing) | passed |
+| `version-browser.mjs` | Version 1.0.1 display | 2 layouts |
+| `bundle-browser.mjs` | Generated `src/` bundles and save continuation | 11 checks |
+
+An extra scratch check (not added to `tests/`) loaded the intro and pressed
+one key per page: ArrowUp/Down/Left/Right, Alt+A, Alt+Enter, Tab, Shift and
+F2 left it playing; Backspace, A, Space, Enter, Escape and 1 skipped it, and
+ArrowDown then moved main-menu focus. Controller skipping was not exercised.
+
+Several tests write reports and screenshots into `evidence/`. Those outputs
+were copied out and the committed evidence files restored, so the existing
+evidence records keep their original runs. The full browser suite
+(`npm run test:browser` and the other browser tests) and Electron desktop
+checks were not run.
 
 ## Intentional differences preserved
 
@@ -201,10 +327,9 @@ unchanged; the only storage addition is `playerPosition`.
   save-compatibility, trace and forecast tests): 159 tests passed, 0 failed.
   After the pause follow-up, a run of the timer, lifecycle, race, bundle and
   full-simulation tests passed 128 tests.
-- **Not run:** `tests/star-hud-browser.mjs` and
-  `tests/powerup-audio-browser.mjs`. No Chrome or Chromium is installed on
-  this machine, and installing one was outside the approved scope. Both read
-  `eligibleAfter`; they should be run where a browser is available.
+- **Not run at the time:** `tests/star-hud-browser.mjs` and
+  `tests/powerup-audio-browser.mjs`, because no Chrome or Chromium was
+  installed. Both later passed; see [browser validation](#browser-validation).
 - The full test suite, desktop packages and full races were not run.
 
 ## Unresolved questions
@@ -214,6 +339,8 @@ unchanged; the only storage addition is `playerPosition`.
 - The exact HUD text when timer 0 reads 0. (The original resume does end the
   finish pause, but the original cannot pause during the results phase.)
 - Slider change granularity in the original shell, and whether Tab produces
-  `WM_CHAR` for the intro.
+  `WM_CHAR` for the intro (it currently does not skip).
+- Whether each opponent's object index always equals its AI slot, and the
+  summation order of the up vector in `0x416650` (last-digit matrix values).
 - Whole-race trajectories, audio and rendering against a working original
   Windows installation; WineD3D is not an authoritative reference.

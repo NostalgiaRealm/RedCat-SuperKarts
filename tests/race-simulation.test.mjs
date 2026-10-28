@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import {RaceSimulation} from '../source/race-simulation.js';
 import {NativeRandom} from '../source/simulation/native-random.js';
 import {SimulationClock,NativeDeltaFilter,NATIVE_REFERENCE_UPTIME_MS} from '../source/simulation/clock.js';
+import {finalizeNativeOpponentResults} from '../source/simulation/native-results.js';
 
 const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
 const config=JSON.parse(read('config.json')),manifest=JSON.parse(read('manifest.json')),cars=JSON.parse(read('cars.json'));
@@ -172,3 +173,19 @@ for(let difficulty=0;difficulty<3;difficulty++) {
       assert.deepEqual(run(create(difficulty,difficulty),schedule),baseline,`frame schedule ${schedule}`);
   });
 }
+
+test('0x417d00 estimates unfinished opponents from their live progress, not the rank copy',()=>{
+  const sim=create(0,1);
+  const input={throttle:1,brake:0,steer:0,handbrake:0,bonus:0};
+  for(let i=1;i<=200;i++)sim.step(input,.025,i*25);
+  // Rank states copy progress before NPC progress updates within a step.
+  sim.rankStates[0].distance=sim.opponents[0].progress.distance-3;
+  const live=sim.opponents.map(actor=>actor.progress.distance);
+  const expected=finalizeNativeOpponentResults(sim.rankStates.slice(0,-1).map((state,i)=>({...state,distance:live[i]})),{
+    playerDistance:sim.race.distance,sectorCount:sim.race.track.route.length,lapCount:sim.race.lapLimit,
+    readTimer:id=>sim.timers.read(id,sim.wallMs),pauseTimer:()=>{},trailingRecordTimeMs:0});
+  const patch=sim.resultPatch(true);
+  assert.deepEqual(sim.rankStates.slice(0,-1).map(state=>state.distance),live);
+  assert.deepEqual(Object.entries(patch.RACERS).slice(0,-1).map(([,row])=>Number(row.split(',')[2])),
+    expected.map(state=>state.finishTimeMs));
+});

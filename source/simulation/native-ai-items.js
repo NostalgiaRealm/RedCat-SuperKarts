@@ -175,7 +175,7 @@ export function nativeAITriggerSpeedLimits(config) {
 
 /** 0x406470 NPC marker dispatcher. Finish timing/audio is returned to its owner. */
 export function applyNativeAITrigger(body, state, marker, {
-  now, circuit, lapCount, playerForwardSpeed, drivingStyle, speedLimits,
+  now, circuit, lapCount, playerForwardSpeed, efficiencyLevel, speedLimits,
   previousEngineSector, precision = 24,
 }) {
   const r = rounding(precision);
@@ -202,7 +202,8 @@ export function applyNativeAITrigger(body, state, marker, {
   } else if (marker === 64 && state.mode !== 9 && state.mode !== 27) {
     state.mode = 27;
     state.forcedRoute = true;
-    state.recoveryCounter = 6 - drivingStyle;
+    // 0x40e000: 6 minus the profile's efficiency level (+0x8), not driving_style (+0x4).
+    state.recoveryCounter = 6 - efficiencyLevel;
   } else if (marker === 65) state.forcedRoute = false;
   else if (marker === 67 && body.sector !== previousEngineSector) state.slippery = !state.slippery;
   // Marker68 calls an empty original function; unknown markers are ignored.

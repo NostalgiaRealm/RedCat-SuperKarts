@@ -234,7 +234,8 @@ initializes NPC distance to start sector minus the first marker-14 sector
 `progressOriginSector` in `nativeRaceSetup` preserves that asymmetry.
 
 The forced-route handlers are implemented and tested, but none of the six
-shipped DMP graphs contains markers 64/65/66. Their fixtures deliberately
+shipped DMP graphs contains markers 64/65/66. Marker 64's counter is
+`6 − efficiency level` (`0x40e000`, profile +0x8), not the driving style. Their fixtures deliberately
 overlay marker 66 on original geometry and are labeled synthetic. The normal
 spawn path is separately owned by `native-rescue.js`; special spawn-marker
 paths remain outside the validated active NPC recovery route.

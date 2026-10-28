@@ -15,6 +15,13 @@ export function touchWheelInput(clientX,clientY,{left,top,width,height}){
   const drive=factor(1-(clientY-top)/height*2,.65);
   return {steer,throttle:Math.max(0,drive),brake:Math.max(0,-drive)};
 }
+/** rcskmenu 0x479cd4: TfrmIntro only handles OnKeyPress, which Windows sends
+ * for keys that type a character (WM_CHAR). Arrow keys type nothing, Alt
+ * combinations send WM_SYSCHAR instead, AltGr still types. Tab is unverified. */
+export function nativeIntroSkipKey(event){
+  if(event.altKey&&!event.getModifierState?.('AltGraph'))return false;
+  return event.key.length===1||['Enter','Escape','Backspace'].includes(event.key);
+}
 export class InputState {
   constructor({onClear=null}={}){this.sources=new Map();this.keys=new Set();this.analog=null;this.touchAnalog=new Set();this.onClear=onClear;}
   set(source,action,value=1){if(!value){this.release(source);return;}this.sources.set(source,{action,value});}
@@ -53,7 +60,7 @@ export class InputController {
       if(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
       if(e.code==='Escape'){if(!e.repeat)this.onPause?.();return;}
       if(e.code==='KeyP'&&this.mode!=='menu'){if(!e.repeat)this.onPause?.('pause');return;}
-      if(this.mode==='menu'){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Space'].includes(e.code)){e.preventDefault();if(!e.repeat)this.onMenu?.(e.code);}return;}
+      if(this.mode==='menu'){if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Enter','Space'].includes(e.code)){e.preventDefault();if(!e.repeat)this.onMenu?.(e.code,'keyboard');}return;}
       if(this.state.freeFlightActive&&['Space','KeyC'].includes(e.code)){
         e.preventDefault();this.state.set('key:'+e.code,e.code==='Space'?'flightUp':'flightDown');this.onActivity?.();return;
       }
@@ -149,7 +156,7 @@ export class InputController {
       if(pressed&&!was){
         if(key==='Pause')this.onPause?.('pause');
         else if(key==='Escape'&&this.mode==='menu')this.onPause?.();
-        else if(this.mode==='menu')this.onMenu?.(key);
+        else if(this.mode==='menu')this.onMenu?.(key,'pad');
       }
       this.lastPadButtons.set(key,pressed);
     }

@@ -4,6 +4,21 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Original-code follow-up — 28 October 2026
+
+After 1.0.1, the [comparison report](original-comparison-2026-10-28.md)
+records four more corrections: native intro skip keys, the player-record
+random draw, live opponent progress in result estimates and the AI route
+counter's profile field. One run of the edited tests, the bundle check and
+all full-simulation and pickup tests had one failure: a fixed-seed France
+test-bot scenario that the shifted random stream no longer completes in time.
+Its fixture seed was changed from 6 to 0, and that file then passed (7 tests).
+Afterwards, 14 browser tests covering these and the 1.0.1 changes passed in
+headless Chromium 145 (Playwright's build, SwiftShader), plus a scratch
+intro-key check; see the report's browser validation section. Their evidence
+outputs were not kept, so existing evidence records are unchanged. The full
+suite, the remaining browser tests and full races were not run.
+
 ## Original-code comparison — 28 October 2026
 
 The [comparison report](original-comparison-2026-10-28.md) records six
@@ -12,7 +27,8 @@ previous finish, whole-percentage volumes, a paused lap timer after the
 finish, waypoint selection before the ground update and single-precision
 keyboard input. One combined run of the edited tests, the bundle check and
 every full-simulation test passed 159 tests. The star HUD and power-up audio
-browser checks were not run because no Chromium is installed. A follow-up
+browser checks were not run then because no Chromium was installed (both
+passed later, in the follow-up above). A follow-up
 keeps the finish pause through browser focus suspensions (128 tests passed).
 The full suite, desktop packages and full races were not run.
 
