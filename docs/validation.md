@@ -4,6 +4,19 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Second comparison pass and precision switch — 29 October 2026
+
+The [comparison report](original-comparison-2026-10-28.md) records the second
+comparison pass, the switch to the original's double precision and their
+follow-up fixes, each with its focused, full-suite and browser runs. On the
+1.0.2 release source, the full Node suite passed (751 of 751 tests). The
+bundle, server, Electron and display runtime tests passed (21), and the menu
+showed version 1.0.2 in the version browser check. Browser tests ran in
+headless Chromium 145 (Playwright's build, SwiftShader); the menu settings
+test also ran in Firefox 146. Their evidence outputs were restored, so
+existing evidence records are unchanged. Package launch tests, full races and
+physical devices were not run.
+
 ## Original-code follow-up — 28 October 2026
 
 After 1.0.1, the [comparison report](original-comparison-2026-10-28.md)

@@ -1,5 +1,55 @@
 # Changelog
 
+## 1.0.2 — 2026-10-29
+
+Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
+Apple Silicon. A second comparison against the recovered original code
+corrects Adventure, rescue, track, HUD and menu details, and the game now
+calculates with the same double precision as the original. Existing saves,
+profiles, unlocks, settings and records keep working without migration. See
+the [1.0.2 release notes](docs/releases/1.0.2.md) and the
+[comparison report](docs/original-comparison-2026-10-28.md).
+
+### Changed
+
+- Driving, collisions, opponents and effects now calculate with the original
+  game's double precision instead of single precision. The original keeps its
+  start-up precision setting with every DirectX runtime checked (5.0 to 9).
+  Each difference is tiny, but races now follow the original's arithmetic.
+
+### Fixed
+
+- Adventure: Escape, controller B or Start on the result screen now counts the
+  race instead of discarding it, Back is disabled in new-profile character
+  selection, and the Adventure screen keeps the accepted profile rather than
+  the last one browsed.
+- Rescues: several karts rescued at once are handled newest first and retire
+  as in the original, a homing rocket's arm shrinks with a rescued kart, and
+  the player's wheels and slope forces use the shrinking kart during a rescue.
+- Track: ground heights, slopes and the fallback planes use the original's
+  plane calculation, and scenery and pickup rotations use its degree
+  conversion.
+- Bubble hits: the floating kart follows the route plane, and the player's
+  slide resets as in the original.
+- HUD: text, mesh positions and string scales follow the original's
+  arithmetic.
+- Menu sliders: arrow keys move 1, Page Up and Page Down move 17, Home is
+  100 and End is 0. Clicking the track moves 17 towards the pointer and
+  repeats while held, dragging follows the pointer, and the thumb sits at the
+  original height. Touch and controller input are unchanged.
+- The local development server no longer stops when a browser cancels a file
+  request.
+
+### Documentation and tests
+
+- Extended the comparison report with the second pass, the precision switch
+  and its evidence, and the follow-up fixes.
+- Added original-instruction fixtures for both precisions, including the
+  rescue queue, the rescue-scaled matrix, track planes, placement angles,
+  HUD layout and kart sweeps with rails; the tests compare them exactly.
+- Fixed browser tests that resumed only the clock, or started their own ticks
+  behind the race clock.
+
 ## 1.0.1 — 2026-10-28
 
 Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS

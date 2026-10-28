@@ -112,7 +112,7 @@ replacement for `source/` or an input to the game's runtime bundle.
 
 The 1.0.0 release explicitly skipped tests and build checks. The commands above
 remain available for later development and were not run as part of that
-release. The 1.0.1 release runs the normal packaging checks. Release notes must describe actual validation, keeping prior results
+release. The 1.0.1 and 1.0.2 releases run the normal packaging checks. Release notes must describe actual validation, keeping prior results
 attached to their original checkpoints.
 
 ## Retained checkpoints

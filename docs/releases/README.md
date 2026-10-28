@@ -34,10 +34,10 @@ dependency; desktop game payloads do not need to contain it.
 - The version's changelog, build metadata and downloadable-file checksums.
 
 After committing the complete source, create both source archives for the
-version, for example 1.0.1:
+version, for example 1.0.2:
 
 ```sh
-npm run release:source -- --output release/1.0.1
+npm run release:source -- --output release/1.0.2
 ```
 
 Use the matching directory for a later version. The helper does not run tests
@@ -55,11 +55,12 @@ For 1.0.0, the user's instruction was to run **no tests or build checks**. Use
 macOS release workflow. Do not run release launch checks, payload verification,
 metadata assertions or archive-content checks. This release-specific exclusion
 does not remove the development checks or change their historical records.
-Version 1.0.1 returns to the normal build checks.
+Version 1.0.1 returns to the normal build checks, and 1.0.2 keeps them.
 
 ## Release notes
 
-- [1.0.1 — current desktop and source release](1.0.1.md)
+- [1.0.2 — current desktop and source release](1.0.2.md)
+- [1.0.1 — desktop and source release](1.0.1.md)
 - [1.0.0 — desktop and source release](1.0.0.md)
 - [0.9.0 — desktop and source release](v0.9.0.md)
 - [0.1.0 — source release](v0.1.0.md)

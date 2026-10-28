@@ -61,6 +61,17 @@ source archives. At the user's request, no tests or build checks are run for
 this release. The earlier focused records remain historical; publication does
 not resolve the validation gaps below. See [release notes](releases/1.0.0.md).
 
+## Version 1.0.2 publication — 29 October 2026
+
+Version 1.0.2 publishes the second comparison pass, the switch to the
+original's double precision and their follow-up fixes, with new desktop builds
+on GitHub and GitLab. It again includes the complete `original-source/` folder
+and source archives. Packaging runs the normal build checks. The full Node
+suite and the browser checks are recorded in the
+[comparison report](original-comparison-2026-10-28.md). Package launch tests,
+full races and the gaps below remain open. The kept full-race matrix predates
+the precision switch. See [release notes](releases/1.0.2.md).
+
 ## Version 1.0.1 publication — 28 October 2026
 
 Version 1.0.1 publishes ten original-code corrections with new desktop builds

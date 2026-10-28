@@ -3,9 +3,9 @@
 A reconstruction of the original Windows game using **Three.js**, **Electron**
 and the original supplied assets. Play in a browser or in a desktop window.
 
-**Version 1.0.1** · [Changelog](CHANGELOG.md) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.1) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.1)
+**Version 1.0.2** · [Changelog](CHANGELOG.md) ·
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.2) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.2)
 
 - **Six circuits**, **four playable characters**, **four active race modes** and
   **three difficulty levels**, with the original menus.
@@ -49,8 +49,8 @@ The published source release includes the prepared game assets. Download and
 extract the source archive, or clone the repository, then follow the commands
 below. You do not need to import the original disc files for this release.
 The source archive is separate from the ready-to-run desktop downloads.
-Version 1.0.1 was packaged with the normal build checks; see
-[its release notes](docs/releases/1.0.1.md) for the validation scope.
+Version 1.0.2 was packaged with the normal build checks; see
+[its release notes](docs/releases/1.0.2.md) for the validation scope.
 
 Install **Node.js 24 and npm**, then open a terminal in this project folder.
 The instructions below assume the original assets have already been prepared
@@ -358,7 +358,7 @@ Run the packaging command on the corresponding operating system:
 `npm run desktop:pack` creates an unpacked application for the host platform.
 These commands build locally without publishing. Normal packaging verifies
 missing or changed game files. The 1.0.0 release deliberately skipped package
-verification and all other build checks; 1.0.1 runs them.
+verification and all other build checks; 1.0.1 and later run them.
 
 See [desktop build instructions](docs/desktop.md) for prerequisites, exact
 commands for all three platforms, save locations, optional signing and the
