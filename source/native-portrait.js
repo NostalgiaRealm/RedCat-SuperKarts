@@ -17,9 +17,7 @@ const css = `
  .native-portrait .native-button{width:calc(var(--portrait-ratio) * 46px)!important;height:46px!important;min-height:46px;max-width:100%;font-size:14px!important;padding:0}
  .native-portrait .native-button>span{inset:0 0 0 24%!important;width:auto!important;height:auto!important;display:flex!important;align-items:center;justify-content:center;white-space:nowrap;font-size:inherit!important}
  .native-portrait .native-radio>span{left:12%!important}
- .native-portrait .native-slider{width:100%!important;max-width:260px;height:48px!important}
- .native-portrait .native-slider::-webkit-slider-thumb{width:40px;height:40px}
- .native-portrait .native-slider::-moz-range-thumb{width:40px;height:40px}
+ .native-portrait .native-slider{width:100%!important;max-width:260px;height:48px!important;padding-block:0!important;--native-slider-thumb:40px}
  .native-portrait .native-edit{width:100%!important;height:46px!important;padding:8px;font-size:16px!important}
  .native-portrait [data-portrait=backdrop]{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover;z-index:-2;pointer-events:none}
  .native-portrait [data-portrait=header]{justify-content:space-between}

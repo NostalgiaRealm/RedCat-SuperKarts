@@ -72,7 +72,9 @@ try{
     assert.equal(await field().isVisible(),true);
     await page.keyboard.up('NumpadEnter');await focus('TFRMSELECTCHAR',{phase:3});
     assert.equal((await saved()).profiles.filter(Boolean).length,2);
-    await button('btnBack').click();await form('TFRMADVENTUREMAIN');
+    // rcskmenu 0x473c9f disables Back here; leave through OK and the briefing.
+    assert.equal(await button('btnBack').isDisabled(),true);
+    await button('btnOk').click();await form('TFRMADVENTBRIEF');
     await button('btnBack').click();await focus('TFRMMAIN');
   });
   await check('QuickRace supports consecutive Enter from character to country to original start information',async()=>{

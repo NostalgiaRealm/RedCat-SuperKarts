@@ -82,6 +82,15 @@ test('media responds with exact full, bounded, open and suffix bytes, plus HEAD 
   const empty=await handle(request('/assets/empty.wav'));assert.equal(empty.status,200);assert.equal(await empty.text(),'');
 });
 
+test('an already-aborted request opens no file stream and leaves later requests working',async t=>{
+  const files=await fixture(t),handle=await createGameProtocolHandler(files);
+  const aborted=await handle(request('/assets/media/intro.mp4',{signal:AbortSignal.abort()}));
+  assert.equal(aborted.body,null);
+  // A stream destroyed at creation emitted its unhandled error on a later tick.
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(await (await handle(request('/assets/media/intro.mp4'))).text(),'0123456789');
+});
+
 test('protocol refuses other origins, methods, traversal, private trees and symlink escapes',async t=>{
   const files=await fixture(t),handle=await createGameProtocolHandler(files);
   for(const url of ['https://game/','rcsk://elsewhere/','rcsk://game:444/','rcsk://user@game/'])

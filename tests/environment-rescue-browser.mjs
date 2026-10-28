@@ -78,7 +78,7 @@ try{
   assert.equal(initial.ground,'road');assert.ok(initial.height>50);assert.equal(initial.recoveries,0);
   report.checks.push({case:'controlled start pose on original Nederland bridge',...initial});
   await page.keyboard.down('ArrowUp');
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(()=>{
     const view=rcsk.viewer,entry=view.simulation.rescue.get(view.motion.body);
     if(entry?.shrinking&&entry.frame>=12){view.clock.pause();return true;}
@@ -96,7 +96,7 @@ try{
   assert.ok(shrinking.visibleRings>0);assert.equal(shrinking.matrixMatches,true);
   report.checks.push({case:'normal throttle drives off bridge and automatically triggers shrinking/rings',...shrinking});
   await page.screenshot({path:output+'/moat-shrinking.png'});
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(()=>rescueTrace.frames.some(frame=>frame.finished),null,{timeout:15000});
   await page.waitForFunction(()=>rescueTrace.sounds.some(sound=>sound.sample==='REAPP'),null,{timeout:15000});
   await page.waitForFunction(()=>rcsk.viewer.clock.tick-rescueTrace.frames.at(-1).tick>=40);

@@ -1,8 +1,9 @@
 import {getRotationSpec,createNativeRotation,advanceNativeRotation,getSceneryAnimation,
   createNativeMeshAnimation,advanceNativeMeshAnimation} from '../asset-animation.js';
 import {getNativeScenerySounds,nativeObjectCallbackCount} from '../spatial-audio.js';
-import {nativeRotationMatrix} from './native-transform.js';
+import {nativeRotationMatrix,nativePlacementAngles} from './native-transform.js';
 import {nativeSquashTargets} from './native-squash-activation.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 /** OMP construction order; pass an existing map when the presentation loader
  * already performed these original random-phase draws. */
@@ -18,15 +19,15 @@ export function createNativeSceneryRotations(track,config,random){
 /** The shipped squash hazards: rotating type43, self-squashing type44 and
  * animated type46. Type47 shares the original callback but has no placements. */
 export class NativeSceneryHazards{
-  constructor({track,config,manifest,rotationStates,squash,precision=24}){
+  constructor({track,config,manifest,rotationStates,squash,precision=NATIVE_PRECISION}){
     Object.assign(this,{track,config,manifest,rotationStates,squash,precision});
     this.byPlacement=new Map();this.animations=new Map();
     const always=new Set(getNativeScenerySounds(config,manifest,track).map(x=>x.placementIndex));
-    const f=Math.fround,r=precision===24?f:Number,factor=f(r(4096*f(.0027777778)));
+    const f=Math.fround;
     this.objects=track.placements.flatMap((placement,placementIndex)=>{
       if(![43,44,46,47].includes(placement.type))return[];
       const rotation=rotationStates.get(placementIndex);
-      const angles=rotation?.angles??placement.nativeRotationDegrees.map(value=>f(r(value*factor)));
+      const angles=rotation?.angles??nativePlacementAngles(placement.nativeRotationDegrees);
       const mesh=track.objectDefinitions[placement.animation.toLowerCase()].mesh.toLowerCase();
       const object={type:placement.type,placementIndex,position:placement.position.map(f),angles,
         yaw:angles[1],roll:angles[2],pitch:angles[0],matrix:nativeRotationMatrix(angles,{precision}),

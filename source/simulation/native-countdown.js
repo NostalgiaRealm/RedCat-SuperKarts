@@ -1,7 +1,8 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 
 /** Original normalized-screen Y motion, 00464e90 / 00464f30. */
-export function nativeCountdownY(elapsed,{exiting=false,precision=24}={}){
+export function nativeCountdownY(elapsed,{exiting=false,precision=NATIVE_PRECISION}={}){
   const round=precision===24?f:value=>value;
   const amount=round(f(elapsed)/f(1.2));
   return f(round(round(round(1-amount)*(exiting?f(.4):f(1.25)))
@@ -14,7 +15,7 @@ export function nativeCountdownY(elapsed,{exiting=false,precision=24}={}){
  * Countdown overshoot is discarded at each transition, not carried forward.
  */
 export class NativeStartCountdown {
-  constructor({precision=24}={}){
+  constructor({precision=NATIVE_PRECISION}={}){
     if(![24,53].includes(precision))throw new RangeError('Unsupported native precision');
     this.precision=precision;this.phase=0;this.elapsed=0;this.soundIndex=0;this.events=[];
   }

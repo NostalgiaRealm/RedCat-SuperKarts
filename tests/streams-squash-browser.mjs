@@ -17,7 +17,7 @@ try{
   const streams=await page.evaluate(()=>{
     const view=rcsk.viewer,sim=view.simulation;view.clock.pause();
     sim.combat.onTurbo(sim.actors.length-1,3);
-    let now=view.clock.tick*25;
+    let now=view.clock.simulationMs;
     for(let tick=0;tick<20;tick++)view.onTick(.025,now+=25);
     view.updatePresentation(1);view.renderer.render(view.scene,view.camera);view.hud.render();
     const exact=(meshes,frames)=>frames.every((vertices,index)=>

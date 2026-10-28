@@ -16,7 +16,8 @@ const tables=[0,1,2].map(i=>{
 test('720 complete original player force calls include result-phase braking and exact slip intensity',()=>{
   for(const [i,c] of fixtures.cases.entries()){
     const body={...c.body},controls={throttle:c.throttle,brake:c.brake,steering:c.steering,handbrake:c.handbrake};
-    const force=calculateNativePlayerForces(body,tables[c.preset][c.record],controls,.025,c);
+    // The 0x007f capture; tests/native-player-precision.test.mjs covers both widths.
+    const force=calculateNativePlayerForces(body,tables[c.preset][c.record],controls,.025,{...c,precision:24});
     const actual={...body,...force,handbrake:controls.handbrake};
     for(const [key,value] of Object.entries(c.expected)){
       assert.ok(actual[key]===value,`${i}/${key}: ${actual[key]} != ${value}`);

@@ -1,8 +1,9 @@
 import {integrateNativeEuler, quantizeNativePlanarVelocity} from './native-integrator.js';
-import {nativeRotationMatrix, multiplyNativeMatrices} from './native-transform.js';
+import {nativeRotationMatrix, multiplyNativeMatrices, nativePlacementAngles} from './native-transform.js';
 import {selectNativeSector} from './native-track.js';
 import {getNativeScenerySounds, nativeObjectCallbackCount} from '../spatial-audio.js';
 import {getSceneryAnimation, createNativeMeshAnimation, advanceNativeMeshAnimation} from '../asset-animation.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f = Math.fround;
 const solidTypes = new Set([5, 6, 8, 14, 15, 17, 19, 23, 24, 25, 45]);
@@ -13,7 +14,7 @@ export function nativeSceneryIsSolid(type) { return solidTypes.has(type); }
 
 /** 48fda0 and its scenery callers. INERTIA in 43d130 overrides the inverse
  * inertia directly; despite its INI name it is not inverted a second time. */
-export function nativeSceneryPhysics(type, section = {}, {precision = 24} = {}) {
+export function nativeSceneryPhysics(type, section = {}, {precision = NATIVE_PRECISION} = {}) {
   if (!nativeSceneryIsSolid(type)) return null;
   const r = precision === 24 ? f : Number;
   const configured = type === 6 || type === 45;
@@ -36,7 +37,7 @@ export function nativeSceneryRectangle(body) {
 }
 
 /** 494b90's continuous slope rotation (not the 4096-entry render-angle table). */
-export function nativeScenerySlopeMatrix(forward, {precision = 24} = {}) {
+export function nativeScenerySlopeMatrix(forward, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f : Number, [x, y, z] = forward;
   const length = r(Math.sqrt(r(r(z * z) + r(x * x))));
   const azimuth = f(Math.atan2(f(r(x / length)), r(z / length)));
@@ -55,7 +56,7 @@ export function nativeScenerySlopeMatrix(forward, {precision = 24} = {}) {
 /** Registered scenery in OMP order. The supplied six tracks only use types5/6;
  * other original solid types need their object-specific controllers first. */
 export class NativeSceneryBodies {
-  constructor({track, config, manifest, world, collision, precision = 24}) {
+  constructor({track, config, manifest, world, collision, precision = NATIVE_PRECISION}) {
     Object.assign(this, {track, config, manifest, world, collision, precision});
     this.byPlacement = new Map();
     this.pathRevisions = new Map();
@@ -71,8 +72,7 @@ export class NativeSceneryBodies {
       if (!manifest.meshes[mesh]?.bounds) throw new Error(`Missing native collision bounds: ${mesh}`);
       const physics = nativeSceneryPhysics(placement.type,
         config['rotobj.ini']?.[placement.animation.toLowerCase()], {precision});
-      const r = precision === 24 ? f : Number, factor = f(r(4096 * f(.0027777778)));
-      const angles = placement.nativeRotationDegrees.map(value => f(r(factor * value)));
+      const angles = nativePlacementAngles(placement.nativeRotationDegrees);
       const body = {...physics, placementIndex, type: placement.type, mesh,
         bounds: {...manifest.meshes[mesh].bounds}, position: placement.position.map(f),
         yaw: angles[1], pitch: angles[0], roll: angles[2], sector: placement.sector,

@@ -43,16 +43,25 @@ try{
     await button('btnBack').click();await form('TFRMMAIN');
     await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
   });
-  await check('Profile navigation writes the same save schema, including first and last occupied slots',async()=>{
-    await button('btnLeft').click();await page.waitForFunction(()=>document.querySelector('[data-element=lblPlayerName]')?.textContent==='Vroege speler');
-    assert.equal((await save()).selectedSlot,0);
-    await button('btnRight').click();await page.waitForFunction(()=>document.querySelector('[data-element=lblPlayerName]')?.textContent==='Zoë & RedCat');
-    await button('btnRight').click();await page.waitForFunction(()=>document.querySelector('[data-element=lblPlayerName]')?.textContent==='Laatste winnaar');
-    assert.deepEqual(await save(),{...fixture.storage['rcsk.race-save.v1'],selectedSlot:29});
-    await page.reload();await form('TFRMMAIN');await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
-    assert.equal(await element('lblPlayerName').textContent(),'Laatste winnaar');
-    await button('btnLeft').click();await page.waitForFunction(()=>document.querySelector('[data-element=lblPlayerName]')?.textContent==='Zoë & RedCat');
+  await check('Profile navigation keeps the save until OK, which writes the same save schema, including first and last occupied slots',async()=>{
+    const name=value=>page.waitForFunction(value=>document.querySelector('[data-element=lblPlayerName]')?.textContent===value,value);
+    await button('btnLeft').click();await name('Vroege speler');
+    await button('btnRight').click();await name('Zoë & RedCat');
+    await button('btnRight').click();await name('Laatste winnaar');
     assert.deepEqual(await save(),fixture.storage['rcsk.race-save.v1']);
+    await page.reload();await form('TFRMMAIN');await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
+    assert.equal(await element('lblPlayerName').textContent(),'Zoë & RedCat');
+    await button('btnLeft').click();await name('Vroege speler');
+    await button('btnOk').click();await form('TFRMADVENTBRIEF');
+    assert.deepEqual(await save(),{...fixture.storage['rcsk.race-save.v1'],selectedSlot:0});
+    await button('btnBack').click();await form('TFRMMAIN');
+    await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
+    assert.equal(await element('lblPlayerName').textContent(),'Vroege speler');
+    await button('btnRight').click();await name('Zoë & RedCat');
+    await button('btnOk').click();await form('TFRMADVENTBRIEF');
+    assert.deepEqual(await save(),fixture.storage['rcsk.race-save.v1']);
+    await button('btnBack').click();await form('TFRMMAIN');
+    await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
   });
   await button('btnBack').click();await form('TFRMMAIN');await button('btnHighscore').click();await form('TFRMHIGHSCORE');
   await check('All six countries still show their existing five high-score names',async()=>{

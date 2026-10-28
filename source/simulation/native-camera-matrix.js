@@ -1,9 +1,10 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 
 /** 498c00 orientation tail, after position/target locks and dampening.
  * Native row-vector basis: right, corrected up, forward. Keep the explicit
  * float stores: the original retains several cross-product terms in x87. */
-export function nativeCameraMatrix({position,target,up=[0,1,0]},{precision=24}={}){
+export function nativeCameraMatrix({position,target,up=[0,1,0]},{precision=NATIVE_PRECISION}={}){
  const r=precision===24?f:Number;
  const mul=(a,b)=>r(a*b),add=(a,b)=>r(a+b),sub=(a,b)=>r(a-b);
  const dx=sub(f(target[0]),f(position[0])),dy=f(sub(f(target[1]),f(position[1]))),

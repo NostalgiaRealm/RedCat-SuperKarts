@@ -1,9 +1,10 @@
 import {nativeTrigTable} from './simulation/native-integrator.js';
 import {resolveAsset} from './asset-animation.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f = Math.fround;
 
 /** Original423450 creates ten triangle strips,34vertices each, from S_SFX. */
-export function getNativeFinishFlagSpec(manifest, {precision = 24} = {}) {
+export function getNativeFinishFlagSpec(manifest, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f : Number, position = [], uv = [], index = [];
   for (let row = 0; row < 10; row++) {
     for (let column = 0; column <= 16; column++) {
@@ -25,7 +26,7 @@ export function getNativeFinishFlagSpec(manifest, {precision = 24} = {}) {
 
 /** 423230 freezes the two-second period in update ticks at activation. */
 export class NativeFinishFlag {
-  constructor({precision = 24} = {}) { this.precision = precision; this.tick = 0; this.period = 0; this.enabled = false; }
+  constructor({precision = NATIVE_PRECISION} = {}) { this.precision = precision; this.tick = 0; this.period = 0; this.enabled = false; }
   setEnabled(enabled, deltaSeconds) {
     const r = this.precision === 24 ? f : Number;
     this.period = Math.trunc(r(2 / f(deltaSeconds)));

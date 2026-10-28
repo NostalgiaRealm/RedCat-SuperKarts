@@ -1,4 +1,5 @@
 import {resolveAsset} from './asset-animation.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 const f=Math.fround, lower=value=>String(value??'').trim().toLowerCase();
 const tuple=(value,fallback)=>value===undefined?[...fallback]:String(value).split(';').map(Number)
@@ -11,7 +12,7 @@ const roundFor=precision=>{
 /** HUD has its own90-degree horizontal projection (4604c0/462770), independent
  * of the race camera. Native coordinates look along+Z with+Y upward. A Three
  * scene may negateZ and use a regular perspective camera looking along-Z. */
-export function getNativeHudCameraSpec(width=640,height=480,{precision=24}={}){
+export function getNativeHudCameraSpec(width=640,height=480,{precision=NATIVE_PRECISION}={}){
   const r=roundFor(precision),horizontalFov=f(f(Math.PI)*.5),near=f(.99),far=10000;
   // FPTAN keeps its extended result; subsequent arithmetic observes PC24/53.
   const tangent=Math.tan(r(horizontalFov*.5));
@@ -23,11 +24,14 @@ export function getNativeHudCameraSpec(width=640,height=480,{precision=24}={}){
 
 // Parent context used by4589c0 and459440: positionXYZ, an unused carried
 // scalar, child-position scaleXY, model scaleXYZ, rotationXYZ(native units).
+// 4606c0 builds it at HUD+0x18 from 4f3924(1), 4f3920(.75) and the display
+// height/width 4fe934/4fe930; its identity "Screen" element (4585e0) passes it
+// through 4589c0 unchanged to the top-level composites (4614d0->458550).
 export function nativeHudRootContext(width=640,height=480){
   return [0,0,0,1,f(.75),f(height/width),1,1,1,0,0,0];
 }
 export function nativeHudCompositeTransform({position=[0,0,0],scale=[1,1,1],
-  rotation=[0,0,0],width=1,height=1},parent,{precision=24}={}){
+  rotation=[0,0,0],width=1,height=1},parent,{precision=NATIVE_PRECISION}={}){
   const r=roundFor(precision),p=position.map(f),s=scale.map(f),a=rotation.map(f);
   return [
     f(r(r(p[0]*parent[4])+parent[0])),f(r(r(p[1]*parent[5])+parent[1])),
@@ -36,7 +40,7 @@ export function nativeHudCompositeTransform({position=[0,0,0],scale=[1,1,1],
   ];
 }
 export function nativeHudElementTransform({position=[0,0,0],scale=[1,1,1],
-  rotation=[0,0,0]},parent,{precision=24}={}){
+  rotation=[0,0,0]},parent,{precision=NATIVE_PRECISION}={}){
   const r=roundFor(precision),p=position.map(f),s=scale.map(f),a=rotation.map(f);
   const pixelScale=getNativeHudCameraSpec(640,480,{precision}).pixelScale;
   return {
@@ -50,12 +54,13 @@ export function nativeHudElementTransform({position=[0,0,0],scale=[1,1,1],
 // IniFile45b2e0 fixes its authored coordinate extent at640x480x1000.
 // Elements45c370 normalizeX by640. Composites45c4d0 normalizeX by480
 // and apply LEFT/TOP alignment by default. Do not flatten these as pixel sums.
-export function nativeHudIniTransform(section,{composite=false,precision=24}={}){
+export function nativeHudIniTransform(section,{composite=false,precision=NATIVE_PRECISION}={}){
   const r=roundFor(precision),size=[f(Number(section.width??640)/640),f(Number(section.height??480)/480)];
   let position=[0,0,0];
   if(section.position!==undefined){
     const [x,y,z]=tuple(section.position,[0,0,0]);
-    const nx=f(x/(composite?480:640)),ny=f(y/480);
+    // 45c370/45c4d0 keep each quotient in ST (FDIV, FADD ST0,ST0); only FSTP stores.
+    const nx=r(x/(composite?480:640)),ny=r(y/480);
     position=[f(r(r(nx+nx)-(composite?r(640/480):1))),f(r(1-r(ny+ny))),f(z/1000)];
     if(composite){
       const [h='left',v='top']=lower(section.alignment).split('&').filter(Boolean);
@@ -75,7 +80,7 @@ export function nativeHudIniTransform(section,{composite=false,precision=24}={})
  * Dynamic state controllers must select animation/frame/visibility themselves.
  */
 export function getHudMeshSpec(config,manifest,id,{trackId=0,animation=null,frame=0,
-  overrides={},width=640,height=480,precision=24}={}){
+  overrides={},width=640,height=480,precision=NATIVE_PRECISION}={}){
   const overlay=config['overlay.ini'],name=lower(id),section=overlay?.[name];
   if(!section)throw new Error(`Missing original HUD element: ${id}`);
   const options={precision};

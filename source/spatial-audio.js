@@ -1,6 +1,7 @@
 import {nativeTrigTable} from './simulation/native-integrator.js';
 import {getSoundSpec} from './asset-animation.js';
 import {nativeCameraMatrix} from './simulation/native-camera-matrix.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f = Math.fround;
 
 /** 491530: ranges are the CALLBACK window (twice the render distance).
@@ -14,7 +15,7 @@ export function nativeObjectCallbackCount({visible = true, alwaysUpdate = false,
 /** 49da60. Original Sound.ini range/volume/doppler are integer fields. */
 export function getNativeSpatialAudioCommands({position, velocity = [0, 0, 0],
   listenerPosition, listenerForward, listenerVelocity = [0, 0, 0],
-  range, baseVolume, doppler, playing = false, loop = true, precision = 24}) {
+  range, baseVolume, doppler, playing = false, loop = true, precision = NATIVE_PRECISION}) {
   const r = precision === 24 ? f : Number;
   const delta = position.map((value, i) => f(r(value - listenerPosition[i])));
   const distance = f(r(Math.sqrt(r(r(r(delta[0] * delta[0]) + r(delta[1] * delta[1])) + r(delta[2] * delta[2])))));
@@ -40,7 +41,7 @@ export function nativePanGains(hundredthDb) {
 /** 43b660 copies the camera's orientation matrix, negating its forward row.
  * 498c00 copies body translation only for POSITION_LOCK cameras (player/failure).
  * Free start/finish cameras retain zero translation. Pass the mode explicitly. */
-export function getNativeSoundListener(camera, body, {precision = 24, matrixTranslation} = {}) {
+export function getNativeSoundListener(camera, body, {precision = NATIVE_PRECISION, matrixTranslation} = {}) {
   if (!matrixTranslation) throw new Error('Original camera matrix translation is required');
   const r = precision === 24 ? f : Number;
   const forward=nativeCameraMatrix(camera,{precision}).slice(6).map(value=>f(-value));

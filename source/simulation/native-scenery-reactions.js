@@ -1,20 +1,21 @@
 import {nativeTrigTable} from './native-integrator.js';
-import {nativeRotationMatrix} from './native-transform.js';
+import {nativeRotationMatrix,nativePlacementAngles} from './native-transform.js';
 import {selectNativeSector} from './native-track.js';
 import {nativeObjectCallbackCount} from '../spatial-audio.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f=Math.fround;
 const round=precision=>precision===24?f:Number;
 
 /** 497bd0/43df60: type2 tests only the player, using a strict XZ radius sum. */
-export function nativeSceneryPlayerOverlap(object,player,{precision=24}={}){
+export function nativeSceneryPlayerOverlap(object,player,{precision=NATIVE_PRECISION}={}){
   const r=round(precision),dx=f(r(object.position[0]-player.position[0])),
     dz=f(r(object.position[2]-player.position[2])),radius=f(r(object.radius+player.radius));
   return r(r(dx*dx)+r(dz*dz))<r(radius*radius);
 }
 
 /** 43c5c0, type2 mass4. The three random draws occur in X,Y,Z order. */
-export function launchNativeScenery(object,player,random,{precision=24,mass=4}={}){
+export function launchNativeScenery(object,player,random,{precision=NATIVE_PRECISION,mass=4}={}){
   const r=round(precision),{sin,cos}=nativeTrigTable(precision);
   const x=r(r(player.lateralSpeed*3)/f(mass)),z=r(f(r(player.forwardSpeed*3))/f(mass));
   const angle=Math.trunc(player.yaw)&4095;
@@ -33,7 +34,7 @@ export function launchNativeScenery(object,player,random,{precision=24,mass=4}={
 /** 43c870 flight/bounce and43cbf0 settling. Source adds velocity directly to
  * position once per callback; delta scales drag/gravity/rotation, not displacement. */
 export function updateNativeSceneryReaction(object,deltaSeconds,{
-  precision=24,selectSector=()=>object.sector,groundHeight=()=>0,
+  precision=NATIVE_PRECISION,selectSector=()=>object.sector,groundHeight=()=>0,
 }={}){
   const r=round(precision),dt=f(deltaSeconds),mode=object.mode;
   if(mode!==1&&mode!==3)return false;
@@ -78,14 +79,13 @@ export function updateNativeSceneryReaction(object,deltaSeconds,{
 
 /** Original non-solid type2 object callbacks, in OMP creation order. */
 export class NativeSceneryReactions{
-  constructor({track,manifest,world,random,precision=24}){
+  constructor({track,manifest,world,random,precision=NATIVE_PRECISION}){
     Object.assign(this,{track,manifest,world,random,precision});
     this.byPlacement=new Map();
-    const r=round(precision),factor=f(r(4096*f(.0027777778)));
     this.objects=track.placements.flatMap((placement,placementIndex)=>{
       if(placement.type!==2)return[];
       const mesh=track.objectDefinitions[placement.animation.toLowerCase()].mesh.toLowerCase();
-      const angles=placement.nativeRotationDegrees.map(value=>f(r(value*factor)));
+      const angles=nativePlacementAngles(placement.nativeRotationDegrees);
       const object={placementIndex,mesh,type:2,position:placement.position.map(f),
         pitch:angles[0],yaw:angles[1],roll:angles[2],matrix:nativeRotationMatrix(angles,{precision}),
         sector:placement.sector,visible:true,mode:0,velocity:[0,0,0],pitchRate:0,rollRate:0,gravity:0,

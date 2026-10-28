@@ -1,4 +1,5 @@
 import {nativePathDurationTicks, sampleNativeSceneryPath} from '../scenery-paths.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f = Math.fround;
 function transform(offset, body, round, retainX = false) {
@@ -16,7 +17,7 @@ function transform(offset, body, round, retainX = false) {
  * selected during the following countdown; green420f00 selects camera0.
  */
 export class NativeStartCamera {
-  constructor(track, body, deltaSeconds, nowMs, {precision = 24} = {}) {
+  constructor(track, body, deltaSeconds, nowMs, {precision = NATIVE_PRECISION} = {}) {
     const index = track.paths.findIndex(path => path.type === 1);
     if (index < 0) throw new RangeError('This track has no original startup camera path');
     this.pathIndex = index;

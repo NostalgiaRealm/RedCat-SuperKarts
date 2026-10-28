@@ -8,11 +8,11 @@ for(const trace of fixtures.traces){
     const filter=new NativeDeltaFilter();
     for(const [i,sample] of trace.samples.entries()){
       const actual=filter.sample(sample.nativeRawDelta);
-      assert.ok(Math.abs(actual-sample.nativeReturnedDelta)<=fixtures.comparisonToleranceSeconds,
-        `${i}: ${actual} vs original ${sample.nativeReturnedDelta}`);
+      assert.equal(actual,sample.nativeReturnedDelta,`${i}: ${actual} vs original ${sample.nativeReturnedDelta}`);
     }
     assert.equal(trace.reset.deltaField,0);
-    assert.ok(Math.abs(trace.reset.returnedDelta-0.1)<=fixtures.comparisonToleranceSeconds);
-    for(const value of trace.reset.history)assert.ok(Math.abs(value-.1)<=fixtures.comparisonToleranceSeconds);
+    // 0x48f590 primes the history with the float 0.1 (0x3dcccccd).
+    assert.equal(trace.reset.returnedDelta,Math.fround(.1));
+    for(const value of trace.reset.history)assert.equal(value,Math.fround(.1));
   });
 }

@@ -101,7 +101,9 @@ export async function createGameProtocolHandler({root,assetsRoot,inspectSource=f
       const headers={...security,'Content-Type':type,'Accept-Ranges':'bytes',
         'Content-Length':String(range?end-start+1:info.size)};
       if(range)headers['Content-Range']=`bytes ${start}-${end}/${info.size}`;
-      const body=request.method==='HEAD'||info.size===0?null:
+      // An already-aborted signal destroys the file stream before Readable.toWeb
+      // listens for its error, which would be unhandled and end the process.
+      const body=request.method==='HEAD'||info.size===0||request.signal?.aborted?null:
         Readable.toWeb(createReadStream(canonical,{start,end,signal:request.signal}));
       return new Response(body,{status:range?206:200,headers});
     }catch{return error(404,'Not found');}

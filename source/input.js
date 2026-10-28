@@ -17,7 +17,10 @@ export function touchWheelInput(clientX,clientY,{left,top,width,height}){
 }
 /** rcskmenu 0x479cd4: TfrmIntro only handles OnKeyPress, which Windows sends
  * for keys that type a character (WM_CHAR). Arrow keys type nothing, Alt
- * combinations send WM_SYSCHAR instead, AltGr still types. Tab is unverified. */
+ * combinations send WM_SYSCHAR instead, AltGr still types. Tab never types:
+ * ProcessMessage 0x432150 skips TranslateMessage when IsKeyMsg 0x431ffc's
+ * CN_KEYDOWN (TWinControl 0x444f90) is handled, and TCustomForm.CMDialogKey
+ * 0x42e414 handles Tab and Shift+Tab as focus moves. */
 export function nativeIntroSkipKey(event){
   if(event.altKey&&!event.getModifierState?.('AltGraph'))return false;
   return event.key.length===1||['Enter','Escape','Backspace'].includes(event.key);

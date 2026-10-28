@@ -1,5 +1,6 @@
 import {nativeHudRootContext, nativeHudCompositeTransform, nativeHudElementTransform,
   nativeHudIniTransform, projectNativeHudPoint, getNativeHudCameraSpec} from './hud-mesh.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 // Original HUD: 0045dca0/0045dde0 load fonts, 0045b140 aliases lowercase,
 // 00461b50 chooses default alignment, 0045a6b0/004631d0/004632c0/00463400 lay out.
@@ -38,7 +39,7 @@ export function getHudFont(config, name) {
     maxWidth: Math.max(0, ...Object.values(glyphs).map(glyph => glyph.width))};
 }
 
-export function getHudStringSpec(config, id, {overrides = {}, precision = 24} = {}) {
+export function getHudStringSpec(config, id, {overrides = {}, precision = NATIVE_PRECISION} = {}) {
   const overlay = config['overlay.ini'] ?? config, section = overlay[key(id)];
   if (!section) throw new Error(`Missing original HUD string: ${id}`);
   const type = key(section.type), font = getHudFont(overlay, section.font);
@@ -63,8 +64,10 @@ export function getHudStringSpec(config, id, {overrides = {}, precision = 24} = 
     const nx = r(x / 480), ny = r(y / 480);
     local.position = [f(r(r(nx + nx) - r(640 / 480))), f(r(1 - r(ny + ny))), f(z / 1000)];
   }
-  // String::SetScale463c90 also sets its horizontal extent. Its overridden
-  // transform463bb0 uses parent[3], not ordinary Composite's parent[4].
+  // String::SetScale463c90 stores float[3] (458420) and also sets its horizontal
+  // extent (458be0). Its overridden transform463bb0 uses parent[3], not
+  // ordinary Composite's parent[4].
+  local.scale = local.scale.map(f);
   const context = nativeHudCompositeTransform({...local, width: local.scale[0]}, parent.context, options);
   context[4] = f(local.scale[0] * parent.context[3]);
   const position = projectNativeHudPoint([context[0], context[1], f(context[2] + 1)]);
@@ -73,6 +76,8 @@ export function getHudStringSpec(config, id, {overrides = {}, precision = 24} = 
     maxCharWidth: Number(section.maxcharwidth ?? font.maxWidth),
     cellWidth: override.cellWidth,
     position, scale: context.slice(6, 9), context, precision,
+    // Native String fields +4/+0x10 and the parent context passed to 463bb0.
+    local: {position: local.position, scale: local.scale}, parentContext: parent.context,
     visible: parent.visible && (override.visible ?? key(section.visible) !== 'false'),
     rgba: override.rgba ?? pair(section.rgba, [255, 255, 255, 255]),
     coordinateSpace: {width: 640, height: 480}};
@@ -80,41 +85,48 @@ export function getHudStringSpec(config, id, {overrides = {}, precision = 24} = 
 
 // Coordinates returned by the original layout routines before parent transforms.
 // cellWidth may be pixels for isolated fixtures or normalized screen coordinates.
-export function nativeGlyphCenters(font, type, alignment, length, cellWidth, input) {
+export function nativeGlyphCenters(font, type, alignment, length, cellWidth, input,
+  precision = NATIVE_PRECISION) {
+  const r = precision === 24 ? f : Number;
   const characters = Array.from(String(input)).slice(0, length);
   const ratio = f(f(cellWidth) / f(font.maxWidth));
-  const distance = f(f(font.distance) * ratio);
   if (type === 'fixed') {
+    // 45a6b0 stores ratio and scaled distance (FSTP), but keeps distance+cell
+    // width and the cell product in ST until the final FSTP.
+    const distance = f(f(font.distance) * ratio);
     const padding = length - characters.length;
     const start = alignment === 'right' ? padding : alignment === 'center' ? Math.trunc(padding / 2) : 0;
     const cells = Array(length).fill(' ');
     characters.forEach((character, index) => { cells[start + index] = character; });
-    const pitch = f(distance + f(cellWidth));
+    const pitch = r(distance + f(cellWidth));
     return cells.map((character, index) => ({
       character,
-      center: f((alignment === 'left' ? index + .5
-        : alignment === 'center' ? f(f(1 - length) * .5) + index : index - length + .5) * pitch),
+      center: f(r((alignment === 'left' ? index + .5
+        : alignment === 'center' ? f(f(1 - length) * .5) + index : index - length + .5) * pitch)),
     }));
   }
-  const width = character => f(f(font.glyphs[character]?.width ?? 0) * ratio);
+  // 4631d0/4632c0/463400: width*ratio stays in ST for the half-width term and
+  // is stored (FST) for the advance; distance*ratio is recomputed in ST.
+  const width = character => r(f(font.glyphs[character]?.width ?? 0) * ratio);
+  const distance = r(f(font.distance) * ratio);
   const result = Array(characters.length);
   let cursor = 0;
   if (alignment === 'center') {
-    let total = f(f(f(font.distance) * (characters.length - 1)) * ratio);
-    for (let i = characters.length - 1; i >= 0; i--) total = f(width(characters[i]) + total);
+    let total = f(r(r(f(font.distance) * (characters.length - 1)) * ratio));
+    for (let i = characters.length - 1; i >= 0; i--) total = f(r(width(characters[i]) + total));
     cursor = f(total * -.5);
   }
   if (alignment === 'right') {
     for (let i = characters.length - 1; i >= 0; i--) {
       const w = width(characters[i]);
-      result[i] = {character: characters[i], center: f(cursor - f(w * .5))};
-      cursor = f(cursor - f(distance + w));
+      result[i] = {character: characters[i], center: f(r(cursor - r(w * .5)))};
+      cursor = f(r(cursor - r(distance + f(w))));
     }
   } else {
     characters.forEach((character, i) => {
       const w = width(character);
-      result[i] = {character, center: f(f(w * .5) + cursor)};
-      cursor = f(f(distance + w) + cursor);
+      result[i] = {character, center: f(r(r(w * .5) + cursor))};
+      cursor = f(r(r(distance + f(w)) + cursor));
     });
   }
   return result;
@@ -124,8 +136,8 @@ export function nativeGlyphCenters(font, type, alignment, length, cellWidth, inp
 // top-left rectangles in the original 640x480 HUD coordinate system.
 export function layoutHudText(spec, text = spec.text) {
   const cellWidth = spec.cellWidth ?? f(f(2 * spec.maxCharWidth) / spec.coordinateSpace.width);
-  return nativeGlyphCenters(spec.font, spec.type, spec.alignment, spec.length, cellWidth, text)
-    .flatMap(({character, center}, cell) => {
+  return nativeGlyphCenters(spec.font, spec.type, spec.alignment, spec.length, cellWidth, text,
+    spec.precision).flatMap(({character, center}, cell) => {
       const source = spec.font.glyphs[character];
       if (!source) return [];
       const transform = nativeHudElementTransform({position: [center, 0, 0]}, spec.context,

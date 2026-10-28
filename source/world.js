@@ -4,8 +4,7 @@ import {renderDimensions,adaptVerticalFov} from './settings.js';
 import {NativeUpdateClock,NativeEngineTimer,NATIVE_REFERENCE_UPTIME_MS} from './simulation/clock.js';
 import {NativeUpdateLoop} from './native-update-loop.js';
 import {getSkySpec,getSceneryAnimation,getRotationSpec,createNativeRotation,advanceNativeRotation,createNativeMeshAnimation,advanceNativeMeshAnimation,placementExistsInMode,resolveAsset} from './asset-animation.js';
-import {nativeRotationMatrix} from './simulation/native-transform.js';
-import {NATIVE_ANGLE_COUNT} from './simulation/native-integrator.js';
+import {nativeRotationMatrix,nativePlacementAngles} from './simulation/native-transform.js';
 import {NativeRandom} from './simulation/native-random.js';
 import {setNativeMatrix} from './render-transforms.js';
 import {isNativeBonusPlacementVisible,nativeBonusTypeFromObject,nativeBonusVisual} from './simulation/native-bonus.js';
@@ -167,7 +166,7 @@ export class TrackViewer{
       mesh.renderOrder=nativeObjectRenderOrder(track.placements.indexOf(obj));
       // Native 0x43e140 converts degrees/negates Y; initialized 0x4a09e0
       // composes Z then X then Y in the 4096-entry lookup table.
-      const nativeAngles=obj.nativeRotationDegrees.map(value=>Math.fround(value*NATIVE_ANGLE_COUNT/360));
+      const nativeAngles=nativePlacementAngles(obj.nativeRotationDegrees);
       setNativeMatrix(mesh,nativeRotationMatrix(nativeAngles));
       mesh.userData={source:obj.animation,nativeMesh:def.mesh,nativeAngles,sector:obj.sector,placementIndex:track.placements.indexOf(obj)};group.add(mesh);
       const animation=loadedAnimations.get(obj.animation);

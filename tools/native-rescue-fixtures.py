@@ -106,11 +106,16 @@ def generate():
         q.u32(0x5081bc, 1)
         q.u32(0x50822c, 2)
         for actor in range(3): q.u32(OBJECT + actor * 0xd0 + 0xc, actor)
-        for position in [[40, 9999, 20], [40, 0, 21], [0, 10000, 0], [44.72136, 0, 0], [1000, 0, 0]]:
+        # The last case queries from z=0.1, where dz is not a float: at PC=53 the
+        # unstored dz (0x48c2af..0x48c2b8) is clear and a float-rounded dz is not.
+        for position, query in [([40, 9999, 20], [0, 0, 0]), ([40, 0, 21], [0, 0, 0]),
+                                ([0, 10000, 0], [0, 0, 0]), ([44.72136, 0, 0], [0, 0, 0]),
+                                ([1000, 0, 0], [0, 0, 0]),
+                                ([33.16672897338867, 0, 30.099468231201172], [0, 0, 0.1])]:
             for actor, values in [(1, position), (2, [1000, 0, 1000])]:
                 for i, value in enumerate(values): q.f32(RENDER + actor * 0xa9 + 0x50 + i * 4, value)
-            q.run(0x48c170, [0, 0.0, 0.0, 0.0])
-            output["clearance"].append({"precision": precision, "other": position,
+            q.run(0x48c170, [0, *map(float, query)])
+            output["clearance"].append({"precision": precision, "other": position, "query": query,
                 "expected": bool(q.uc.reg_read(UC_X86_REG_EAX) & 255)})
         for actor in [1, 2]:
             for i in range(3): q.f32(RENDER + actor * 0xa9 + 0x50 + i * 4, 100000)

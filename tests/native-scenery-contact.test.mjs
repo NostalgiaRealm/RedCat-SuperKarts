@@ -12,8 +12,7 @@ import {nativeObjectCallbackCount} from '../source/spatial-audio.js';
 const read = path => JSON.parse(fs.readFileSync(new URL('../'+path, import.meta.url)));
 const fixtures = read('evidence/native/scenery-contact-fixtures.json');
 const config = read('public/assets/config.json'), manifest = read('public/assets/manifest.json');
-const close = (actual, expected, label) => assert.ok(Math.abs(actual-expected) <= 2e-6 * Math.max(1,Math.abs(expected)),
-  `${label}: ${actual} != ${expected}`);
+const exact = (actual, expected, label) => assert.ok(Object.is(actual, expected), `${label}: ${actual} != ${expected}`);
 
 test('scenery initialization and native registration match original instructions', () => {
   for (const [i,c] of fixtures.physics.entries()) {
@@ -44,8 +43,10 @@ test('scenery ground pose preserves native matrix multiplication order',()=>{
     assert.deepEqual(multiplyNativeMatrices(c.pose,slope,c.precision),c.expected,`ground pose ${i}`);
   }
 });
-test('physical scenery receives one Euler step per native visibility range',()=>{
+for(const precision of [24,53])test(`physical scenery receives one Euler step per native visibility range exactly (${precision}-bit)`,()=>{
+  assert.ok(fixtures.integration.some(c=>c.precision===precision));
   for(const [i,c]of fixtures.integration.entries()){
+    if(c.precision!==precision)continue;
     const body={...c.state};
     quantizeNativePlanarVelocity(body,c.precision);
     const ranges=nativeObjectCallbackRanges(c.playerSector,c.visibleChunks,c.routeCount);
@@ -53,7 +54,7 @@ test('physical scenery receives one Euler step per native visibility range',()=>
     assert.equal(count,c.calls.length,`count ${i}`);
     for(let j=0;j<count;j++)integrateNativeEuler(body,{lateralForce:0,verticalForce:0,longitudinalForce:0,torque:0},
       c.dt,{precision:c.precision});
-    for(const[k,v]of Object.entries(c.expected))close(body[k],v,`integration ${i} ${k}`);
+    for(const[k,v]of Object.entries(c.expected))exact(body[k],v,`integration ${i} ${k}`);
   }
 });
 test('all six tracks register only authored solid shapes, in OMP order', () => {

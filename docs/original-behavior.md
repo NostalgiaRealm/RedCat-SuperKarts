@@ -95,7 +95,10 @@ only for explicit deterministic replay and historical reports.
 Startup `0x442fc0 → 0x4ac410 → 0x4a1510` changes the trigonometric table to
 **4096 entries**. This overrides the PE's initial 1024 value. Fixture generation
 now executes the initializer, rather than using the initial global as a
-runtime assumption. Native render order is Z→X→Y, selected by `0x42ccf0`.
+runtime assumption. The table is built before the Direct3D device exists, at
+the CRT's 53-bit precision (`0x4c17bc`), so fixtures run the initializer at
+control word `0x027f` even for 24-bit cases. Native render order is Z→X→Y,
+selected by `0x42ccf0`.
 
 ## Original presentation now connected
 

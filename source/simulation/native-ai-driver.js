@@ -10,13 +10,53 @@ import { nativeRotationMatrix } from './native-transform.js';
 import { applyNativeRailContact } from './native-collision.js';
 import { createNativeGroundState, updateNativeGround } from './native-ground.js';
 import { selectNativeSector, sampleNativeTrack } from './native-track.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
 const NO_FORCE = Object.freeze({ lateralForce: 0, verticalForce: 0, longitudinalForce: 0, torque: 0 });
+const registerRounding = precision => {
+  if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
+  return precision === 24 ? f32 : Number;
+};
+
+/**
+ * rcskspel.dat 0x494b70 route-plane height: FMUL/FSUBR/FMUL/FSUBP/FDIV stay in
+ * x87 registers and the quotient is returned in ST0 (0x494b70..0x494b86).
+ * Callers decide whether to store it: 0x413330 stores it (FSTP 0x41346e),
+ * 0x41c4b0 subtracts body Y in ST0 first (FSUB 0x41c72f, FST 0x41c733).
+ */
+export function nativeRoutePlaneHeight(plane, x, z, { precision = NATIVE_PRECISION } = {}) {
+  const r = registerRounding(precision);
+  return r(r(r(plane.distance - r(x * plane.normal[0])) - r(z * plane.normal[2])) / plane.normal[1]);
+}
+
+/**
+ * 0x413330 spring height, shared by the NPC states and both bubble callers
+ * (0x412560 -> 0x413330 at 0x412610/0x412630, for player 0x4359e3 and NPC
+ * 0x40b977). 0x4977d0 (0x41343b) selects a sector from the object's +0x1c
+ * sector hint at the sampled point; the selection is not stored. 0x494b70
+ * (0x41345f) then returns that sector's route-plane height in ST0; never the
+ * 0x496290 track triangles. The caller stores it (FSTP float 0x41346e).
+ */
+export function nativeRouteSpringHeight(world, hint, x, z, { precision = NATIVE_PRECISION } = {}) {
+  const options = { precision };
+  const sector = selectNativeSector(world, hint, x, z, options);
+  return nativeRoutePlaneHeight(world.sectors[sector].fallback, x, z, options);
+}
+
+/**
+ * 0x40e760 (0x40e7a2..0x40e7b8) and 0x40ea50 (0x40ea84..0x40eaa3): FLD now,
+ * FSUB the stored start time, then FCOMP the register difference with 5 or 1.
+ */
+export function nativeAIFlagExpired(now, startSeconds, limitSeconds, { precision = NATIVE_PRECISION } = {}) {
+  return registerRounding(precision)(now - startSeconds) >= limitSeconds;
+}
 
 /** 0x4944e0/0x494510 waypoint actor lists, capped at ten entries. */
 export class NativeWaypointOccupancy {
-  constructor(track) {
+  constructor(track, { precision = NATIVE_PRECISION } = {}) {
+    registerRounding(precision);
+    this.precision = precision;
     this.track = track; this.nodes = new Map(); this.membership = new Map();
     // 0x40ed40 can leave output components untouched. Native caller stack
     // contents have no defined initial value; this adapter explicitly zeros
@@ -32,7 +72,7 @@ export class NativeWaypointOccupancy {
     this.membership.delete(body);
   }
   insert(body, { side = -1 } = {}) {
-    const waypoint = nearestNativeAIWaypoint(this.track, body, { side });
+    const waypoint = nearestNativeAIWaypoint(this.track, body, { side, precision: this.precision });
     if (waypoint < 0) return -1;
     let actors = this.nodes.get(waypoint);
     if (!actors) this.nodes.set(waypoint, actors = []);
@@ -49,15 +89,16 @@ export class NativeWaypointOccupancy {
  */
 export class NativeAIDriver {
   constructor({ track, world, geometry, start, racer, playerRacer, random, groundClock,
-    collision, occupancy, efficiency, id, carIndex = 1 }) {
+    collision, occupancy, efficiency, id, carIndex = 1, precision = NATIVE_PRECISION }) {
     if (!collision || typeof collision.sweep !== 'function') throw new TypeError('NPC requires an explicit native collision sweep');
     if (!random || !groundClock || !occupancy) throw new TypeError('NPC requires shared random, ground clock and waypoint occupancy');
     if (!Number.isFinite(efficiency)) throw new TypeError('Original NPC efficiency setting is required');
-    Object.assign(this, { track, world, racer, playerRacer, random, groundClock, collision, occupancy, efficiency });
+    registerRounding(precision);
+    Object.assign(this, { track, world, racer, playerRacer, random, groundClock, collision, occupancy, efficiency, precision });
     this.body = {
-      ...nativeStandardKartInertia(carIndex), id,
+      ...nativeStandardKartInertia(carIndex, { precision }), id,
       position: start.position.map(f32), yaw: f32(start.yaw), pitch: 0, roll: 0,
-      matrix: nativeRotationMatrix([0, start.yaw, 0]), sector: start.sector, previousSector: start.sector,
+      matrix: nativeRotationMatrix([0, start.yaw, 0], { precision }), sector: start.sector, previousSector: start.sector,
       lateralSpeed: 0, verticalSpeed: 0, forwardSpeed: 0,
       yawRate: 0, pitchRate: 0, rollRate: 0,
       get x() { return this.position[0]; }, set x(value) { this.position[0] = value; },
@@ -89,12 +130,13 @@ export class NativeAIDriver {
     this.updates = 0;
   }
 
-  sampleGround = (x, y, z) => sampleNativeTrack(this.world, this.body.sector, x, y, z).height;
-  sampleRouteHeight = (x, y, z) => {
-    const sector = selectNativeSector(this.world, this.body.sector, x, z);
-    const plane = this.world.sectors[sector].fallback;
-    return f32(f32(f32(plane.distance - f32(x * plane.normal[0])) - f32(z * plane.normal[2])) / plane.normal[1]);
-  };
+  // 0x496290 leaves the height in ST0; updateNativeGround stores it where 0x416650 does.
+  sampleGround = (x, y, z) => sampleNativeTrack(this.world, this.body.sector, x, y, z,
+    { precision: this.precision }).height;
+  // 0x413330: 0x4977d0 selection, then the 0x494b70 ST0 height. Its caller
+  // updateNativeAIVerticalSpring performs the 0x41346e FSTP float.
+  sampleRouteHeight = (x, y, z) => nativeRouteSpringHeight(this.world, this.body.sector, x, z,
+    { precision: this.precision });
 
   get phase() { return this.state.mode; }
   set phase(value) { this.state.mode = value; }
@@ -103,14 +145,15 @@ export class NativeAIDriver {
   decide(dt, context) {
     const { player, racers, rank, playerRank, time, owned, shared,
       reactionMs, catchupMs, playerProtected, itemRank } = context;
+    const precision = this.precision;
     if (!player || !racers || !owned || !shared || !Number.isInteger(rank)
       || !Number.isInteger(playerRank) || !Number.isFinite(time)) {
       throw new TypeError('Complete original NPC decision context is required');
     }
     return updateNativeAITransition(this.state, {
       '402040': () => nativeAIStuck(this.state),
-      '401570': () => nativeAIPlayerBehind(this.body, this.state, player, rank),
-      '4016e0': () => nativeAIStartChase(this.body, this.state, rank, dt, this.random),
+      '401570': () => nativeAIPlayerBehind(this.body, this.state, player, rank, { precision }),
+      '4016e0': () => nativeAIStartChase(this.body, this.state, rank, dt, this.random, { precision }),
       '40ca90': () => !this.state.forcedRoute,
       '40cd00': () => false, // Empty original condition.
       '40cd30': () => false, // Computes an unused scan limit; always returns0.
@@ -119,13 +162,13 @@ export class NativeAIDriver {
           throw new TypeError('Native shooter rank uses its object index and must be supplied explicitly');
         }
         return nativeAIItemGuard(this.track, this.body, this.state, owned, {
-          player, racers, rank: itemRank ?? rank, now: time, shared, reactionMs, playerProtected,
+          player, racers, rank: itemRank ?? rank, now: time, shared, reactionMs, playerProtected, precision,
         });
       },
       '40d070': () => {
         const mode = this.state.mode;
         const result = nativeAICatchupGuard(this.state, {
-          rank, playerRank, catchupMs, now: time, reactionMs,
+          rank, playerRank, catchupMs, now: time, reactionMs, precision,
         });
         if (result) this.voices?.npcCatchup({
           racer: this.body.id, mode, activated: result.announce,
@@ -143,6 +186,7 @@ export class NativeAIDriver {
     if (!Number.isFinite(deltaSeconds) || deltaSeconds <= 0) throw new RangeError('NPC requires a positive finite update interval');
     if (this.prepared) throw new Error('Integrate the prepared native frame before preparing another');
     this.events = [];
+    const precision = this.precision;
     // 0x40b0b0 selects transitions before 0x406940 checks the movement gate.
     // NPCs can change mode during the countdown, while movement remains idle.
     if (decision && (active || decision.player)) this.decide(deltaSeconds, decision);
@@ -155,7 +199,7 @@ export class NativeAIDriver {
           this.racer, this.playerRacer, deltaSeconds, this.random, {
             occupancy: this.occupancy.nodes, efficiency: this.efficiency,
             pathScratch: this.occupancy.pathScratch,
-            ...playerGlobals,
+            ...playerGlobals, precision,
           });
       };
       if (this.state.mode === 0) normal();
@@ -164,15 +208,15 @@ export class NativeAIDriver {
           this.racer, this.playerRacer, deltaSeconds, this.random, {
             occupancy: this.occupancy.nodes, player: decision?.player,
             pathScratch: this.occupancy.pathScratch,
-            ...playerGlobals,
+            ...playerGlobals, precision,
           });
       } else if (this.state.mode === 9) {
         prepareNativeAIFinished(this.body, this.controls, this.state, this.racer, this.playerRacer,
-          deltaSeconds, this.random, { sampleRouteHeight: this.sampleRouteHeight, ...playerGlobals });
+          deltaSeconds, this.random, { sampleRouteHeight: this.sampleRouteHeight, ...playerGlobals, precision });
       } else if (this.state.mode === 10) {
         prepareNativeAIRecovery(this.body, this.controls, this.state, deltaSeconds, this.random, {
           time: decision?.time, sampleRouteHeight: this.sampleRouteHeight,
-          respawn: decision?.rescue,
+          respawn: decision?.rescue, precision,
         });
       } else if ([24, 25].includes(this.state.mode)) {
         // 0x40e6d0 replaces normal driving while the native hit effect is active.
@@ -187,24 +231,26 @@ export class NativeAIDriver {
         if (event) this.events.push(event);
       } else if (this.state.mode === 27) {
         this.path = prepareNativeForcedRouteAI(this.track, this.body, this.controls, this.state,
-          this.racer, this.playerRacer, deltaSeconds, this.random, { efficiency: this.efficiency, ...playerGlobals });
+          this.racer, this.playerRacer, deltaSeconds, this.random, { efficiency: this.efficiency, ...playerGlobals, precision });
       } else if (this.state.mode === 28) {
         prepareNativeAICatchupState(this.state, deltaSeconds,
-          { now: decision?.time, durationMs: decision?.catchupDurationMs }, normal);
+          { now: decision?.time, durationMs: decision?.catchupDurationMs, precision }, normal);
       } else throw new Error(`Native NPC state ${this.state.mode} needs its original handler`);
-      // 0x409530 observes the old sector before the engine integrates.
+      // 0x409530 observes the old sector before the engine integrates. Its
+      // FADD/FSTP float (0x40968e/0x409694) is one stored float operation, so
+      // the sector timer is precision-independent.
       if (this.body.sector === this.state.previousSector) this.state.sectorTime = f32(this.state.sectorTime + f32(deltaSeconds));
       else { this.state.previousSector = this.body.sector; this.state.sectorTime = 0; }
       if (decision?.triggers) {
         const triggers = applyNativeAITrackTriggers(this.track, this.body, this.state, {
-          ...decision.triggers, now: decision.time, previousEngineSector: this.body.previousSector,
+          ...decision.triggers, now: decision.time, previousEngineSector: this.body.previousSector, precision,
         });
         this.events.push(...triggers);
         for (const event of triggers) if (event.type === 'turbo') {
           this.animationEvents.push({ callback: 0x40dc10, fsmState: this.state.mode });
         }
       }
-      if (this.state.mode !== 10) applyNativeAICatchup(this.body, this.state, difficulty, progressDifference);
+      if (this.state.mode !== 10) applyNativeAICatchup(this.body, this.state, difficulty, progressDifference, { precision });
     }
     // 0x40b0b0 calls 0x40e760 after state dispatch. Preserve that call's
     // pre-expiry flag for this visual frame, then perform its native flag clear.
@@ -214,21 +260,23 @@ export class NativeAIDriver {
       turboStartedSeconds: this.state.turboTime,
       nowSeconds: now,
     };
-    if (this.state.turboVisible && f32(now - this.state.turboTime) >= 5) {
+    if (this.state.turboVisible && nativeAIFlagExpired(now, this.state.turboTime, 5, { precision })) {
       this.state.turboVisible = false;
     }
     // 0x40ea50 is a separate one-second material-flash flag, not the lifetime
     // of the hit effect or its queued mesh animation.
-    if (this.state.hitVisible && f32(now - this.state.hitTime) >= 1) this.state.hitVisible = false;
+    if (this.state.hitVisible && nativeAIFlagExpired(now, this.state.hitTime, 1, { precision })) this.state.hitVisible = false;
     const slipperyWaypoint = this.track.drive[this.body.waypoint]?.unknown[1] === 68;
     if (slippery || this.state.slippery || slipperyWaypoint) {
+      // 0x40b417..0x40b442: each FLD/FMUL .98/FSTP float is one stored float
+      // product, so the damping is precision-independent.
       for (const key of ['lateralSpeed', 'verticalSpeed', 'forwardSpeed']) this.body[key] = f32(this.body[key] * f32(.98));
     }
-    // NPC 0x41c4b0 uses the route's derived plane, before the triangle ground callback.
-    const plane = this.world.sectors[this.body.sector].fallback;
-    const height = f32(f32(f32(plane.distance - f32(this.body.x * plane.normal[0])) -
-      f32(this.body.z * plane.normal[2])) / plane.normal[1]);
-    updateNativeAIWheels(this.body, this.ground, deltaSeconds, height);
+    // NPC 0x41c4b0 uses the route's derived plane, before the triangle ground
+    // callback. The 0x494b70 height stays in ST0 for the FSUB at 0x41c72f.
+    const height = nativeRoutePlaneHeight(this.world.sectors[this.body.sector].fallback,
+      this.body.x, this.body.z, { precision });
+    updateNativeAIWheels(this.body, this.ground, deltaSeconds, height, { precision });
     this.prepared = { deltaSeconds };
     return this.path;
   }
@@ -236,26 +284,27 @@ export class NativeAIDriver {
   /** Flags3 NPCs use one Euler step and skip the player's sliding second sweep. */
   integrate() {
     if (!this.prepared) throw new Error('Prepare the native frame before integrating');
-    const { deltaSeconds } = this.prepared, body = this.body;
-    quantizeNativePlanarVelocity(body);
+    const { deltaSeconds } = this.prepared, body = this.body, precision = this.precision;
+    quantizeNativePlanarVelocity(body, precision);
     this.occupancy.remove(body);
     const collision = this.collision.sweep(body, deltaSeconds);
-    integrateNativeEuler(body, NO_FORCE, deltaSeconds, collision ?? {});
-    body.matrix = nativeRotationMatrix([body.pitch, body.yaw, body.roll]);
+    integrateNativeEuler(body, NO_FORCE, deltaSeconds, { ...collision, precision });
+    body.matrix = nativeRotationMatrix([body.pitch, body.yaw, body.roll], { precision });
     if (collision?.contact) {
       if (this.collision.resolve) this.collision.resolve(body, collision.contact);
-      else applyNativeRailContact(body, collision.contact);
+      else applyNativeRailContact(body, collision.contact, { precision });
     }
     this.collision.finishStep?.(body, collision?.contact);
     body.previousSector = body.sector;
-    body.sector = selectNativeSector(this.world, body.sector, body.x, body.z);
+    body.sector = selectNativeSector(this.world, body.sector, body.x, body.z, { precision });
     this.occupancy.insert(body);
     if (!this.groundInitialized) {
-      const initial = createNativeGroundState(body, this.ground.wheels);
+      const initial = createNativeGroundState(body, this.ground.wheels, { precision });
       initial.wheels.forEach((wheel, i) => { this.ground.wheels[i].position = wheel.position; });
       this.groundInitialized = true;
     }
-    updateNativeGround(body, this.ground, deltaSeconds, this.sampleGround, { clock: this.groundClock, player: false });
+    updateNativeGround(body, this.ground, deltaSeconds, this.sampleGround,
+      { clock: this.groundClock, player: false, precision });
     this.prepared = null;
     this.updates++;
     return this.snapshot();

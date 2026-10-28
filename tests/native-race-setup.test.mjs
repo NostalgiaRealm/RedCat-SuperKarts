@@ -12,7 +12,8 @@ const fixtures = read('evidence/native/race-setup-fixtures.json');
 
 test('All original NPC grid slots, heading and rank allocation match executed code', () => {
   for (const [i, c] of fixtures.cases.entries()) {
-    const grid = nativeRaceGrid(tracks[c.track], nativeWorlds[c.track], c);
+    // race-setup-fixtures.json and the native sector axes are 0x007f captures.
+    const grid = nativeRaceGrid(tracks[c.track], nativeWorlds[c.track], { ...c, precision: 24 });
     const positions = [grid.player, ...grid.opponents].map(({ sector, position, yaw }) => ({ sector, position, yaw }));
     assert.deepEqual(positions, c.grid, `grid ${i}`);
     assert.deepEqual(grid.opponents.map(racer => racer.rank), c.ranks, `ranks ${i}`);

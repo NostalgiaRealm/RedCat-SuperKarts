@@ -18,7 +18,7 @@ try{
     await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
     await page.evaluate(()=>{
       const view=rcsk.viewer;view.clock.pause();
-      window.animationProbe={now:view.clock.tick*25,rows:[],geometryMismatches:0};
+      window.animationProbe={now:view.clock.simulationMs,rows:[],geometryMismatches:0};
       const visual=view.playerVisual,advance=visual.advanceAnimation.bind(visual);
       visual.advanceAnimation=(now,requests)=>{
         advance(now,requests);

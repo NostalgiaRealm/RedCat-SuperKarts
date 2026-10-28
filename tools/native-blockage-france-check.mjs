@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {NativeRailCollision} from '../source/simulation/native-collision.js';
 import {integrateNativeEuler,quantizeNativePlanarVelocity} from '../source/simulation/native-integrator.js';
 import {nativeRotationMatrix} from '../source/simulation/native-transform.js';
+import {NATIVE_PRECISION} from '../source/simulation/native-precision.js';
 const fixture=JSON.parse(fs.readFileSync(new URL('../evidence/race-completion/france-native-frame-fixtures.json',import.meta.url)));
 const track={collision:[],route:Array.from({length:187},()=>({collisionIndices:[]}))};
 const zero={lateralForce:0,verticalForce:0,longitudinalForce:0,torque:0};
@@ -39,7 +40,7 @@ for(const c of fixture.cases) {
   }
 }
 const report={scope:fixture.scope,nativeFrames:fixture.cases.reduce((n,c)=>n+c.frames.length,0),
-  status:differences.some(row=>row.precision===24)?'active-precision-differences':'active-precision-exact',
+  status:differences.some(row=>row.precision===NATIVE_PRECISION)?'active-precision-differences':'active-precision-exact',
   byPrecision:[24,53].map(precision=>({precision,frames:fixture.cases.filter(row=>row.precision===precision)
     .reduce((n,c)=>n+c.frames.length,0),differences:differences.filter(row=>row.precision===precision).length})),
   differences};

@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f = Math.fround;
 
 /** 4818c0 selects TRACK<race type><country>, not the difficulty preset. */
@@ -21,7 +22,7 @@ export function getNativeWeatherSpec(config, raceType, trackIndex, {hardware = t
  * must use the race construction RNG; subsequent recycling uses the shared RNG.
  */
 export class NativeWeather {
-  constructor({kind, count = 400, enabled = true, random, precision = 24, percentages = []}) {
+  constructor({kind, count = 400, enabled = true, random, precision = NATIVE_PRECISION, percentages = []}) {
     if (!random?.next) throw new Error('Original shared random stream is required');
     if (!['rain', 'snow'].includes(kind)) throw new Error('Unknown original weather kind');
     Object.assign(this, {kind, count, activeCount: count, random, precision, percentages,

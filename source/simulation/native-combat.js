@@ -4,9 +4,11 @@ import { advanceNativeProjectile, deactivateNativeProjectile, nativeProjectileLa
 import { createNativeHitRecord, initializeNativeHitEffect, updateNativeHitEffect } from './native-bonus-effects.js';
 import { sampleNativeTrack, selectNativeSector } from './native-track.js';
 import { markNativeNPCWeaponHit } from './native-ai-items.js';
+import { nativeRouteSpringHeight } from './native-ai-driver.js';
 import { nativePlayerHitSoundRequests } from './native-character-voice.js';
 import { nativeFiringSoundRequest } from '../bonus-audio.js';
 import { NativeHomingArms } from './native-homing-arm.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
 
@@ -18,8 +20,10 @@ const f32 = Math.fround;
  */
 export class NativeBonusCombat {
   constructor({ pickups, actors, config, manifest, world, shotClearance, forwardDirection, voices = pickups.voices,
-    paletted = false }) {
+    paletted = false, precision = NATIVE_PRECISION }) {
     if (!Number.isFinite(shotClearance)) throw new TypeError('An explicit native shot +0x3c initialization policy is required');
+    if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
+    this.precision = precision;
     if (!actors.length || actors.some(actor => !Number.isFinite(actor.radius))) {
       throw new TypeError('Every actor requires its current original model collision radius');
     }
@@ -32,6 +36,8 @@ export class NativeBonusCombat {
     this.voices = voices;
     this.parameters = nativeBonusParameters(config['game.ini'].bonus_data);
     this.rotationSpeed = Number(config['game.ini'].bonus_data.weapon_rotation_speed);
+    // 0x455ad2 compares the stored age with the stored float 0x544a80 (setter
+    // 0x456980), so the invincibility test is precision-independent.
     this.invincibilitySeconds = f32(Number(config['game.ini'].bonus_data.weapon_invince_time) * f32(0.001));
     if (!Number.isFinite(this.rotationSpeed)) throw new TypeError('Original bonus rotation speed is required');
     this.forwardDirection = forwardDirection;
@@ -46,12 +52,18 @@ export class NativeBonusCombat {
     const graphics = config['sndgfx.ini']?.['gfx options'] ?? {};
     this.arms = new NativeHomingArms({actors, voices,
       jetstreams: Number(graphics.jetstreams ?? 0) !== 0,
-      alphaBlending: Number(graphics.alpha_blending ?? 0) !== 0, paletted});
+      alphaBlending: Number(graphics.alpha_blending ?? 0) !== 0, paletted, precision});
   }
 
+  /**
+   * 0x430ff0: 0x4932e0 sector update, 0x495fe0, then 0x496290, whose height is
+   * returned in ST0. Consumers round where they store: 0x455a8b (FSTP), the
+   * launch/flight sums 0x455922/0x456004 (ST0) and the bubble spring.
+   */
   groundHeight = shot => {
-    shot.sector = selectNativeSector(this.world, shot.sector ?? 0, shot.position[0], shot.position[2]);
-    return sampleNativeTrack(this.world, shot.sector, ...shot.position).height;
+    const options = { precision: this.precision };
+    shot.sector = selectNativeSector(this.world, shot.sector ?? 0, shot.position[0], shot.position[2], options);
+    return sampleNativeTrack(this.world, shot.sector, ...shot.position, options).height;
   };
 
   activeCount() {
@@ -109,14 +121,15 @@ export class NativeBonusCombat {
         this.world.sectors.length, parameters.lockRange, this.forwardDirection(body));
     }
     Object.assign(shot, geometry, nativeProjectileLaunchPose(body, geometry.radius,
-      this.groundHeight({ position: [...body.position], sector: body.sector })), {
+      this.groundHeight({ position: [...body.position], sector: body.sector }), { precision: this.precision }), {
       type, level, state: 2, ageSeconds: 0, shooter, target, sector: body.sector,
     });
     this.onProjectileState?.(shot, 2);
     this.arms.create(shot); // 0x456440 SetState(2), before bubble hatching.
     const spawned = [shot];
     if (parameters.count > 1) {
-      spawned.push(...hatchNativeBubbles(shot, this.secondaryShots, parameters.count - 1, geometry));
+      spawned.push(...hatchNativeBubbles(shot, this.secondaryShots, parameters.count - 1, geometry,
+        { precision: this.precision }));
     }
     return { type: 'fire', shooter, bonus: type, level, shots: spawned };
   }
@@ -129,10 +142,19 @@ export class NativeBonusCombat {
     body.pitch ??= 0;
     body.roll ??= 0;
     const bubbleWasVisible = effect.bubbleVisible;
+    const precision = this.precision;
     const active = updateNativeHitEffect(effect, body, deltaSeconds, this.parameters[effect.type][effect.level - 1], {
       groundCount: actor.ground.groundCount ?? 0, rearWheelVerticalSpeed: actor.ground.wheels[2].verticalSpeed,
-      sampleGround: (x, y, z) => this.groundHeight({ position: [x, y, z], sector: body.sector }),
-      random: this.random,
+      // 0x412560 -> 0x413330 for player and NPC alike: the route-plane height
+      // from the body's sector hint, not the 0x430ff0 projectile sampler.
+      sampleGround: (x, y, z) => nativeRouteSpringHeight(this.world, body.sector, x, z, { precision }),
+      // 0x4134bc..0x4134c4 clears [0x50728c] only for the player object.
+      clearSlip: index === this.actors.length - 1 ? () => {
+        actor.slipMagnitude = 0;
+        // 0x414a60 reads [0x50728c] itself; the port caches it as lowSpeedTurn.
+        if ('lowSpeedTurn' in actor) actor.lowSpeedTurn = false;
+      } : null,
+      random: this.random, precision,
     });
     // 412560 detaches the separate shell when its grounded/settled branch ends.
     if (bubbleWasVisible && !effect.bubbleVisible) this.onBubbleDetach?.(index);
@@ -152,6 +174,7 @@ export class NativeBonusCombat {
         invincibilitySeconds: this.invincibilitySeconds,
         onExplosion: body => this.onExplosion?.(body),
         onState: (shot, state) => this.onProjectileState?.(shot, state),
+        precision: this.precision,
       });
       if (result && shot.state === 1) this.arms.remove(shot);
       if (!result) continue;

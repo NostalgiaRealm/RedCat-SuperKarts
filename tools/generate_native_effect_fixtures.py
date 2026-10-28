@@ -3,7 +3,7 @@
 import json
 import random
 import struct
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT, PRECISION, precision_path
 from native_probe_math import initialize_native_trig
 from unicorn import UC_HOOK_CODE
 from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_EBP, UC_X86_REG_EIP, UC_X86_REG_ESP
@@ -121,8 +121,8 @@ def main():
                 "launchedWheelSpeeds": [None if p.float(render + (wheel + 1) * 0xa9 + 0x60) == -999
                     else p.float(render + (wheel + 1) * 0xa9 + 0x60) for wheel in range(4)]}})
     p.uc.hook_del(handle)
-    output = ROOT / "evidence/gameplay/native-effect-fixtures.json"
-    output.write_text(json.dumps({"binarySha256": p.sha, "precision": 24, "angleCount": 4096,
+    output = precision_path(ROOT / "evidence/gameplay/native-effect-fixtures.json")
+    output.write_text(json.dumps({"binarySha256": p.sha, "precision": PRECISION, "angleCount": 4096,
         "entries": ["0x412390", "0x412280", "0x412560", "0x413330", "0x4130e0", "0x412fd0"],
         "boundaries": ["ground height/sector", "child lookup", "bubble visual teardown",
             "initializer text/animation blocks skipped; all gameplay writes execute original instructions"],

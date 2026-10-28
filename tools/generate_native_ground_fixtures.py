@@ -8,7 +8,7 @@ import json
 import math
 import random
 import struct
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT, PRECISION, CONTROL_WORD, precision_path
 from native_probe_math import initialize_native_trig
 
 AUX = 0x24000000
@@ -176,10 +176,10 @@ def main():
                         "spin": p.float(RENDER + (i + 1) * 0xa9 + 0x74),
                         "steeringAngle": p.float(RENDER + (i + 1) * 0xa9 + 0x78)} for i in range(4)]}})
         traces.append({"body": body, "wheels": wheels, "oldDelta": old_delta, "frames": frames})
-    output = ROOT / "evidence/gameplay/native-ground-fixtures.json"
+    output = precision_path(ROOT / "evidence/gameplay/native-ground-fixtures.json")
     output.write_text(json.dumps({"format": "superkarts-native-ground-v1", "sha256": p.sha,
         "method": "Original x86 0x416650 instructions; route and triangle-height selection replaced by explicit boundary inputs. Synthetic wheel offsets. No full-world claim.",
-        "fpuControlWord":"0x007f (24-bit precision)", "runtimeAngleCount":4096, "cases": cases,
+        "fpuControlWord":f"0x{CONTROL_WORD:04x} ({PRECISION}-bit precision)", "runtimeAngleCount":4096, "cases": cases,
         "wheelPoseCases":wheel_pose_cases, "traces": traces}, indent=2) + "\n")
     print(f"Wrote {len(cases)} native wheel-contact cases, {len(wheel_pose_cases)} poses and "
           f"{sum(len(trace['frames']) for trace in traces)} recurring frames to {output}")

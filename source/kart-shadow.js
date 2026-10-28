@@ -1,4 +1,5 @@
 import {resolveAsset} from './asset-animation.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f = Math.fround;
 
 /** 416270 uses the shared original quad;4260c0 replaces only its X/Z bounds. */
@@ -16,7 +17,7 @@ export function getNativeKartShadowSpec(manifest, bounds) {
 
 /** Native shadow keeps kart tilt/scale, but its origin follows the CURRENT
  * sector fallback plane. It is not projected onto each triangle below it. */
-export function getNativeKartShadowPose(body, plane, {precision = 24} = {}) {
+export function getNativeKartShadowPose(body, plane, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f : Number, [x, y, z] = body.position;
   const translation=body.matrixTranslation??body.position;
   const height = f(r(r(r(plane.distance - r(x * plane.normal[0])) - r(z * plane.normal[2])) / plane.normal[1]));

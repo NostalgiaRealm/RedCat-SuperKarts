@@ -1,4 +1,5 @@
 import { NATIVE_ANGLE_COUNT } from './native-ground.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 
 /** Original 0x493a20 wraps by one course length (not arbitrary modulo). */
@@ -14,8 +15,11 @@ function wrapSector(index, count) {
  */
 export function nativePlayerStart(track, world, {
   opponentCount = 4, raceType = 0, previousFinishPosition = 0,
-  startChunk = 0, british = 0, direction = 0,
+  startChunk = 0, british = 0, direction = 0, precision = NATIVE_PRECISION,
 } = {}) {
+  if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
+  // x87 register intermediates round to 24 bits only under PC=24.
+  const r = precision === 24 ? f32 : Number;
   if (!Number.isInteger(opponentCount) || opponentCount < 0 || opponentCount > 9) {
     throw new RangeError('Native grid requires zero through nine opponents');
   }
@@ -53,9 +57,12 @@ export function nativePlayerStart(track, world, {
     source = 'lane-fallback';
   }
   const forward = world.sectors[chosen.sector].forward;
-  const length = f32(Math.sqrt(f32(f32(forward[0] * forward[0]) + f32(forward[2] * forward[2]))));
-  const x = f32(forward[0] / length), z = f32(forward[2] / length);
+  // 0x4935cb-0x4935e9: the squares, sum and FSQRT stay in registers; only X/len
+  // is spilled with FSTP float, Z/len (FDIVR) stays in ST0 for FPATAN.
+  const length = r(Math.sqrt(r(r(forward[0] * forward[0]) + r(forward[2] * forward[2]))));
+  const x = f32(forward[0] / length), z = r(forward[2] / length);
   // Player constructor passes direction1 to 0x493540, even for mirrored tracks.
-  const yaw = f32(f32(f32(Math.atan2(z, x) - f32(Math.PI) * 0.5) * NATIVE_ANGLE_COUNT) / f32(2 * Math.PI));
+  // FPATAN is not precision-controlled; FSUBP/FMUL/FDIV round until FSTP float 0x493686.
+  const yaw = f32(r(r(Math.atan2(z, x) - f32(Math.PI) * 0.5) * NATIVE_ANGLE_COUNT) / f32(2 * Math.PI));
   return { ...chosen, yaw, source };
 }

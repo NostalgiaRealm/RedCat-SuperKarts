@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './simulation/native-precision.js';
 const f = Math.fround;
 const loopDurations = [1000, 1000, 1000, 3000, 3000, 3000];
 const eventTable = {
@@ -19,7 +20,7 @@ export function getNativeNotificationEvent(config, id) {
   return {op: 'message', id, textId, text, mode, duration, interrupt};
 }
 
-export function createNativeHudNotifications({precision = 24} = {}) {
+export function createNativeHudNotifications({precision = NATIVE_PRECISION} = {}) {
   if (![24, 53].includes(precision)) throw RangeError('Unsupported native precision');
   return {precision, state: 0, elapsedMove: 0, loopDuration: 1000, duration: 5000,
     elapsedTotal: 0, mode: 0, queue: [], visible: false, text: '', position: [0, 0, 0],

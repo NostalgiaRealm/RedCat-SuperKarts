@@ -1,4 +1,5 @@
 import { nativeTriangleContainsXZ } from './native-track.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
 const pack = (alpha, red, green, blue) =>
@@ -31,7 +32,7 @@ export function sampleNativeKartGroundColor(world, body) {
  * ordinary child meshes at draw time. Do not feed the brightened value back.
  */
 export function advanceNativeKartColor(diffuse, groundDiffuse, forwardSpeed, deltaSeconds,
-  brightness = [0, 0, 0], { precision = 24 } = {}) {
+  brightness = [0, 0, 0], { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 24 ? f32 : value => value;
   const alpha = diffuse >>> 24;
   const old = [(diffuse >>> 16) & 255, (diffuse >>> 8) & 255, diffuse & 255];

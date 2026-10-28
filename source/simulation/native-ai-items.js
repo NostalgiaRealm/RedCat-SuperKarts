@@ -1,4 +1,5 @@
 import { nativeAIRelativeBearing } from './native-ai.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 // Retain the public AI import path without making menu score readers load AI.
 export { recordNativeNPCFinish } from './native-results.js';
 
@@ -12,7 +13,7 @@ export function nativeAIShortSectorDistance(a, b, count) {
 }
 
 /** 0x406320. Uses graph direction, rather than the kart's current yaw. */
-export function nativeAIPositionBehind(track, body, position, { precision = 24, deadEndTarget } = {}) {
+export function nativeAIPositionBehind(track, body, position, { precision = NATIVE_PRECISION, deadEndTarget } = {}) {
   const node = track.drive[body.waypoint];
   if (!node) throw new RangeError('Native AI requires its current waypoint');
   const next = node.links.find(index => index >= 0);
@@ -48,7 +49,7 @@ export function nativeAINearestShooterTarget(track, body, racers, options = {}) 
 }
 
 /** Embedded reaction controller, 0x40eb20. Deadline is an absolute clock time. */
-export function setNativeAIReaction(state, mode, now, reactionMs, { precision = 24 } = {}) {
+export function setNativeAIReaction(state, mode, now, reactionMs, { precision = NATIVE_PRECISION } = {}) {
   if (state.mode !== mode) {
     const r = rounding(precision);
     state.reactionMode = mode;
@@ -66,7 +67,7 @@ export function nativeAIReactionReady(state, now) {
 /** 0x40cde0. Geometry answers are produced by nativeAIItemGuard below. */
 export function decideNativeAIItem(state, owned, {
   rank, now, playerId, playerProtected, targetId = -1, targetDistance = 0,
-  playerBehind = false, playerDistance = 0, shared, reactionMs, precision = 24,
+  playerBehind = false, playerDistance = 0, shared, reactionMs, precision = NATIVE_PRECISION,
 }) {
   if (!shared || !Number.isInteger(shared.dropperCounter)) throw new TypeError('Shared native dropper counter is required');
   const r = rounding(precision);
@@ -109,7 +110,7 @@ export function nativeAIItemGuard(track, body, state, owned, context) {
 }
 
 /** 0x40d070/0x40d9c0/0x40dbd0. Integer millisecond division is intentional. */
-export function nativeAICatchupGuard(state, { rank, playerRank, catchupMs, now, reactionMs, precision = 24 }) {
+export function nativeAICatchupGuard(state, { rank, playerRank, catchupMs, now, reactionMs, precision = NATIVE_PRECISION }) {
   if (state.mode === 28 || rank === 0 || state.lastRank !== rank
     || !(f32(Math.trunc(catchupMs / 1000)) < state.rankTime) || rank <= 0) return false;
   if (state.mode !== 9) {
@@ -121,7 +122,7 @@ export function nativeAICatchupGuard(state, { rank, playerRank, catchupMs, now, 
 }
 
 /** 0x40c010: catch-up duration only advances after its reaction deadline. */
-export function updateNativeAICatchupState(state, dt, { now, durationMs, precision = 24 }) {
+export function updateNativeAICatchupState(state, dt, { now, durationMs, precision = NATIVE_PRECISION }) {
   if (nativeAIReactionReady(state, now)) {
     if (f32(Math.trunc(durationMs / 1000)) <= state.chaseTime) return false;
     state.chaseTime = f32(rounding(precision)(f32(dt) + state.chaseTime));
@@ -176,7 +177,7 @@ export function nativeAITriggerSpeedLimits(config) {
 /** 0x406470 NPC marker dispatcher. Finish timing/audio is returned to its owner. */
 export function applyNativeAITrigger(body, state, marker, {
   now, circuit, lapCount, playerForwardSpeed, efficiencyLevel, speedLimits,
-  previousEngineSector, precision = 24,
+  previousEngineSector, precision = NATIVE_PRECISION,
 }) {
   const r = rounding(precision);
   if ([4, 5, 6, 8].includes(marker)) {

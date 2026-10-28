@@ -27,7 +27,9 @@ test('18 original absolute-clock traces match every store and returned delta at2
 });
 
 test('host seconds API retains cold priming and refreshes absolute baseline on resume',()=>{
-  const timer=new NativeEngineTimer({absoluteSeconds:60});
+  // 24-bit expectations; at 53 the stored float baseline and the double
+  // quotient cancel to a nonzero residue, as the fixture traces above show.
+  const timer=new NativeEngineTimer({absoluteSeconds:60,precision:24});
   assert.equal(timer.initialDelta,Math.fround(.1));
   for(const time of [60.025,60.058,60.083])assert.equal(timer.sampleAbsoluteSeconds(time),Math.fround(.1));
   timer.sampleAbsoluteSeconds(60.1);

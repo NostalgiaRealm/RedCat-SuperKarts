@@ -23,10 +23,19 @@ this second sweep.
 `0x49b9c0` applies a paired impulse to planar and angular velocities. It retains
 two source details that should not be “corrected” to conventional physics:
 there is no separating-contact early return, and **both final vertical speeds
-use the second body's inverse mass**. Its Y velocity scratch entries are not
-initialized, but native `0x49ac80` contact normals have zero Y; these entries do
-not contribute to reachable planar contact response. The comparison generator
-therefore supplies planar normals.
+use the second body's inverse mass**. The impulse's Y term reads three stack
+slots the routine never writes: both velocity Y inputs (`0x49bd3b`,
+`0x49bdca`) and the rotated normal's Y (`0x49bea9`, Ghidra `local_68`). The
+rotation at `0x49ba79..0x49baa1` stores only X and Z, and the record normal's Y
+(`+0x20`) only reaches the unused lever Y. The term is not zero because the
+normals are planar, but because of what the slot holds. Called from `0x491d30`,
+the normal-Y slot holds the low dword of the integer-valued double that the
+floor call in `0x4911a0` leaves (`__frnd 0x4c855c`, `FSTP` at `0x4c8566`). That
+dword is zero while a kart's unwrapped heading stays below 2²¹ units, so the
+term is zero and the impulse is the planar product. This residue was derived
+statically, not emulated. The port multiplies the planar record normal's Y by a
+zero relative Y, which gives the same zero. The comparison generator runs the
+routine on a fresh emulated stack and supplies planar normals.
 
 Implementation:
 
@@ -46,11 +55,13 @@ node --test tests/native-kart-contact.test.mjs tests/native-kart-sweep.test.mjs
 ```
 
 The response generator executes 480 original cases at 24-bit/53-bit x87
-precision. The sweep generator executes 360 original cases with controlled
-bounding-box inputs, including paired contact identity and player sliding.
-The tolerances were defined before comparison: response absolute `0.0001` plus
-relative `0.000003`; sweep absolute `0.00003` plus relative `0.000003`.
-Both pass. The fixtures record the original executable hash.
+precision. The sweep generator executes 780 original cases with controlled
+bounding-box inputs. That includes paired contact identity, player sliding,
+90 zero-yaw-rate cases per precision, and 120 per precision where rails and
+karts are swept together (`0x499c30` with `0x499b20`'s rails-then-karts
+order). Both tests compare exactly (`Object.is`) at both precisions; the
+earlier tolerances are gone. The fixtures record the original executable
+hash.
 
 The combined browser assembly is tested separately across rendering schedules.
 This does not establish whole-race original parity. Native collision sound

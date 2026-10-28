@@ -1,6 +1,7 @@
 const artPath=name=>'/assets/menu/'+name.replace('(IMAGEBASE)','').replace(/\.bmp$/i,'.png').toLowerCase();
 import {adaptNativePortrait} from './native-portrait.js';
 import {nativeFormTabOrder} from './native-tab-order.js';
+import {bindNativeSlider,nativeSliderProperties} from './native-slider.js';
 const nativeColor=value=>{
   if(typeof value==='number')return `rgb(${value&255},${value>>>8&255},${value>>>16&255})`;
   return {clWhite:'#ffffff',clBlack:'#000000',clWindowText:'#000000',clSilver:'#c0c0c0',
@@ -72,7 +73,16 @@ export class NativeMenu {
           element.firstElementChild.style.cssText=`inset:${top/h*100}% 0 0 ${left/w*100}%;display:flex;align-items:center;justify-content:center;`;
         }
       }else if(item.class==='TDaviGraphicSlider'){
-        element=document.createElement('input');element.type='range';element.min=0;element.max=100;element.value=values[item.name]??50;element.setAttribute('aria-label',text[item.name]||item.name);element.className='native-slider';
+        const slider=nativeSliderProperties(p);
+        element=document.createElement('input');element.type='range';element.min=slider.Min;element.max=slider.Max;element.value=values[item.name]??50;element.setAttribute('aria-label',text[item.name]||item.name);element.className='native-slider';
+        // Needle travel stays inside MarginHorz, as in 0x45fb08.
+        element.style.paddingInline=`${slider.MarginHorz/stageWidth*100}cqw`;
+        // 0x45fd00 sets the needle's Top to MarginVert (+0x214). The browser
+        // centres the thumb in the content box, so the rest goes below it.
+        const needle=defs[p.Definition?.split('.').at(-1)];
+        const below=Math.max(0,h-slider.MarginVert-(needle?.Height??35));
+        element.style.paddingBlock=`${slider.MarginVert/stageWidth*100}cqw ${below/stageWidth*100}cqw`;
+        bindNativeSlider(element,{...p,NeedleWidth:needle?.Width},value=>actions[item.name]?.(value));
         element.oninput=()=>actions[item.name]?.(Number(element.value));
       }else if(['TDaviEdit2','TEdit'].includes(item.class)){
         element=document.createElement('input');element.type='text';element.value=values[item.name]??'';element.className='native-edit';element.setAttribute('aria-label',text[item.name]||'Naam');element.oninput=()=>actions[item.name]?.(element.value);

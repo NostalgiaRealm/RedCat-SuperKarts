@@ -4,6 +4,7 @@ import {nativeRotationMatrix} from './native-transform.js';
 import {createNativeGroundState} from './native-ground.js';
 import {rescuePlacementClear,rescuePlacementOverlapsPlayer,safeRescueAlternative} from './rescue-safety.js';
 import {nativeRescueDestinationAtWaypoint,selectPlayerRecoveryDestination} from './player-recovery-position.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 export {nativeRescueNearestSector,nativeRescueHeading,nativeRescueDestinationAtWaypoint} from './player-recovery-position.js';
 
 const f32 = Math.fround;
@@ -12,9 +13,12 @@ export const NATIVE_RESCUE_SHRINK = Object.freeze(
 export const NATIVE_RESCUE_GROW = Object.freeze([...NATIVE_RESCUE_SHRINK].reverse());
 const positionOf = body => body.position ?? [body.x, body.y, body.z];
 const stop = body => { body.lateralSpeed = body.verticalSpeed = body.forwardSpeed = 0; };
+// 0x48ca60 -> 0x4a17c0 multiplies by diag(s, s, s, 1); each entry's sum ends
+// with the +0 product of column 3, so a -0 entry stores +0.
+const scaleRescueMatrix = (matrix, scale, r) => matrix.map(value => f32(r(value * scale)) + 0);
 
 /** 0x48c030/0x494b70: marker50 and strict height above the selected route plane. */
-export function nativeEnvironmentRescueRequired(track, world, body, {precision = 24} = {}) {
+export function nativeEnvironmentRescueRequired(track, world, body, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f32 : Number, [x, y, z] = positionOf(body);
   const sector = selectNativeSector(world, body.sector, x, z);
   const {normal, distance} = world.sectors[sector].fallback;
@@ -34,11 +38,12 @@ export function nativeEnvironmentRescueWaypoint(track, start, direction = 0) {
 }
 
 /** 0x48c170: planar 2000-unit squared exclusion, including equality. */
-export function nativeRescuePositionFree(body, position, occupants, {precision = 24} = {}) {
+export function nativeRescuePositionFree(body, position, occupants, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f32 : Number;
   return occupants.every(other => {
     if (other === body || (body.id !== undefined && other.id === body.id)) return true;
-    const p = positionOf(other), x = f32(r(p[0] - position[0])), z = f32(r(p[2] - position[2]));
+    // dx is stored (0x48c261); dz stays in ST0 (0x48c2af..0x48c2b8).
+    const p = positionOf(other), x = f32(r(p[0] - position[0])), z = r(p[2] - position[2]);
     return r(r(x * x) + r(z * z)) > 2000;
   });
 }
@@ -54,7 +59,7 @@ export function nativeRescueNextWaypoint(track, index, deltaSeconds) {
 
 /** 0x48d930 checks six nodes ahead, then five...zero. Final fallback is kept. */
 function rescueWaypointResult(track, start, body, {
-  deltaSeconds = 0, occupied = new Set(), occupants = [], precision = 24,
+  deltaSeconds = 0, occupied = new Set(), occupants = [], precision = NATIVE_PRECISION,
 } = {}) {
   if (!track.drive[start]) throw new RangeError(`Invalid native respawn waypoint ${start}`);
   const has = index => occupied instanceof Map ? (occupied.get(index)?.length ?? 0) !== 0 : occupied.has(index);
@@ -77,7 +82,7 @@ export function nativeRescueWaypoint(track, start, body, options = {}) {
 
 /** 0x493430/0x48d930/0x450690/0x493540/0x430ff0 normal recovery branch. */
 export function nativeRescueDestination(track, world, body, options = {}) {
-  const {british = 0, direction = 0, precision = 24, environment = false} = options;
+  const {british = 0, direction = 0, precision = NATIVE_PRECISION, environment = false} = options;
   let waypoint;
   if (environment) {
     waypoint = nativeEnvironmentRescueWaypoint(track, body.waypoint);
@@ -106,7 +111,7 @@ export function createNativeRescue(body, driver = null, {environment = false,sof
 
 /** One original outer-game tick (0x48ca60), independent of elapsed duration. */
 export function updateNativeRescue(entry, deltaSeconds, {
-  resolveDestination, precision = 24, effectsEnabled = true,
+  resolveDestination, precision = NATIVE_PRECISION, effectsEnabled = true,
 } = {}) {
   if (entry.finished) return entry;
   const body = entry.body, r = precision === 24 ? f32 : Number;
@@ -123,7 +128,7 @@ export function updateNativeRescue(entry, deltaSeconds, {
       entry.frame = 19;
       entry.shrinking = true;
       entry.scale = NATIVE_RESCUE_SHRINK[19];
-      entry.matrix = body.matrix.map(value => f32(r(value * entry.scale)));
+      entry.matrix = scaleRescueMatrix(body.matrix, entry.scale, r);
       return entry;
     }
     if (destination) {
@@ -160,7 +165,7 @@ export function updateNativeRescue(entry, deltaSeconds, {
     }
   }
   entry.scale = (entry.shrinking ? NATIVE_RESCUE_SHRINK : NATIVE_RESCUE_GROW)[entry.frame];
-  entry.matrix = body.matrix.map(value => f32(r(value * entry.scale)));
+  entry.matrix = scaleRescueMatrix(body.matrix, entry.scale, r);
   if (++entry.frame === 20) {
     entry.frame = 0;
     if (entry.shrinking) entry.shrinking = false;
@@ -197,11 +202,13 @@ export class NativeRescueController {
   }
   enqueue(driver, options = {}) {
     const body = driver.body ?? driver;
+    // 0x48dce0/0x48dc30 test the cap of 10 before scanning for a duplicate.
+    if (this.entries.length >= 10) return null;
     const existing = this.get(body);
     if (existing) return existing;
-    if (this.entries.length >= 10) return null;
     const entry = createNativeRescue(body, driver.body ? driver : null, options);
-    this.entries.push(entry);
+    // 0x48dd51/0x48dca1 insert at begin(); 0x48db00 then updates newest first.
+    this.entries.unshift(entry);
     return entry;
   }
   checkEnvironment(driver) {
@@ -276,21 +283,27 @@ export class NativeRescueController {
     }
     return this.entries;
   }
+  /** 0x48db30 walks the original count, including stale slots past the
+   * shrinking end, and copies back() over each finished slot without
+   * re-checking it. On a stale slot the original copies back() even when that
+   * is another entry, dropping it with its flag set; this retires only the
+   * stale slot's own entry, so an unfinished rescue is never dropped. */
   finishRender() {
-    // Native removal copies the last element into a finished slot; retain that
-    // ordering rather than filter(), which preserves order differently.
-    for (let i = 0, remaining = this.entries.length; remaining > 0; i++, remaining--) {
-      const entry = this.entries[i];
-      if (!entry?.finished) continue;
+    const storage = [...this.entries], count = storage.length;
+    let live = count;
+    for (let i = 0; i < count; i++) {
+      const entry = storage[i];
+      if (!entry.finished) continue;
       if (entry.driver?.state) entry.driver.state.blockRecovery = false;
-      const last = this.entries.pop();
-      if (i < this.entries.length) this.entries[i] = last;
+      const index = i < live ? i : storage.indexOf(entry);
+      if (index < live) storage[index] = storage[--live];
     }
+    this.entries = storage.slice(0, live);
   }
 }
 
 /** Recovered 0x48c370 seven vertices and 0x48d610 matrix sequence. */
-export function nativeRescueRingPositions(entry, {precision = 24} = {}) {
+export function nativeRescueRingPositions(entry, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f32 : Number;
   const {sin, cos} = nativeTrigTable(precision);
   const vertices = [[-.5, -.5], [-.5, .5], [.5, -.5], [.5, .5], [.5, -.5], [-.5, .5], [-.5, -.5]];

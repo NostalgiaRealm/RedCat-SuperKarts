@@ -54,12 +54,34 @@ test('queue deduplication, ten-object cap and completion retirement preserve blo
   const drivers = Array.from({length: 11}, (_, id) => ({body: {...makeBody(), id}, state: {blockRecovery: false}}));
   drivers.forEach(driver => controller.enqueue(driver));
   assert.equal(controller.entries.length, 10);
-  assert.equal(controller.enqueue(drivers[0]), controller.entries[0]);
+  // 0x48dd51/0x48dca1 insert at begin(): storage is newest first.
+  assert.deepEqual(controller.entries.map(entry => entry.driver), drivers.slice(0, 10).reverse());
+  // 0x48dce0/0x48dc30 test the cap before scanning for a duplicate.
+  assert.equal(controller.enqueue(drivers[0]), null);
+  assert.equal(controller.entries[9].driver, drivers[0]);
   assert.equal(drivers[10].state.blockRecovery, false);
   controller.entries[0].finished = true;
   controller.finishRender();
-  assert.equal(drivers[0].state.blockRecovery, false);
-  assert.equal(controller.entries[0].driver, drivers[9]);
+  assert.equal(drivers[9].state.blockRecovery, false);
+  assert.equal(controller.entries[0].driver, drivers[0]);
+});
+
+test('0x48db30 retirement walks stale slots without dropping an unfinished rescue', () => {
+  const retire = finished => {
+    const controller = new NativeRescueController({});
+    const drivers = finished.map((_, id) => ({body: {...makeBody(), id}, state: {blockRecovery: false}}));
+    [...drivers].reverse().forEach(driver => controller.enqueue(driver));
+    controller.entries.forEach((entry, i) => { entry.finished = finished[i]; });
+    controller.finishRender();
+    return {ids: controller.entries.map(entry => entry.body.id),
+      blocked: drivers.map(driver => driver.state.blockRecovery)};
+  };
+  // The stale second slot retires its own entry: both finish in one pass.
+  assert.deepEqual(retire([true, true]), {ids: [], blocked: [false, false]});
+  assert.deepEqual(retire([false, true, true]), {ids: [0], blocked: [true, false, false]});
+  assert.deepEqual(retire([true, false, true]), {ids: [1], blocked: [false, true, false]});
+  assert.deepEqual(retire([false, true, false]), {ids: [0, 2], blocked: [true, false, true]});
+  assert.deepEqual(retire([true, false, false]), {ids: [2, 1], blocked: [false, true, true]});
 });
 
 test('respawn clearance excludes self and compares planar squared distance inclusively', () => {
@@ -67,8 +89,10 @@ test('respawn clearance excludes self and compares planar squared distance inclu
   assert.equal(nativeRescuePositionFree(body, [0, 0, 0], [body]), true);
   assert.equal(nativeRescuePositionFree(body, [0, 0, 0], [{position: [40, 9999, 20]}]), false);
   assert.equal(nativeRescuePositionFree(body, [0, 0, 0], [{position: [40, 0, 21]}]), true);
+  // One case queries from z=0.1f, so only an unrounded dz gives its 53-bit result.
+  assert.ok(fixture.clearance.some(item => item.query[2] !== 0 && item.precision === 53 && item.expected));
   for (const item of fixture.clearance) {
-    assert.equal(nativeRescuePositionFree(body, [0, 0, 0], [
+    assert.equal(nativeRescuePositionFree(body, item.query.map(Math.fround), [
       {position: item.other.map(Math.fround)}, {position: [1000, 0, 1000]},
     ], item), item.expected);
   }

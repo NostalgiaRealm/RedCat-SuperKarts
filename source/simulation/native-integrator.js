@@ -1,20 +1,23 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 const TWO_PI = f32(2 * Math.PI);
 const UNIT = f32(0.0001);
 const tables = new Map();
 export const NATIVE_ANGLE_COUNT = 4096;
 
-/** 0x442fc0 selects 4096 entries for 0x4ac410 -> 0x4a1510 at runtime. */
-export function nativeTrigTable(precision = 24, count = NATIVE_ANGLE_COUNT) {
-  const key = `${precision}:${count}`;
-  if (!tables.has(key)) {
-    const r = precision === 24 ? f32 : Number;
-    tables.set(key, {
-      sin: Float32Array.from({ length: count }, (_, i) => Math.sin(r(r(i / count) * TWO_PI))),
-      cos: Float32Array.from({ length: count }, (_, i) => Math.cos(r(r(i / count) * TWO_PI))),
+/** 0x442fc0 selects 4096 entries for 0x4ac410 -> 0x4a1510 at runtime.
+ * 0x4ac410 builds the table (0x4ac425) before it creates the Direct3D device,
+ * still under the CRT's 53-bit precision (0x4c17bc), so the angle product is
+ * not rounded to float in either arithmetic precision. FSIN/FCOS results are
+ * stored as floats. */
+export function nativeTrigTable(precision = NATIVE_PRECISION, count = NATIVE_ANGLE_COUNT) {
+  if (!tables.has(count)) {
+    tables.set(count, {
+      sin: Float32Array.from({ length: count }, (_, i) => Math.sin((i / count) * TWO_PI)),
+      cos: Float32Array.from({ length: count }, (_, i) => Math.cos((i / count) * TWO_PI)),
     });
   }
-  return tables.get(key);
+  return tables.get(count);
 }
 
 /**
@@ -25,7 +28,7 @@ export function nativeTrigTable(precision = 24, count = NATIVE_ANGLE_COUNT) {
  * full Windows runtime precision is not established by isolated emulation.
  */
 export function integrateNativeEuler(body, force, deltaSeconds, options = {}) {
-  const { fraction = 1, stopYaw = false, velocityOverride, precision = 24 } = options;
+  const { fraction = 1, stopYaw = false, velocityOverride, precision = NATIVE_PRECISION } = options;
   const r = precision === 24 ? f32 : Number;
   const dt = f32(deltaSeconds);
   if (!Number.isFinite(dt) || dt < 0) throw new RangeError('Native integrator requires finite nonnegative dt');
@@ -64,7 +67,7 @@ export function integrateNativeEuler(body, force, deltaSeconds, options = {}) {
 }
 
 /** 0x491d30 truncates the two planar speeds once before its substep loop. */
-export function quantizeNativePlanarVelocity(body, precision = 24) {
+export function quantizeNativePlanarVelocity(body, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f32 : Number;
   for (const key of ['lateralSpeed', 'forwardSpeed']) body[key] = f32(r(Math.trunc(r(body[key] * 10000)) * UNIT));
   return body;

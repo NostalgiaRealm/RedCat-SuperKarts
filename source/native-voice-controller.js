@@ -1,12 +1,13 @@
 import {getSoundSpec} from './asset-animation.js';
 import {getNativeSpatialAudioCommands} from './spatial-audio.js';
 import {nativeTrigTable} from './simulation/native-integrator.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f=Math.fround;
 
 /** Voice logical IDs0..9 follow original character IDs;10 is shared EFFECTS.
  * Only roster banks are loaded, in NPC-first/player-last order437560. */
 export class NativeVoiceController{
- constructor(config,manifest,racerCharacters,{enabled=true,precision=24}={}){
+ constructor(config,manifest,racerCharacters,{enabled=true,precision=NATIVE_PRECISION}={}){
   this.enabled=enabled;this.precision=precision;this.playerIndex=racerCharacters.length-1;
   this.racerByVoice=Array(11).fill(this.playerIndex);
   this.banks=Array.from({length:11},()=>[]);
@@ -75,7 +76,7 @@ export class NativeVoiceController{
 }
 
 /**436980 actor sound source velocity, native yaw and localX/Z body speeds. */
-export function nativeVoiceVelocity(body,precision=24){
+export function nativeVoiceVelocity(body,precision=NATIVE_PRECISION){
  const r=precision===24?f:Number,{sin,cos}=nativeTrigTable(precision),index=Math.trunc(body.yaw)&4095;
  return[f(r(r(cos[index]*body.lateralSpeed)-r(sin[index]*body.forwardSpeed))),0,
   f(r(r(sin[index]*body.lateralSpeed)+r(cos[index]*body.forwardSpeed)))];

@@ -66,7 +66,11 @@ try{
   await control(page,'btnBack').click();await form(page,'TFRMMAIN');
   await control(page,'btnAdventure').click();await control(page,'btnNewPlayer').click();
   await page.locator('[data-element=edtName]').fill('Tweede');await control(page,'btnOk').click();
-  await form(page,'TFRMSELECTCHAR');await control(page,'btnBack').click();await form(page,'TFRMMAIN');
+  // rcskmenu 0x473c9f: Back is disabled in Adventure character selection.
+  await form(page,'TFRMSELECTCHAR');assert.equal(await control(page,'btnBack').isDisabled(),true);
+  await page.keyboard.press('Escape');assert.equal(await page.evaluate(()=>window.rcsk.state.page),'characters');
+  await control(page,'btnOk').click();await form(page,'TFRMADVENTBRIEF');
+  await control(page,'btnBack').click();await form(page,'TFRMMAIN');
   stored=await save(page);assert.equal(stored.profiles[1].name,'Tweede');
   await control(page,'btnAdventure').click();await form(page,'TFRMADVENTUREMAIN');
   assert.equal(await control(page,'btnRight').isDisabled(),true);
@@ -85,7 +89,7 @@ try{
   assert.match(await page.locator('[data-element=imgSelectedCountry]').getAttribute('src'),/mn_0304h\.png$/);
   await control(page,'btnOk').click();await form(page,'TFRMREQUESTER');
   assert.match(await page.locator('[data-element=lblQuit]').innerText(),/Groot-Brittanië/);
-  report.checks.push('Name cancellation, immediate new-profile save, character/difficulty commit, preserved Back, bounded profile carousel, delete cancellation/confirmation, reload and QuickRace lock artwork/prompt');
+  report.checks.push('Name cancellation, immediate new-profile save, character/difficulty commit, disabled Adventure character Back, bounded profile carousel, delete cancellation/confirmation, reload and QuickRace lock artwork/prompt');
   await page.close();
 
   const normalSeed=seededProfile(5);
@@ -105,6 +109,19 @@ try{
   assert.match(await normal.locator('[data-element=img5NORMALRACE]').getAttribute('src'),/mn_0911a\.png$/);
   report.checks.push('Controlled sixth Landenrace finish → qualification → Spain unlock → highscore cancellation → next original Tijdrace briefing with saved matrix');
   await normal.close();
+
+  // rcskmenu 0x471b8c: the result screen's Back processes the result too.
+  const escapeSeed=seededProfile(5);
+  for(let c=0;c<5;c++)escapeSeed.profiles[0].matrix[c][0]=1;
+  const escaped=await open(escapeSeed);await startAdventureRace(escaped);
+  await controlledFinish(escaped);await escaped.keyboard.press('Escape');await form(escaped,'TFRMREQUESTER');
+  assert.match(await escaped.locator('[data-element=lblQuit]').innerText(),/volgende race/);
+  await control(escaped,'btnOk').click();await escaped.waitForFunction(()=>document.querySelector('[data-element=lblQuit]')?.textContent.includes('Spanje'));
+  await control(escaped,'btnOk').click();await form(escaped,'TFRMEDITBOX');await control(escaped,'btnCancel').click();
+  await form(escaped,'TFRMMAIN');
+  stored=await save(escaped);assert.equal(stored.profiles[0].adventure,6);assert.equal(stored.locks[4],false);
+  report.checks.push('Escape on the result screen performs its Back action: qualification → Spain unlock → highscore → main menu with saved progress');
+  await escaped.close();
 
   const finalSeed=seededProfile(23);
   finalSeed.profiles[0].character=3;

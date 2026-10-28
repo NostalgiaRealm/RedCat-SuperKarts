@@ -1,4 +1,5 @@
 import {nativeTrigTable} from './native-integrator.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f=Math.fround;
 export const NATIVE_STAR_HUD_COUNT=12;
@@ -21,7 +22,7 @@ export function createNativeStarHudConfig(config){
  * start at the top and progress clockwise; 0046e260 turns collected slots white.
  * Positions/scales are native normalized HUD values, not pixel coordinates.
  */
-export function getNativeStarHudCommands(starCount,{raceType=2,precision=24}={}){
+export function getNativeStarHudCommands(starCount,{raceType=2,precision=NATIVE_PRECISION}={}){
   if(!Number.isInteger(starCount)||starCount<0)throw new RangeError('Collected stars must be a nonnegative integer');
   if(precision!==24&&precision!==53)throw new RangeError('Unsupported native precision');
   const count=Math.min(starCount,NATIVE_STAR_HUD_COUNT),visible=raceType===2;

@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 /** GetTickCount timers from 0x42a210..0x42a700; distinct from engine seconds. */
 export const NATIVE_PAUSED_TIMER_IDS = Object.freeze([0, 3, 8, ...Array.from({ length: 19 }, (_, i) => i + 9)]);
 
@@ -76,7 +77,7 @@ export class NativeGameTimers {
 
 /** 0x415cf0 +0x42d300. The unusual raw+0x40 field is read verbatim. */
 export function nativeTrackCountdownLimit(trackIndex, difficulty, playerRacer, {
-  motorUpgrade = false, gearboxUpgrade = false, precision = 24,
+  motorUpgrade = false, gearboxUpgrade = false, precision = NATIVE_PRECISION,
 } = {}) {
   if (![0, 1, 2].includes(difficulty) || !Number.isInteger(trackIndex) || trackIndex < 0 || trackIndex > 6) {
     throw new RangeError('Original track/difficulty index required');
@@ -92,7 +93,7 @@ export function nativeTrackCountdownLimit(trackIndex, difficulty, playerRacer, {
 
 /** 0x42d360,0x435670,0x417dd0. Returns initialized, not yet started timers. */
 export function nativeRaceTimerSetup({ config, trackIndex, difficulty, raceType,
-  opponentCount, playerRacer, motorUpgrade = false, gearboxUpgrade = false, precision = 24 }) {
+  opponentCount, playerRacer, motorUpgrade = false, gearboxUpgrade = false, precision = NATIVE_PRECISION }) {
   const bank = new NativeGameTimers();
   const record = config['track.ini'].maps[trackIndex].split(',').map(value => value.trim());
   const routeMs = nativeTrackCountdownLimit(trackIndex, difficulty, playerRacer,

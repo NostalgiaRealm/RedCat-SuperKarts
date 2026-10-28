@@ -1,4 +1,5 @@
 import { nativeTrigTable } from './native-integrator.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 
 const f = Math.fround;
 export const NATIVE_STREAM_COLORS = [
@@ -49,7 +50,7 @@ export function createNativeJetFlare(body, {offset = NATIVE_RACER_STREAM_OFFSET,
 }
 
 /** 0x488850 -> 0x4885c0/0x4884d0/0x488440, once per native update. */
-export function updateNativeJetFlare(entry, {player = false, throttle = 0, precision = 24, renderPose} = {}) {
+export function updateNativeJetFlare(entry, {player = false, throttle = 0, precision = NATIVE_PRECISION, renderPose} = {}) {
   if (!entry.active) return;
   const r = precision === 24 ? f : Number;
   const size = f(r(f(player ? r(f(throttle) * f(.2)) : 5) + entry.size));
@@ -89,7 +90,7 @@ export function createNativeRibbon(body, {offset = NATIVE_RACER_STREAM_OFFSET,
 
 /** 0x489d20/0x489c70: prepend two points; player uses stored integer speed. */
 export function updateNativeRibbon(entry, deltaSeconds,
-  {player = false, speedKmh = 0, precision = 24, renderPose} = {}) {
+  {player = false, speedKmh = 0, precision = NATIVE_PRECISION, renderPose} = {}) {
   if (!entry.active || (player && speedKmh <= 0)) return;
   const r = precision === 24 ? f : Number;
   if (entry.vertices.length + 2 > 999) entry.vertices.splice(-2);
@@ -118,7 +119,7 @@ export function updateNativeRibbon(entry, deltaSeconds,
 }
 
 /** 0x489f50 runs inside DRAW 0x48a170, not the effect-update callback. */
-export function shrinkNativeRibbon(entry, {precision = 24} = {}) {
+export function shrinkNativeRibbon(entry, {precision = NATIVE_PRECISION} = {}) {
   if (!entry.active) return;
   const r = precision === 24 ? f : Number, points = entry.vertices;
   const count = points.length;
@@ -176,7 +177,7 @@ export function nativeProjectileStreamOptions(type, level) {
 
 /** 0x48a570/0x48a6d0 ribbon manager and0x488b80 jet manager. */
 export class NativeStreams {
-  constructor({playerBody, jetstreams = true, alphaBlending = true, paletted = false, precision = 24} = {}) {
+  constructor({playerBody, jetstreams = true, alphaBlending = true, paletted = false, precision = NATIVE_PRECISION} = {}) {
     Object.assign(this, {playerBody, jetstreams, alphaBlending, paletted, precision});
     this.ribbons = [];
     this.jets = [];

@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 
 /** Original 43f740/440290/43bc70/43fab0 activation callbacks. The frame and
@@ -6,7 +7,7 @@ const f=Math.fround;
  * reads its render object directly. Return actual target bodies, including
  * the executable's duplicate player and type44 self-target behavior. */
 export function nativeSquashTargets(object,{player,opponents,playerPosition=player.position,
-  frame=0,hitAngle=100,precision=24}){
+  frame=0,hitAngle=100,precision=NATIVE_PRECISION}){
   const r=precision===24?f:Number,type=object.type;
   if(![43,44,46,47].includes(type))return[];
   if(type===43){

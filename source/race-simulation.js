@@ -44,6 +44,7 @@ import {captureFlightPose,roadFlightPose,nearestFlightSector,advanceFreeFlight,r
 import {nativeRescueDestinationAtWaypoint} from './simulation/native-rescue.js';
 import {PlayerStuckRecovery} from './simulation/player-stuck-recovery.js';
 import {isSafePlayerRecoveryPose,selectPlayerRecoveryDestination} from './simulation/player-recovery-position.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 /**
  * Composition of recovered racer, opponent, contact and bonus handlers.
@@ -177,6 +178,8 @@ export class RaceSimulation {
       occupants:()=>bodies,occupancy:this.occupancy,
       playerSafety:{body:this.motion.body,collision:this.motion.collision},
       effectsEnabled:Number(gfx.jetstreams??0)!==0&&Number(gfx.alpha_blending??0)!==0});
+    // The player's last scaled rescue matrix, read by the next 4325b0.
+    this.retiredRescueMatrix=null;
     this.pickups=new NativeBonusPickups({
       pickups:nativeTrackPickups(track,manifest,config),racerCount:this.actors.length,
       raceType:raceMode,bonusConfig:config['game.ini'].bonus_data,random,voices:this.voices,
@@ -298,7 +301,9 @@ export class RaceSimulation {
     this.rescue.checkEnvironment(this.motion);
     const activeMs=this.timers.read(3,wallMs),engineSeconds=Math.fround(engineMs/1000);
     this.playerHudPosition=[...this.motion.body.position];
-    this.playerSpeedKmh=Math.trunc(Math.fround(Math.fround(this.motion.body.forwardSpeed)*Math.fround(3.6)));
+    // 0x432696..0x4326a6: __ftol truncates the FMUL 3.6f product in ST0.
+    const register=NATIVE_PRECISION===24?Math.fround:Number;
+    this.playerSpeedKmh=Math.trunc(register(Math.fround(this.motion.body.forwardSpeed)*Math.fround(3.6)));
     // 432ab5 samples engine sound before ranks and crossed track markers.
     // A jump can change forward speed later in this same player callback.
     beforePlayerProgress?.(this.motion);
@@ -362,11 +367,15 @@ export class RaceSimulation {
     this.playerAnimationState={lateralSpeed:this.motion.body.lateralSpeed,
       movementActive:this.movementActive,phase:this.race.phase,rank:playerRank.rank};
     beforePlayerPrepare?.(this.motion);
+    // 4325b0 reads the body matrix 42f618 scaled on the previous tick; only
+    // 491d30 rebuilds it, so the last scale also lasts one tick after retiring.
+    const rescueMatrix=this.rescue.get(this.motion.body)?.matrix??this.retiredRescueMatrix;
+    this.retiredRescueMatrix=null;
     this.motion.prepare({
       accelerate:input.throttle>0,brake:input.brake>0,
       left:input.steer<0,right:input.steer>0,handbrake:input.handbrake>0,
     },dt,{active:this.movementActive,phase:this.race.phase,
-      analog:input.analog?nativeAnalogFromNormalized(input.analog):null,
+      analog:input.analog?nativeAnalogFromNormalized(input.analog):null,matrix:rescueMatrix??undefined,
       onBonus:()=>{
         // 433870/433cf0/4341d0 fire after the first wheel pass and before
         // forces; inactive startup never polls the fire gate.
@@ -469,12 +478,12 @@ export class RaceSimulation {
     if(playerRescue?.relocated){this.playerSpeedKmh=0;this.playerHudPosition=[...this.motion.body.position];}
     for(const entry of this.rescue.entries)
       for(const sample of entry.sounds)this.voices.rescue(entry.body.id,sample);
-    this.streams.step(dt,{playerSpeedKmh:this.playerSpeedKmh,playerThrottle:this.motion.controls.throttle,
-      renderPose:body=>{
-        const rescue=this.rescue.get(body);
-        return rescue?{matrix:rescue.matrix,position:rescue.renderPosition}:null;
-      }});
-    this.combat.arms.step(dt);
+    const renderPose=body=>{
+      const rescue=this.rescue.get(body);
+      return rescue?{matrix:rescue.matrix,position:rescue.renderPosition}:null;
+    };
+    this.streams.step(dt,{playerSpeedKmh:this.playerSpeedKmh,playerThrottle:this.motion.controls.throttle,renderPose});
+    this.combat.arms.step(dt,{renderPose});
     if(this.countdownStarted){
       this.countdown.step(dt);
       for(const event of this.countdown.events)if(event.type==='sound')this.onDirectSound?.(event.name);
@@ -496,6 +505,8 @@ export class RaceSimulation {
       if(command.kind==='voice')this.onVoiceRequest?.(command.request);
       else this.onDirectSound?.(command.event);
     }
+    const retiring=this.rescue.get(this.motion.body);
+    if(retiring?.finished)this.retiredRescueMatrix=retiring.matrix;
     this.rescue.finishRender();
     this.updateRecoveryPickupExclusions();
     const pickups=this.pickups.step(dt,engineSeconds,this.actors.map(actor=>({

@@ -132,7 +132,7 @@ try{
   assert.deepEqual(pixels.indices,[0,1,2,2,1,3]);assert.equal(pixels.drawCount,6);
   await page.keyboard.down('ArrowUp');
   const driving=await page.evaluate(()=>{
-    const view=rcsk.viewer;let now=view.clock.tick*25;
+    const view=rcsk.viewer;let now=view.clock.simulationMs;
     for(let frame=0;frame<80;frame++)view.onTick(.025,now+=25);
     view.updatePresentation(1);view.renderer.render(view.scene,view.camera);view.hud.render();
     return {speed:view.motion.body.forwardSpeed,jets:view.simulation.streamFrames.jets.length,

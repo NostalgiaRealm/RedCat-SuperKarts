@@ -88,7 +88,7 @@ try{
   assert.deepEqual(initial.nativeDestination,{blocked:true});
   assert.equal(initial.safetyEnabled,true);assert.equal(initial.rescueCount,0);
   report.checks.push({case:'controlled occupied original return, player safeguard enabled',...initial});
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(()=>safetyTrace.frames.some(frame=>frame.blocked&&frame.waitSeconds>=.75),
     null,{timeout:20000});
   const waiting=await page.evaluate(()=>{
@@ -102,7 +102,7 @@ try{
   assert.ok(waiting.scale<=Math.fround(.15));assert.ok(waiting.rings>0);
   report.checks.push({case:'original blocked shrinking state remains during safety delay',...waiting});
   await page.screenshot({path:output+'-waiting.png'});
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(()=>safetyTrace.frames.some(frame=>frame.finished),null,{timeout:20000});
   await page.waitForFunction(()=>safetyTrace.sounds.some(sound=>sound.sample==='REAPP'),null,{timeout:10000});
   const recovered=await page.evaluate(()=>{
@@ -127,7 +127,7 @@ try{
   report.checks.push({case:'delayed free-road fallback grows and finishes with both actual original sounds',...recovered});
   await page.screenshot({path:output+'-recovered.png'});
   await page.keyboard.down('ArrowUp');
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(position=>Math.hypot(
     rcsk.viewer.motion.body.x-position[0],rcsk.viewer.motion.body.z-position[2])>60,
   recovered.position,{timeout:10000});

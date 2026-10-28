@@ -1,8 +1,9 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 export const NATIVE_BONUS_HUD_ORIGIN = Object.freeze([f32(.7), f32(.1), 2]);
 
 /** 0x465c90, with the original moving-element callbacks and linear mode0. */
-export function updateNativeBonusHud(state, owned, deltaSeconds, { precision = 24 } = {}) {
+export function updateNativeBonusHud(state, owned, deltaSeconds, { precision = NATIVE_PRECISION } = {}) {
   if (![0, 1, 2].includes(state.phase)) throw new RangeError('Original bonus HUD phase must be0,1 or2');
   const r = precision === 53 ? Number : f32;
   const unchanged = state.cached.state === owned.state && state.cached.type === owned.type
@@ -48,7 +49,7 @@ export function updateNativeBonusHud(state, owned, deltaSeconds, { precision = 2
  * item so merely opening the HUD does not trigger a collection transition.
  */
 export class NativeBonusHud {
-  constructor({ destination, owned, precision = 24 }) {
+  constructor({ destination, owned, precision = NATIVE_PRECISION }) {
     if (!destination || destination.length !== 3 || !owned) {
       throw new TypeError('Original bonus HUD destination and initial owned item are required');
     }

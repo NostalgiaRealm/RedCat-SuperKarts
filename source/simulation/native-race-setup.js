@@ -2,6 +2,7 @@ import { nativePlayerStart } from './native-start.js';
 import { nativeSectorDistance } from './native-race.js';
 import { NATIVE_ANGLE_COUNT } from './native-integrator.js';
 import { nativeRaceRouteOptions } from './native-race-options.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 
 // rcskmenu.dat pointer tables 0x47bc80 and0x47bcd8, read from original PE.
@@ -60,19 +61,29 @@ export function nativeRaceRoster(config, { selectedCharacter = 0, trackIndex = 0
   };
 }
 
-function heading(world, sector) {
+/**
+ * 0x493540 with direction 1, the value both placement callers pass to
+ * 0x415f90 (player 0x431a46, NPC 0x417781); 0x415f90 calls it at 0x416184.
+ * Same register/store pattern as nativePlayerStart: squares, sum and FSQRT in
+ * ST0; X/len stored (0x4935e5); Z/len (FDIVR 0x4935e9) stays in ST0 for FPATAN;
+ * FSUBP/FMUL stay in registers until FDIV and FSTP float (0x493686).
+ */
+export function nativeRaceHeading(world, sector, { precision = NATIVE_PRECISION } = {}) {
+  if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
+  const r = precision === 24 ? f32 : Number;
   const forward = world.sectors[sector].forward;
-  const length = f32(Math.sqrt(f32(f32(forward[0] * forward[0]) + f32(forward[2] * forward[2]))));
-  const x = f32(forward[0] / length), z = f32(forward[2] / length);
-  return f32(f32(f32(Math.atan2(z, x) - f32(Math.PI) * .5) * NATIVE_ANGLE_COUNT) / f32(2 * Math.PI));
+  const length = r(Math.sqrt(r(r(forward[0] * forward[0]) + r(forward[2] * forward[2]))));
+  const x = f32(forward[0] / length), z = r(forward[2] / length);
+  return f32(r(r(Math.atan2(z, x) - f32(Math.PI) * .5) * NATIVE_ANGLE_COUNT) / f32(2 * Math.PI));
 }
 
 /** 0x415dd0/0x415f90/0x417640 with normal trigger numbering69+slot. */
 export function nativeRaceGrid(track, world, {
   opponentCount = 4, previousFinishPosition = 0, startChunk = 0,
-  british = 0, direction = 0, raceType = 0,
+  british = 0, direction = 0, raceType = 0, precision = NATIVE_PRECISION,
 } = {}) {
   if (!Number.isInteger(opponentCount) || opponentCount < 0 || opponentCount > 9) throw new RangeError('Native grid requires zero through nine opponents');
+  if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
   const wrap = value => value >= track.route.length ? value - track.route.length : value < 0 ? track.route.length - Math.abs(value) : value;
   const slots = Array.from({ length: opponentCount + 1 }, () => []);
   let found = 0;
@@ -85,7 +96,7 @@ export function nativeRaceGrid(track, world, {
       }
     }
   }
-  const player = nativePlayerStart(track, world, { opponentCount, previousFinishPosition, startChunk, british, direction, raceType });
+  const player = nativePlayerStart(track, world, { opponentCount, previousFinishPosition, startChunk, british, direction, raceType, precision });
   const playerRank = [1, 3].includes(raceType) ? 0 : Math.min(previousFinishPosition, opponentCount);
   const ranks = Array.from({ length: opponentCount + 1 }, (_, i) => i).filter(i => i !== playerRank);
   const complete = slots.every(slot => slot.length === 1);
@@ -101,14 +112,18 @@ export function nativeRaceGrid(track, world, {
     lane = Math.min(Math.max(0, lane + 1), lanes.length - 1); //0x493a70
     const waypoint = lanes[lane] ?? 0;
     const chosen = complete ? slots[index + 1][0] : { sector: fallbackSector, waypoint, position: [...track.drive[waypoint].position] };
-    return { ...chosen, position: [...chosen.position], yaw: heading(world, chosen.sector), rank,
+    return { ...chosen, position: [...chosen.position], yaw: nativeRaceHeading(world, chosen.sector, { precision }), rank,
       source: complete ? `TRIGGER_POS_${70 + index}` : 'lane-fallback' };
   });
   // 0x42c680 stores the same clamped value in the live player rank 0x53be60.
   return { player: { ...player, rank: playerRank }, opponents };
 }
 
-/** 0x403d90 starts at sector minus finish-marker sector;0x409530 adds signed travel. */
+/**
+ * 0x403d90 starts at sector minus finish-marker sector;0x409530 adds signed
+ * travel. The sector timer is one FADD/FSTP float (0x40968e/0x409694), so it is
+ * precision-independent; distances are integers.
+ */
 export class NativeAIProgress {
   constructor(startSector, sectorCount, originSector = startSector) {
     this.previousSector = startSector; this.sectorCount = sectorCount;

@@ -1,15 +1,21 @@
 import { NativeRandom } from './native-random.js';
 import { nativePickupSoundRequest } from '../bonus-audio.js';
 import { nativeTrigTable, NATIVE_ANGLE_COUNT } from './native-integrator.js';
+import { NATIVE_PRECISION } from './native-precision.js';
+import { nativePlacementAngle } from './native-transform.js';
 export { NativeRandom };
 const f32 = Math.fround;
+const registerRounding = precision => {
+  if (precision !== 24 && precision !== 53) throw new RangeError('Native x87 precision must be 24 or 53');
+  return precision === 24 ? f32 : Number;
+};
 
 export const NATIVE_BONUS_TYPES = Object.freeze({
   rocket: 1, bubble: 2, oil: 3, gum: 4, turbo: 5, star: 6, random: 7,
 });
 
 /** 0x453780. Runs for every owned slot, including hidden/inactive slots. */
-export function updateNativeOwnedBonusVisual(owned, deltaSeconds, rotationSpeed, precision = 24) {
+export function updateNativeOwnedBonusVisual(owned, deltaSeconds, rotationSpeed, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f32 : Number;
   owned.angles ??= [0, 0, 0];
   owned.angles[1] = f32(r(r(rotationSpeed * f32(deltaSeconds)) + owned.angles[1]));
@@ -52,7 +58,9 @@ export function nativeTrackPickups(track, manifest, config) {
   return track.placements.flatMap((placement, placementIndex) => {
     const type = nativeBonusTypeFromObject(placement.type);
     if (!type) return [];
-    const yaw = f32((placement.nativeRotationDegrees?.[1] ?? 0) * (4096 / 360));
+    // 0x4512b0 receives only the object handle and position; the yaw is the
+    // object's 0x43e283..0x43e2ad conversion.
+    const yaw = nativePlacementAngle(placement.nativeRotationDegrees?.[1] ?? 0);
     if (config) return [{ type, placementIndex, position: [...placement.position], yaw,
       ...nativeBonusVisual(config, manifest, type) }];
     const definition = track.objectDefinitions[placement.animation.toLowerCase()];
@@ -63,12 +71,20 @@ export function nativeTrackPickups(track, manifest, config) {
   });
 }
 
-/** 0x410650 uses strict greater-than, so exactly the deadline is ineligible. */
+/**
+ * 0x410650 uses strict greater-than, so exactly the deadline is ineligible.
+ * Both sides are stored floats (FSTP 0x41066f / deadline stored by 0x4106b0),
+ * so the comparison is precision-independent.
+ */
 export function nativeCanCollectBonus(nowSeconds, eligibleAfterSeconds) {
   return f32(nowSeconds) > f32(eligibleAfterSeconds);
 }
 
-/** Original CRT defaults 0x455190 followed by loader 0x451810's exact setters. */
+/**
+ * Original CRT defaults 0x455190 followed by loader 0x451810's exact setters.
+ * Each scaled value is FILD qword, one FMUL and FSTP float (e.g.
+ * 0x4518b5..0x4518c2), so the loader is precision-independent.
+ */
 export function nativeBonusParameters(config) {
   const value = key => Number(config[key]);
   const seconds = key => f32(value(key) * f32(0.001));
@@ -140,7 +156,11 @@ export function collectNativeBonus(pickup, owned, controller, {
   return { type: 'bonus', bonus: owned.type, level: owned.level };
 }
 
-/** 0x453fd0/0x454260. The native active count includes owned and shot bonuses. */
+/**
+ * 0x453fd0/0x454260. The native active count includes owned and shot bonuses.
+ * The age is one FADD stored at 0x454009 and the respawn test reloads it
+ * (0x454050), so this is precision-independent.
+ */
 export function advanceNativePickup(pickup, deltaSeconds, {
   respawnSeconds, enabled, activeBonusCount,
 }) {
@@ -154,16 +174,26 @@ export function advanceNativePickup(pickup, deltaSeconds, {
   return false;
 }
 
-/** 0x497bd0 followed by 0x44fc80; both comparisons are strict. */
-export function nativeBonusOverlap(a, b) {
-  const dx = f32(a.position[0] - b.position[0]);
-  const dz = f32(a.position[2] - b.position[2]);
-  const radius = f32(a.radius + b.radius);
-  if (f32(f32(dx * dx) + f32(dz * dz)) >= f32(radius * radius)) return false;
-  return Math.abs(f32(a.position[1] - b.position[1])) < radius;
+/**
+ * 0x497bd0 followed by 0x44fc80; both comparisons are strict. Nothing is
+ * stored: 0x497bd0 keeps dx, dz, the radius sum, the squares and dz*dz+dx*dx
+ * in ST0 for FCOMPP (0x497c46..0x497c86); 0x44fc80 keeps |dy| and the radius
+ * sum in ST0 for FCOMPP (0x44fd97..0x44fdd2).
+ */
+export function nativeBonusOverlap(a, b, { precision = NATIVE_PRECISION } = {}) {
+  const r = registerRounding(precision);
+  const dx = r(a.position[0] - b.position[0]);
+  const dz = r(a.position[2] - b.position[2]);
+  const radius = r(a.radius + b.radius);
+  if (r(r(dx * dx) + r(dz * dz)) >= r(radius * radius)) return false;
+  return Math.abs(r(a.position[1] - b.position[1])) < radius;
 }
 
-/** 0x4537f0 boosts existing signed forward speed once; it is not timed thrust. */
+/**
+ * 0x4537f0 boosts existing signed forward speed once; it is not timed thrust.
+ * FILD*0.01 is stored (0x45384d) and the product with speed is stored
+ * (0x453887): two separate stored float operations, precision-independent.
+ */
 export function applyNativeTurbo(body, level, bonusConfig) {
   if (!Number.isInteger(level) || level < 1 || level > 3) throw new RangeError('Turbo level must be 1..3');
   const factor = Number(bonusConfig[`bonus_turbo_factor${level - 1}`]);
@@ -177,8 +207,10 @@ export function applyNativeTurbo(body, level, bonusConfig) {
  * and any active projectiles for the shared forty-active-bonus respawn limit.
  */
 export class NativeBonusPickups {
-  constructor({ pickups, racerCount, raceType, bonusConfig, random, voices = null }) {
+  constructor({ pickups, racerCount, raceType, bonusConfig, random, voices = null, precision = NATIVE_PRECISION }) {
     if (!(random instanceof NativeRandom)) throw new TypeError('The shared native RNG is required');
+    registerRounding(precision);
+    this.precision = precision;
     this.random = random;
     this.voices = voices;
     this.config = bonusConfig;
@@ -209,11 +241,13 @@ export class NativeBonusPickups {
   step(deltaSeconds, nowSeconds, racers, { activeProjectileCount = 0 } = {}) {
     if (racers.length !== this.owned.length) throw new RangeError('Racer count must preserve native order');
     const events = [];
-    const playerIndex = racers.length - 1;
+    const playerIndex = racers.length - 1, precision = this.precision, r = registerRounding(precision);
+    // 0x4106e7..0x4106fe: FILD*0.001 is stored, then now+cooldown is stored;
+    // both are single stored float operations (precision-independent).
     const cooldown = f32(Number(this.config.bonus_timeout_pickup_next) * f32(0.001));
     const respawnSeconds = f32(Number(this.config.bonus_respawn_time) * f32(0.001));
     for (const owned of this.owned) {
-      updateNativeOwnedBonusVisual(owned, deltaSeconds, Number(this.config.weapon_rotation_speed));
+      updateNativeOwnedBonusVisual(owned, deltaSeconds, Number(this.config.weapon_rotation_speed), precision);
     }
     for (let index = 0; index < this.pickups.length; index++) {
       const pickup = this.pickups[index];
@@ -225,13 +259,14 @@ export class NativeBonusPickups {
       if (respawned) events.push({ type: 'respawn', pickup: index });
       // An inactive point that respawns is not tested for contact until next update.
       if (!wasActive) continue;
-      pickup.yaw = f32(f32(Number(this.config.weapon_rotation_speed) * f32(deltaSeconds)) + pickup.yaw);
+      // 0x45410b..0x454115: FILD speed * stored dt stays in ST0 until FADD/FSTP.
+      pickup.yaw = f32(r(r(Number(this.config.weapon_rotation_speed) * f32(deltaSeconds)) + pickup.yaw));
       for (let racer = pickup.type === 6 ? playerIndex : 0; racer <= playerIndex; racer++) {
         // 0x410650 fetches the lazily created player record before any test.
         if (racer === playerIndex) this.onPlayerCheck?.();
         if(racers[racer].canCollect===false||racers[racer].excludedPickups?.has(index))continue;
         if (!nativeCanCollectBonus(nowSeconds, this.eligibleAfter[racer])
-          || !nativeBonusOverlap(racers[racer], pickup)) continue;
+          || !nativeBonusOverlap(racers[racer], pickup, { precision })) continue;
         // 0x4514e0 passes the loop index to 0x4106b0, which only arms the
         // player's own +0x100 deadline for index -1. The player's index N lands
         // in an unread opponent slot, so only opponents wait for the cooldown.

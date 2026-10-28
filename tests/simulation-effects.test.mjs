@@ -5,6 +5,8 @@ import { updateNativeHitEffect, initializeNativeHitEffect } from '../source/simu
 import { NativeRandom } from '../source/simulation/native-random.js';
 
 const fixtures = JSON.parse(await readFile(new URL('../evidence/gameplay/native-effect-fixtures.json', import.meta.url)));
+// The 0x007f capture; tests/native-projectile-precision.test.mjs covers both widths.
+const precision = 24;
 
 test('spin, gum and bubble updates match 600 original x86 effect cases', () => {
   for (const [index, fixture] of fixtures.cases.entries()) {
@@ -13,7 +15,7 @@ test('spin, gum and bubble updates match 600 original x86 effect cases', () => {
     const random = new NativeRandom(fixture.seed);
     updateNativeHitEffect(effect, body, fixture.delta, fixture.parameters, {
       sampleGround: () => fixture.groundHeight, groundCount: fixture.groundCount,
-      rearWheelVerticalSpeed: fixture.rearWheelVerticalSpeed, random,
+      rearWheelVerticalSpeed: fixture.rearWheelVerticalSpeed, random, precision,
     });
     for (const [key, expected] of Object.entries(fixture.expected.body)) {
       assert.equal(body[key], expected, `case ${index} ${fixture.kind} body.${key}`);

@@ -1,13 +1,14 @@
 import {sampleNativeTrack} from './native-track.js';
 import {nativeTrigTable} from './native-integrator.js';
 import {rescuePlacementClear} from './rescue-safety.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f32=Math.fround;
 export const PLAYER_RECOVERY_MIN_DISTANCE=80;
 export const PLAYER_RECOVERY_EXIT_DISTANCES=Object.freeze([0,10,20,30]);
 
 /** 0x450500 selects minimum integer-coordinate Manhattan distance. */
-export function nativeRescueNearestSector(track, position, {precision = 24} = {}) {
+export function nativeRescueNearestSector(track, position, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f32 : Number;
   let selected = 0, best = Infinity;
   track.route.forEach((route, index) => {
@@ -18,14 +19,14 @@ export function nativeRescueNearestSector(track, position, {precision = 24} = {}
   return selected;
 }
 
-export function nativeRescueHeading(world, sector, precision = 24) {
+export function nativeRescueHeading(world, sector, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f32 : Number, [x, , z] = world.sectors[sector].forward;
   const length = r(Math.sqrt(r(r(x * x) + r(z * z))));
   const nx = f32(r(x / length)), nz = r(z / length);
   return f32(r(r(r(Math.atan2(nz, nx) - r(f32(Math.PI) * .5)) * 4096) / f32(Math.PI * 2)));
 }
 
-export function nativeRescueDestinationAtWaypoint(track,world,waypoint,{precision=24}={}) {
+export function nativeRescueDestinationAtWaypoint(track,world,waypoint,{precision=NATIVE_PRECISION}={}) {
   const position = [...track.drive[waypoint].position];
   const previousSector = nativeRescueNearestSector(track, position, {precision});
   const ground = sampleNativeTrack(world, previousSector, ...position);

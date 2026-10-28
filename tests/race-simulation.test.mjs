@@ -21,7 +21,7 @@ test('authored start camera and countdown retain inactive motion and start race 
   const sim=create(0,1,0,{countdown:true}),filter=new NativeDeltaFilter({uptimeMs:NATIVE_REFERENCE_UPTIME_MS});
   const initialControls={...sim.motion.controls};
   const initialProgress=sim.opponents.map(actor=>actor.progress.distance);
-  let now=0,renderedPhase=null,greenAt=null,countdownAt=null;
+  let now=0,renderedPhase=null,greenAt=null,countdownAt=null,speedAfterGreen=0;
   const input={throttle:1,brake:0,steer:0,handbrake:0,bonus:1};
   while(now<20000){
     now+=25;
@@ -32,6 +32,7 @@ test('authored start camera and countdown retain inactive motion and start race 
         if(!active)assert.deepEqual(sim.motion.controls,initialControls);
       },
     });
+    if(greenAt!==null)speedAfterGreen=Math.max(speedAfterGreen,sim.motion.body.forwardSpeed);
     if(!active){
       assert.equal(sim.race.elapsedMs,0);
       assert.equal(sim.motion.body.forwardSpeed,0);
@@ -52,7 +53,9 @@ test('authored start camera and countdown retain inactive motion and start race 
   assert.ok(countdownAt>1000);
   assert.ok(greenAt-countdownAt>3000&&greenAt-countdownAt<4000);
   assert.equal(sim.race.elapsedMs,now-greenAt);
-  assert.ok(sim.motion.body.forwardSpeed>0);
+  // Straight steering meets scenery within seconds, so check that the kart
+  // accelerated after green rather than its speed at the end of the run.
+  assert.ok(speedAfterGreen>0);
 });
 
 test('pause excludes wall-clock downtime from race clocks while absolute AI time ages',()=>{

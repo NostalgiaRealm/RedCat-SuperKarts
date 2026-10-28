@@ -1,4 +1,5 @@
 import { nativeTrigTable } from './native-integrator.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 
 /** 0x40e030/0x40e070: reroll lane preferences using the shared CRT stream. */
@@ -10,7 +11,7 @@ export function updateNativeAIPriorities(state, efficiency, random) {
 }
 
 /** 0x412fd0 then0x4130e0; two shared random draws per normal drive update. */
-export function updateNativeAIWobble(body, dt, random, { precision = 24, order = ['roll', 'pitch'] } = {}) {
+export function updateNativeAIWobble(body, dt, random, { precision = NATIVE_PRECISION, order = ['roll', 'pitch'] } = {}) {
   const r = precision === 53 ? Number : f32;
   dt = f32(dt);
   for (const axis of order) {
@@ -26,7 +27,7 @@ export function updateNativeAIWobble(body, dt, random, { precision = 24, order =
 
 /** 0x401570: the first-place racer reacts to a nearby player behind it. */
 export function nativeAIPlayerBehind(body, state, player, rank, options = {}) {
-  const r = options.precision === 53 ? Number : f32;
+  const r = (options.precision ?? NATIVE_PRECISION) === 53 ? Number : f32;
   if (state.chaseTime > 1) { state.chaseTime = 0; return false; }
   const dx = f32(r(body.x - player.x)), dz = f32(r(body.z - player.z));
   if (r(r(dx * dx) + r(dz * dz)) < 10000) {
@@ -37,7 +38,7 @@ export function nativeAIPlayerBehind(body, state, player, rank, options = {}) {
 }
 
 /** 0x4016e0 consumes a random value only for rank0 at forward speed >=30. */
-export function nativeAIStartChase(body, state, rank, dt, random, { precision = 24 } = {}) {
+export function nativeAIStartChase(body, state, rank, dt, random, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 53 ? Number : f32;
   if (rank === 0 && body.forwardSpeed >= 30) {
     if (random.next() % 100 < f32(r(f32(dt) * 50)) && state.chaseTime < 1) return true;
@@ -49,13 +50,14 @@ export function nativeAIStartChase(body, state, rank, dt, random, { precision = 
 export function nativeAIStuck(state) { return !state.blockRecovery && state.sectorTime > 2; }
 
 /** 0x413330 route-plane spring, used by recovery and some effect states. */
-export function updateNativeAIVerticalSpring(body, dt, sampleRouteHeight, { precision = 24 } = {}) {
+export function updateNativeAIVerticalSpring(body, dt, sampleRouteHeight, { precision = NATIVE_PRECISION } = {}) {
   if (typeof sampleRouteHeight !== 'function') throw new TypeError('Original route-plane sampler is required');
   const r = precision === 53 ? Number : f32;
   dt = f32(dt);
   const { sin, cos } = nativeTrigTable(precision), index = Math.trunc(body.yaw) & 4095;
-  const vx = r(r(cos[index] * body.lateralSpeed) - r(sin[index] * body.forwardSpeed));
-  const vz = r(r(sin[index] * body.lateralSpeed) + r(cos[index] * body.forwardSpeed));
+  // Both velocity components are stored (FSTP float 0x4133c6/0x4133df).
+  const vx = f32(r(r(cos[index] * body.lateralSpeed) - r(sin[index] * body.forwardSpeed)));
+  const vz = f32(r(r(sin[index] * body.lateralSpeed) + r(cos[index] * body.forwardSpeed)));
   const x = f32(r(r(r(dt * vx) * 10) + body.x));
   const z = f32(r(r(r(dt * vz) * 10) + body.z));
   const height = f32(sampleRouteHeight(x, body.y, z));
@@ -66,7 +68,7 @@ export function updateNativeAIVerticalSpring(body, dt, sampleRouteHeight, { prec
 
 /** 0x40e4b0, preserving recovery's two distinct spring/wobble call orders. */
 export function prepareNativeAIRecovery(body, controls, state, dt, random, {
-  time, sampleRouteHeight, respawn, precision = 24,
+  time, sampleRouteHeight, respawn, precision = NATIVE_PRECISION,
 } = {}) {
   if (!Number.isFinite(time)) throw new TypeError('Native elapsed time is required for recovery');
   const r = precision === 53 ? Number : f32;
@@ -104,7 +106,7 @@ export function prepareNativeAIRecovery(body, controls, state, dt, random, {
 
 /** 0x409ea0: finished racers disable driving and settle their body springs. */
 export function prepareNativeAIFinished(body, controls, state, racer, playerRacer, dt, random, {
-  sampleRouteHeight, precision = 24, ...options
+  sampleRouteHeight, precision = NATIVE_PRECISION, ...options
 } = {}) {
   const r = precision === 53 ? Number : f32;
   state.disabled = true;
@@ -141,7 +143,7 @@ export function updateNativeAITransition(state, guards) {
 const catchupThresholds = [[100, 25, 0], [5, 15, f32(.05)], [1, 6, f32(.08)]];
 const slowdownThresholds = [[1, 11, f32(.055)], [5, 18, f32(.045)], [100, 25, 0]];
 /** 0x4062b0/0x405fd0/0x406100. Difference is racer progress minus player progress. */
-export function applyNativeAICatchup(body, state, difficulty, difference, { precision = 24 } = {}) {
+export function applyNativeAICatchup(body, state, difficulty, difference, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 53 ? Number : f32;
   const slow = slowdownThresholds[difficulty], fast = catchupThresholds[difficulty];
   if (!slow) throw new RangeError('Native difficulty must be 0, 1 or 2');
@@ -162,12 +164,15 @@ export function applyNativeAICatchup(body, state, difficulty, difference, { prec
 }
 
 /** 0x41c4b0 NPC wheels differ from the player's control-linked wheel routine. */
-export function updateNativeAIWheels(body, state, dt, height, { precision = 24 } = {}) {
+export function updateNativeAIWheels(body, state, dt, height, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 53 ? Number : f32;
   const radius = state.wheels[0].radius;
   const spin = f32(r(r(r(4096 / r(radius + radius)) * f32(dt)) * body.forwardSpeed));
   const steeringAngle = Math.max(-500, Math.min(500, f32(r(body.yawRate * 400))));
-  const suspension = Math.max(f32(-1.11), Math.min(0, f32(r(height - body.y))));
+  // 0x41c737 tests the register difference against 0; otherwise 0x41c752
+  // compares the stored float with -1.11f, which an unordered NaN also fails.
+  const difference = r(height - body.y), stored = f32(difference);
+  const suspension = difference > 0 ? 0 : stored >= f32(-1.11) ? stored : f32(-1.11);
   state.wheels.forEach((wheel, index) => {
     wheel.spin = f32(r(wheel.spin - spin));
     if (index < 2) wheel.steeringAngle = steeringAngle;
@@ -177,7 +182,7 @@ export function updateNativeAIWheels(body, state, dt, height, { precision = 24 }
 }
 
 /** Integer target-heading error from original NPC 0x414360, in 4096-unit angles. */
-export function nativeAIHeadingError(body, target, { precision = 24 } = {}) {
+export function nativeAIHeadingError(body, target, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 24 ? f32 : Number;
   let dx = r(f32(target[0]) - body.x);
   const dz = f32(r(f32(target[2]) - body.z));
@@ -195,7 +200,7 @@ export function nativeAIHeadingError(body, target, { precision = 24 } = {}) {
 }
 
 /** 0x401320: unsigned relative bearing, with the native one-turn yaw repair. */
-export function nativeAIRelativeBearing(body, target, { precision = 24 } = {}) {
+export function nativeAIRelativeBearing(body, target, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 53 ? Number : f32;
   if (body.yaw >= 4096) body.yaw = f32(r(body.yaw - 4096));
   if (body.yaw < 0) body.yaw = f32(r(body.yaw + 4096));
@@ -225,7 +230,7 @@ export function nativeAIObstructed(body, occupants, options = {}) {
  * path search supplies distinct look-ahead waypoints for each.
  */
 export function updateNativeAIControls(body, controls, steeringTarget, speedTarget, dt, options = {}) {
-  const r = options.precision === 53 ? Number : f32;
+  const r = (options.precision ?? NATIVE_PRECISION) === 53 ? Number : f32;
   dt = f32(dt);
   const heading = nativeAIHeadingError(body, steeringTarget, options);
   controls.steering = f32(Math.max(-100, Math.min(100, heading * .5)));
@@ -243,7 +248,7 @@ export function updateNativeAIControls(body, controls, steeringTarget, speedTarg
 }
 
 /** 0x414470 simplified NPC drive model, distinct from active player forces. */
-export function updateNativeAISpeed(body, controls, state, racer, playerRacer, dt, { precision = 24 } = {}) {
+export function updateNativeAISpeed(body, controls, state, racer, playerRacer, dt, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 24 ? f32 : Number;
   dt = f32(dt);
   if (controls.throttle === 0) {
@@ -284,7 +289,7 @@ export function updateNativeAISpeed(body, controls, state, racer, playerRacer, d
 
 /** Original 0x414750 lateral/yaw update, including its disabled/sliding branch. */
 export function updateNativeAISteering(body, controls, state, racer, playerRacer, dt, options = {}) {
-  const r = options.precision === 53 ? Number : f32;
+  const r = (options.precision ?? NATIVE_PRECISION) === 53 ? Number : f32;
   const tau = f32(2 * Math.PI), angleScale = 0.0015339807141572237;
   const steer = -controls.steering;
   dt = f32(dt);
@@ -347,7 +352,7 @@ export function updateNativeAISteering(body, controls, state, racer, playerRacer
 }
 
 /** 0x494000 selects the nearest waypoint from the current sector's right list. */
-export function nearestNativeAIWaypoint(track, body, { precision = 24, side = 1 } = {}) {
+export function nearestNativeAIWaypoint(track, body, { precision = NATIVE_PRECISION, side = 1 } = {}) {
   if (![0, 1, -1].includes(side)) throw new RangeError('Native waypoint side must be -1, 0 or 1');
   const r = precision === 53 ? Number : f32;
   let closest = -1, distance = f32(3.4e38);
@@ -375,7 +380,7 @@ export function nativeAINextWaypoint(track, waypoint, direction) {
  */
 export function searchNativeAIPath(track, start, {
   depth = 5, occupied = new Set(), priorities = [0, 1, 2], getPriorities,
-  initial = { steering: null, speed: null }, sector = 0, precision = 24,
+  initial = { steering: null, speed: null }, sector = 0, precision = NATIVE_PRECISION,
 } = {}) {
   const result = { waypoint: -1, steering: initial.steering && [...initial.steering], speed: initial.speed && [...initial.speed] };
   if (depth > 25) return { ...result, waypoint: -2 };
@@ -435,7 +440,7 @@ export function searchNativeAIPath(track, start, {
  * This is the preparation phase; the engine integrates all actors afterward.
  */
 export function updateNativeAIRacerMotion(body, controls, state, racer, playerRacer, target, dt, random, options = {}) {
-  const r = options.precision === 53 ? Number : f32;
+  const r = (options.precision ?? NATIVE_PRECISION) === 53 ? Number : f32;
   if (body.yaw < 0) body.yaw = f32(r(body.yaw + 4096));
   if (body.yaw >= 4096) body.yaw = f32(r(body.yaw - 4096));
   updateNativeAISpeed(body, controls, state, racer, playerRacer, dt, options);
@@ -491,7 +496,7 @@ export function prepareNativeNormalAI(track, body, controls, state, racer, playe
 
 /** 0x409cc0/0x409dc0: approach/chase use fixed lane priorities, no lane RNG. */
 export function prepareNativeChaseAI(track, body, controls, state, racer, playerRacer, dt, random, {
-  occupancy = new Map(), player, pathScratch, precision = 24, ...options
+  occupancy = new Map(), player, pathScratch, precision = NATIVE_PRECISION, ...options
 } = {}) {
   if (![1, 2, 3].includes(state.mode)) throw new RangeError('Approach/chase handler requires native state1,2 or3');
   const chase = state.mode === 2;
@@ -531,7 +536,7 @@ export function nativeAIForcedRouteChoice(track, waypoint, efficiency, random) {
 
 /** 0x40e270 state27 follows marker66 after the marker64 route trigger. */
 export function prepareNativeForcedRouteAI(track, body, controls, state, racer, playerRacer, dt, random, {
-  efficiency, precision = 24, ...options
+  efficiency, precision = NATIVE_PRECISION, ...options
 } = {}) {
   const nearest = nearestNativeAIWaypoint(track, body, { precision });
   const links = track.drive[nearest].links;

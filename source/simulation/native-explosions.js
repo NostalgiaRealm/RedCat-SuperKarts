@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 const outerIndices=[0,1,3,4,6,7,9,10,12,13,15,16,18,19,21,22,0,1];
 const innerIndices=[2,1,23,22,20,19,17,16,14,13,11,10,8,7,5,4,2,1];
@@ -7,7 +8,7 @@ const innerIndices=[2,1,23,22,20,19,17,16,14,13,11,10,8,7,5,4,2,1];
  * random lifetime with.75 seconds. Objects are prepended to the original list.
  */
 export class NativeExplosions {
-  constructor({random,precision=24}={}) {
+  constructor({random,precision=NATIVE_PRECISION}={}) {
     if(!random?.next)throw new Error('Original shared random stream is required');
     Object.assign(this,{random,precision,entries:[],nextId:0,texture:'s_sfx'});
   }
@@ -40,7 +41,7 @@ export class NativeExplosions {
   }
 }
 
-export function nativeExplosionGeometry({position,age,lifetime=.75},precision=24) {
+export function nativeExplosionGeometry({position,age,lifetime=.75},precision=NATIVE_PRECISION) {
   const r=precision===24?f:Number,vertices=[],uv=[],argb=[];
   const alpha=age<=r(lifetime*.5)?255:255-Math.trunc(r(r(age*255)/lifetime));
   for(let index=0;index<24;index+=3) {

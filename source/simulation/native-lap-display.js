@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 
 /** CRcoStatistics lap-text hold: 0046e680, 0046f230 and 0046ecc0.
@@ -6,7 +7,7 @@ const f=Math.fround;
  * Paused/redraw-only frames do not call update; no race-time timeout is used.
  */
 export class NativeLapDisplay {
-  constructor({initialText='',precision=24}={}) {
+  constructor({initialText='',precision=NATIVE_PRECISION}={}) {
     if(![24,53].includes(precision))throw new RangeError('Unsupported native precision');
     this.precision=precision;
     this.state={holdStampSeconds:-1,text:initialText};

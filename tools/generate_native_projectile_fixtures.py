@@ -3,7 +3,7 @@
 import json
 import random
 import struct
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT, PRECISION, precision_path
 from native_probe_math import initialize_native_trig
 from unicorn import UC_HOOK_CODE
 from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_EIP, UC_X86_REG_ESP
@@ -229,8 +229,8 @@ def main():
             facing_cases.append({"track": track_id, "body": {"sector": sector, "matrix": matrix},
                 "options": {"british": british, "direction": direction},
                 "expected": bool(facing_probe.uc.reg_read(UC_X86_REG_EAX) & 0xff)})
-    output = ROOT / "evidence/gameplay/native-projectile-fixtures.json"
-    output.write_text(json.dumps({"binarySha256": p.sha, "entry": "0x455ce0", "precision": 24,
+    output = precision_path(ROOT / "evidence/gameplay/native-projectile-fixtures.json")
+    output.write_text(json.dumps({"binarySha256": p.sha, "entry": "0x455ce0", "precision": PRECISION,
         "angleCount": 4096, "boundaries": ["ground height 430ff0", "renderer validity 450440",
         "visual impact 481ec0", "flight/launch SetState gameplay writes with visual/audio/container operations excluded",
         "launch UI block, target selection, matrix rebuild and fan call excluded from launch probe",

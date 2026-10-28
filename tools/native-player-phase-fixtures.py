@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Execute complete original player force routine in racing and result phases."""
 import json
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, OBJECT, SCRATCH
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, OBJECT, SCRATCH, PRECISION, precision_path
 
 p=NativeProbe(SOURCE)
 base=json.loads((ROOT/'evidence/gameplay/native-fixtures.json').read_text())
-out={'sourceSha256':p.sha,'routine':'0x415990','precision':24,'cases':[]}
+out={'sourceSha256':p.sha,'routine':'0x415990','precision':PRECISION,'cases':[]}
 for case in base['forceCases']:
     for phase in [0,1,3,4,6,8]:
         p.set_physics(case['preset'],case['record'])
@@ -26,5 +26,5 @@ for case in base['forceCases']:
                         slipMagnitude=p.integer(0x50728c),handbrake=bool(p.integer(0x53bdf4)))
         out['cases'].append({**{key:value for key,value in case.items() if key!='expected'},
                              'phase':phase,'slipMagnitude':7,'expected':expected})
-(ROOT/'evidence/native/player-phase-fixtures.json').write_text(json.dumps(out,indent=2)+'\n')
+precision_path(ROOT/'evidence/native/player-phase-fixtures.json').write_text(json.dumps(out,indent=2)+'\n')
 print('Wrote',len(out['cases']),'complete player phase/slip cases')

@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 /**
  * Original update-start gate (0x4432a0), independent of display refresh.
  * A caller-owned timer invokes advance(); rendering only reads snapshot().
@@ -141,7 +142,8 @@ export const NATIVE_REFERENCE_UPTIME_MS=60000;
 
 export class NativeDeltaFilter {
   constructor({uptimeMs}={}) {
-    this.history = [0.1, 0.1, 0.1];
+    // 0x48f590 primes the history with 0x3dcccccd, the float nearest 0.1.
+    this.history = Array(3).fill(Math.fround(0.1));
     this.initialDelta = undefined;
     if(uptimeMs!==undefined)this.initialize(uptimeMs);
   }
@@ -150,7 +152,7 @@ export class NativeDeltaFilter {
    */
   initialize(uptimeMs) {
     if(!Number.isFinite(uptimeMs)||uptimeMs<0)throw new RangeError('Invalid initial host uptime');
-    this.history=[0.1,0.1,0.1];
+    this.history=Array(3).fill(Math.fround(0.1));
     this.initialDelta=this.sample(Math.fround(uptimeMs/1000));
     return this.initialDelta;
   }
@@ -162,7 +164,9 @@ export class NativeDeltaFilter {
     filtered = Math.fround(filtered + this.history[1] * 0.125);
     filtered = Math.fround(filtered + this.history[2] * 0.125);
     this.history = [delta, this.history[0], this.history[1]];
-    return filtered === 0 || filtered > 0.1 ? 0.1 : filtered;
+    // 0x48f4e0 compares with the double 0.1 at 0x4d2d98 but returns the
+    // float at 0x4d2270.
+    return filtered === 0 || filtered > 0.1 ? Math.fround(0.1) : filtered;
   }
 }
 
@@ -172,7 +176,7 @@ export class NativeDeltaFilter {
  * performed here. In particular, reset is not another cold initialization.
  */
 export class NativeEngineTimer {
-  constructor({absoluteSeconds=0,precision=24,counter,frequency}={}){
+  constructor({absoluteSeconds=0,precision=NATIVE_PRECISION,counter,frequency}={}){
     if(![24,53].includes(precision))throw new RangeError('Native clock precision must be24 or53');
     this.precision=precision;this.absoluteSeconds=0;this.deltaSeconds=0;
     this.rawDelta=0;this.history=Array(4).fill(Math.fround(.1));this.historyIndex=0;

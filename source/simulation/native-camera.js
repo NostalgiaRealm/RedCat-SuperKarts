@@ -1,5 +1,6 @@
 import { nativeTrigTable } from './native-integrator.js';
 import { nativeRaceKeyDown } from './native-race-lifecycle.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32=Math.fround;
 const NATIVE_HORIZONTAL_FOV=1.4137166738510132;
 export const NATIVE_CAMERA_PROJECTION=Object.freeze({
@@ -23,7 +24,7 @@ function transformVector(v,m,r){
 }
 /**0x41e280(mode1),0x498c00: one native camera update; coefficients are per update. */
 export class NativePlayerCamera {
- constructor({precision=24}={}){
+ constructor({precision=NATIVE_PRECISION}={}){
   this.precision=precision;this.position=null;this.target=null;this.up=[0,1,0];
   this.rememberedMode=1;this.setMode(1);
  }
@@ -89,7 +90,7 @@ export class NativePlayerCamera {
 
 /** 0x41fc60: fixed finish camera at logical route sector+3, tracking the kart. */
 export class NativeFinishCamera {
- constructor(track,body,{precision=24}={}){
+ constructor(track,body,{precision=NATIVE_PRECISION}={}){
   this.precision=precision;
   const position=track.route[body.sector+3]?.position;
   if(!position)throw new RangeError('Original finish-camera sector+3 lies outside the route allocation');
@@ -106,7 +107,7 @@ export class NativeFinishCamera {
 
 /** 0x420730/0x420850: phase6 camera, local orbit advanced AFTER rendering. */
 export class NativeFailureCamera {
- constructor(body,deltaSeconds,{precision=24}={}){
+ constructor(body,deltaSeconds,{precision=NATIVE_PRECISION}={}){
   if(!Number.isFinite(deltaSeconds)||deltaSeconds<=0)throw new RangeError('Original camera-entry delta is required');
   this.precision=precision;
   const r=precision===24?f32:Number;

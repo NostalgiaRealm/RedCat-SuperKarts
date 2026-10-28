@@ -1,11 +1,12 @@
 import {nativeTrigTable} from './native-integrator.js';
 import {nativeRotationMatrix} from './native-transform.js';
 import {NativeGameTimers} from './native-game-timers.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 
 const f32=Math.fround;
 
 /** 42b340 uses integer SndGfx values, with ratio multiplied by double .1. */
-export function nativeSquashSettings(config,precision=24){
+export function nativeSquashSettings(config,precision=NATIVE_PRECISION){
   const r=precision===24?f32:Number,s=config['sndgfx.ini']?.special_effects??{};
   return {
     speedLimit:f32(Number(s.squash_speed_limit)||0),
@@ -29,7 +30,7 @@ export function nativeSquashRebound(ratio){
 /** 48e210/48e480/48e560/48e780/48e970. Matrix effects remain in the
  * simulation because source callback transforms also affect later contacts. */
 export class NativeSquash {
-  constructor({config,precision=24,timers=new NativeGameTimers()}={}){
+  constructor({config,precision=NATIVE_PRECISION,timers=new NativeGameTimers()}={}){
     this.precision=precision;
     this.settings=nativeSquashSettings(config??{},precision);
     this.timers=timers;this.entries=[];this.rebound=nativeSquashRebound(this.settings.ratio);

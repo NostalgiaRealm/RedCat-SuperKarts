@@ -2,31 +2,58 @@
 """Original force/RPM + eight Euler calls, preserving storage between frames.
 
 Collision and ground are intentionally outside this recurrence probe. The
-already-verified outer-loop planar quantization is reproduced at its boundary.
+outer-loop planar quantization is emulated from its own instructions
+(0x491e1c..0x491e72 of 0x491d30), so it follows the selected precision.
+Inverse mass and inverse inertia come from the original body setup 0x48fda0
+for car record 0 (0x4e02a0), also at the selected precision: 1/mass is one
+FDIV stored at 0x48fdf4; the inertia product and its FDIVR reciprocal stay
+in ST0 from 0x48fdfa until FSTP float +0x94 at 0x48fe1e.
 Only emulator memory is modified; installed game inputs remain read-only.
 """
 import json
 import struct
-from unicorn.x86_const import UC_X86_REG_ECX
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, OBJECT, SCRATCH
+from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_ESI, UC_X86_REG_ESP
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, OBJECT, SCRATCH, STACK, PRECISION, precision_path
 from native_probe_math import initialize_native_trig
 
 def fp(value):
     return struct.unpack("<f", struct.pack("<f", value))[0]
 
+def quantize_planar(probe):
+    """Run 0x491e1c..0x491e72 for the object at OBJECT: lateral and forward
+    speed times 10000, __ftol, times 0.0001, FSTP float."""
+    saved = probe.integer(0x67ee20)
+    probe.u32(0x67ee20, 0)
+    probe.uc.reg_write(UC_X86_REG_ESI, OBJECT)
+    probe.uc.reg_write(UC_X86_REG_EAX, 0)
+    probe.uc.reg_write(UC_X86_REG_ESP, STACK + 0xf000)
+    probe.uc.emu_start(0x491e1c, 0x491e72)
+    probe.u32(0x67ee20, saved)
+
+def native_body(probe, car=0):
+    """0x48fda0 for object 0 with the 0x415f90 (0x416161) arguments: zero
+    speeds, record mass, restitution 0x3e4ccccd (0x416140), length, width."""
+    record = 0x4e02a0 + car * 300
+    mass, length, width = (probe.float(record + offset) for offset in (0, 4, 8))
+    if (mass, length, width) != (600, 4.5, fp(1.7)):
+        raise ValueError("Unexpected standard car record")
+    logging = bytes(probe.uc.mem_read(0x4afce0, 1))
+    probe.uc.mem_write(0x4afce0, b"\xc3")  # 0x48fdab logging call only
+    probe.run(0x48fda0, [0, 0.0, 0.0, 0.0, 0.0, mass, fp(0.2), length, width])
+    probe.uc.mem_write(0x4afce0, logging)
+    return probe.float(OBJECT + 0x90), probe.float(OBJECT + 0x94)
+
 p = NativeProbe(SOURCE)
 initialize_native_trig(p)
 render = SCRATCH + 0x4000
-out = {"sourceSha256": p.sha, "precision": 24, "routines": ["0x415990", "0x4911a0"],
+out = {"sourceSha256": p.sha, "precision": PRECISION, "routines": ["0x415990", "0x4911a0"],
        "scope": "Recurring original force/RPM and eight Euler calls. No world/contact callbacks. "
-                "Caller supplies controls and reproduces verified outer planar quantization.",
+                "Caller supplies controls; outer planar quantization 0x491e1c..0x491e72 is emulated.",
        "traces": []}
 for preset in range(3):
     for upgrade in range(2):
         p.set_physics(preset, 0)
-        inverse_mass = fp(1 / 600)
-        inverse_inertia = fp(1 / fp(fp(600 * fp(.083333336)) *
-                                  fp(fp(fp(4.5) * fp(4.5)) + fp(fp(1.7) * fp(1.7)))))
+        inverse_mass, inverse_inertia = native_body(p)
         body = {"x": fp(100), "y": fp(0), "z": fp(-200), "yaw": fp(-71.75),
                 "lateralSpeed": fp(.75), "verticalSpeed": 0, "forwardSpeed": fp(10),
                 "yawRate": fp(.04), "inverseMass": inverse_mass, "inverseInertia": inverse_inertia,
@@ -60,8 +87,7 @@ for preset in range(3):
             p.run(0x415990, [0, controls["throttle"], controls["brake"], controls["steering"]])
             force = {key: p.float(OBJECT + offset) for key, offset in [
                 ("lateralForce", 0xb4), ("longitudinalForce", 0xbc), ("torque", 0xc0)]}
-            for offset in [0x9c, 0xa4]:
-                p.f32(OBJECT + offset, fp(int(fp(p.float(OBJECT + offset) * 10000)) * fp(.0001)))
+            quantize_planar(p)
             for _ in range(8):
                 p.uc.reg_write(UC_X86_REG_ECX, OBJECT)
                 p.run(0x4911a0, [fp(dt * .125), 1.0, 0, 0, SCRATCH + 0x8000])
@@ -73,5 +99,5 @@ for preset in range(3):
                 "force": force, "rpm": p.float(0x507290), "gear": p.integer(0x507298),
                 "slipMagnitude": p.integer(0x50728c), "expected": expected})
         out["traces"].append(trace)
-(ROOT / "evidence/gameplay/native-player-recurrence.json").write_text(json.dumps(out, indent=2) + "\n")
+precision_path(ROOT / "evidence/gameplay/native-player-recurrence.json").write_text(json.dumps(out, indent=2) + "\n")
 print("Wrote", sum(len(trace["frames"]) for trace in out["traces"]), "native recurring player frames")

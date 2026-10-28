@@ -3,7 +3,7 @@
 import json
 import struct
 from pathlib import Path
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, SCRATCH, OBJECT
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, SCRATCH, OBJECT, PRECISION, CONTROL_WORD, precision_path
 from unicorn.x86_const import UC_X86_REG_ECX
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -108,5 +108,7 @@ output = {
                       for address in [0x4f6074, 0x4f6084, 0x4f5ec8]},
     'layouts': layouts, 'times': times,
 }
-(ROOT / 'evidence/native/hud-text-fixtures.json').write_text(json.dumps(output, indent=2) + '\n')
+if PRECISION != 24:
+    output['fpuControlWord'] = f'0x{CONTROL_WORD:04x} ({PRECISION}-bit precision)'
+precision_path(ROOT / 'evidence/native/hud-text-fixtures.json').write_text(json.dumps(output, indent=2) + '\n')
 print(f'{len(layouts)} native layouts; {len(times)} native time division cases; {count} original character mappings')

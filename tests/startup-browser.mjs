@@ -47,6 +47,12 @@ try{
   assert.equal(await page.evaluate(()=>rcsk.state.page),'intro');
   assert.ok(await page.locator('#movie').evaluate(video=>video.currentTime)>=time);
   report.checks.push('Mouse enables audio and fullscreen without restarting or skipping the movie');
+  // rcskmenu 0x444f90/0x42e414 consume Tab as a dialog key; no WM_CHAR reaches 0x479cd4.
+  await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
+  await page.waitForTimeout(100);
+  assert.equal(await page.evaluate(()=>rcsk.state.page),'intro');
+  assert.equal(await page.locator('#movie').evaluate(video=>!video.paused&&!video.ended),true);
+  report.checks.push('Tab and Shift+Tab leave the intro playing');
   await page.keyboard.press('Enter');await page.waitForSelector('[data-form=TFRMMAIN]');
   await page.waitForLoadState('networkidle');
   const menu=await page.evaluate(async()=>{

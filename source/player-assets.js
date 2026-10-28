@@ -1,4 +1,5 @@
 import {resolveAsset, createNativeMeshAnimation, advanceNativeMeshAnimation} from './asset-animation.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 const key = value => String(value ?? '').trim().toLowerCase();
 const fields = value => String(value ?? '').split(/[,;]/).map(value => value.trim());
@@ -75,7 +76,7 @@ export function getPlayerVisualSpec(config, manifest, characterIndex, carIndex =
 // Lateral velocity (object+0x9c), rather than steering input, selects leaning.
 export function getDrivingAnimationRequests(config, {
   lateralSpeed = 0, forwardSpeed = 0, brake = 0, handbrake = false, turboAgeMs = 0xffffffff,
-  movementActive = true, legacyAutopilotActive = false, phase = 0, rank = 0, precision = 24,
+  movementActive = true, legacyAutopilotActive = false, phase = 0, rank = 0, precision = NATIVE_PRECISION,
   lookRequests = getPlayerLookAnimationRequests(),
 } = {}) {
   const requests = [], add = (name, from, to) => requests.push({name, from, to});
@@ -111,7 +112,7 @@ export function getDrivingAnimationRequests(config, {
 
 /** 0x435c60→0x40ec30. The bearing is relative to the OTHER racer's yaw. */
 export function getPlayerLookAnimationRequests({
-  playerPosition = [0, 0, 0], opponents = [], precision = 24,
+  playerPosition = [0, 0, 0], opponents = [], precision = NATIVE_PRECISION,
 } = {}) {
   const f = Math.fround, r = precision === 24 ? f : Number;
   let nearestDistance = f(9999999), bearing = null;
@@ -176,7 +177,7 @@ export function getNPCAnimationEventRequests({callback, argument = 0, fsmState =
 // 0040e760's clock is in seconds (0048f4d0), unlike player 004325b0.
 // The simulation owns clearing its turbo flag on expiry; this helper is pure.
 export function getNPCTurboAnimationRequests({
-  turboActive = false, turboStartedSeconds = 0, nowSeconds = 0, precision = 24,
+  turboActive = false, turboStartedSeconds = 0, nowSeconds = 0, precision = NATIVE_PRECISION,
 } = {}) {
   if (!turboActive) return [];
   const difference = Math.fround(nowSeconds) - Math.fround(turboStartedSeconds);

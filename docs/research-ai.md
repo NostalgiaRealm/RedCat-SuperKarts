@@ -166,7 +166,8 @@ The isolated executable runs use explicit x87 precision of 24 or 53 bits.
 CRT startup selects 53-bit precision, but later Direct3D runtime control-word
 changes have not been measured on a working original race. These are separate
 tested arithmetic environments, not a claim that one has been observed live.
-The connected driver currently follows the existing 24-bit simulation path.
+The connected driver follows the shared default `NATIVE_PRECISION`, 53-bit since
+the switch recorded in [phase 3](original-comparison-2026-10-28.md#53-bit-switch-phase-3-default-switched).
 
 | Generator / fixture | Original instruction cases |
 | --- | ---: |

@@ -15,7 +15,7 @@ try{
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
   const initial=await page.evaluate(async()=>{
     const view=rcsk.viewer;view.clock.pause();
-    window.flightProbe={now:view.clock.tick*25};
+    window.flightProbe={now:view.clock.simulationMs};
     await view.audio.unlock();await view.music.resume();
     view.audio.execute([{event:view.audio.engine.spec.start.event,op:'stop'}]);
     view.audio.updateEngine({gear:2,rpm:5000});

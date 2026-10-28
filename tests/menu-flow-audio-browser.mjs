@@ -132,13 +132,17 @@ try{
   await page.locator('[data-element=edtName]').fill('Nieuwe speler');
   let after=await mark();await button('btnOk').click();await form('TFRMSELECTCHAR');await played(generic(53),after);
   assert.equal(await page.evaluate(()=>localStorage.getItem('rcsk.firsttime.characters')),null);
-  await button('btnBack').click();await form('TFRMADVENTUREMAIN');
-  assert.equal(await page.locator('[data-element=lblPlayerName]').textContent(),'Nieuwe speler');
+  // rcskmenu 0x473c9f disables Back here; leave through OK and the briefing.
+  assert.equal(await button('btnBack').isDisabled(),true);
+  await button('btnOk').click();await form('TFRMADVENTBRIEF');
   assert.equal(await page.evaluate(()=>localStorage.getItem('rcsk.firsttime.characters')),null);
+  await button('btnBack').click();await form('TFRMMAIN');
+  await button('btnAdventure').click();await form('TFRMADVENTUREMAIN');
+  assert.equal(await page.locator('[data-element=lblPlayerName]').textContent(),'Nieuwe speler');
   await button('btnBack').click();await form('TFRMMAIN');
   await button('btnQuickRace').click();await form('TFRMSELECTCHAR');
   assert.equal(await page.evaluate(()=>localStorage.getItem('rcsk.firsttime.characters')),'1');
-  report.checks.push('Adventure new-character entry uses generic53 without consuming Quickrace FIRSTTIME; Back returns to profile list; subsequent Quickrace consumes its own flag');
+  report.checks.push('Adventure new-character entry uses generic53 without consuming Quickrace FIRSTTIME; its Back is disabled and the new profile stays selected; subsequent Quickrace consumes its own flag');
 
   const briefProfile=createNativeAdventureProfile('Landinfo',{slot:0});
   await adventure([briefProfile]);await button('btnOk').click();await form('TFRMADVENTBRIEF');await played(generic(56));

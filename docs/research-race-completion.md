@@ -72,9 +72,11 @@ kart rectangles overlap in both directed tests.
 
 The composed original `0x491d30` probe then executes candidate discovery,
 model bounds, sweep/slide, player substeps, NPC integration and paired contact
-response at the captured blocked pair. All 256 recurrent frames at the
-port's active 24-bit precision agree exactly. Another 256 frames at 53-bit
-precision have rounding differences, retained explicitly in the report.
+response at the captured blocked pair. All 256 recurrent frames agree exactly
+at 24-bit precision, and since the 53-bit work of 28 October 2026 the other 256
+at 53-bit (the port's default) do too; `tools/native-blockage-france-check.mjs`
+writes `france-native-frame-comparison.json` (1,101 differences at 53-bit
+before that work, none after).
 Time, occupancy bookkeeping, sector/waypoint and ground callbacks are isolated
 boundaries; this is not a complete original race replay.
 

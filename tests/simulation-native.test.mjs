@@ -9,6 +9,8 @@ import { calculateNativePlayerForces } from '../source/simulation/native-player.
 
 const inventory = JSON.parse(readFileSync(new URL('../evidence/gameplay/inventory.json', import.meta.url)));
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-fixtures.json', import.meta.url)));
+// native-fixtures.json is the 0x007f capture; its 53-bit sibling has its own tests.
+const precision = 24;
 function tableBytes(name) {
   const source = inventory.binaryTables.find(table => table.source === name);
   const bytes = new Uint8Array(source.bytes);
@@ -39,7 +41,7 @@ test('1600 portable input updates match shipped x86 instructions exactly', () =>
   for (const trace of fixtures.inputTraces) {
     const state = createNativeInputState();
     for (const frame of trace.frames) {
-      updateNativeInput(state, buttons(frame.mask), frame.delta, trace.mirrored);
+      updateNativeInput(state, buttons(frame.mask), frame.delta, trace.mirrored, undefined, { precision });
       // Per-operation single rounding reproduces the 24-bit emulation exactly.
       assert.equal(state.throttle, frame.expected.throttle);
       assert.equal(state.steering, frame.expected.steering);
@@ -65,12 +67,12 @@ test('120 portable force cases agree with original x86 instructions, including r
     for (const axle of ['front', 'rear']) {
       // FPATAN retains extended precision until the caller's float store;
       // one rear-axle double return differs from Math.atan by one double ULP.
-      close(slipAngle(fixture.body, physics, axle, fixture.steering), fixture.expected[`${axle}Slip`], 1e-15);
-      cmp(tireLateralForce(fixture.body, physics, axle, fixture.steering, fixture.tireUpgrade, fixture.handbrake), fixture.expected[`${axle}Force`]);
+      close(slipAngle(fixture.body, physics, axle, fixture.steering, { precision }), fixture.expected[`${axle}Slip`], 1e-15);
+      cmp(tireLateralForce(fixture.body, physics, axle, fixture.steering, fixture.tireUpgrade, fixture.handbrake, { precision }), fixture.expected[`${axle}Force`]);
     }
-    cmp(enginePower(physics, fixture.rpm, fixture.motorUpgrade), fixture.expected.power);
-    cmp(driveForce(physics, fixture), fixture.expected.drive);
-    const resistance = resistanceForce(fixture.body, physics, fixture);
+    cmp(enginePower(physics, fixture.rpm, fixture.motorUpgrade, { precision }), fixture.expected.power);
+    cmp(driveForce(physics, { ...fixture, precision }), fixture.expected.drive);
+    const resistance = resistanceForce(fixture.body, physics, { ...fixture, precision });
     cmp(resistance.lateral, fixture.expected.resistance.lateral);
     cmp(resistance.longitudinal, fixture.expected.resistance.longitudinal);
   }
@@ -81,7 +83,7 @@ test('complete active player force update agrees with x86 native velocity, force
     const physics = physicsTables[fixture.preset][fixture.record];
     const body = { ...fixture.body };
     const actual = {
-      ...calculateNativePlayerForces(body, physics, fixture, 0.025, fixture),
+      ...calculateNativePlayerForces(body, physics, fixture, 0.025, { ...fixture, precision }),
       lateralSpeed: body.lateralSpeed, forwardSpeed: body.forwardSpeed, yawRate: body.yawRate,
     };
     for (const [key, expected] of Object.entries(fixture.expected.playerForces)) {
@@ -144,10 +146,11 @@ test('native delta history weights and 100ms cap remain explicit', () => {
   close(filter.sample(0.025), 0.04375, 1e-8);
   close(filter.sample(0.025), 0.034375, 1e-8);
   close(filter.sample(0.025), 0.025, 1e-8);
-  assert.equal(filter.sample(2), 0.1);
+  // 0x48f4e0 returns the float 0.1 at 0x4d2270.
+  assert.equal(filter.sample(2), Math.fround(0.1));
   const zero = new NativeDeltaFilter();
   zero.sample(0); zero.sample(0); zero.sample(0);
-  assert.equal(zero.sample(0), 0.1);
+  assert.equal(zero.sample(0), Math.fround(0.1));
 });
 
 test('recovered reverse constants and force direction are retained', () => {

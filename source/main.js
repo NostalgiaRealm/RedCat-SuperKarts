@@ -161,11 +161,12 @@ function showCharacters(){
     }else showCountries();
   };
   const portrait=(i,small=false)=>i<0||i>3?'':configs['ini/shellimg.dat'].charpics[i].split(',')[small?2:1].trim();
-  showNative('TFRMSELECTCHAR',{actions:{...commonActions(),btnBack:()=>adventure?showAdventure():showMain(),btnOk:accept,
+  showNative('TFRMSELECTCHAR',{actions:{...commonActions(),btnBack:showMain,btnOk:accept,
     btnPrevious:()=>shift(-1),btnNext:()=>shift(1),...Object.fromEntries(['rdoEasy','rdoMedium','rdoHard'].map((key,i)=>[key,()=>{selection.difficulty=i;menuAudio?.character(selection.character,i+1);showCharacters();}]))},
     images:{imgBackGround:configs['ini/shellang.ini'].dutch_images[adventure?26:27],
       imgPrevious:portrait(selection.character-1,true),imgCurrent:portrait(selection.character),imgNext:portrait(selection.character+1,true)},
-    disabled:[...(selection.character===0?['btnPrevious']:[]),...(selection.character===3?['btnNext']:[])],
+    // 0x473c9f enables Back only in QuickRace (shell state 2).
+    disabled:[...(adventure?['btnBack']:[]),...(selection.character===0?['btnPrevious']:[]),...(selection.character===3?['btnNext']:[])],
     text:{lblCharname:characters[selection.character],btnOk:configs['ini/shellang.ini'].dutch[adventure?14:47]},
     selected:[['rdoEasy','rdoMedium','rdoHard'][selection.difficulty]]});
 }
@@ -216,18 +217,26 @@ function showBriefing(){
   screen.querySelector('[data-element=lblBriefing]').style.setProperty('white-space','pre-line','important');
   menuAudio?.generic(nativeAdventureBriefingSound(selection.country,selection.race));
 }
-function showAdventure(){
+// rcskmenu 0x475400 seeds the form slot from lastplayer (raceSave.selectedSlot).
+// Left/Right 0x475e90/0x475ec0 change only the form slot; OK 0x4755d9, New
+// 0x476175 and Delete 0x476093 write lastplayer.
+let adventureSlot=-1;
+function showAdventure(slot){
   playMode='adventure';newProfileSelection=false;formVoice('adventure',24,25);page='adventure';
   const occupied=raceSave.profiles.map(Boolean);
-  if(!selectedProfile())raceSave.selectedSlot=occupied.indexOf(true);
-  const slot=raceSave.selectedSlot,profile=selectedProfile();
+  if(Number.isInteger(slot))adventureSlot=slot;
+  else adventureSlot=selectedProfile()?raceSave.selectedSlot:occupied.indexOf(true);
+  slot=adventureSlot;
+  const profile=raceSave.profiles[slot]||null;
   if(profile)selection={character:profile.character,difficulty:profile.difficulty,country:profile.country,race:profile.raceType};
   const previous=nativeAdventureSaveSlot(occupied,'previous',slot),next=nativeAdventureSaveSlot(occupied,'next',slot);
   const portrait=(index,small)=>index<0?'':configs['ini/shellimg.dat'].charpics[raceSave.profiles[index].character].split(',')[small?2:1].trim();
-  const shift=index=>{if(index>=0){raceSave.selectedSlot=index;writeRaceSave(raceSave);showAdventure();}};
+  const shift=index=>{if(index>=0)showAdventure(index);};
   const accept=async()=>{
     if(!profile){originalNotice(configs['ini/shellang.ini'].dutch[49],newAdventureProfile,24);return;}
-    if(profile.completed){restartNativeAdventureProfile(profile);writeRaceSave(raceSave);}
+    const changed=raceSave.selectedSlot!==slot||profile.completed;raceSave.selectedSlot=slot;
+    if(profile.completed)restartNativeAdventureProfile(profile);
+    if(changed)writeRaceSave(raceSave);
     profileSelection(profile);await menuAudio?.character(profile.character,17,true);showBriefing();
   };
   showNative('TFRMADVENTUREMAIN',{actions:{...commonActions(),btnBack:showMain,btnOk:accept,
@@ -242,22 +251,23 @@ function newAdventureProfile(){
   if(slot<0){originalNotice(configs['ini/shellang.ini'].dutch[52],restore,21);return;}
   showNameEntry(configs['ini/shellang.ini'].dutch[53],'',name=>{
     if(!name){restore();return;}
-    const profile=createNativeAdventureProfile(name,{slot,raceType:selectedProfile()?.raceType??0});
+    const profile=createNativeAdventureProfile(name,{slot,raceType:raceSave.profiles[adventureSlot]?.raceType??0});
     raceSave.profiles[slot]=profile;raceSave.selectedSlot=slot;writeRaceSave(raceSave);
     playMode='adventure';newProfileSelection=true;profileSelection(profile);showCharacters();
   },restore,'profile-name');
 }
-function removeSelectedProfile(){
-  const slot=raceSave.selectedSlot;raceSave.profiles[slot]=null;
+function removeSelectedProfile(slot=raceSave.selectedSlot){
+  raceSave.profiles[slot]=null;
   const occupied=raceSave.profiles.map(Boolean),next=nativeAdventureSaveSlot(occupied,'next',slot);
   raceSave.selectedSlot=next>=0?next:nativeAdventureSaveSlot(occupied,'previous',slot);
   writeRaceSave(raceSave);
 }
 function deleteAdventureProfile(){
-  if(!selectedProfile())return;
+  const slot=adventureSlot,profile=raceSave.profiles[slot];
+  if(!profile)return;
   const restore=menuReturn();
-  menuAudio?.character(selectedProfile().character,26);
-  originalPrompt(48,restore,()=>{restore();removeSelectedProfile();showAdventure();});
+  menuAudio?.character(profile.character,26);
+  originalPrompt(48,restore,()=>{restore();removeSelectedProfile(slot);showAdventure();});
 }
 function showHighscores(){
   if(page!=='highscores')highscoreCountry=0;
@@ -454,11 +464,14 @@ function showDebrief(){
     properties:{lblTotal:{Width:350},lblBestLap:{Width:350}},
     hidden:Array.from({length:5},(_,rank)=>rank).filter(rank=>!activeRanks.has(rank))
       .flatMap(rank=>[`imgPosition${rank+1}`,`imgFinPos${rank+1}`]),
-    actions:{...commonActions(),btnBack:()=>lastRace.kind==='adventure'?processAdventureResult(true):processHighscore(showMain),
+    actions:{...commonActions(),btnBack:debriefBack,
       btnOk:()=>lastRace.kind==='adventure'?processAdventureResult(false):processHighscore(()=>{selection={...chosen};startQuickRace();})},
   });
   controlFocus(lastRace.kind==='adventure'?'btnOk':'btnBack');
 }
+// rcskmenu 0x471b8c: the debrief's Back also processes the result (0x471bc0).
+// The form has no key handlers, so keyboard/controller Back uses this action.
+function debriefBack(){lastRace.kind==='adventure'?processAdventureResult(true):processHighscore(showMain);}
 function controlFocus(name){screen.querySelector(`[data-native=${name}]`)?.focus();}
 function processHighscore(done){
   const {patch,selection:chosen}=lastRace;
@@ -761,7 +774,10 @@ function back(reason){
   if(page==='controls'||page==='start-info'){finishControls(false);return;}
   if(page==='help'){if(!helpViewer?.closePanel())helpReturn();return;}
   if(['prompt','score-name','profile-name'].includes(page)){promptReturn?.();return;}
-  if(page==='countries')showCharacters();else if(page==='characters'&&playMode==='adventure')showAdventure();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
+  if(page==='debrief'){if(lastRace)debriefBack();return;}
+  // rcskmenu 0x473c9f disables Back in Adventure character selection.
+  if(page==='characters'&&playMode==='adventure')return;
+  if(page==='countries')showCharacters();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
 }
 function menuKey(key,source){
   if((mode==='intro'||mode==='reward')&&document.activeElement===$('movie-audio')&&(key==='Enter'||key==='Space')){
@@ -782,6 +798,8 @@ function menuKey(key,source){
   const items=nativeNavigationOrder([...screen.querySelectorAll('button,input,select,a[href],[role=button]')].filter(el=>!el.disabled&&el.tabIndex>=0&&el.getClientRects().length));
   const current=document.activeElement,index=items.indexOf(current);
   if(['ArrowRight','ArrowLeft'].includes(key)&&current instanceof HTMLInputElement&&current.type==='range'){
+    // Controller left/right on an original slider uses its 0x45fb80 steps.
+    if(current.nativeSlider){current.nativeSlider.key(key);return;}
     const step=Number(current.step)||1;current.value=Number(current.value)+(key==='ArrowRight'?step:-step);current.dispatchEvent(new Event('input'));return;
   }
   if(['ArrowRight','ArrowLeft'].includes(key)&&current instanceof HTMLSelectElement){

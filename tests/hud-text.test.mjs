@@ -7,16 +7,21 @@ import {getHudFont, getHudStringSpec, nativeGlyphCenters, layoutHudText,
 const json = file => JSON.parse(fs.readFileSync(new URL(file, import.meta.url)));
 const config = json('../public/assets/config.json');
 const native = json('../evidence/native/hud-text-fixtures.json');
+const native53 = json('../evidence/native/hud-text-fixtures-53.json');
 const transforms = json('../evidence/native/hud-string-transform-fixtures.json');
 const near = (actual, expected, tolerance = 0.00005) => assert.ok(Math.abs(actual - expected) < tolerance,
   `${actual} != ${expected}`);
 
-test('306 layouts match original fixed/proportional instructions exactly', () => {
-  for (const row of native.layouts) {
-    const font = getHudFont(config, row.font);
-    assert.deepEqual(nativeGlyphCenters(font, row.type, row.alignment,
-      row.length, row.cellWidth, row.text), row.glyphs,
-    `${row.font} ${row.type} ${row.alignment} ${row.length} ${JSON.stringify(row.text)}`);
+test('306 layouts match original fixed/proportional instructions exactly at both x87 precisions', () => {
+  // tools/native-hud-fixtures.py probes at PC24, or at PC53 with RCSK_FIXTURE_PRECISION=53.
+  assert.equal(native53.fpuControlWord, '0x027f (53-bit precision)');
+  for (const [precision, fixture] of [[24, native], [53, native53]]) {
+    for (const row of fixture.layouts) {
+      const font = getHudFont(config, row.font);
+      assert.deepEqual(nativeGlyphCenters(font, row.type, row.alignment,
+        row.length, row.cellWidth, row.text, precision), row.glyphs,
+      `${precision} ${row.font} ${row.type} ${row.alignment} ${row.length} ${JSON.stringify(row.text)}`);
+    }
   }
 });
 
@@ -58,10 +63,18 @@ test('lap number and slash share original anchor and keep independent alignment'
 });
 
 test('all ten authored strings match forty original hierarchy/scale instruction cases', () => {
+  // tools/native-hud-string-transform-fixtures.py executes 4606c0, 45c4d0,
+  // 45caa0, 45cc00 -> 463c90 and 4589c0/463bb0 on the shipped overlay.ini.
+  assert.equal(transforms.rows.length, 40);
+  assert.deepEqual([...new Set(transforms.rows.map(row => row.precision))], [24, 53]);
   for (const row of transforms.rows) {
     const spec = getHudStringSpec(config, row.id, {precision: row.precision,
       overrides: row.override ? {[row.id]: {scale: row.override}} : {}});
-    assert.deepEqual(spec.context, row.context, `${row.id} precision${row.precision}`);
+    const label = `${row.id} precision${row.precision} ${row.override ? 'SetScale' : 'INI'}`;
+    assert.deepEqual(spec.parentContext, row.parent, `${label} parent`);
+    assert.deepEqual(spec.local.position, row.position, `${label} position`);
+    assert.deepEqual(spec.local.scale, row.scale, `${label} scale`);
+    assert.deepEqual(spec.context, row.context, `${label} context`);
   }
   const bonus = getHudStringSpec(config, 'string_bonus');
   bonus.position.forEach((x, i) => near(x, [70, 360][i]));

@@ -8,6 +8,7 @@ Run with re-python (pefile and unicorn are in the installed analysis runtime).
 import argparse
 import hashlib
 import json
+import os
 import random
 import struct
 from pathlib import Path
@@ -21,6 +22,15 @@ SOURCE = Path("/home/rick/Games/redcat-superkarts/drive_c/Program Files (x86)/Da
 SCRATCH = 0x20000000
 OBJECT = 0x21000000
 STACK = 0x10000000
+# RCSK_FIXTURE_PRECISION=53 probes at the CRT's 53-bit control word and writes a
+# sibling "-53" fixture from the same inputs; the default keeps the 24-bit files.
+PRECISION = int(os.environ.get("RCSK_FIXTURE_PRECISION", "24"))
+CONTROL_WORD = {24: 0x007F, 53: 0x027F}[PRECISION]
+
+
+def precision_path(path):
+    path = Path(path)
+    return path if PRECISION == 24 else path.with_name(f"{path.stem}-53{path.suffix}")
 
 
 class NativeProbe:
@@ -30,10 +40,10 @@ class NativeProbe:
         self.sha = hashlib.sha256(binary.read_bytes()).hexdigest()
         pe = pefile.PE(str(binary))
         self.uc = Uc(UC_ARCH_X86, UC_MODE_32)
-        # Explicit 24-bit precision with masked exceptions. The game's CRT
-        # starts in 53-bit mode; device-era runtime precision remains scoped
-        # separately. Never silently rely on Unicorn's default control word.
-        self.uc.reg_write(UC_X86_REG_FPCW, 0x007f)
+        # Explicit precision (default 24-bit) with masked exceptions. The game's
+        # CRT starts in 53-bit mode; see docs/original-comparison-2026-10-28.md.
+        # Never silently rely on Unicorn's default control word.
+        self.uc.reg_write(UC_X86_REG_FPCW, CONTROL_WORD)
         self.uc.mem_map(pe.OPTIONAL_HEADER.ImageBase, (pe.OPTIONAL_HEADER.SizeOfImage + 4095) & ~4095)
         self.uc.mem_write(pe.OPTIONAL_HEADER.ImageBase, pe.get_memory_mapped_image())
         for address, size in [(STACK, 0x10000), (SCRATCH, 0x10000), (OBJECT, 0x1000)]:
@@ -179,7 +189,7 @@ def generate(source, output):
     result = {
         "format": "superkarts-native-gameplay-fixtures-v1", "sha256": probe.sha,
         "method": "Unicorn x86 instruction emulation of original PE. Input poll and delta calls stubbed. No Wine/full race observation.",
-        "fpuControlWord": "0x007f (24-bit precision)",
+        "fpuControlWord": f"0x{CONTROL_WORD:04x} ({PRECISION}-bit precision)",
         "runtimeAngleCount": 4096,
         "entrypoints": ["0x433870", "0x414ff0", "0x415160", "0x415410", "0x415450", "0x415520", "0x415990"],
         "tolerance": {"inputAbsolute": 0.00003, "forceRelative": 0.000003, "forceAbsolute": 0.002},
@@ -194,4 +204,4 @@ if __name__ == "__main__":
     parser.add_argument("--source", type=Path, default=SOURCE)
     parser.add_argument("--output", type=Path, default=ROOT / "evidence/gameplay/native-fixtures.json")
     args = parser.parse_args()
-    generate(args.source, args.output)
+    generate(args.source, precision_path(args.output))

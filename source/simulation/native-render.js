@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32=Math.fround;
 
 /** 0x42cff0. The native values select bilinear/nearest filtering without mipmaps. */
@@ -33,7 +34,7 @@ export function nativeFogSelection(fog,hardware,random){
 }
 
 /** 0x4304d0: camera-facing visibility window, with source float stores/order. */
-export function nativeVisibleChunkStart({sector,routeCount,visibleChunks,forward,position,target,backOffset=2,precision=24}){
+export function nativeVisibleChunkStart({sector,routeCount,visibleChunks,forward,position,target,backOffset=2,precision=NATIVE_PRECISION}){
  const r=precision===24?f32:Number;
  const [x,y,z]=forward.map(f32);
  const length=r(Math.sqrt(r(r(r(z*z)+r(y*y))+r(x*x))));
@@ -70,7 +71,7 @@ export function nativeObjectCallbackRanges(playerSector,visibleChunks,routeCount
 }
 
 /** 0x42f470. Hardware minimum is25, software15; only active race phase0 adapts. */
-export function nativeAdjustVisibleChunks(count,{phase,hardware,delta,precision=24}){
+export function nativeAdjustVisibleChunks(count,{phase,hardware,delta,precision=NATIVE_PRECISION}){
  const r=precision===24?f32:Number;
  return phase===0&&r(1/f32(delta))<10&&count>(hardware?25:15)?count-1:count;
 }

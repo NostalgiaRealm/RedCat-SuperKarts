@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 
 /** Five-word records copied from the original PE table0x4f4620 by0x466360. */
@@ -12,7 +13,7 @@ export const NATIVE_MINIMAP_TRANSFORMS = Object.freeze([
 
 /** 0x466830/0x4669d0. Returns the overlay element's local XYZ, before its parent transform. */
 export function nativeMinimapPosition(trackIndex, position, {
-  precision = 24, transform = NATIVE_MINIMAP_TRANSFORMS[trackIndex],
+  precision = NATIVE_PRECISION, transform = NATIVE_MINIMAP_TRANSFORMS[trackIndex],
 } = {}) {
   if (!transform) throw new RangeError('Original minimap track must be0..5');
   const r = precision === 53 ? Number : f32;

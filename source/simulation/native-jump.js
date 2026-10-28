@@ -2,7 +2,10 @@ import {nativeProjectileFacing} from './native-projectile.js';
 
 const f32=Math.fround;
 
-/** 42bbf0 uses GetPrivateProfileIntA then converts unsigned integers to float. */
+/**
+ * 42bbf0 uses GetPrivateProfileIntA then converts unsigned integers to float
+ * (FILD qword, FSTP float at 0x42bef6..0x42bf04 etc.): no x87 arithmetic.
+ */
 export function nativeJumpSettings(config) {
   const source=config['track.ini'].zipper_boost;
   const integer=key=>f32((Number.parseInt(source[key],10)||0)>>>0);
@@ -17,6 +20,9 @@ export function nativeJumpSettings(config) {
  * The source checks the current DMP node and direction, then reads the
  * CURRENT sector's secondary PMP marker, which may differ from the crossed
  * boundary when moving backwards. It adds velocity to each child wheel.
+ * Precision-independent: each wheel is one FADD stored at once (0x441d27/
+ * 0x441d2f) and the speed one FMUL stored at once (0x441d3c/0x441d43); the
+ * 0x415be0 facing test takes routeOptions.precision.
  */
 export function applyNativePlayerJump(marker,{track,body,wheels,settings,routeOptions}) {
   if(marker!==49&&marker!==52)return false;

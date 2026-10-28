@@ -17,13 +17,13 @@ test('original timer initialization fixes all six startup path durations before 
 });
 
 test('native initialization primes history with absolute uptime, retaining three capped startup updates',()=>{
+  // 0x48f3e0 stores every partial sum, so both control words give one result.
   for(const c of fixtures.cases){
-    if(c.precision!==24)continue;
     const filter=new NativeDeltaFilter({uptimeMs:c.uptimeMs});
-    assert.equal(Math.fround(filter.initialDelta),c.initialDelta);
+    assert.equal(filter.initialDelta,c.initialDelta);
     c.updates.forEach((update,index)=>{
       const raw=update.rawHistory[(index+1)%4];
-      assert.ok(Math.abs(filter.sample(raw)-update.delta)<=1e-8);
+      assert.equal(filter.sample(raw),update.delta,`${c.precision}/${c.uptimeMs}/${index}`);
     });
     if(c.uptimeMs>=1000)assert.deepEqual(c.updates.slice(0,3).map(x=>x.delta),Array(3).fill(Math.fround(.1)));
   }

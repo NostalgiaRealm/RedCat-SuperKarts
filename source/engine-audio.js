@@ -1,4 +1,5 @@
 import {getSoundSpec} from './asset-animation.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 const f = Math.fround;
 const keys = ['geara', 'gearb', 'stat'];
@@ -22,7 +23,7 @@ export function getNativeEngineAudioSpec(config, manifest) {
     nativeFunctions: ['004182d0', '00418780', '00418950', '00418c80', '004189d0', '00418980']};
 }
 
-export function createNativeEngineAudio(spec, {precision = 24} = {}) {
+export function createNativeEngineAudio(spec, {precision = NATIVE_PRECISION} = {}) {
   if (spec.cylinderSamples.length) throw new Error('This source has cylinder samples requiring the native random scheduler');
   return {spec, precision, active: false, gear: -1,
     minimumRpm: Array.from({length: spec.gearCount}, (_, i) => i === 0 ? spec.minimumRpm : -1)};
@@ -44,7 +45,7 @@ export function stopNativeEngineAudio(state) {
   return [state.spec.start, state.spec.switchGear].map(sound => ({event: sound.event, op: 'stop'}));
 }
 
-export function nativeEngineLayerParameters(row, rpm, minimumRpm, maximumRpm, {precision = 24} = {}) {
+export function nativeEngineLayerParameters(row, rpm, minimumRpm, maximumRpm, {precision = NATIVE_PRECISION} = {}) {
   const r = precision === 24 ? f : Number;
   let fraction = r(((rpm | 0) - minimumRpm) / (maximumRpm - minimumRpm));
   // x87's unordered comparison follows the below-zero branch too (0/0).

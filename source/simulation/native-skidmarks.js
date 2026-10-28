@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f=Math.fround;
 
 /**426aa0/426900/4269e0 + render-time426db0/426c50.
@@ -5,7 +6,7 @@ const f=Math.fround;
  * positions and current body matrix; these are not ground-projected decals.
  */
 export class NativeSkidmarks {
-  constructor({precision=24,enabled=true,fade=true}={}) {
+  constructor({precision=NATIVE_PRECISION,enabled=true,fade=true}={}) {
     Object.assign(this,{precision,enabled,fade,lastSlip:0,currentIndex:-1,texture:'s_sfx'});
     this.strips=Array.from({length:20},(_,id)=>({id,active:false,period:0,tick:0,sides:[[],[]]}));
   }

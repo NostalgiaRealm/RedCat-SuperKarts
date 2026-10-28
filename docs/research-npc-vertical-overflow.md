@@ -33,7 +33,7 @@ instructions in Unicorn, without changing the source file. It writes
 `evidence/native/ai-vertical-overflow.json`, which records the source and
 capture hashes and float32 byte patterns.
 
-At active 24-bit FPU precision, all 119 consecutive captured vertical-speed
+At the 24-bit FPU precision the capture was recorded with, all 119 consecutive captured vertical-speed
 transitions match `0x406100` bit for bit. The next original call changes
 `3.3529011546832445e38` (`873e7c7f`, little endian) into positive infinity
 (`0000807f`). Starting with vertical speed 1 and forward speed 40, repeated

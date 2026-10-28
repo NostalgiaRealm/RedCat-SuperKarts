@@ -7,6 +7,7 @@ import {getNativeScenerySounds, getNativeReactiveSounds, getNativeSpatialAudioCo
 import {getNativeEngineAudioSpec, createNativeEngineAudio, startNativeEngineAudio,
   stopNativeEngineAudio, updateNativeEngineAudio, nativeSoundVolume,
   nativeSoundFrequency, nativeWavSampleRate} from './engine-audio.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 /** Direct43b600/434f20 calls; DISAPP/REAPP instead use character voice banks. */
 export const NATIVE_DIRECT_RACE_SOUNDS = Object.freeze([
@@ -17,7 +18,7 @@ export const NATIVE_DIRECT_RACE_SOUNDS = Object.freeze([
 /** WebAudio transport for recovered native sound commands. Timing/gear rules
  * stay in engine-audio.js; this class only owns decoded original WAV voices. */
 export class NativeRaceAudio {
-  constructor(config, manifest, {context = null, assetBase = '/assets/', groupVolume, precision = 24} = {}) {
+  constructor(config, manifest, {context = null, assetBase = '/assets/', groupVolume, precision = NATIVE_PRECISION} = {}) {
     this.config = config;
     this.manifest = manifest;
     this.context = context;

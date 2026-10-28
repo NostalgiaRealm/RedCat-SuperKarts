@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 /**
  * Recovered keyboard/gamepad-button input law, rcskspel.dat 0x433870/0x433cf0.
  * This is an isolated native subsystem, not a complete kart simulation.
@@ -7,7 +8,7 @@ export function createNativeInputState() {
   return { throttle: 0, brake: 0, steering: 0, handbrake: false };
 }
 
-export function updateNativeInput(state, buttons, deltaSeconds, mirrored = false, onBonus) {
+export function updateNativeInput(state, buttons, deltaSeconds, mirrored = false, onBonus, { precision = NATIVE_PRECISION } = {}) {
   // 48f4e0 returns the float32 representation of .1, slightly above JS .1.
   if (!Number.isFinite(deltaSeconds) || deltaSeconds < 0 || deltaSeconds > Math.fround(0.1)) {
     throw new RangeError('Native input delta must be between 0 and 0.1 seconds');
@@ -15,27 +16,29 @@ export function updateNativeInput(state, buttons, deltaSeconds, mirrored = false
   // 433870 writes handbrake before firing, then updates throttle/brake/steer.
   state.handbrake = Boolean(buttons.handbrake);
   onBonus?.();
-  // Documented 24-bit x87 precision: every float operation rounds to single.
-  const f = Math.fround, dt = f(deltaSeconds);
-  state.throttle = buttons.accelerate ? Math.min(100, f(f(dt * 70) + state.throttle)) : 0;
-  // x87 -> __ftol truncates after EACH update (0x433a19..0x433a52).
+  // f rounds float stores; r rounds values kept in ST0 (single at PC=24,
+  // double at PC=53). Clamps compare ST0, which matches clamping the store.
+  const f = Math.fround, r = precision === 24 ? f : Number, dt = f(deltaSeconds);
+  state.throttle = buttons.accelerate ? Math.min(100, f(r(r(dt * 70) + state.throttle))) : 0;
+  // x87 -> __ftol truncates ST0 after EACH update (0x433a19..0x433a52).
   // Moving this routine into requestAnimationFrame would break braking at >40Hz.
-  state.brake = buttons.brake ? Math.min(100, Math.trunc(f(f(dt * 40) + state.brake))) : 0;
+  state.brake = buttons.brake ? Math.min(100, Math.trunc(r(r(dt * 40) + state.brake))) : 0;
 
   const left = Boolean(mirrored ? buttons.right : buttons.left);
   const right = Boolean(mirrored ? buttons.left : buttons.right);
   const previous = state.steering;
-  // 0x433b1b: float constant .01f, then 1-x and doubling, stored as float.
-  const gain = f(2 * f(1 - f(Math.abs(previous) * f(0.01))));
-  const ramp = f(f(dt * gain) * 200);
+  // 0x433b1b: float constant .01f, then 1-x and doubling, stored as float (0x433b42).
+  const gain = f(2 * r(1 - r(Math.abs(previous) * f(0.01))));
+  // 0x433b9f/0x433c2e: the ramp stays in ST0 into the add/subtract.
+  const ramp = r(r(dt * gain) * 200);
   if (left) {
-    state.steering = previous > 0 ? 0 : Math.max(-100, f((previous === 0 ? -15 : previous) - ramp));
+    state.steering = previous > 0 ? 0 : Math.max(-100, f(r((previous === 0 ? -15 : previous) - ramp)));
   } else if (right) {
-    state.steering = previous < 0 ? 0 : Math.min(100, f((previous === 0 ? 15 : previous) + ramp));
+    state.steering = previous < 0 ? 0 : Math.min(100, f(r((previous === 0 ? 15 : previous) + ramp)));
   } else if (previous > 0) {
-    state.steering = Math.max(0, f(previous - f(dt * 400)));
+    state.steering = Math.max(0, f(r(previous - r(dt * 400))));
   } else if (previous < 0) {
-    state.steering = Math.min(0, f(f(dt * 400) + previous));
+    state.steering = Math.min(0, f(r(r(dt * 400) + previous)));
   }
   return state;
 }

@@ -128,3 +128,32 @@ test('440d70 pauses lap timer0 at the finish, so the results-phase HUD lap time 
   const frozen=getRaceHudText({lapCounter:race.lapCount,totalLaps:race.lapLimit,lapTimeMs:0,bestLapTimeMs:race.bestLapMs});
   assert.equal(hud.text.string_laptime_value,frozen.string_laptime_value);
 });
+
+test('unstarted timer0 shows 00:00:00 through start camera, countdown and a phase1 P pause',()=>{
+  // 42a670 leaves timer0 unstarted (start -1); 42a4d0 then reads 0 and 46ecc0
+  // formats it via 46f5f0 with no zero special case. 42f9c0 permits P in
+  // phase1; 42a420 only clears an unstarted timer's pause. 42f980 starts it.
+  const read=file=>fs.readFileSync(new URL('../public/assets/'+file,import.meta.url));
+  const sim=new RaceSimulation({config,manifest:JSON.parse(read('manifest.json')),cars:JSON.parse(read('cars.json')),
+    track:JSON.parse(read('tracks/etappe0.json')),random:new NativeRandom(0),countdown:true,
+    physicsBytes:read('physics/phys1.dat'),racerBytes:read('racer-tables/cars1.dat')});
+  const {hud}=fixture(),race=sim.race,input={throttle:0,brake:0,steer:0,handbrake:0,bonus:0};
+  hud.update(race,0,{nowSeconds:0});
+  assert.equal(hud.text.string_laptime_value,'00:00:00','first overlay update');
+  let now=0,paused=false;
+  const step=()=>{now+=25;sim.step(input,.025,now);hud.update(race,.025,{nowSeconds:sim.engineMs/1000});};
+  assert.ok(sim.startCamera);
+  for(let i=0;i<2000&&race.phase!==0;i++){
+    step();
+    assert.equal(hud.text.string_laptime_value,'00:00:00',`phase${race.phase} at ${now} ms`);
+    if(!paused&&sim.countdownStarted){
+      paused=true;sim.pause(now,{native:true});now+=5000;sim.resume(now);
+      assert.equal(sim.timers.get(0).startMs,0xffffffff);
+      assert.equal(sim.timers.get(0).pausedAtMs,0);
+    }
+  }
+  assert.ok(paused);assert.equal(race.phase,0);
+  assert.equal(sim.timers.get(0).startMs,now,'42f980 starts timer0 at green');
+  for(let i=0;i<40;i++)step();
+  assert.equal(hud.text.string_laptime_value,'00:01:00');
+});

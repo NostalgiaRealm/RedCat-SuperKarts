@@ -67,12 +67,13 @@ try{
   await page.locator('[data-native=btnAdventure]').click();await page.waitForSelector('[data-form=TFRMADVENTUREMAIN]');
   assert.equal(await page.locator('[data-element=lblPlayerName]').textContent(),'Zoë & RedCat');
   await page.locator('[data-native=btnRight]').click();
-  await page.waitForFunction(()=>JSON.parse(localStorage.getItem('rcsk.race-save.v1')).selectedSlot===29);
+  await page.waitForFunction(()=>document.querySelector('[data-element=lblPlayerName]')?.textContent==='Laatste winnaar');
   await page.reload();await page.waitForSelector('[data-form=TFRMMAIN]');
   await page.locator('[data-native=btnAdventure]').click();await page.waitForSelector('[data-form=TFRMADVENTUREMAIN]');
-  assert.equal(await page.locator('[data-element=lblPlayerName]').textContent(),'Laatste winnaar');
-  assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('rcsk.race-save.v1'))),{...fixture.storage['rcsk.race-save.v1'],selectedSlot:29});
-  report.checks.push('Bundled Adventure writes and reloads the unchanged v1 save schema');
+  // Browsing changes only the form slot; the remembered profile is unchanged.
+  assert.equal(await page.locator('[data-element=lblPlayerName]').textContent(),'Zoë & RedCat');
+  assert.deepEqual(await page.evaluate(()=>JSON.parse(localStorage.getItem('rcsk.race-save.v1'))),fixture.storage['rcsk.race-save.v1']);
+  report.checks.push('Bundled Adventure browsing reloads the unchanged v1 save');
   // Hold one authored track response to exercise Back while the actual viewer loads.
   let release,requested;
   const held=new Promise(resolve=>release=resolve);

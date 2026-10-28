@@ -1,4 +1,6 @@
 // Native references are rcskspel.dat virtual addresses. All coordinates remain native.
+import { nativePlacementAngles } from './simulation/native-transform.js';
+
 const lower = value => String(value || '').trim().toLowerCase();
 const split = value => String(value || '').split(/[,;]/).map(s => s.trim());
 const number = value => Number(String(value || '0').split(';')[0].trim());
@@ -91,7 +93,8 @@ export function getRotationSpec(config, placement) {
 export function createNativeRotation(spec, degrees, randomInt, angleCount = 4096) {
   // 0043e140 only randomizes when the config equals 1. Value100 stays unrandomized.
   // 00442fc0 -> 004ac410 -> 004a1510 selects 4096 in active game initialization.
-  const angles = degrees.map(value => Math.fround(value * angleCount / 360));
+  // The start angles are the object's 0043e283..0043e2ad conversion.
+  const angles = nativePlacementAngles(degrees, angleCount);
   for (let i = 0; i < 3; i++) {
     if (spec.randomize[i]) {
       if (!randomInt) throw new Error('Native random integer source required for rotation phase');

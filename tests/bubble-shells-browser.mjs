@@ -17,7 +17,7 @@ try{
   await page.waitForFunction(()=>window.rcsk?.state.page==='driving',null,{timeout:60000});
   await page.evaluate(()=>{
     const view=rcsk.viewer;view.clock.pause();
-    window.bubbleProbe={now:view.clock.tick*25,draws:0,preMovement:null};
+    window.bubbleProbe={now:view.clock.simulationMs,draws:0,preMovement:null};
     const manager=view.simulation.bubbles,step=manager.step.bind(manager);
     manager.step=()=>{
       step();

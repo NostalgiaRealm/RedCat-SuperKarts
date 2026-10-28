@@ -1,5 +1,6 @@
 import { nativeTrigTable } from './native-integrator.js';
 import { applyNativeKartContact } from './native-kart-contact.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 /** 0x491d30 contact dispatch after response, including its directed pair latch order. */
 export function finishNativeContactStep(body, contact, impulse = 0) {
@@ -16,7 +17,7 @@ export function finishNativeContactStep(body, contact, impulse = 0) {
   }
 }
 /** Static rail impulse, original 0x49c220. Contact coordinates/normals are in body space. */
-export function applyNativeRailContact(body, contact, { precision = 24 } = {}) {
+export function applyNativeRailContact(body, contact, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 24 ? f32 : Number;
   const [nx,ny,nz] = contact.normal;
   const px = f32(r(contact.point[0] * f32(.1)));
@@ -43,7 +44,7 @@ export function applyNativeRailContact(body, contact, { precision = 24 } = {}) {
 }
 
 /** Native Liang–Barsky helper 0x49a7f0, including its inside-to-inside case. */
-export function nativePointRectangleSweep(start, end, bounds, { precision = 24 } = {}) {
+export function nativePointRectangleSweep(start, end, bounds, { precision = NATIVE_PRECISION } = {}) {
   const r = precision === 24 ? f32 : Number;
   const dx = f32(r(end[0] - start[0])), dz = f32(r(end[2] - start[2]));
   if (dx === 0 && dz === 0) return { fraction: 1, edge: null };
@@ -57,13 +58,14 @@ export function nativePointRectangleSweep(start, end, bounds, { precision = 24 }
   const pairs = [[dx, r(bounds[0] - start[0]),3],[-dx,r(start[0] - bounds[3]),1],[dz,r(bounds[2] - start[2]),0],[-dz,r(start[2] - bounds[5]),2]];
   for(const [p,q,e] of pairs) {
     if(p === 0) { if(q > 0) return {fraction:1,edge:null}; continue; }
-    const t = f32(r(f32(q) / p));
+    // 0x49a750 compares the quotient in ST0 and rounds it only on store.
+    const t = r(f32(q) / p);
     if(p < 0) {
       if(t < low) return {fraction:1,edge:null};
-      if(t < high) high=t;
+      if(t < high) high=f32(t);
     } else {
       if(high < t) return {fraction:1,edge:null};
-      if(low < t) { low=t; edge=e; }
+      if(low < t) { low=f32(t); edge=e; }
     }
   }
   return low>0 ? {fraction:low,edge} : {fraction:1,edge:null};
@@ -79,7 +81,7 @@ function rotateNativePoint(point, angle, precision) {
   return [f32(r(r(cos[a]*point[0])-r(sin[a]*point[2]))),point[1],f32(r(r(sin[a]*point[0])+r(cos[a]*point[2])))];
 }
 /** Directed moving-corner sweep 0x49a120; movement is in obstacle local space. */
-export function nativeRectangleSweep(obstacle, moving, movement, {precision=24}={}) {
+export function nativeRectangleSweep(obstacle, moving, movement, {precision=NATIVE_PRECISION}={}) {
   const r=precision===24?f32:Number;
   const vertices=nativeRectangleVertices(moving).map(point=>{
     const world=rotateNativePoint(point,moving.angle,precision);
@@ -103,7 +105,7 @@ export function nativeRectangleSweep(obstacle, moving, movement, {precision=24}=
 }
 
 /** CMP rail constructor 0x49ced0/0x4997f0. Source delta is a direction/length. */
-export function nativeRailRectangle(record, {precision=24}={}) {
+export function nativeRailRectangle(record, {precision=NATIVE_PRECISION}={}) {
   const r=precision===24?f32:Number;
   const dx=record.delta[0], dz=record.delta[2];
   const length=f32(Math.sqrt(r(r(dx*dx)+r(dz*dz))));
@@ -120,7 +122,7 @@ function rectangleInSpace(obstacle,moving,precision) {
   });
 }
 /** Native 0x49a480 strict corner-inside test (tested in both directions by caller). */
-export function nativeRectangleOverlap(obstacle,moving,{precision=24}={}) {
+export function nativeRectangleOverlap(obstacle,moving,{precision=NATIVE_PRECISION}={}) {
   return rectangleInSpace(obstacle,moving,precision).some(p=>p[0]>obstacle.minX&&p[0]<obstacle.maxX&&p[2]>obstacle.minZ&&p[2]<obstacle.maxZ);
 }
 function contactNormal(rect,edge,angle,precision) {
@@ -133,7 +135,7 @@ function contactNormal(rect,edge,angle,precision) {
 
 /** Original rail and dynamic rectangle sweeps, preserving candidate order. */
 export class NativeRailCollision {
-  constructor(track,bounds,{precision=24}={}) {
+  constructor(track,bounds,{precision=NATIVE_PRECISION}={}) {
     this.track=track;this.bounds=bounds;this.precision=precision;
     this.rails=track.collision.map(c=>nativeRailRectangle(c,{precision}));
     this.bodies=[];
@@ -181,8 +183,10 @@ export class NativeRailCollision {
     const {sin,cos}=nativeTrigTable(precision),i=moving.angle&4095;
     const velocity=[r(r(cos[i]*body.lateralSpeed)-r(sin[i]*body.forwardSpeed)),0,f32(r(r(sin[i]*body.lateralSpeed)+r(cos[i]*body.forwardSpeed)))];
     const amount=f32(r(r(fraction*dt)*10));
-    const yawDelta=f32(r(r(r(body.yawRate*4096)*dt)/f32(2*Math.PI)));
-    const predicted={...moving,position:[f32(r(moving.position[0]+r(velocity[0]*amount))),moving.position[1],f32(r(moving.position[2]+r(velocity[2]*amount)))],angle:moving.angle+(body.yawRate>0?Math.ceil(yawDelta):Math.floor(yawDelta))};
+    // 0x499ffc/0x49a009 pass the yaw delta to ceil/floor as a double;
+    // 0x499f9f stores z·amount as a float before adding it.
+    const yawDelta=r(r(r(body.yawRate*4096)*dt)/f32(2*Math.PI));
+    const predicted={...moving,position:[f32(r(moving.position[0]+r(velocity[0]*amount))),moving.position[1],f32(r(moving.position[2]+f32(r(velocity[2]*amount))))],angle:moving.angle+(body.yawRate>0?Math.ceil(yawDelta):Math.floor(yawDelta))};
     const stopYaw=body.yawRate!==0&&rails.some(rail=>nativeRectangleOverlap(rail,predicted,{precision})||nativeRectangleOverlap(predicted,rail,{precision}));
     return {fraction,stopYaw,contact};
   }

@@ -351,8 +351,10 @@ measurement does not establish the intended simulation rate.
 - Steering initially jumps to ±15; increments by
   `2×(1−abs(previous)×0.01f)×200×dt`; changing direction first clears to0.
 - Release centers at400/sec. Mirrored tracks reverse left/right interpretation.
-- Every float operation rounds to single precision, as under the documented
-  24-bit x87 mode; the `0.01f` constant is the float at `0x4d2480`.
+- Float stores round to single precision. Under the default 53-bit x87 mode,
+  `dt·70 + throttle`, `dt·40 + brake` (before `__ftol`), the steering ramp
+  and the decay stay in double; the gain is stored (`0x433b42`). The `0.01f`
+  constant is the float at `0x4d2480`.
 - Handbrake is an independent button.
 
 **The integer brake step is a concrete frame-rate trap.** At25 ms, holding
@@ -788,10 +790,11 @@ persistence and UI integration.
 The browser now uses these source-derived helpers for all24 adventure events,
 with30 saved profiles and shared country locks. The new-name acceptance path
 `0x4760c0` commits the default profile immediately, before character/difficulty
-selection. Character OK `0x473cec` commits those choices; Back `0x473cdc`
-returns to the main menu without deleting the profile. Only character-select
-Stop in adventure mode uses prompt50 and `0x474048` to delete the provisional
-profile before exit. Existing-profile OK opens the briefing directly. Starting
+selection. Character OK `0x473cec` commits those choices. Back is disabled
+here: `rcskmenu.dat 0x473c9f` enables `btnBack` only in QuickRace (shell
+state 2), and the form has no key handlers, so Escape does nothing either.
+Only character-select Stop in adventure mode uses prompt50 and `0x474048` to
+delete the provisional profile before exit. Existing-profile OK opens the briefing directly. Starting
 a completed profile calls `0x45a184`, clearing only its matrix, adventure index
 and completed flag, and preserving identity and difficulty.
 

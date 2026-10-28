@@ -1,4 +1,5 @@
 import {nativeTrigTable} from './native-integrator.js';
+import {NATIVE_PRECISION} from './native-precision.js';
 const f=Math.fround, identity=[1,0,0,0,1,0,0,0,1];
 const uvFrames=[
  [.199703,.1634,0,.326801,0,0,.395406,0,.395406,.326801,0,.326801],
@@ -46,7 +47,7 @@ export function nativeSmokeSort(values,compare){
 /** Original cloud pool428690/428490/4282e0/428a00. These are tyre/damage
  * smoke fans using S_SFX, separate from the general particle-system manager. */
 export class NativeSmoke{
- constructor({random,precision=24,enabled=true,hardware=true,alphaBlending=true,carIndex=0}={}){
+ constructor({random,precision=NATIVE_PRECISION,enabled=true,hardware=true,alphaBlending=true,carIndex=0}={}){
   if(!random?.next)throw new Error('Original shared random stream is required');
   if(carIndex<0||carIndex>8)throw new RangeError('Unverified smoke offset for this original car');
   //4288b0 disables CLOUDS at initialization when accelerated alpha blending

@@ -64,15 +64,23 @@ try {
   await control(page, 'btnOk').click();
   await form(page, 'TFRMSELECTCHAR');
   assert.equal((await saved(page)).profiles[29].name, 'Herstelde laatste');
-  await control(page, 'btnBack').click();
-  await form(page, 'TFRMADVENTUREMAIN');
+  assert.equal(await control(page, 'btnBack').isDisabled(), true);
   await page.reload();
   await control(page, 'btnAdventure').click();
   await expectName(page, 'Herstelde laatste');
-  report.checks.push('Full30 bank shows original no-room requester without changing saves; deleting last occupied slot selects previous; slot29 is reusable and persists after Back/reload');
+  report.checks.push('Full30 bank shows original no-room requester without changing saves; deleting last occupied slot selects previous; slot29 is reusable and persists after reload');
   await full.context.close();
 
   const sparse = await open([0, 7, 29], 7);
+  await expectName(sparse.page, 'Speler 7');
+  await control(sparse.page, 'btnLeft').click();
+  await expectName(sparse.page, 'Speler 0');
+  // rcskmenu 0x475e90 changes only the form slot; re-entry seeds lastplayer.
+  assert.equal((await saved(sparse.page)).selectedSlot, 7);
+  await control(sparse.page, 'btnBack').click();
+  await form(sparse.page, 'TFRMMAIN');
+  await control(sparse.page, 'btnAdventure').click();
+  await form(sparse.page, 'TFRMADVENTUREMAIN');
   await expectName(sparse.page, 'Speler 7');
   await control(sparse.page, 'btnLeft').click();
   await expectName(sparse.page, 'Speler 0');
@@ -91,7 +99,7 @@ try {
   assert.equal(reused.selectedSlot, 1);
   assert.equal(reused.profiles[1].name, 'Eerste vrije');
   assert.equal(reused.profiles[7], null);
-  report.checks.push('Sparse bank skips gaps without wrapping; deleting middle selects next; new profile uses lowest free slot1 rather than deleted slot7');
+  report.checks.push('Sparse bank skips gaps without wrapping; browsing is not remembered after Back; deleting middle selects next; new profile uses lowest free slot1 rather than deleted slot7');
   await sparse.context.close();
 
   const single = await open([14], 14);

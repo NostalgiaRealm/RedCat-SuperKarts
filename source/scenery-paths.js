@@ -1,3 +1,5 @@
+import { NATIVE_PRECISION } from './simulation/native-precision.js';
+import { nativePlacementAngle } from './simulation/native-transform.js';
 const f = Math.fround;
 const key = value => String(value).trim().toLowerCase().replace(/_anim$/, '');
 const registeredTypes = new Set([3, 6, 9, 10, 12, 13, 46, 47]);
@@ -21,7 +23,7 @@ export function getNativeSceneryPaths(track) {
 
 /** 00445740 freezes a tick count using the delta at activation, then 004450c0
  * rounds it DOWN to a multiple of the number of curve segments. */
-export function nativePathDurationTicks(path, deltaSeconds, precision = 24) {
+export function nativePathDurationTicks(path, deltaSeconds, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f : Number;
   const ticks = Math.trunc(r(f(r(path.durationMs * f(.001))) / f(deltaSeconds)));
   const segments = path.points.length - (path.closed ? 0 : 1);
@@ -29,7 +31,7 @@ export function nativePathDurationTicks(path, deltaSeconds, precision = 24) {
 }
 
 /** Literal Hermite basis and reverse accumulation order of 00445530. */
-export function nativePathHermite(values, tick, duration, precision = 24) {
+export function nativePathHermite(values, tick, duration, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f : Number, t = f(r(tick / duration));
   const t2 = r(t * t), t3 = r(t2 * t);
   const h00 = f(r(r(f(r(t3 + t3)) - r(t2 * 3)) + 1));
@@ -41,7 +43,7 @@ export function nativePathHermite(values, tick, duration, precision = 24) {
 
 /** 00445120 preserves source endpoint clamping, closed wrapping and the
  * late-sample duration extension. Coordinates stay in native XYZ units. */
-export function sampleNativeSceneryPath(path, ticks, tick, precision = 24) {
+export function sampleNativeSceneryPath(path, ticks, tick, precision = NATIVE_PRECISION) {
   const points = path.points, count = points.length, r = precision === 24 ? f : Number;
   if (count === 1) return [...points[0].position];
   let duration = Math.trunc(ticks / (count - (path.closed ? 0 : 1)));
@@ -65,7 +67,7 @@ export function sampleNativeSceneryPath(path, ticks, tick, precision = 24) {
 }
 
 /** 00446dd0 advances one tick regardless of subsequent delta changes. */
-export function advanceNativeSceneryPath(state, playerSector, precision = 24) {
+export function advanceNativeSceneryPath(state, playerSector, precision = NATIVE_PRECISION) {
   const r = precision === 24 ? f : Number, {path} = state;
   state.poseWritten = false;
   if (state.tick >= state.durationTicks - 2 && path.repeat) state.tick = 0;
@@ -89,7 +91,7 @@ export function advanceNativeSceneryPath(state, playerSector, precision = 24) {
 /** 00445900/004458c0: sector changes trigger once per lap, then update ten
  * slots in allocation order. Movement is after the original render boundary. */
 export class NativeSceneryPaths {
-  constructor(track, {precision = 24} = {}) {
+  constructor(track, {precision = NATIVE_PRECISION} = {}) {
     this.track = track;
     this.paths = getNativeSceneryPaths(track);
     this.precision = precision;
@@ -100,7 +102,7 @@ export class NativeSceneryPaths {
     this.objects = new Map(this.paths.map(path => {
       const placement = track.placements[path.placementIndex];
       return [path.placementIndex, {position: [...placement.position],
-        yaw: f(placement.nativeRotationDegrees[1] * 4096 / 360), sector: placement.sector,
+        yaw: nativePlacementAngle(placement.nativeRotationDegrees[1]), sector: placement.sector,
         visible: true, poseRevision: 0, stopRevision: 0, updateRevision: 0}];
     }));
   }

@@ -35,7 +35,9 @@ try{
   await load();
   const negatives=await page.evaluate(()=>{
     const view=rcsk.viewer,sim=view.simulation,b=sim.motion.body;
-    let now=view.clock.tick*25;
+    // The 0x4432a0 gate passes its real elapsed time, which runs ahead of
+    // tick*25 whenever a live update came late; continue from the last one.
+    let now=view.clock.simulationMs;
     for(let i=0;i<360;i++)view.onTick(.025,now+=25);
     const idle={recoveries:sim.playerRecovery.recoveries,attemptSeconds:sim.playerRecovery.attemptSeconds};
     const reverseStart=[...b.position];
@@ -95,7 +97,9 @@ try{
   });
   assert.equal(initial.ground,'road');assert.equal(initial.clear,true);assert.equal(initial.selection.character,1);
   report.checks.push({case:'clear England road start beside the original solid tyre wall',...initial});
-  await page.evaluate(()=>{recoveryPad.axes[0]=.3;recoveryPad.buttons[7].value=1;rcsk.viewer.clock.resume();});
+  // A paused clock stops NativeUpdateLoop at its next wake; start() resumes
+  // the clock and re-arms the loop, where clock.resume() alone would not.
+  await page.evaluate(()=>{recoveryPad.axes[0]=.3;recoveryPad.buttons[7].value=1;rcsk.viewer.updateLoop.start();});
   await page.waitForFunction(()=>rcsk.viewer.simulation.playerRecovery.attemptSeconds>5,null,{timeout:30000});
   await page.screenshot({path:output+'/tyre-blocked.png'});
   await page.waitForFunction(()=>{
@@ -111,7 +115,7 @@ try{
   assert.ok(shrinking.scale<1);assert.ok(shrinking.rings>0);assert.equal(shrinking.recoveries,1);
   await page.screenshot({path:output+'/tyre-shrinking.png'});
   report.checks.push({case:'automatic detection uses the original shrinking kart and rescue rings',...shrinking});
-  await page.evaluate(()=>rcsk.viewer.clock.resume());
+  await page.evaluate(()=>rcsk.viewer.updateLoop.start());
   await page.waitForFunction(()=>recoveryProbe.finishedAt&&rcsk.viewer.clock.tick>=recoveryProbe.finishedAt+80,null,{timeout:15000});
   await page.waitForFunction(()=>recoveryProbe.sounds.some(s=>s.sample==='REAPP'),null,{timeout:10000});
   const final=await page.evaluate(async()=>{

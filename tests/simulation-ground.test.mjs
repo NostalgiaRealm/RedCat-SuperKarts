@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 import { createNativeGroundState, NativeGroundClock, updateNativeGround, updateNativeWheelPose } from '../source/simulation/native-ground.js';
 
 const fixtures = JSON.parse(readFileSync(new URL('../evidence/gameplay/native-ground-fixtures.json', import.meta.url)));
+// The 0x007f capture; tests/native-ground-precision.test.mjs covers both widths.
+const precision = 24;
 const exact = (a, b, label) => assert.ok(a === b, `${label}: ${a} != ${b}`);
 
 test('160 original x86 wheel callbacks agree for contact, airborne wheels, slopes and reverse', () => {
@@ -12,7 +14,7 @@ test('160 original x86 wheel callbacks agree for contact, airborne wheels, slope
     const state = { wheels: structuredClone(fixture.wheels) };
     const clock = new NativeGroundClock(fixture.oldDelta);
     let sample = 0;
-    updateNativeGround(body, state, fixture.delta, () => fixture.heights[sample++], { clock });
+    updateNativeGround(body, state, fixture.delta, () => fixture.heights[sample++], { clock, precision });
     assert.equal(sample, 8);
     assert.equal(state.groundCount, fixture.expected.groundCount, `case ${index} contact count`);
     assert.equal(state.playerContact, fixture.expected.playerContact, `case ${index} player flag`);
@@ -29,7 +31,7 @@ test('160 native wheel poses preserve original suspension limits and steering/sp
   for (const fixture of fixtures.wheelPoseCases) {
     const state = { wheels: structuredClone(fixture.wheels) };
     let sample = 0;
-    updateNativeWheelPose(fixture.body, state, fixture.delta, fixture.steering, () => fixture.heights[sample++]);
+    updateNativeWheelPose(fixture.body, state, fixture.delta, fixture.steering, () => fixture.heights[sample++], { precision });
     assert.equal(sample, 4);
     state.wheels.forEach((wheel, i) => {
       exact(wheel.local[1], fixture.expected[i].localY, 'localY');
@@ -49,14 +51,14 @@ test('320 recurring native frames preserve exact suspension and tilt with shippe
       // Player callback invokes 41c0b0 twice, then the engine invokes416650.
       for (let call = 0; call < 2; call++) {
         let sample = 0;
-        updateNativeWheelPose(body, state, frame.delta, frame.steering, () => frame.heights[sample++]);
+        updateNativeWheelPose(body, state, frame.delta, frame.steering, () => frame.heights[sample++], { precision });
       }
       if (frameIndex === 0) {
-        const initial = createNativeGroundState(body, state.wheels);
+        const initial = createNativeGroundState(body, state.wheels, { precision });
         state.wheels.forEach((wheel, i) => {wheel.position = initial.wheels[i].position;});
       }
       let sample = 0;
-      updateNativeGround(body, state, frame.delta, () => frame.heights[sample++], {clock});
+      updateNativeGround(body, state, frame.delta, () => frame.heights[sample++], {clock, precision});
       const label = `trace${traceIndex} frame${frameIndex}`;
       exact(clock.delta, frame.expected.delta, `${label} delta`);
       assert.equal(state.groundCount, frame.expected.groundCount, `${label} contact`);

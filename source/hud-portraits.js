@@ -1,5 +1,6 @@
 import {nativeTrigTable} from './simulation/native-integrator.js';
 import {nativeHudIniTransform} from './hud-mesh.js';
+import {NATIVE_PRECISION} from './simulation/native-precision.js';
 
 const f = Math.fround, rfor = precision => precision === 24 ? f : Number;
 const names = ['redcat', 'whizzkitty', 'brutus', 'max'];
@@ -7,7 +8,7 @@ const labels = ['first', 'second', 'third', 'fourth', 'fifth'];
 
 /** Original Moving.cpp 0x4676d0: rank changes follow a half-circle, whereas
  * changes in spacing after another racer moves use linear interpolation. */
-export function nativeHudPortraitCurve(start, target, fraction, {curved = true, precision = 24} = {}) {
+export function nativeHudPortraitCurve(start, target, fraction, {curved = true, precision = NATIVE_PRECISION} = {}) {
   const r = rfor(precision), t = f(fraction), inv = r(1 - t);
   const linear = i => f(r(r(t * target[i]) + r(inv * start[i])));
   if (!curved) return [0, 1, 2].map(linear);
@@ -31,7 +32,7 @@ export function createNativeHudPortrait(charName = 'redcat') {
 }
 
 /** 0x467000/0x46a220 retain the start position until movement completes. */
-export function updateNativeHudPortrait(portrait, deltaSeconds, {precision = 24} = {}) {
+export function updateNativeHudPortrait(portrait, deltaSeconds, {precision = NATIVE_PRECISION} = {}) {
   if (portrait.state !== 1) return portrait;
   const r = rfor(precision), elapsed = r(r(f(deltaSeconds) * 1000) + portrait.elapsedMs);
   portrait.elapsedMs = f(elapsed);
@@ -47,7 +48,7 @@ export function updateNativeHudPortrait(portrait, deltaSeconds, {precision = 24}
   return portrait;
 }
 
-export function nativeHudPortraitRankLayout(rank, playerRank, {precision = 24} = {}) {
+export function nativeHudPortraitRankLayout(rank, playerRank, {precision = NATIVE_PRECISION} = {}) {
   const r = rfor(precision), small = f(.32), large = f(.4);
   const distance = f(rank < playerRank ? r(r(rank + .5) * small)
     : rank > playerRank ? r(r(r(rank - .5) * small) + large)
@@ -58,7 +59,7 @@ export function nativeHudPortraitRankLayout(rank, playerRank, {precision = 24} =
 }
 
 /** Characters are in original Race.ini CHARDATA order, not finishing order. */
-export function createNativeHudPortraits({characters, playerIndex, precision = 24}) {
+export function createNativeHudPortraits({characters, playerIndex, precision = NATIVE_PRECISION}) {
   if (!Array.isArray(characters) || characters.length < 1 || characters.length > 5
     || playerIndex < 0 || playerIndex >= characters.length || ![24, 53].includes(precision)) {
     throw new RangeError('Original portrait controller requires 1–5 racers and a valid player index');

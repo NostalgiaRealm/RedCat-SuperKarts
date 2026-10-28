@@ -32,7 +32,7 @@ try{
     const view=rcsk.viewer,sim=view.simulation;
     view.clock.pause();
     sim.combat.onExplosion(sim.motion.body);
-    let now=view.clock.tick*25;
+    let now=view.clock.simulationMs;
     for(let tick=0;tick<12;tick++)view.onTick(.025,now+=25);
     view.updatePresentation(1);view.renderer.render(view.scene,view.camera);view.hud.render();
     const mesh=[...view.explosionVisuals.meshes.values()][0],visual=view.playerVisual;

@@ -47,6 +47,37 @@ try{
     await page.waitForFunction(()=>document.querySelector('[data-native=rdoHighQual]')?.getAttribute('aria-pressed')==='true');
     assert.equal(await page.evaluate(()=>document.activeElement.dataset.native),'rdoHighQual');
   });
+  await check('Volume sliders use original 0x45fb80 keys, 0x45fc24 track steps and 0x45f814 needle drag',async()=>{
+    const music=element('sldMusicVolume'),value=async()=>Number(await music.inputValue());
+    await slider('sldMusicVolume',50);await music.focus();
+    for(const [key,expected]of [['ArrowRight',51],['ArrowUp',52],['ArrowLeft',51],['ArrowDown',50],
+      ['PageUp',67],['PageDown',50],['Home',100],['End',0]]){
+      await page.keyboard.press(key);assert.equal(await value(),expected,key);
+    }
+    // DFM pixels: 192-wide slider, MarginHorz 5, 35-pixel needle at MarginVert 6.
+    const box=await music.boundingBox(),unit=box.width/192;
+    // Aim at the first whole CSS pixel inside each DFM pixel: Firefox delivers
+    // integer pointer coordinates, Chromium fractional ones.
+    const at=(x,y=28)=>[Math.ceil(box.x+x*unit+1e-6),Math.ceil(box.y+y*unit+1e-6)];
+    const geometry=await music.evaluate(el=>{const g=el.nativeSlider.geometry();return [g.margin,g.needleWidth].map(v=>Math.round(v*100)/100);});
+    assert.deepEqual(geometry,[5,35]);
+    await slider('sldMusicVolume',50);await button('btnOk').focus();
+    await music.evaluate(el=>{const c=el.nativeSlider,change=c.onChange;window.sliderLog=[];
+      c.onChange=v=>{window.sliderLog.push([performance.now(),v]);change(v);};});
+    await page.mouse.move(...at(180));await page.mouse.down();
+    await page.waitForFunction(()=>window.sliderLog.length>=3);await page.mouse.up();
+    const log=await page.evaluate(()=>window.sliderLog);
+    assert.deepEqual(log.map(([,v])=>v),[67,84,100]);
+    assert.ok(log[1][0]-log[0][0]>=240&&log[2][0]-log[1][0]>=40&&log[2][0]-log[1][0]<150,JSON.stringify(log));
+    // A track press does not move focus; one short click is one LargeStep.
+    assert.equal(await page.evaluate(()=>document.activeElement.dataset.native),'btnOk');
+    await page.mouse.click(...at(10));assert.equal(await value(),83);
+    // Needle at 83 spans 127..161: dragging 100 pixels left gives trunc(22*100/147).
+    await page.mouse.move(...at(140));await page.mouse.down();
+    assert.equal(await page.evaluate(()=>document.activeElement.dataset.element),'sldMusicVolume');
+    for(let x=139;x>=40;x--)await page.mouse.move(...at(x));
+    await page.mouse.up();assert.equal(await value(),14);
+  });
   await slider('sldEffectVolume',25);await slider('sldMusicVolume',40);
   await button('rdoHighQual').click();await button('rdoGamepad').click();await button('chkStartInfo').click();
   await check('Options draft does not alter committed settings',async()=>assert.deepEqual(await settings(),original));

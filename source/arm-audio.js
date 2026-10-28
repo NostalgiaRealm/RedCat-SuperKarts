@@ -1,8 +1,9 @@
+import { NATIVE_PRECISION } from './simulation/native-precision.js';
 const f = Math.fround;
 
 /**486ea0 sound branch4873f8..4876fb. Caller supplies its actual squared
  * distance ratio. At most one beep is queued per callback, without RNG. */
-export function advanceNativeArmAudio({timer, deltaSeconds, ratio, player = true, precision = 24}) {
+export function advanceNativeArmAudio({timer, deltaSeconds, ratio, player = true, precision = NATIVE_PRECISION}) {
   if (!player) return {timer: f(timer), sample: null};
   const r = precision === 24 ? f : Number;
   const accumulated = r(f(deltaSeconds) + f(timer));

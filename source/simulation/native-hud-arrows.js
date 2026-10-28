@@ -1,3 +1,4 @@
+import { NATIVE_PRECISION } from './native-precision.js';
 const f = Math.fround;
 export const NATIVE_ARROW_INTERVAL = f(1 / 14);
 export const NATIVE_ARROW_ALPHA = Object.freeze(Array.from({length:14}, (_, step) =>
@@ -8,7 +9,7 @@ export const NATIVE_ARROW_ALPHA = Object.freeze(Array.from({length:14}, (_, step
  * Both controller clocks are seconds; nowSeconds is the absolute engine clock.
  */
 export class NativeHudArrows {
-  constructor({precision=24, backRgba=[255,255,255,255], junctionRgba=[255,255,255,255]}={}) {
+  constructor({precision=NATIVE_PRECISION, backRgba=[255,255,255,255], junctionRgba=[255,255,255,255]}={}) {
     if (![24,53].includes(precision)) throw new RangeError('Unsupported native precision');
     this.precision=precision;
     this.state={phase:0,type:0,alphaStep:0,timestampSeconds:0,remainingSeconds:0};

@@ -4,9 +4,19 @@ import fs from 'node:fs';
 import {calculateNativePlayerForces} from '../source/simulation/native-player.js';
 import {integrateNativeEuler, quantizeNativePlanarVelocity} from '../source/simulation/native-integrator.js';
 import {parsePhysicsTable} from '../source/simulation/native-tables.js';
+import {nativeStandardKartInertia} from '../source/simulation/native-motion.js';
 const fixture = JSON.parse(fs.readFileSync(new URL('../evidence/gameplay/native-player-recurrence.json', import.meta.url)));
 const tables = [0, 1, 2].map(i => parsePhysicsTable(fs.readFileSync(
   new URL(`../public/assets/physics/phys${i}.dat`, import.meta.url))));
+
+test('recurrence body inverse mass and inertia are native 0x48fda0 at 24-bit and equal the port', () => {
+  assert.equal(fixture.precision, 24);
+  const kart = nativeStandardKartInertia(0, { precision: 24 });
+  for (const trace of fixture.traces) {
+    for (const key of ['inverseMass', 'inverseInertia', 'mass'])
+      assert.ok(trace.body[key] === kart[key], `${key}: ${trace.body[key]} != ${kart[key]}`);
+  }
+});
 
 test('2400 recurring original player force/Euler frames match exactly at explicit24-bit precision', () => {
   for (const [traceIndex, trace] of fixture.traces.entries()) {
@@ -16,15 +26,15 @@ test('2400 recurring original player force/Euler frames match exactly at explici
       const force = calculateNativePlayerForces(body, tables[trace.preset][trace.record],
         {...frame.controls}, frame.delta, {
           rpm, gear, motorUpgrade: trace.upgrade, tireUpgrade: trace.upgrade,
-          gearboxUpgrade: trace.upgrade, phase: frame.phase,
+          gearboxUpgrade: trace.upgrade, phase: frame.phase, precision: 24,
         });
       const label = `trace${traceIndex} frame${index}`;
       for (const [key, value] of Object.entries(frame.force))
         assert.ok(force[key] === value, `${label} ${key}: ${force[key]} != ${value}`);
       for (const key of ['rpm', 'gear', 'slipMagnitude']) assert.equal(force[key], frame[key], `${label} ${key}`);
       rpm = force.rpm; gear = force.gear;
-      quantizeNativePlanarVelocity(body);
-      for (let step = 0; step < 8; step++) integrateNativeEuler(body, force, Math.fround(frame.delta * .125));
+      quantizeNativePlanarVelocity(body, 24);
+      for (let step = 0; step < 8; step++) integrateNativeEuler(body, force, Math.fround(frame.delta * .125), { precision: 24 });
       for (const [key, value] of Object.entries(frame.expected))
         assert.ok(body[key] === value, `${label} ${key}: ${body[key]} != ${value}`);
     }

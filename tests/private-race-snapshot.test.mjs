@@ -17,9 +17,11 @@ const inputs={config,manifest,cars,track,physicsBytes:read('physics/phys2.dat'),
   racerBytes:read('racer-tables/cars2.dat'),character:1,difficulty:2,raceMode:1,countdown:true};
 const assetDigest=()=>createHash('sha256').update(JSON.stringify([config,manifest,cars,track])).digest('hex');
 function fresh(){
-  // Fixture seed only. The 0x435a30 player-record draw shifted the stream;
-  // with seed 6 this scripted bot then missed the train/jump windows in time.
-  const random=new NativeRandom(0),simulation=new RaceSimulation({...inputs,random});random.seed(0);
+  // Fixture seed only; it chooses which race this scripted bot drives. After
+  // the 0x435a30 player-record draw seed 0 reached all three windows, and after
+  // the 53-bit switch and the native 0x494f40 track planes seed 6 does again
+  // (jump window at 33175 of 36500 ms).
+  const random=new NativeRandom(0),simulation=new RaceSimulation({...inputs,random});random.seed(6);
   return {simulation,filter:new NativeDeltaFilter({uptimeMs:NATIVE_REFERENCE_UPTIME_MS})};
 }
 function advance(state,input,now){

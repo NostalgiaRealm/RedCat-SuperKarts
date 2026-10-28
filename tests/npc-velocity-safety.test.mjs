@@ -10,11 +10,13 @@ const read=path=>fs.readFileSync(new URL('../'+path,import.meta.url));
 const json=path=>JSON.parse(read(path));
 const failure=json('evidence/full-race-matrix/timed-england-nonfinite-deep.json').failure;
 const finalFrame=failure.history.at(-1);
+// The port recorded this history while it still ran gameplay at 24-bit.
+const recorded={precision:24};
 
 test('all119 captured finite catchup updates remain bit-identical without a safety intervention',()=>{
   for(let i=0;i<failure.history.length-1;i++){
     const body=structuredClone(failure.history[i].actors[0].body),before=captureNPCLinearVelocity(body);
-    applyNativeAICatchup(body,{},2,-7);
+    applyNativeAICatchup(body,{},2,-7,recorded);
     assert.equal(body.verticalSpeed,failure.history[i+1].actors[0].body.verticalSpeed);
     const nativeResult=structuredClone(body);
     assert.deepEqual(resetNewlyNonfiniteNPCVelocity(body,before),[]);
@@ -26,7 +28,7 @@ test('the actual valid-input overflow resets only its newly nonfinite vertical c
   assert.ok(Object.values(finalFrame.input.analog).every(Number.isFinite));
   const body=structuredClone(finalFrame.actors[0].body),before=captureNPCLinearVelocity(body);
   const state=structuredClone(finalFrame.actors[0].state);
-  applyNativeAICatchup(body,state,2,-7);
+  applyNativeAICatchup(body,state,2,-7,recorded);
   assert.equal(body.verticalSpeed,Infinity,'the original callback itself still overflows');
   const nativeResult=structuredClone(body),stateBefore=structuredClone(state);
   assert.deepEqual(resetNewlyNonfiniteNPCVelocity(body,before),[{

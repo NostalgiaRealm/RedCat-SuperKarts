@@ -1,5 +1,6 @@
 import { nativeTrigTable } from './native-integrator.js';
 import { advanceNativeArmAudio } from '../arm-audio.js';
+import { NATIVE_PRECISION } from './native-precision.js';
 
 const f = Math.fround;
 const baseVertices = [[-.5, .5, 0], [.5, .5, 0], [0, 0, 0]];
@@ -10,10 +11,15 @@ const translate = ([x, y, z]) => {
   result.splice(12, 3, x, y, z);
   return result;
 };
-const matrixOf = body => body.matrix.length === 16 ? body.matrix : [
-  ...body.matrix.slice(0, 3), 0, ...body.matrix.slice(3, 6), 0,
-  ...body.matrix.slice(6, 9), 0, ...body.position, 1,
-];
+// 0x486ec0 copies the render-object matrix, which a rescue scales in place.
+const matrixOf = (body, renderPose) => {
+  const pose = renderPose?.(body) ?? body;
+  const matrix = pose.matrix ?? body.matrix, position = pose.position ?? body.position;
+  return matrix.length === 16 ? matrix : [
+    ...matrix.slice(0, 3), 0, ...matrix.slice(3, 6), 0,
+    ...matrix.slice(6, 9), 0, ...position, 1,
+  ];
+};
 
 function planarDistanceSquared(a, b, r) {
   const x = r(a[0] - b[0]), z = r(a[2] - b[2]);
@@ -21,7 +27,7 @@ function planarDistanceSquared(a, b, r) {
 }
 
 /** 0x486ac0/0x486b20. This effect is attached to the shot's TARGET body. */
-export function createNativeHomingArm(body, shot, {precision = 24, offset = [0, 25, -33], size = 10} = {}) {
+export function createNativeHomingArm(body, shot, {precision = NATIVE_PRECISION, offset = [0, 25, -33], size = 10} = {}) {
   const r = precision === 24 ? f : Number;
   return {body, shot, active: true, offset: offset.map(f), size: f(size),
     scale: f(1.5), count: 2, growthAngle: 0, angle: 0, timer: 0,
@@ -45,7 +51,7 @@ function multiply(a, b, r) {
 }
 
 /** 0x487740→0x486ea0/0x486d50/0x486cc0, before rendering and shot motion. */
-export function updateNativeHomingArm(entry, deltaSeconds, {precision = 24, player = true} = {}) {
+export function updateNativeHomingArm(entry, deltaSeconds, {precision = NATIVE_PRECISION, player = true, renderPose} = {}) {
   if (!entry.active) return null;
   const r = precision === 24 ? f : Number, dt = f(deltaSeconds);
   const velocity = entry.count === 8 ? 35 : 45;
@@ -62,7 +68,7 @@ export function updateNativeHomingArm(entry, deltaSeconds, {precision = 24, play
   }
 
   // Geometry uses the PREVIOUS callback's scale, before recalculating ratio.
-  const bodyMatrix = matrixOf(entry.body), offset = translate(entry.offset);
+  const bodyMatrix = matrixOf(entry.body, renderPose), offset = translate(entry.offset);
   const scale = identity();
   scale[0] = scale[5] = entry.size;
   const lower = multiply(scale, translate([0, entry.scale, 0]), r);
@@ -135,7 +141,7 @@ export function advanceNativeArmQueue(entries, update) {
 /** Original manager0x487af0/0x4879c0/0x487c00; one entry per target body. */
 export class NativeHomingArms {
   constructor({actors, voices = null, jetstreams = true, alphaBlending = true,
-    paletted = false, precision = 24}) {
+    paletted = false, precision = NATIVE_PRECISION}) {
     Object.assign(this, {actors, voices, jetstreams, alphaBlending, paletted, precision});
     this.entries = [];
   }
@@ -160,13 +166,14 @@ export class NativeHomingArms {
     const last = this.entries.pop();
     if (index < this.entries.length) this.entries[index] = last;
   }
-  step(deltaSeconds) {
+  /** The rescue update 0x42f618 precedes this 0x42f648 arm update. */
+  step(deltaSeconds, {renderPose} = {}) {
     if (!this.enabled) return this.entries;
     this.entries = advanceNativeArmQueue(this.entries, entry => {
       // 487740 returns false for an already inactive entry.
       if (!entry.active) return false;
       const sample = updateNativeHomingArm(entry, deltaSeconds, {
-        precision: this.precision, player: entry.racer === this.actors.length - 1,
+        precision: this.precision, player: entry.racer === this.actors.length - 1, renderPose,
       });
       if (sample && this.voices) this.voices.submit(this.voices.voiceId(entry.racer), sample);
       return !entry.active;

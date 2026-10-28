@@ -3,7 +3,7 @@
 import json
 import random
 import struct
-from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT, STACK
+from generate_native_gameplay_fixtures import NativeProbe, SOURCE, ROOT, SCRATCH, OBJECT, STACK, CONTROL_WORD, precision_path
 from unicorn.x86_const import UC_X86_REG_EAX, UC_X86_REG_ECX, UC_X86_REG_ESP
 from unicorn import UC_HOOK_CODE
 from unicorn.x86_const import UC_X86_REG_EIP
@@ -174,12 +174,12 @@ def main():
         probe.run(0x453780)
         owned_visuals.append({"angles": angles, "delta": delta, "rotationSpeed": rotation,
                              "expected": [probe.float(SCRATCH + 0x4000 + 0x74 + axis * 4) for axis in range(3)]})
-    result = {"sourceSha256": probe.sha, "fpuControlWord": "0x007f",
+    result = {"sourceSha256": probe.sha, "fpuControlWord": f"0x{CONTROL_WORD:04x}",
               "scope": "Original 4514e0, 453fd0, 44fc80/497bd0, 410650, mode constructors, config constructor/loader455190/451810 and 4537f0 through velocity store. HUD/audio/animation and INI reads are explicit boundaries. Shared CRT RNG and geometry getters run unmodified.",
               "collections": collections, "respawns": respawns, "turbo": turbo, "overlaps": overlaps,
               "modes": modes, "cooldowns": cooldowns, "parameters": parameters,
               "ownedVisuals": owned_visuals}
-    path = ROOT / "evidence/gameplay/native-bonus-fixtures.json"
+    path = precision_path(ROOT / "evidence/gameplay/native-bonus-fixtures.json")
     path.write_text(json.dumps(result, indent=2) + "\n")
     print(f"Wrote {len(collections)} collection, {len(respawns)} respawn, {len(turbo)} turbo and {len(overlaps)} overlap cases")
 
