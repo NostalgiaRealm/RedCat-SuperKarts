@@ -65,6 +65,53 @@ Running this in the update callback or twice per rendered frame changes the
 effect. `.draw()` performs that mutation once and returns `{jets,ribbons}`
 with original `{position,color,specular,uv}` vertices.
 
+## Browser enhancement: engine lights follow the kart
+
+**Motorlicht volgt de kart** in **Meer instellingen** is on by default. It
+addresses the port's unlocked framerate, not an original limitation. In the
+original, `0x488850` builds each flare from the engine render matrix during
+the update, and the same frame then draws the kart with that matrix. The
+flare's centre therefore always sits at the kart's `[0,10,-28]` offset.
+kart03, the body of cars 0–8 in `cars.json`, ends at z=−27.615, so that
+point is only 0.385 units behind the rearmost geometry.
+
+The port draws karts between their last two update poses at the display's
+refresh rate (`KartVisual.present`), but it drew the flares at the latest
+update. On a frame early in an update, the flare was ahead of the drawn kart
+by part of one update's movement: 7–10 units at 100–140 km/h with 25 ms
+updates. Its centre then sank into the engine. The depth varies from frame to
+frame, so the light came and went during a race. Ribbons start at the same
+point and run backwards, so their head hides inside the kart and the trail
+still looks continuous.
+
+With the setting on, `StreamVisuals` keeps the last two update captures of
+each kart's flare and blends them with the karts' alpha. The captures are keyed
+by the flare's own vertex list, so pool reordering cannot mix flares. Native
+vertices, colors, UVs, blend factors, depth writes and draw order are
+unchanged, and alpha 1 shows the exact native capture. Rocket flares keep their
+update position, because rockets are not interpolated either. Off keeps the
+earlier port behavior, which matches the original only when the display
+refreshes once per update.
+
+Verification:
+
+- Two Node tests in `tests/streams-visuals.test.mjs`. The first checks the
+  blend between captures, the exact native vertices at alpha 1, the flare
+  centre at the drawn kart's `[0,10,-28]`, an untouched rocket flare, and
+  the reset when the setting changes. The second checks the setting's default
+  and an explicit off.
+- `tests/engine-light-browser.mjs` drives the Netherlands start at about
+  105 km/h with deterministic 25 ms updates, then renders five alphas per
+  mode. Off, the flare centre sat at local z=−20.72 at alpha 0 (7.28 units
+  into the kart) and the flare changed 16,539 pixels, against 24,235 at
+  alpha 1. On, the centre stayed at z=−28.00 at every alpha, and the flare
+  changed 24,462–24,633 pixels. See
+  [`browser.json`](../evidence/engine-lights/browser.json) and the two alpha-0
+  screenshots beside it (headless Chromium 145, SwiftShader).
+- The Meer instellingen browser test covers the default, saving off across a
+  reload, a race loaded with the saved off, and switching it on in a race.
+  The existing stream browser tests still pass.
+
 The update reads the engine render matrix after the rescue controller has
 applied its display pose. `NativeStreams.step` accepts `renderPose(body)` so
 the connected port can supply that matrix and position without replacing the

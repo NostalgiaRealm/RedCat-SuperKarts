@@ -50,6 +50,13 @@ which sits on one flat plane per track section. That plane can lie below the
 road, as at France's start, so the original shadow comes and goes during a
 race. See the [kart-shadow audit](research-kart-shadows.md#browser-enhancement-shadows-on-the-road-surface).
 
+**Motorlicht volgt de kart** keeps the light behind each kart's engine at
+every displayed frame. It is on by default. The original builds the light and
+draws the kart from the same position in each update. The browser draws karts
+between updates for smooth motion, so without this setting the light can be
+up to one update ahead of the kart and sink into the engine at speed. See
+[streams](research-streams.md#browser-enhancement-engine-lights-follow-the-kart).
+
 ## Cheats
 
 **Vrij vliegen (no-clip)** is an explicit new feature. The normal movement
@@ -107,7 +114,8 @@ Focused browser reports are retained in
 
 Reproduce with `npm test`, `node tests/multisample-browser.mjs`,
 `node tests/more-settings-browser.mjs`, `node tests/free-flight-browser.mjs`,
-and `node tests/kart-shadow-browser.mjs`, with the local server running.
+`node tests/kart-shadow-browser.mjs` and `node tests/engine-light-browser.mjs`,
+with the local server running.
 Browser inspections require `npm run dev -- --inspect-source`; see the
 [test guide](../tests/README.md). `node tools/verify-more-settings.mjs` verifies
 the retained reports, frozen runtime hashes and every build copy only at its

@@ -418,7 +418,7 @@ export class ExplosionVisuals {
 /**488b40 jet strips, then48a530 trail strips. The controller already performs
  * native draw-time shrinking; this layer only copies the captured vertices. */
 export class StreamVisuals {
-  constructor(viewer){this.viewer=viewer;this.jets=[];this.ribbons=[];}
+  constructor(viewer){this.viewer=viewer;this.jets=[];this.ribbons=[];this.followed=new WeakMap();}
   async load(manifest){
     // The shared loader applies the original key-to-black conversion to every
     // RGB texture, before filtering; streams no longer need a private upload.
@@ -442,7 +442,7 @@ export class StreamVisuals {
     }
     return pool[index];
   }
-  capture({jets=[],ribbons=[]}={}){
+  capture({jets=[],ribbons=[]}={},{follow=[]}={}){
     for(const [pool,frames,capacity,order]of [[this.jets,jets,7,NATIVE_RENDER_ORDER.jets],
       [this.ribbons,ribbons,1000,NATIVE_RENDER_ORDER.ribbons]]){
       for(const mesh of pool)mesh.visible=false;
@@ -458,6 +458,37 @@ export class StreamVisuals {
         for(const attribute of Object.values(attributes))attribute.needsUpdate=true;
       });
     }
+    // "Motorlicht volgt de kart" (browser enhancement): 488850 and the kart
+    // draw read one matrix per native update. Karts are drawn between their
+    // last two tick poses, so their flares keep both tick captures as well,
+    // keyed by the flare's own vertex list across pool reordering.
+    jets.forEach((vertices,index)=>{
+      const mesh=this.jets[index];
+      if(!follow.includes(vertices)){mesh.userData.follow=null;return;}
+      const after=mesh.geometry.attributes.position.array.slice(0,vertices.length*3);
+      mesh.userData.follow={before:this.followed.get(vertices)??after,after};
+      this.followed.set(vertices,after);
+    });
+  }
+  /** Same alpha as KartVisual.present; rocket flares keep their tick pose. */
+  present(alpha){
+    for(const mesh of this.jets){
+      const follow=mesh.userData.follow;
+      if(!mesh.visible||!follow)continue;
+      const {before,after}=follow,target=mesh.geometry.attributes.position;
+      for(let i=0;i<after.length;i++)target.array[i]=before[i]*(1-alpha)+after[i]*alpha;
+      target.needsUpdate=true;
+    }
+  }
+  /** Back to the latest tick positions; the next captures start afresh. */
+  unfollow(){
+    for(const mesh of this.jets){
+      const follow=mesh.userData.follow;
+      if(!follow)continue;
+      mesh.geometry.attributes.position.array.set(follow.after);
+      mesh.geometry.attributes.position.needsUpdate=true;mesh.userData.follow=null;
+    }
+    this.followed=new WeakMap();
   }
   dispose(){
     for(const mesh of [...this.jets,...this.ribbons]){mesh.removeFromParent();mesh.geometry.dispose();}

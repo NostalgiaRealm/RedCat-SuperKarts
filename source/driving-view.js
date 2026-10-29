@@ -217,7 +217,9 @@ export class DrivingView extends TrackViewer{
         this.rescueVisuals.capture();
         this.smokeVisuals.capture(this.simulation.smokeFrames);
         this.skidmarkVisuals.capture(this.simulation.skidmarkFrames);
-        this.streamVisuals.capture(this.simulation.streamFrames);
+        const racers=this.simulation.actors.map(actor=>actor.body);
+        this.streamVisuals.capture(this.simulation.streamFrames,{follow:this.smoothEngineLights!==true?[]:
+          this.simulation.streams.jets.filter(jet=>racers.includes(jet.body)).map(jet=>jet.vertices)});
         this.homingArmVisuals.capture();
         this.finishFlag.capture();
         this.weatherVisuals.capture(this.simulation.weatherFrames);
@@ -308,6 +310,10 @@ export class DrivingView extends TrackViewer{
   }
   /** "Schaduwen op het wegdek": kart shadows on the ground surface
    * (browser enhancement) or the original sector-plane quad. */
+  setSmoothEngineLights(enabled){
+    if(this.smoothEngineLights===Boolean(enabled))return;
+    this.smoothEngineLights=Boolean(enabled);this.streamVisuals?.unfollow();
+  }
   setSurfaceShadows(enabled){
     this.surfaceShadows=Boolean(enabled);
     for(const shadow of this.shadows??[])if(shadow.surface!==this.surfaceShadows)
@@ -348,6 +354,7 @@ export class DrivingView extends TrackViewer{
     this.playerVisual.present(alpha);
     for(const visual of this.opponentVisuals)visual.present(alpha);
     for(const shadow of this.shadows)shadow.present(alpha);
+    this.streamVisuals?.present(alpha);
     presentNativeRaceCamera(this.group,this.camera,this.previousCamera,this.currentCamera,alpha,this.track.mirrored);
     // Sky follows the active racer, not the chase camera (native 0x423010).
     this.sky?.position.lerpVectors(this.previousSkyPosition,this.currentSkyPosition,alpha);

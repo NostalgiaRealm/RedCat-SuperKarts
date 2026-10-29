@@ -168,6 +168,7 @@ display and input settings are presented separately.
 | --- | --- |
 | MSAA: **2× / 4× / 8×** | Multisample anti-aliasing to smooth polygon edges. |
 | **Schaduwen op het wegdek** | Kart shadows lie on the road surface under each kart (on by default). Off shows the original shadow, which disappears below the road in places. |
+| **Motorlicht volgt de kart** | The light behind each kart's engine moves smoothly with the kart (on by default). Off: at speed it can sink into the engine between game updates. |
 | **Vrij vliegen (no-clip)** | Explore freely using the normal driving controls and **Space/C** for up/down. The race pauses while exploring, and stopping free flight returns the kart safely to the track. |
 | **Alles ontgrendelen** | Unlock all tracks/countries while preserving profiles and scores. |
 

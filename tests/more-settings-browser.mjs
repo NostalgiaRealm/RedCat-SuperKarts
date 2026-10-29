@@ -29,11 +29,12 @@ try{
   });
   await native('btnMoreSettings').click();
   const original=await settings();
-  await check('Defaults are MSAA off with 4× selected, free flight off and surface shadows on',async()=>{
+  await check('Defaults are MSAA off with 4× selected, free flight off, surface shadows and engine lights on',async()=>{
     assert.equal(await page.locator('h1').textContent(),'Meer instellingen');
     assert.equal(await page.locator('#msaa-enabled').isChecked(),false);assert.equal(await page.locator('#msaa-samples').inputValue(),'4');
     assert.equal(await page.locator('#msaa-samples').isDisabled(),true);assert.equal(await flight(),false);
     assert.equal(await page.locator('#surface-shadows').isChecked(),true);
+    assert.equal(await page.locator('#smooth-engine-lights').isChecked(),true);
   });
   await page.locator('#msaa-enabled').check();await page.locator('#msaa-samples').selectOption('8');await setFlight(true);
   await check('Changing extra settings does not mutate committed settings',async()=>assert.deepEqual(await settings(),original));
@@ -46,9 +47,9 @@ try{
   await check('Extra-page OK retains a nested draft until outer OK',async()=>{assert.equal(await page.locator('#msaa-samples').inputValue(),'2');assert.deepEqual(await settings(),original);});
   await page.keyboard.press('Escape');await form('TFRMOPTIONS');await native('btnBack').click();await form('TFRMMAIN');
   await check('Outer Back cancels accepted extra-page changes',async()=>assert.deepEqual(await settings(),original));
-  await open();await page.locator('#msaa-enabled').check();await page.locator('#msaa-samples').selectOption('8');await setFlight(true);await page.locator('#surface-shadows').uncheck();await page.locator('#touch').selectOption('on');await moreOk();await native('btnOk').click();await form('TFRMMAIN');
+  await open();await page.locator('#msaa-enabled').check();await page.locator('#msaa-samples').selectOption('8');await setFlight(true);await page.locator('#surface-shadows').uncheck();await page.locator('#smooth-engine-lights').uncheck();await page.locator('#touch').selectOption('on');await moreOk();await native('btnOk').click();await form('TFRMMAIN');
   await page.reload();await form('TFRMMAIN');
-  await check('Outer OK persists MSAA, flight and surface shadows across reload',async()=>{const s=await settings();assert.equal(s.msaaEnabled,true);assert.equal(s.msaaSamples,8);assert.equal(s.freeFlight,true);assert.equal(s.surfaceShadows,false);});
+  await check('Outer OK persists MSAA, flight, surface shadows and engine lights across reload',async()=>{const s=await settings();assert.equal(s.msaaEnabled,true);assert.equal(s.msaaSamples,8);assert.equal(s.freeFlight,true);assert.equal(s.surfaceShadows,false);assert.equal(s.smoothEngineLights,false);});
   const previous=await page.evaluate(async()=>{
     const {readRaceSave,writeRaceSave}=await import('/source/race-save.js');const save=readRaceSave();
     const {createNativeAdventureProfile}=await import('/source/simulation/native-adventure.js');
@@ -72,7 +73,7 @@ try{
   await page.evaluate(()=>document.getElementById('screen').scrollTop=0);await page.screenshot({path:'evidence/ui/more-settings-portrait-top.png'});
   await check('Portrait controls fit the screen and remain usable',async()=>{
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
-    for(const selector of ['#msaa-enabled','#msaa-samples','#surface-shadows','#free-flight','#unlock-all']){
+    for(const selector of ['#msaa-enabled','#msaa-samples','#surface-shadows','#smooth-engine-lights','#free-flight','#unlock-all']){
       await page.locator(selector).scrollIntoViewIfNeeded();const bounds=await page.locator(selector).boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=390);
     }
     await page.getByRole('button',{name:'OK',exact:true}).scrollIntoViewIfNeeded();
@@ -102,6 +103,8 @@ try{
   });
   const shadowModes=()=>page.evaluate(()=>{const view=window.rcsk.viewer;return [view.surfaceShadows,...view.shadows.map(s=>s.surface)];});
   await check('Saved surface shadows off loads the original shadow quads',async()=>assert.deepEqual(await shadowModes(),Array(6).fill(false)));
+  await check('Saved engine lights off leaves the race flares at their update positions',async()=>
+    assert.equal(await page.evaluate(()=>window.rcsk.viewer.smoothEngineLights),false));
   await page.locator('#flight-controls').getByRole('button',{name:'Instellingen',exact:true}).click();await form('TFRMOPTIONS');
   await native('btnMoreSettings').click();
   await check('In-race MSAA status identifies actual hardware fallback',async()=>{
@@ -112,11 +115,15 @@ try{
   await page.waitForFunction(()=>window.rcsk.state.page==='driving');
   await check('Cancel from in-race settings retains active flight',async()=>assert.equal(await page.evaluate(()=>window.rcsk.viewer.simulation.freeFlightActive),true));
   await page.locator('#flight-controls').getByRole('button',{name:'Instellingen',exact:true}).click();await form('TFRMOPTIONS');await native('btnMoreSettings').click();
-  await setFlight(false);await page.locator('#surface-shadows').check();await moreOk();await native('btnOk').click();await page.waitForFunction(()=>window.rcsk.state.page==='driving'&&!window.rcsk.viewer.simulation.freeFlightActive);
+  await setFlight(false);await page.locator('#surface-shadows').check();await page.locator('#smooth-engine-lights').check();await moreOk();await native('btnOk').click();await page.waitForFunction(()=>window.rcsk.state.page==='driving'&&!window.rcsk.viewer.simulation.freeFlightActive);
   await check('In-race OK applies the flight disable and saves it',async()=>{assert.equal((await settings()).freeFlight,false);assert.equal(await page.locator('#flight-controls').isVisible(),false);});
   await check('In-race OK switches the live shadows to the road surface and saves it',async()=>{
     assert.equal((await settings()).surfaceShadows,true);assert.deepEqual(await shadowModes(),Array(6).fill(true));
     assert.equal(await page.evaluate(()=>JSON.parse(localStorage.getItem('rcsk.settings.v1')).surfaceShadows),true);
+  });
+  await check('In-race OK lets the live engine lights follow the karts and saves it',async()=>{
+    assert.equal((await settings()).smoothEngineLights,true);assert.equal(await page.evaluate(()=>window.rcsk.viewer.smoothEngineLights),true);
+    await page.waitForFunction(()=>window.rcsk.viewer.streamVisuals.jets.some(mesh=>mesh.visible&&mesh.userData.follow));
   });
   await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+'/?skipIntro');await form('TFRMMAIN');await open();await setFlight(true);await moreOk();await native('btnOk').click();await form('TFRMMAIN');
   await page.goto((process.env.RCSK_URL||'http://127.0.0.1:4173')+'/?drive=0');await page.waitForFunction(()=>window.rcsk?.state.page==='driving'&&window.rcsk.viewer.simulation.freeFlightActive,null,{timeout:60000});

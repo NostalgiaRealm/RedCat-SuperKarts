@@ -149,7 +149,9 @@ with the declared60-second epoch. Physical-key events remain immediate, and
 gamepad state is polled at update admission as well as display refresh.
 
 Every active browser animation frame still draws the world and HUD. Kart and
-camera interpolation uses the previous measured update interval. Rendering
+camera interpolation uses the previous measured update interval. Kart shadows
+and, with **Motorlicht volgt de kart** on, kart engine flares use the same
+alpha; see [streams](research-streams.md#browser-enhancement-engine-lights-follow-the-kart). Rendering
 reads current `performance.now()`, since a browser RAF timestamp can precede
 a timer callback already executed in the same display frame. There is no
 game-imposed30/40/60FPS presentation limit; browser/display scheduling still

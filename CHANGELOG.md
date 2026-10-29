@@ -8,6 +8,11 @@
   shadows lie on the road surface under each kart. The original shadow sits on
   one flat plane per track section, so it disappears below the road in places,
   such as France's start. Switch the setting off for the original shadow.
+- **Motorlicht volgt de kart** in **Meer instellingen**, on by default: the
+  light behind each kart's engine moves smoothly with the kart. Karts are drawn
+  between game updates, but the light stayed at the latest update, so at speed
+  it could sink into the engine and flicker. The original draws both from the
+  same position once per update, so it never showed this.
 
 ## 1.0.2 — 2026-10-29
 
