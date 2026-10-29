@@ -42,6 +42,14 @@ canvas supplies layout dimensions only; actual HUD pixels share the opaque
 RGB565 composition path described in the
 [HUD rendering follow-up](research-hud-framebuffer.md).
 
+## Shadows
+
+**Schaduwen op het wegdek** places each kart's shadow on the road surface
+under it. It is on by default. Switching it off restores the original shadow,
+which sits on one flat plane per track section. That plane can lie below the
+road, as at France's start, so the original shadow comes and goes during a
+race. See the [kart-shadow audit](research-kart-shadows.md#browser-enhancement-shadows-on-the-road-surface).
+
 ## Cheats
 
 **Vrij vliegen (no-clip)** is an explicit new feature. The normal movement

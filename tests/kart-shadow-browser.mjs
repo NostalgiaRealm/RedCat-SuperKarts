@@ -95,13 +95,15 @@ try{
       const pixels=()=>{view.renderScene();gl.bindFramebuffer(gl.FRAMEBUFFER,null);
         const a=new Uint8Array(width*height*4);gl.readPixels(0,0,width,height,gl.RGBA,gl.UNSIGNED_BYTE,a);return a;};
       const checks=[];
-      for(const enabled of [false,true]){
+      // Original sector-plane quad, then "Schaduwen op het wegdek".
+      for(const surface of [false,true])for(const enabled of [false,true]){
+        view.setSurfaceShadows(surface);
         view.multisampling.configure({msaaEnabled:enabled,msaaSamples:4},width,height);
         shadow.visible=false;const before=pixels();shadow.visible=true;order.length=0;const after=pixels();
         let changed=0,darker=0,lighter=0;
         for(let i=0;i<before.length;i+=4){const a=before[i]+before[i+1]+before[i+2],b=after[i]+after[i+1]+after[i+2];
           if(a!==b){changed++;if(b<a)darker++;else lighter++;}}
-        checks.push({enabled,changed,darker,lighter,order:[...order],msaa:view.msaaStatus,
+        checks.push({surface,enabled,changed,darker,lighter,order:[...order],msaa:view.msaaStatus,
           shadowCount:view.shadows.length,pose:view.shadows[0].current,
           logicalPosition:[...view.motion.body.position],
           fallback:view.simulation.world.sectors[view.motion.body.sector].fallback,
@@ -111,10 +113,15 @@ try{
       }
       return checks;
     });
+    await page.screenshot({path:`${directory}/track-${track}-surface.png`});
+    await page.evaluate(()=>{const view=rcsk.viewer;view.setSurfaceShadows(false);view.renderScene();});
     await page.screenshot({path:`${directory}/track-${track}-inspection.png`});
     for(const check of checks){
       report.checks.push({kind:'loaded-race',track,...check});
-      if(track===0)assert.ok(check.changed>10);
+      // The surface shadow is visible on both starts; the original only on
+      // the Netherlands, while France's quad stays below the road.
+      if(track===0||check.surface)assert.ok(check.changed>10,`track ${track} surface ${check.surface}`);
+      if(track===3&&!check.surface)assert.equal(check.changed,0);
       assert.equal(check.lighter,0);assert.equal(check.darker,check.changed);
       assert.deepEqual(check.order,['shadow','kart']);assert.equal(check.shadowCount,5);
       if(track===3){assert.equal(check.pose.position[1],0);assert.ok(check.ground.height>check.pose.position[1]+10);}

@@ -322,7 +322,7 @@ export class TrackViewer{
     }
   }
   disposeGroup(group){
-    const materials=new Set();group.traverse(o=>{if(o.isMesh){if(o===group.children[0]||o.userData.ownedGeometry)o.geometry.dispose();for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);}});
+    const materials=new Set();group.traverse(o=>{if(o.isMesh){if(o===group.children[0]||o.userData.ownedGeometry){o.geometry.dispose();o.userData.inactiveGeometry?.dispose();}for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);}});
     for(const m of materials)m.dispose();
   }
 }

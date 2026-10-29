@@ -1,14 +1,15 @@
 export const DEFAULT_BINDINGS=Object.freeze({accelerate:'ArrowUp',brake:'ArrowDown',left:'ArrowLeft',right:'ArrowRight',bonus:'ControlLeft',handbrake:'AltLeft'});
 export const DEFAULT_DISPLAY_SETTINGS=Object.freeze({brightnessLight:true,bilinearFiltering:true,alphaBlending:true,particles:true});
 // Shipped Race.ini GAME_SETTINGS MX_VOLUME/FX_VOLUME, loaded by45ae70/42c320.
-export const DEFAULT_SETTINGS=Object.freeze({resolution:'auto',renderScale:100,msaaEnabled:false,msaaSamples:4,freeFlight:false,music:1,effects:1,deadzone:0.18,touch:'auto',fullscreen:false,startInfo:true,controlType:0,bindings:DEFAULT_BINDINGS,display:DEFAULT_DISPLAY_SETTINGS});
+export const DEFAULT_SETTINGS=Object.freeze({resolution:'auto',renderScale:100,msaaEnabled:false,msaaSamples:4,surfaceShadows:true,freeFlight:false,music:1,effects:1,deadzone:0.18,touch:'auto',fullscreen:false,startInfo:true,controlType:0,bindings:DEFAULT_BINDINGS,display:DEFAULT_DISPLAY_SETTINGS});
 export const RESOLUTIONS=Object.freeze({'auto':null,'640x480':[640,480],'800x600':[800,600],'1024x768':[1024,768],'1280x720':[1280,720],'1920x1080':[1920,1080],'2560x1440':[2560,1440],'3840x2160':[3840,2160]});
 const bounded=(v,a,b,d)=>typeof v==='number'&&Number.isFinite(v)?Math.min(b,Math.max(a,v)):d;
 export function normalizeSettings(value={}) {
   if(!value||typeof value!=='object')value={};
   return {resolution:Object.hasOwn(RESOLUTIONS,value.resolution)?value.resolution:'auto',
     renderScale:bounded(value.renderScale,25,200,100),music:bounded(value.music,0,1,1),
-    msaaEnabled:value.msaaEnabled===true,msaaSamples:[2,4,8].includes(value.msaaSamples)?value.msaaSamples:4,freeFlight:value.freeFlight===true,
+    msaaEnabled:value.msaaEnabled===true,msaaSamples:[2,4,8].includes(value.msaaSamples)?value.msaaSamples:4,
+    surfaceShadows:value.surfaceShadows!==false,freeFlight:value.freeFlight===true,
     effects:bounded(value.effects,0,1,1),deadzone:bounded(value.deadzone,0,.5,.18),
     touch:['auto','on','off'].includes(value.touch)?value.touch:'auto',fullscreen:value.fullscreen===true,startInfo:value.startInfo!==false,controlType:[0,1,2].includes(value.controlType)?value.controlType:0,
     display:Object.fromEntries(Object.keys(DEFAULT_DISPLAY_SETTINGS).map(key=>[key,value.display?.[key]!==false])),

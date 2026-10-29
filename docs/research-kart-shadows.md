@@ -11,9 +11,10 @@ intersected the viewport.
 
 `KartShadowVisual` now refreshes both bounds and omits this additional sphere
 rejection. Original sector visibility and first-person hiding still apply.
-The GPU clips the submitted quad, matching the direct shadow callback. No
-dynamic light, extra softness, opacity fade, terrain lift, or new artwork was
-introduced.
+The GPU clips the submitted quad, matching the direct shadow callback. This
+correction added no dynamic light, extra softness, opacity fade, terrain lift
+or new artwork. The optional [surface placement](#browser-enhancement-shadows-on-the-road-surface)
+is a separate enhancement.
 
 The second defect affected presentation even though GPU pixel reads looked
 correct. Three r186 creates its own context with `alpha: true`, overriding the
@@ -74,12 +75,44 @@ the mesh is
 The accelerated path uses the original TGA substitution already established in
 [the texture audit](research-texture-key.md).
 
-The original plane projection has visible limitations which are retained. At
-France's starting sector 174 the authored fallback plane is Y=0 while the road
-triangles are at Y=20 and higher. The shadow is submitted but hidden below that road. Raising
-it onto the road would change the recovered source behavior. The new browser
+The original plane projection has visible limitations. At France's starting
+sector 174 the authored fallback plane is Y=0 while the road triangles are at
+Y=20 and higher. The shadow is submitted but hidden below that road. Where a
+plane crosses the road, part of the quad is cut off instead. With
+**Schaduwen op het wegdek** off, the port keeps this behavior, and the browser
 report records both heights rather than treating the lack of visible pixels
 there as a renderer failure.
+
+## Browser enhancement: shadows on the road surface
+
+**Schaduwen op het wegdek** in **Meer instellingen** is a browser enhancement,
+not original behavior. It is on by default; switching it off restores the
+original quad described above. Because of the plane projection, the original
+shadow comes and goes during a race.
+
+With the setting on, `KartShadowVisual` draws the same quad as an 8×8 grid
+(`getSurfaceKartShadowGrid` and `surfaceKartShadowPositions` in
+`source/kart-shadow.js`):
+
+- The grid keeps the original corners, UVs, ARGB `80000000` color, texture,
+  blend factors and front-face winding. Each cell uses the `S_SHADOW` index
+  pattern, and it is still drawn immediately before its kart.
+- Each grid point uses the drawn kart matrix, including tilt, scale and a
+  rescue's shrinking matrix, plus the original +2 X/Z offset.
+- Its height comes from the port's track sampler, `sampleNativeTrack`: the
+  first road, land or extra triangle under that point in the kart's sector,
+  or the sector's fallback plane where there is none. Rescue placement and
+  stuck-kart recovery use the same sampler. The grid sits 0.25 units above
+  that height, and a polygon offset keeps it in front of the coplanar road.
+- It writes no depth, so it cannot hide wheel parts that dip just below the
+  lifted grid. The original quad keeps its inherited Z writes.
+- World positions are captured once per simulation tick and interpolated for
+  the unlocked framerate, like the original pose matrices.
+
+The shadow therefore stays on the surface under the kart. Between grid points
+it follows a straight line, so a kerb or ridge narrower than one cell (an
+eighth of the kart) can show a small gap or overlap. Changing the setting
+during a race applies after **OK**.
 
 ## Verification
 
@@ -105,6 +138,21 @@ there as a renderer failure.
   France retains the original below-road behavior. See
   [`browser.json`](../evidence/shadow-audit/browser.json) and the inspection
   images beside it.
+* The surface grid has four Node tests. They check that it keeps the original
+  corners, UVs, color and winding, and that on France's start sector 174 every
+  grid point lies on road triangles at Y≥20 while the original pose stays at
+  Y=0. They also check that one mesh switches between both modes (polygon
+  offset, depth writes and interpolation) and that the setting defaults to on
+  while an explicit off is kept. The browser test renders both modes with and
+  without 4×MSAA. In a local run on 2026-10-29 (headless Chromium 145,
+  SwiftShader), the surface shadow darkened 3,143 pixels at the France start,
+  where the original shows none. At the Netherlands start it darkened 5,133
+  pixels, where the original's partly hidden quad darkens 2,841. No pixel got
+  lighter. An earlier run with Z writes left on lightened 14 pixels where the
+  grid hid wheel bottoms; that is why the surface shadow writes no depth. The
+  Meer instellingen browser test covers the default, saving off across a
+  reload, loading the original quads from a saved off, and switching live
+  shadows in a race.
 * The older combined shadow/finish-flag browser tool was repaired to provide
   current actor ownership and native draw ordering. Its former failure was a
   stale test setup, distinct from the clipping defect.

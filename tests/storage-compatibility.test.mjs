@@ -19,13 +19,15 @@ function legacyStorage(){
 test('v0.9.0 race saves and settings load and save without migration or record loss',()=>{
   const storage=legacyStorage(),before=new Map(storage.values);
   const save=readRaceSave(storage),settings=readSettings(storage);
+  // Features added after the fixture's save only receive their defaults.
+  const added={surfaceShadows:true};
   assert.deepEqual(save,fixture.storage['rcsk.race-save.v1']);
-  assert.deepEqual(settings,fixture.storage['rcsk.settings.v1']);
+  assert.deepEqual(settings,{...fixture.storage['rcsk.settings.v1'],...added});
   assert.equal(writeRaceSave(save,storage),true);
   assert.equal(writeSettings(settings,storage),true);
   assert.deepEqual(storage.writes,['rcsk.race-save.v1','rcsk.settings.v1']);
   for(const [key,value]of before){
-    if(key==='rcsk.settings.v1')assert.deepEqual(JSON.parse(storage.values.get(key)),JSON.parse(value));
+    if(key==='rcsk.settings.v1')assert.deepEqual(JSON.parse(storage.values.get(key)),{...JSON.parse(value),...added});
     else assert.equal(storage.values.get(key),value,key);
   }
   assert.deepEqual(readRaceSave(storage),save);
@@ -85,6 +87,7 @@ test('older partial settings retain explicit choices and receive missing feature
   assert.equal(settings.msaaEnabled,false);
   assert.equal(settings.msaaSamples,4);
   assert.equal(settings.freeFlight,false);
+  assert.equal(settings.surfaceShadows,true);
   assert.equal(settings.controlType,0);
   assert.deepEqual(settings.display,DEFAULT_DISPLAY_SETTINGS);
   assert.equal(settings.bindings.bonus,'');

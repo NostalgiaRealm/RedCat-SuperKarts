@@ -614,6 +614,8 @@ function showBrowserSettings(from='main'){
   <label class="settings-toggle"><input id="msaa-enabled" type="checkbox">Randen gladmaken (MSAA)</label>
   <label>MSAA-kwaliteit<select id="msaa-samples"><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
   <p id="msaa-status" class="settings-detail" role="status"></p>
+  <label class="settings-toggle"><input id="surface-shadows" type="checkbox">Schaduwen op het wegdek</label>
+  <p class="settings-detail">Kartschaduwen liggen op het wegdek onder de kart. Uit: de oorspronkelijke schaduw, die op sommige plekken onder de weg verdwijnt.</p>
   <h2>Cheats</h2>
   <div class="settings-toggle-action"><span>Vrij vliegen (no-clip)</span><div id="flight-toggle-host"></div></div>
   <p class="settings-detail">Vlieg na de start vrij door het circuit. De race pauzeert tijdens het vliegen. Uitschakelen brengt je terug naar de baan.</p>
@@ -624,7 +626,7 @@ function showBrowserSettings(from='main'){
   <p id="game-version" class="settings-detail settings-version">Versie ${GAME_VERSION}</p>`;
   content.append(form);
   $('resolution').value=draft.resolution;$('scale').value=draft.renderScale;$('deadzone').value=draft.deadzone*100;$('touch').value=draft.touch;
-  $('msaa-enabled').checked=draft.msaaEnabled;$('msaa-samples').value=draft.msaaSamples;
+  $('msaa-enabled').checked=draft.msaaEnabled;$('msaa-samples').value=draft.msaaSamples;$('surface-shadows').checked=draft.surfaceShadows;
   const flightToggle=button(draft.freeFlight?'Aan':'Uit',()=>{
     flightToggle.setAttribute('aria-pressed',String(flightToggle.getAttribute('aria-pressed')!=='true'));update();
   },{'aria-label':'Vrij vliegen (no-clip)','aria-pressed':String(Boolean(draft.freeFlight))});
@@ -639,7 +641,8 @@ function showBrowserSettings(from='main'){
   $('unlock-status').textContent=raceSave.locks?.every(locked=>!locked)?'Alle landen en circuits zijn al ontgrendeld.':'Ontgrendelt direct alle landen en circuits. Voortgang en scores blijven behouden.';
   const update=()=>{
     Object.assign(draft,{resolution:$('resolution').value,renderScale:Number($('scale').value),deadzone:Number($('deadzone').value)/100,touch:$('touch').value,
-      msaaEnabled:$('msaa-enabled').checked,msaaSamples:Number($('msaa-samples').value),freeFlight:flightToggle.getAttribute('aria-pressed')==='true'});
+      msaaEnabled:$('msaa-enabled').checked,msaaSamples:Number($('msaa-samples').value),surfaceShadows:$('surface-shadows').checked,
+      freeFlight:flightToggle.getAttribute('aria-pressed')==='true'});
     flightToggle.textContent=draft.freeFlight?'Aan':'Uit';
     const size=renderDimensions({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,...draft});
     $('scale-value').textContent=draft.renderScale+'%';$('effective-resolution').textContent=`Basis ${size.baseWidth} × ${size.baseHeight} → 3D ${size.width} × ${size.height} pixels`;
@@ -663,7 +666,7 @@ function showBrowserSettings(from='main'){
 function finishMoreSettings(commit){
   if(commit&&moreSettingsDraft){
     optionsDraft??=nativeOptionsDraft(settings);
-    for(const key of ['resolution','renderScale','deadzone','touch','msaaEnabled','msaaSamples','freeFlight'])optionsDraft[key]=moreSettingsDraft[key];
+    for(const key of ['resolution','renderScale','deadzone','touch','msaaEnabled','msaaSamples','surfaceShadows','freeFlight'])optionsDraft[key]=moreSettingsDraft[key];
   }
   moreSettingsDraft=null;showSettings(returnFromSettings);
 }
@@ -691,7 +694,7 @@ async function showTrack(id,driving=false,options={}){
     if(!viewer)viewer=driving?new View($('world'),input.state,$('race-hud')):new View($('world'));
     // Poll analog controls at simulation admission as well as display refresh.
     viewer.beforeUpdate=time=>input.poll(time);
-    viewer.displaySettings=settings.display;
+    viewer.displaySettings=settings.display;viewer.surfaceShadows=settings.surfaceShadows;
     if(driving)viewer.audioSettings={...settings};
     viewer.onLoadProgress=progress;
     const raceSelection={...selection},raceContext={kind:playMode,slot:raceSave.selectedSlot};viewer.onExit=patch=>finishRace(patch,raceSelection,raceContext);
@@ -718,7 +721,7 @@ function resumeViewer(){
   const driving=!!viewer?.motion;
   page=driving?'driving':'viewer';mode=driving?'race':'viewer';input.setMode(mode);screen.hidden=true;$('viewer-hud').hidden=driving;$('viewer-caption').hidden=driving;$('race-hud').hidden=!driving;
   $('touch-controls').hidden=!driving||settings.touch==='off'||(settings.touch==='auto'&&!matchMedia('(pointer:coarse)').matches);
-  viewer?.setAudioSettings?.(settings);viewer?.setFreeFlight?.(settings.freeFlight);viewer?.resume();resize();
+  viewer?.setAudioSettings?.(settings);viewer?.setSurfaceShadows?.(settings.surfaceShadows);viewer?.setFreeFlight?.(settings.freeFlight);viewer?.resume();resize();
 }
 function resize(){
   input.clear();

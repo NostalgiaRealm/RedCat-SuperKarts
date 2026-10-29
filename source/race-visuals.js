@@ -7,7 +7,7 @@ import {nativeBonusVisual} from './simulation/native-bonus.js';
 import {resolveAsset} from './asset-animation.js';
 import {getNativeRescueVisualSpec} from './rescue-assets.js';
 import {nativeRescueRingPositions} from './simulation/native-rescue.js';
-import {getNativeKartShadowSpec,getNativeKartShadowPose} from './kart-shadow.js';
+import {getNativeKartShadowSpec,getNativeKartShadowPose,getSurfaceKartShadowGrid,surfaceKartShadowPositions} from './kart-shadow.js';
 import {getNativeFinishFlagSpec,NativeFinishFlag} from './finish-flag.js';
 import {nativeKartBrightness,sampleNativeKartGroundColor,advanceNativeKartColor} from './simulation/native-kart-color.js';
 import {NATIVE_RENDER_ORDER,nativeObjectRenderOrder} from './render-order.js';
@@ -155,8 +155,36 @@ export class KartShadowVisual {
     visual.mesh.matrixAutoUpdate=false;
     const creationIndex=actor===viewer.motion?0:viewer.opponents.indexOf(actor)+1;
     visual.mesh.renderOrder=nativeObjectRenderOrder(viewer.track.placements.length+creationIndex,{shadow:true});
+    // "Schaduwen op het wegdek" (browser enhancement): the same quad as a grid
+    // on the ground surface. World positions, so the mesh matrix is identity.
+    visual.nativeGeometry=geometry;
+    visual.grid=getSurfaceKartShadowGrid(spec,Array.from(original.index.array));
+    const surface=new THREE.BufferGeometry();
+    surface.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(visual.grid.count*3),3)
+      .setUsage(THREE.DynamicDrawUsage));
+    surface.setAttribute('uv',new THREE.Float32BufferAttribute(visual.grid.uv,2));
+    surface.setAttribute('color',new THREE.Uint8BufferAttribute(visual.grid.rgba,4,true));
+    surface.setIndex(visual.grid.index);
+    visual.surfaceGeometry=surface;
+    visual.surfacePositions=[new Float32Array(visual.grid.count*3),new Float32Array(visual.grid.count*3)];
+    visual.setSurface(viewer.surfaceShadows===true);
     viewer.group.add(visual.mesh);
     return visual;
+  }
+  setSurface(enabled,world=null,rescue=null) {
+    this.surface=Boolean(enabled);
+    this.mesh.geometry=this.surface?this.surfaceGeometry:this.nativeGeometry;
+    this.mesh.userData.inactiveGeometry=this.surface?this.nativeGeometry:this.surfaceGeometry;
+    // Pull the draped quad in front of the coplanar road in depth. As a decal
+    // it writes no Z, so it cannot hide wheel bottoms just below the lift.
+    Object.assign(this.mesh.material,this.surface?
+      {polygonOffset:true,polygonOffsetFactor:-1,polygonOffsetUnits:-4,depthWrite:false}:
+      {polygonOffset:false,polygonOffsetFactor:0,polygonOffsetUnits:0,depthWrite:true});
+    if(this.surface)this.mesh.matrix.identity();
+    this.mesh.matrixWorldNeedsUpdate=true;
+    // Restart interpolation in the new mode instead of blending across it.
+    this.current=null;
+    if(world){this.capture(world,rescue);this.present(1);}
   }
   capture(world,rescue=null) {
     const body=this.actor.body;
@@ -166,10 +194,23 @@ export class KartShadowVisual {
     // Convert each captured endpoint once. Unlocked presentation can reuse
     // these matrices until the next simulation capture without allocations.
     current.renderMatrix=nativeMatrix(current.matrix,current.position);
+    if(this.surface){
+      // Two reused buffers: the previous capture and this one.
+      const first=!this.current;
+      if(!first)this.surfacePositions.reverse();
+      surfaceKartShadowPositions(source,world,this.grid,this.surfacePositions[1]);
+      if(first)this.surfacePositions[0].set(this.surfacePositions[1]);
+    }
     this.previous=this.current??current;this.current=current;
   }
   present(alpha) {
     if(!this.current)return;
+    if(this.surface){
+      const [before,after]=this.surfacePositions,target=this.surfaceGeometry.attributes.position;
+      for(let i=0;i<after.length;i++)target.array[i]=before[i]*(1-alpha)+after[i]*alpha;
+      target.needsUpdate=true;
+      return;
+    }
     const before=this.previous.renderMatrix,after=this.current.renderMatrix;
     for(let i=0;i<16;i++)this.mesh.matrix.elements[i]=
       before.elements[i]*(1-alpha)+after.elements[i]*alpha;

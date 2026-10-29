@@ -306,6 +306,13 @@ export class DrivingView extends TrackViewer{
     this.onLoadProgress?.(10);
     return result;
   }
+  /** "Schaduwen op het wegdek": kart shadows on the ground surface
+   * (browser enhancement) or the original sector-plane quad. */
+  setSurfaceShadows(enabled){
+    this.surfaceShadows=Boolean(enabled);
+    for(const shadow of this.shadows??[])if(shadow.surface!==this.surfaceShadows)
+      shadow.setSurface(this.surfaceShadows,this.simulation?.world,this.simulation?.rescue.get(shadow.actor.body));
+  }
   setFreeFlight(enabled){
     this.freeFlightEnabled=Boolean(enabled);
     this.simulation?.setFreeFlight(this.freeFlightEnabled);

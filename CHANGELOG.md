@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **Schaduwen op het wegdek** in **Meer instellingen**, on by default: kart
+  shadows lie on the road surface under each kart. The original shadow sits on
+  one flat plane per track section, so it disappears below the road in places,
+  such as France's start. Switch the setting off for the original shadow.
+
 ## 1.0.2 — 2026-10-29
 
 Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
