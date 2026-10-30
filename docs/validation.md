@@ -4,6 +4,16 @@ The local build implements the recorded active systems. Bounded original-
 instruction comparisons and available-host browser checks are recorded below;
 complete native race parity has not been established.
 
+## Mobile performance and 1.0.3 — 30 October 2026
+
+The [mobile performance record](mobile-performance.md) lists the measurements and
+checks. Verification was limited to one track on request: 42 framebuffer hashes on
+the Netherlands track match the pre-optimization build, and other tracks and settings
+were not rerun. The Node suite includes a bit-exact race trace on all six
+tracks. On the release source the menu showed version 1.0.3 in the version
+browser check. Package launch tests, full races, physical phones and real Safari
+were not run.
+
 ## Second comparison pass and precision switch — 29 October 2026
 
 The [comparison report](original-comparison-2026-10-28.md) records the second

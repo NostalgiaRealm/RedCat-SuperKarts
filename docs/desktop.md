@@ -60,12 +60,12 @@ npm run desktop -- --skip-intro
 
 ## Build packages
 
-Ready-to-run [v1.0.2 packages](releases/1.0.2.md) are available on
-[GitHub](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.2)
-and [GitLab](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.2):
+Ready-to-run [v1.0.3 packages](releases/1.0.3.md) are available on
+[GitHub](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.3)
+and [GitLab](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.3):
 Linux x64 AppImage/archive, Windows x64 installer/ZIP, and separate macOS
 Intel and Apple Silicon DMG/ZIP packages. The release includes its changelog,
-build metadata, packaging integrity reports and checksums. Version 1.0.2 is
+build metadata, packaging integrity reports and checksums. Version 1.0.3 is
 built with the normal build checks described below. The commands below
 describe normal local packaging.
 
@@ -90,13 +90,13 @@ The configuration is [electron-builder.json](../electron-builder.json).
 By default, before archiving, the build verifies every staged game file
 byte-for-byte and checks the wrapper's contents. Version 1.0.0 skipped this
 verification as part of its explicit no-tests/no-build-checks release scope,
-using `RCSK_SKIP_BUILD_CHECKS=1`; versions 1.0.1 and 1.0.2 run it. The generated `runtime-manifest.json` records
+using `RCSK_SKIP_BUILD_CHECKS=1`; versions 1.0.1 and later run it. The generated `runtime-manifest.json` records
 runtime files and sizes, and Electron checks that every listed chunk is present
 before launching the bundled game. The package verifier separately compares
 payload bytes. Missing generated JavaScript chunks or media stop the build.
 Normal checked builds record it in `release/integrity-<platform>-<arch>.json`.
 Artifact names include version, OS and architecture, for example
-`RedCat-SuperKarts-1.0.2-linux-x86_64.AppImage`.
+`RedCat-SuperKarts-1.0.3-linux-x86_64.AppImage`.
 
 ### Linux
 
@@ -116,8 +116,8 @@ Use the equivalent package for another distribution if the build requests it.
 Launch the generated AppImage after making it executable:
 
 ```sh
-chmod +x release/RedCat-SuperKarts-1.0.2-linux-x86_64.AppImage
-./release/RedCat-SuperKarts-1.0.2-linux-x86_64.AppImage
+chmod +x release/RedCat-SuperKarts-1.0.3-linux-x86_64.AppImage
+./release/RedCat-SuperKarts-1.0.3-linux-x86_64.AppImage
 ```
 
 Adjust the version in the filename after a version change. The unpacked test
@@ -279,6 +279,13 @@ publish the resulting files.
 
 ## Validation scope
 
+### Version 1.0.3 packages — 30 October 2026
+
+The 1.0.3 packages are built with the same normal build checks as 1.0.2, with
+integrity reports published alongside the downloads. Launch tests of the
+finished packages, full races and physical-device play were not run. See
+[the release notes](releases/1.0.3.md).
+
 ### Version 1.0.2 packages — 29 October 2026
 
 The 1.0.2 packages are built with the same normal build checks as 1.0.1, with
@@ -366,7 +373,7 @@ To repeat the Linux checks in an isolated display, install `xvfb-run`,
 ```sh
 npm test
 bash tools/run-desktop-test-linux.sh
-RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-1.0.2-linux-x86_64.AppImage" \
+RCSK_DESKTOP_EXECUTABLE="$PWD/release/RedCat-SuperKarts-1.0.3-linux-x86_64.AppImage" \
   bash tools/run-desktop-test-linux.sh
 ```
 

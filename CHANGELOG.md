@@ -1,6 +1,12 @@
 # Changelog
 
-## Unreleased
+## 1.0.3 — 2026-10-30
+
+Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
+Apple Silicon. The race is far lighter, above all on phones, and loads much
+faster, and two optional improvements over the original are added. Gameplay is
+unchanged. Existing saves, profiles, unlocks, settings and records keep working
+without migration. See the [1.0.3 release notes](docs/releases/1.0.3.md).
 
 ### Added
 

@@ -61,6 +61,14 @@ source archives. At the user's request, no tests or build checks are run for
 this release. The earlier focused records remain historical; publication does
 not resolve the validation gaps below. See [release notes](releases/1.0.0.md).
 
+## Version 1.0.3 — 30 October 2026
+
+Version 1.0.3 adds the [mobile performance work](mobile-performance.md), surface
+shadows, smooth engine lights and URL-folder hosting. Open from it: try it on real
+phones and in real Safari, and rerun the framebuffer comparison on the other five
+tracks and the MSAA, render-scale and low-effects cases, which was limited to one
+track on request. See [release notes](releases/1.0.3.md).
+
 ## Version 1.0.2 publication — 29 October 2026
 
 Version 1.0.2 publishes the second comparison pass, the switch to the
