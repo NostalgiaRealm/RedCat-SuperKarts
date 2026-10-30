@@ -178,7 +178,8 @@ The current version is shown at the bottom of **Meer instellingen**.
 ### Resolution and render scale
 
 - **Auto** uses the viewport's CSS dimensions multiplied by the device pixel
-  ratio once.
+  ratio once. On phones and tablets it stops at about 1 megapixel.
+- **Volle schermresolutie** uses every screen pixel on any device.
 - An explicit resolution preset fits inside its named rectangle while keeping
   the viewport's aspect ratio.
 - **100%** uses that base size. **25–200%** multiplies both dimensions.
@@ -337,15 +338,18 @@ python3 -m http.server 4175 --bind 127.0.0.1 --directory dist
 That different port has separate browser saves. See [build and loading
 details](docs/code-efficiency.md) for the changes and focused validation.
 
-### Host on a subdomain
+### Host as a website
 
-The browser build can run as a static site at an address such as
-`https://karts.example.com/`. Serve the **contents of `dist/` at the subdomain
-root**, including every generated JavaScript chunk and prepared asset.
+The browser build can run as a static site at a domain root, such as
+`https://karts.example.com/`, or in a URL folder, such as
+`https://games.nostalgiarealm.com/redcatsuperkarts/`. Serve the **contents of
+`dist/`**, including every generated JavaScript chunk and prepared asset.
+`tools/deploy-website.sh` builds and uploads it to the Nginx server in one
+command; `--dry-run` shows the changes first.
 
-The [subdomain hosting instructions](docs/hosting.md) cover build requirements,
-the exact upload layout, DNS and HTTPS, Caddy/Nginx examples, caching, media
-checks and updates.
+The [hosting instructions](docs/hosting.md) cover build requirements, the exact
+upload layout, DNS and HTTPS, Caddy/Nginx examples, the deploy script, caching,
+media checks and updates.
 
 ### Desktop packages
 

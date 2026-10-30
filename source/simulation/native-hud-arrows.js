@@ -40,17 +40,20 @@ export class NativeHudArrows {
     element.alphaStep=s.alphaStep;
     element.rgba[3]=Math.trunc(r(r(s.alphaStep*NATIVE_ARROW_INTERVAL)*255));
   }
-  update(input) {
+  step(input) {
     const s=this.state;
     if(!input.forward){
       if(s.phase!==0){
-        if(s.type!==2){this.advance(input);return this.commands();}
+        if(s.type!==2){this.advance(input);return;}
         this.stop();
       }
       s.type=1;this.start(input);
     }else if(s.phase!==0){
       if(s.type===1)this.stop();else this.advance(input);
     }
+  }
+  update(input) {
+    this.step(input);
     return this.commands();
   }
   requestJunction(input) {

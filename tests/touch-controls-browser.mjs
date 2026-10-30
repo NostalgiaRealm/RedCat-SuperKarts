@@ -161,11 +161,11 @@ try{
           return {id,left:Math.min(...vertices.map(p=>p[0])),right:Math.max(...vertices.map(p=>p[0])),top:Math.min(...vertices.map(p=>p[1])),bottom:Math.max(...vertices.map(p=>p[1]))};
         });
         const timeScale=layout.text('string_laptime').scale??layout.scale;
-        const timeEntry=v.hud.glyphs.strings.get('string_laptime'),timePosition=timeEntry.meshes[0].geometry.attributes.position;
+        const timeEntry=v.hud.glyphs.strings.get('string_laptime'),timePosition=timeEntry.mesh.geometry.attributes.position;
         const {layoutHudText}=await import('/source/hud-text.js'),nativeTimeGlyph=layoutHudText(timeEntry.spec,v.hud.text.string_laptime)[0];
         const timeGlyphHeight=Math.abs(timePosition.getY(2)-timePosition.getY(0));
         const digitEntry=v.hud.glyphs.strings.get('string_laptime_value');
-        const digitHeights=digitEntry.meshes.filter(mesh=>mesh.visible).map(mesh=>{const p=mesh.geometry.attributes.position;return Math.abs(p.getY(2)-p.getY(0));});
+        const digitPositions=digitEntry.mesh.geometry.attributes.position,digitHeights=Array.from({length:digitEntry.glyphCount},(_,glyph)=>Math.abs(digitPositions.getY(glyph*4+2)-digitPositions.getY(glyph*4)));
         return {controls,hud,scale:layout.scale,timeScale,timeGlyphHeight,digitHeights,nativeTimeGlyphHeight:nativeTimeGlyph.height,controlTop:document.getElementById('touch-controls').getBoundingClientRect().top,overflow:document.documentElement.scrollWidth>innerWidth};
       });
       assert.equal(bounds.overflow,false);

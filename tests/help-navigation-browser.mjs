@@ -56,7 +56,7 @@ try{
       await chooseTopic(item.id);
       const decoded=await article.locator('img').evaluateAll(async elements=>{
         await Promise.all(elements.map(image=>image.decode()));
-        return elements.map(image=>({src:new URL(image.src).pathname,width:image.naturalWidth,height:image.naturalHeight}));
+        return elements.map(image=>({src:image.getAttribute('src'),width:image.naturalWidth,height:image.naturalHeight}));
       });
       assert.deepEqual(decoded.map(image=>image.src),item.images,item.id);
       assert.ok(decoded.every(image=>image.width>0&&image.height>0));

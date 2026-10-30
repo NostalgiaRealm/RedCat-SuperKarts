@@ -180,7 +180,7 @@ export function applyNativeAITrigger(body, state, marker, {
   previousEngineSector, precision = NATIVE_PRECISION,
 }) {
   const r = rounding(precision);
-  if ([4, 5, 6, 8].includes(marker)) {
+  if (marker === 4 || marker === 5 || marker === 6 || marker === 8) {
     if (!Number.isFinite(speedLimits?.[marker])) throw new TypeError('Original NPC marker speed limits required');
     state.speedLimit = speedLimits[marker];
   } else if (marker === 14) {
@@ -212,6 +212,10 @@ export function applyNativeAITrigger(body, state, marker, {
 }
 
 /** 0x4067e0: both sector markers excluding53, then the current node marker. */
+function applyMarker(events, marker, body, state, options, track) {
+  const event = applyNativeAITrigger(body, state, marker, options);
+  if (event) events.push(event);
+}
 export function nativeAITrackMarkers(track, body) {
   const sector = track.route[body.sector];
   return [sector.trigger, sector.unknown].filter(marker => marker !== 53)
@@ -219,8 +223,9 @@ export function nativeAITrackMarkers(track, body) {
 }
 
 export function applyNativeAITrackTriggers(track, body, state, options) {
-  return nativeAITrackMarkers(track, body).flatMap(marker => {
-    const event = applyNativeAITrigger(body, state, marker, options);
-    return event ? [event] : [];
-  });
+  const sector = track.route[body.sector], node = track.drive[body.waypoint].unknown[1], events = [];
+  if (sector.trigger !== 53) applyMarker(events, sector.trigger, body, state, options);
+  if (sector.unknown !== 53) applyMarker(events, sector.unknown, body, state, options);
+  applyMarker(events, node, body, state, options);
+  return events;
 }

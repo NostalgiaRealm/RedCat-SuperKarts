@@ -24,24 +24,23 @@ const cross = (a, b, r) => [
   f32(r(r(a[0] * b[1]) - r(a[1] * b[0]))),
 ];
 
-/** Original XZ winding test 0x495ed0; Y is deliberately ignored. */
-export function nativeTriangleContainsXZ(x, z, vertices, { precision = NATIVE_PRECISION } = {}) {
-  const r = registerRounding(precision);
-  const quadrant = p => x <= p[0] ? (z <= p[2] ? 0 : 3) : (z <= p[2] ? 1 : 2);
+const quadrantOf = (x, z, p) => x <= p[0] ? (z <= p[2] ? 0 : 3) : (z <= p[2] ? 1 : 2);
+function containsXZ(x, z, vertices, precision) {
   let previous = 2;
-  let previousQuadrant = quadrant(vertices[previous]);
+  let previousQuadrant = quadrantOf(x, z, vertices[2]);
   let winding = 0;
   for (let i = 0; i < 3; i++) {
     const current = vertices[i];
-    const q = quadrant(current);
+    const q = quadrantOf(x, z, current);
     if (q !== previousQuadrant) {
       if (((previousQuadrant + 1) & 3) === q) winding++;
       else if (((q + 1) & 3) === previousQuadrant) winding--;
       else {
         const last = vertices[previous];
         // 0x495f81-0x495fa0: FSUB/FMUL/FSUBP stay in registers until FCOMP.
-        const side = r(r(z - last[2]) * r(current[0] - last[0])) -
-          r(r(x - last[0]) * r(current[2] - last[2]));
+        const side = precision === 24
+          ? f32(f32(z - last[2]) * f32(current[0] - last[0])) - f32(f32(x - last[0]) * f32(current[2] - last[2]))
+          : (z - last[2]) * (current[0] - last[0]) - (x - last[0]) * (current[2] - last[2]);
         winding += side > 0 ? 2 : -2;
       }
     }
@@ -49,6 +48,12 @@ export function nativeTriangleContainsXZ(x, z, vertices, { precision = NATIVE_PR
     previousQuadrant = q;
   }
   return winding !== 0;
+}
+
+/** Original XZ winding test 0x495ed0; Y is deliberately ignored. */
+export function nativeTriangleContainsXZ(x, z, vertices, { precision = NATIVE_PRECISION } = {}) {
+  registerRounding(precision);
+  return containsXZ(x, z, vertices, precision);
 }
 
 /**
@@ -85,9 +90,14 @@ export function nativeTrianglePlane([a, b, c], { precision = NATIVE_PRECISION, k
  * Native 0x496290 plane intersection; all four branches (0x4962a4, 0x4962c1,
  * 0x4962f6, 0x496329) run FMUL, FSUBR, FMUL, FSUBP, FDIV in ST0 and return it.
  */
+const planeHeight = (plane, x, z, precision) => {
+  const n = plane.normal;
+  return precision === 24 ? f32(f32(f32(plane.distance - f32(x * n[0])) - f32(z * n[2])) / n[1])
+    : (plane.distance - x * n[0] - z * n[2]) / n[1];
+};
 export function nativePlaneHeight(plane, x, z, { precision = NATIVE_PRECISION } = {}) {
-  const r = registerRounding(precision);
-  return r(r(r(plane.distance - r(x * plane.normal[0])) - r(z * plane.normal[2])) / plane.normal[1]);
+  registerRounding(precision);
+  return planeHeight(plane, x, z, precision);
 }
 
 /** Exact order and route representation retained by the asset converter. */
@@ -132,57 +142,81 @@ export function createNativeTrack(track, { precision = NATIVE_PRECISION } = {}) 
       const rgb = track.color?.slice(colorIndex, colorIndex + 3).map(v => Math.round(v * 255));
       const diffuse = rgb?.length === 3 ? ((rgb[0] << 16) | (rgb[1] << 8) | rgb[2]) >>> 0 : 0xffffff;
       sectors[group.sector].triangles[group.kind].push({ vertices, diffuse,
-        ...nativeTrianglePlane(vertices, { precision, kind: group.kind }) });
+        ...nativeTrianglePlane(vertices, { precision, kind: group.kind }),
+        minX: Math.min(vertices[0][0], vertices[1][0], vertices[2][0]), maxX: Math.max(vertices[0][0], vertices[1][0], vertices[2][0]),
+        minZ: Math.min(vertices[0][2], vertices[1][2], vertices[2][2]), maxZ: Math.max(vertices[0][2], vertices[1][2], vertices[2][2]) });
     }
   }
   return { sectors };
 }
 
-/** Original sequential sector search 0x4977d0, including wrap behavior. */
-export function selectNativeSector(world, hint, x, z, { precision = NATIVE_PRECISION } = {}) {
-  const r = registerRounding(precision);
-  const { sectors } = world;
-  // 0x497813-0x49786d: both differences, products and FSUBP stay in registers.
-  const sideOf = index => {
-    const sector = sectors[index];
-    return r(r(x - sector.position[0]) * sector.side[2]) -
-      r(r(z - sector.position[2]) * sector.side[0]);
-  };
-  const count = sectors.length;
+// 0x497813-0x49786d: both differences, products and FSUBP stay in registers.
+const side53 = (sector, x, z) => (x - sector.position[0]) * sector.side[2] - (z - sector.position[2]) * sector.side[0];
+const side24 = (sector, x, z) => f32(f32(x - sector.position[0]) * sector.side[2]) - f32(f32(z - sector.position[2]) * sector.side[0]);
+
+/** Allocation-free 0x4977d0 for hot callers; `precision` must already be 24 or 53. */
+export function nativeSectorAt(world, hint, x, z, precision = NATIVE_PRECISION) {
+  const sectors = world.sectors, count = sectors.length, side = precision === 24 ? side24 : side53;
   if (!Number.isInteger(hint) || hint < 0 || hint >= count) throw new RangeError('Invalid native sector hint');
   let index = hint;
-  if (sideOf(index) <= 0) {
+  if (side(sectors[index], x, z) <= 0) {
     for (; index < count; index++) {
-      if (sideOf(index) > 0) return index === 0 ? count - 1 : index - 1;
+      if (side(sectors[index], x, z) > 0) return index === 0 ? count - 1 : index - 1;
     }
   } else {
-    for (; index >= 0; index--) if (sideOf(index) < 0) return index;
+    for (; index >= 0; index--) if (side(sectors[index], x, z) < 0) return index;
   }
   if (index === 0) {
-    for (index = count - 1; index >= 0; index--) if (sideOf(index) < 0) return index;
+    for (index = count - 1; index >= 0; index--) if (side(sectors[index], x, z) < 0) return index;
     return index;
   }
   for (index = 0; index < count; index++) {
-    if (sideOf(index) > 0) return index === 0 ? count - 1 : index - 1;
+    if (side(sectors[index], x, z) > 0) return index === 0 ? count - 1 : index - 1;
   }
   return index;
 }
 
-/** Native 0x495fe0 + 0x496290: first upward face in road/land/extra order. */
-export function sampleNativeTrack(world, hint, x, y, z, { precision = NATIVE_PRECISION } = {}) {
-  const options = { precision };
-  const index = selectNativeSector(world, hint, x, z, options);
-  const sector = world.sectors[index];
-  if (!sector) throw new RangeError(`Native route search returned invalid sector ${index}`);
-  for (const kind of ['road', 'land', 'extra']) {
-    const triangles = sector.triangles[kind];
-    for (let triangle = 0; triangle < triangles.length; triangle++) {
-      const plane = triangles[triangle];
-      if (plane.normal[1] > f32(0.4) && nativeTriangleContainsXZ(x, z, plane.vertices, options)) {
-        return { height: nativePlaneHeight(plane, x, z, options), sector: index, kind, triangle, normal: plane.normal };
+/** Original sequential sector search 0x4977d0, including wrap behavior. */
+export function selectNativeSector(world, hint, x, z, { precision = NATIVE_PRECISION } = {}) {
+  registerRounding(precision);
+  return nativeSectorAt(world, hint, x, z, precision);
+}
+
+const UPWARD = f32(0.4), KINDS = ['road', 'land', 'extra'];
+// Second result of nativeFacePlane; nothing below reads them across calls.
+let faceKind = 'fallback', faceTriangle = -1;
+/** 0x495fe0: first upward face in road/land/extra order. The box test is the
+ * winding test's own result: outside it all three vertices share a half-plane,
+ * so only adjacent quadrant moves occur and the winding closes at zero. */
+export function nativeFacePlane(sector, x, z, precision = NATIVE_PRECISION) {
+  for (let k = 0; k < 3; k++) {
+    const triangles = sector.triangles[KINDS[k]];
+    for (let t = 0; t < triangles.length; t++) {
+      const plane = triangles[t];
+      if (x <= plane.minX || x > plane.maxX || z <= plane.minZ || z > plane.maxZ) continue;
+      if (plane.normal[1] > UPWARD && containsXZ(x, z, plane.vertices, precision)) {
+        faceKind = KINDS[k]; faceTriangle = t;
+        return plane;
       }
     }
   }
-  return { height: nativePlaneHeight(sector.fallback, x, z, options), sector: index,
-    kind: 'fallback', triangle: -1, normal: sector.fallback.normal };
+  faceKind = 'fallback'; faceTriangle = -1;
+  return sector.fallback;
+}
+
+/** 0x495fe0 + 0x496290 for hot callers that only need the ST0 height. */
+export function nativeTrackHeight(world, hint, x, z, precision = NATIVE_PRECISION) {
+  const index = nativeSectorAt(world, hint, x, z, precision), sector = world.sectors[index];
+  if (!sector) throw new RangeError(`Native route search returned invalid sector ${index}`);
+  return planeHeight(nativeFacePlane(sector, x, z, precision), x, z, precision);
+}
+
+/** Native 0x495fe0 + 0x496290: first upward face in road/land/extra order. */
+export function sampleNativeTrack(world, hint, x, y, z, { precision = NATIVE_PRECISION } = {}) {
+  registerRounding(precision);
+  const index = nativeSectorAt(world, hint, x, z, precision);
+  const sector = world.sectors[index];
+  if (!sector) throw new RangeError(`Native route search returned invalid sector ${index}`);
+  const plane = nativeFacePlane(sector, x, z, precision);
+  return { height: planeHeight(plane, x, z, precision), sector: index, kind: faceKind, triangle: faceTriangle, normal: plane.normal };
 }

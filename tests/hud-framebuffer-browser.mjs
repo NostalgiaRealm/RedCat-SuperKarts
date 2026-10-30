@@ -43,11 +43,11 @@ try{
     const draw=()=>glyphs.renderString(renderer,'string_lap','R',96,96,layout);
     const ditherDuring=[];
     pipeline.compose(r=>{ditherDuring.push(gl.isEnabled(gl.DITHER));draw();},96,96);const single=read();
-    const firstMesh=glyphs.strings.get('string_lap').meshes[0],firstMaterial=firstMesh.material;
-    const uv=[...firstMesh.geometry.attributes.uv.array],rgba=[...firstMesh.geometry.attributes.color.array];
+    const firstMesh=glyphs.strings.get('string_lap').mesh,firstMaterial=firstMesh.material;
+    const uv=[...firstMesh.geometry.attributes.uv.array].slice(0,8),rgba=[...firstMesh.geometry.attributes.color.array].slice(0,16);
     pipeline.compose(()=>{draw();draw();},96,96);const double=read();
-    const sameMesh=firstMesh===glyphs.strings.get('string_lap').meshes[0];
-    const sameMaterial=firstMaterial===glyphs.strings.get('string_lap').meshes[0].material;
+    const sameMesh=firstMesh===glyphs.strings.get('string_lap').mesh;
+    const sameMaterial=firstMaterial===glyphs.strings.get('string_lap').mesh.material;
     const {data,width,height}=map.image,maxima=[31,63,31];
     // Keep normalized 5/6-bit values between draws. Readback expansion rounds
     // them to bytes only at presentation, not before the next native blend.

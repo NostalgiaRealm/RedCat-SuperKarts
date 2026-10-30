@@ -14,7 +14,7 @@ export class MenuAudio {
     // Five referenced samples are absent from both original installation and
     // CD. Preserve their silent failure rather than substitute other sounds.
     if(!asset){this.missing.add(this.last);return false;}
-    const audio=new Audio('/assets/'+asset.file);audio.volume=NATIVE_MENU_GAIN;this.audio=audio;
+    const audio=new Audio('assets/'+asset.file);audio.volume=NATIVE_MENU_GAIN;this.audio=audio;
     const completion=new Promise(resolve=>{this.finish=resolve;audio.onended=()=>resolve(true);audio.onerror=()=>resolve(false);});
     try{await audio.play();}catch{return false;}
     return wait?completion:true;

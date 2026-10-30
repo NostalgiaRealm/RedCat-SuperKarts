@@ -135,6 +135,7 @@ export class RaceSimulation {
     // Render objects are created player first. CHARDATA bonus slots instead
     // contain opponents first and the player last; preserve both orders.
     this.actors=[...this.opponents,this.motion];
+    this.opponentBodies=this.opponents.map(actor=>actor.body);this.actorBodies=this.actors.map(actor=>actor.body);
     this.bubbles=new NativeBubbleAttachments(this.actors.map(actor=>actor.body));
     this.rankStates=[...this.setup.opponents.map(spec=>({
       objectId:spec.index,distance:this.opponents[spec.index].progress.distance,
@@ -155,6 +156,10 @@ export class RaceSimulation {
     this.sceneryHazards=new NativeSceneryHazards({track,config,manifest,
       rotationStates:this.rotationStates,squash:this.squash});
     this.sceneryPaths=new NativeSceneryPaths(track);
+    // 491530 visits only objects with a callback; the rest of the OMP has none.
+    this.callbackPlacements=track.placements.flatMap((_,index)=>this.scenery.animations.has(index)
+      ||this.sceneryReactions.byPlacement.has(index)||this.sceneryHazards.byPlacement.has(index)?[index]:[]);
+    this.onReactionImpact=(placement,object)=>this.onSceneryImpact?.(placement,object);
     this.sceneryObjects=new Map(this.sceneryPaths.objects);
     for(const body of this.scenery.bodies)this.sceneryObjects.set(body.placementIndex,body);
     for(const object of this.sceneryReactions.objects)this.sceneryObjects.set(object.placementIndex,object);
@@ -243,6 +248,10 @@ export class RaceSimulation {
     this.flightAnchor=captureFlightPose(this.motion.body);
     this.flightGridAnchor=captureFlightPose(this.motion.body);
     this.playerRecovery=new PlayerStuckRecovery();
+    this.renderPose=body=>{
+      const rescue=this.rescue.get(body);
+      return rescue?{matrix:rescue.matrix,position:rescue.renderPosition}:null;
+    };
   }
 
   step(input,dt,now,{wallMs=now,engineMs=now,keys={},beforeBonuses,
@@ -275,26 +284,33 @@ export class RaceSimulation {
     this.voices.drain();
     //428cc0 precedes scene callbacks and restores baseline streams only when
     // a positive raw GetTickCount timestamp is strictly more than5s old.
-    this.streamTurboTimes.forEach((started,index)=>{
+    for(let index=0;index<this.streamTurboTimes.length;index++){
+      const started=this.streamTurboTimes[index];
       if((started|0)>0&&(((this.nativeTickMs>>>0)-started)|0)>5000){
         this.streamTurboTimes[index]=0;this.streams.racer(this.actors[index].body,index);
       }
-    });
+    }
     // 42f4fb calls457b60 before scenery/racer callbacks. Shells retain that
     // pre-movement pose for this frame rather than inheriting the kart transform.
     this.bubbles.step();
     this.callbackRanges=nativeObjectCallbackRanges(this.motion.body.sector,this.visibleChunks,this.race.track.sectorCount);
-    const hazardOpponents=this.opponents.map(actor=>actor.body);
+    const hazardOpponents=this.opponentBodies;
     // 491530 walks engine objects in OMP order. A hazard can clamp a racer's
     // speed before a later type2 launch samples it, so keep callback families
     // interleaved rather than processing one family at a time.
-    for(let index=0;index<this.race.track.placements.length;index++){
+    const hazardContext={player:this.motion.body,opponents:hazardOpponents,
+      playerPosition:this.playerHudPosition??[0,0,0],ranges:this.callbackRanges};
+    // Everything 43df60/43c5c0 read from the player, current at each type2 object.
+    const reactionPlayer={position:this.motion.body.position,radius:this.motion.radius,lateralSpeed:0,forwardSpeed:0,yaw:0};
+    for(let i=0;i<this.callbackPlacements.length;i++){
+      const index=this.callbackPlacements[i];
       this.scenery.prepare(this.nativeTickMs,this.callbackRanges,index);
-      this.sceneryReactions.step(dt,{...this.motion.body,radius:this.motion.radius},this.callbackRanges,
-        (placement,object)=>this.onSceneryImpact?.(placement,object),index);
-      this.sceneryHazards.stepPlacement(index,dt,this.nativeTickMs,{
-        player:this.motion.body,opponents:hazardOpponents,
-        playerPosition:this.playerHudPosition??[0,0,0],ranges:this.callbackRanges});
+      if(this.sceneryReactions.byPlacement.has(index)){
+        reactionPlayer.lateralSpeed=this.motion.body.lateralSpeed;reactionPlayer.forwardSpeed=this.motion.body.forwardSpeed;
+        reactionPlayer.yaw=this.motion.body.yaw;
+        this.sceneryReactions.step(dt,reactionPlayer,this.callbackRanges,this.onReactionImpact,index);
+      }
+      this.sceneryHazards.stepPlacement(index,dt,this.nativeTickMs,hazardContext);
     }
     afterSceneryPrepare?.();
     // 4325b0 begins with48c030, including during the inactive startup phase.
@@ -392,7 +408,7 @@ export class RaceSimulation {
       // 53be64 is an unwritten legacy-autopilot flag, unrelated to rescue.
       legacyAutopilotActive:false,
       lookRequests:getPlayerLookAnimationRequests({playerPosition:this.motion.body.position,
-        opponents:this.opponents.map(actor=>actor.body)})});
+        opponents:this.opponentBodies})});
     afterPlayerPrepare?.(this.playerAnimationState);
     for(let index=0;index<this.opponents.length;index++){
       const actor=this.opponents[index];
@@ -400,14 +416,14 @@ export class RaceSimulation {
       this.rescue.checkEnvironment(actor);
       const profile=this.setup.opponents[index].profile;
       if(this.movementActive)actor.progress.update(actor.body.sector,dt);
-      const previousVelocity=captureNPCLinearVelocity(actor.body);
+      const previousLateral=actor.body.lateralSpeed,previousVertical=actor.body.verticalSpeed,previousForward=actor.body.forwardSpeed;
       actor.prepare(dt,{
         active:this.movementActive,
         playerGlobals:{tireUpgrade:this.upgrades.tireUpgrade,lowSpeedTurn:this.motion.lowSpeedTurn},
         difficulty:this.difficulty,progressDifference:actor.progress.distance-this.race.distance,
         effect:()=>this.combat.prepareEffect(index,dt),
         decision:{
-          player:this.motion.body,racers:this.actors.map(actor=>actor.body),
+          player:this.motion.body,racers:this.actorBodies,
           rank:this.rankStates[index].rank,playerRank:playerRank.rank,
           // 0x40cde0 passes an engine object index to the roster-index rank
           // accessor. Loaded scenery places every racer beyond the roster;
@@ -423,7 +439,8 @@ export class RaceSimulation {
             efficiencyLevel:profile.efficiencyLevel,speedLimits:this.speedLimits},
         },
       });
-      for(const correction of resetNewlyNonfiniteNPCVelocity(actor.body,previousVelocity)){
+      if(!(Number.isFinite(actor.body.lateralSpeed)&&Number.isFinite(actor.body.verticalSpeed)&&Number.isFinite(actor.body.forwardSpeed)))
+      for(const correction of resetNewlyNonfiniteNPCVelocity(actor.body,{lateralSpeed:previousLateral,verticalSpeed:previousVertical,forwardSpeed:previousForward})){
         this.velocitySafetyCorrections++;
         velocitySafetyEvents.push({type:'npc-velocity-safety',racer:index,wallMs,...correction});
       }
@@ -434,8 +451,8 @@ export class RaceSimulation {
         timer=>{this.timers.pause(timer,wallMs);this.npcFinishTimes[timer-9]=this.timers.read(timer,wallMs);});
     }
     this.scenery.integrate(dt,this.callbackRanges);
-    this.motion.integrate();
-    for(const actor of this.opponents)actor.integrate();
+    this.motion.integrate(false);
+    for(let i=0;i<this.opponents.length;i++)this.opponents[i].integrate(false);
     if(this.playerCamera.handleKeys(keys,this.race.phase)){
       this.camera=this.playerCamera;
       this.cameraSectors.set(this.playerCamera,this.motion.body.sector);
@@ -478,10 +495,7 @@ export class RaceSimulation {
     if(playerRescue?.relocated){this.playerSpeedKmh=0;this.playerHudPosition=[...this.motion.body.position];}
     for(const entry of this.rescue.entries)
       for(const sample of entry.sounds)this.voices.rescue(entry.body.id,sample);
-    const renderPose=body=>{
-      const rescue=this.rescue.get(body);
-      return rescue?{matrix:rescue.matrix,position:rescue.renderPosition}:null;
-    };
+    const renderPose=this.rescue.entries.length?this.renderPose:undefined;
     this.streams.step(dt,{playerSpeedKmh:this.playerSpeedKmh,playerThrottle:this.motion.controls.throttle,renderPose});
     this.combat.arms.step(dt,{renderPose});
     if(this.countdownStarted){

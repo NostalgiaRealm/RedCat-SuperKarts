@@ -227,6 +227,7 @@ export class NativeBonusPickups {
       type: 0, state: 1, level: 0, ageSeconds: 0, angles: [0, 0, 0],
     }));
     this.eligibleAfter = Array(racerCount).fill(0);
+    this.overlapOptions = { precision };
   }
 
   activeCount(projectileCount = 0) {
@@ -246,27 +247,33 @@ export class NativeBonusPickups {
     // both are single stored float operations (precision-independent).
     const cooldown = f32(Number(this.config.bonus_timeout_pickup_next) * f32(0.001));
     const respawnSeconds = f32(Number(this.config.bonus_respawn_time) * f32(0.001));
-    for (const owned of this.owned) {
-      updateNativeOwnedBonusVisual(owned, deltaSeconds, Number(this.config.weapon_rotation_speed), precision);
+    const rotationSpeed = Number(this.config.weapon_rotation_speed), delta = f32(deltaSeconds);
+    for (let i = 0; i < this.owned.length; i++) {
+      updateNativeOwnedBonusVisual(this.owned[i], deltaSeconds, rotationSpeed, precision);
     }
+    const overlap = this.overlapOptions;
     for (let index = 0; index < this.pickups.length; index++) {
       const pickup = this.pickups[index];
       const wasActive = pickup.state === 2;
-      const respawned = advanceNativePickup(pickup, deltaSeconds, {
-        respawnSeconds, enabled: this.enabledTypes.has(pickup.type),
-        activeBonusCount: this.activeCount(activeProjectileCount),
-      });
+      // 0x453fd0/0x454260; the active count is only read when a point may respawn.
+      pickup.ageSeconds = f32(delta + pickup.ageSeconds);
+      let respawned = false;
+      if (pickup.state === 1 && pickup.type !== 6 && pickup.ageSeconds >= respawnSeconds
+        && this.enabledTypes.has(pickup.type) && this.activeCount(activeProjectileCount) < 40) {
+        pickup.state = 2;
+        respawned = true;
+      }
       if (respawned) events.push({ type: 'respawn', pickup: index });
       // An inactive point that respawns is not tested for contact until next update.
       if (!wasActive) continue;
       // 0x45410b..0x454115: FILD speed * stored dt stays in ST0 until FADD/FSTP.
-      pickup.yaw = f32(r(r(Number(this.config.weapon_rotation_speed) * f32(deltaSeconds)) + pickup.yaw));
+      pickup.yaw = f32(r(r(rotationSpeed * delta) + pickup.yaw));
       for (let racer = pickup.type === 6 ? playerIndex : 0; racer <= playerIndex; racer++) {
         // 0x410650 fetches the lazily created player record before any test.
         if (racer === playerIndex) this.onPlayerCheck?.();
         if(racers[racer].canCollect===false||racers[racer].excludedPickups?.has(index))continue;
         if (!nativeCanCollectBonus(nowSeconds, this.eligibleAfter[racer])
-          || !nativeBonusOverlap(racers[racer], pickup, { precision })) continue;
+          || !nativeBonusOverlap(racers[racer], pickup, overlap)) continue;
         // 0x4514e0 passes the loop index to 0x4106b0, which only arms the
         // player's own +0x100 deadline for index -1. The player's index N lands
         // in an unread opponent slot, so only opponents wait for the cooldown.

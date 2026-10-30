@@ -92,6 +92,7 @@ export class NativeSceneryBodies {
       }
       return [body];
     });
+    this.rests = this.bodies.map(() => null);
   }
 
   /** Call after pre-player mesh animation, before any body's collision sweep. */
@@ -142,14 +143,31 @@ export class NativeSceneryBodies {
   /** 491d30, flags0: one Euler step per matching callback range, no second
    * sliding sweep and no wheel-ground callback. Run before player integration. */
   integrate(deltaSeconds, ranges) {
-    for (const body of this.bodies) {
+    const bodies = this.bodies, rests = this.rests;
+    for (let index = 0; index < bodies.length; index++) {
+      const body = bodies[index];
       if (!body.active) continue;
-      quantizeNativePlanarVelocity(body, this.precision);
+      const rest = rests[index];
       const count = nativeObjectCallbackCount({visible: body.active, alwaysUpdate: body.alwaysUpdate,
         sector: body.sector, ranges});
+      // A motionless body's previous pass is a fixed point: its sweep returns
+      // the resting result, zero force adds +0 to the four speeds, the sector
+      // search returned its own hint and the matrix depends only on the pose.
+      if (rest && body.lateralSpeed === 0 && body.forwardSpeed === 0 && body.yawRate === 0
+        && body.matrix === rest.matrix && body.sector === rest.sector && body.pitch === rest.pitch
+        && body.yaw === rest.yaw && body.roll === rest.roll
+        && body.position[0] === rest.x && body.position[2] === rest.z) {
+        if (count > 0) {
+          body.lateralSpeed += 0; body.forwardSpeed += 0; body.verticalSpeed += 0; body.yawRate += 0;
+          this.collision.finishStep?.(body, null); body.previousSector = body.sector;
+        }
+        continue;
+      }
+      quantizeNativePlanarVelocity(body, this.precision);
+      rests[index] = null;
       for (let step = 0; step < count; step++) {
         const contact = this.collision.sweep(body, deltaSeconds);
-        integrateNativeEuler(body, zeroForce, deltaSeconds, {...contact, precision: this.precision});
+        integrateNativeEuler(body, zeroForce, deltaSeconds, contact, this.precision);
         body.matrix = nativeRotationMatrix([body.pitch, body.yaw, body.roll], {precision: this.precision});
         if (contact.contact) this.collision.resolve(body, contact.contact);
         this.collision.finishStep?.(body, contact.contact);
@@ -160,6 +178,11 @@ export class NativeSceneryBodies {
         body.matrix = multiplyNativeMatrices(body.matrix,
           nativeScenerySlopeMatrix(this.world.sectors[body.sector].forward, {precision: this.precision}),
           this.precision);
+        if (!contact.contact && contact.fraction === 0 && body.lateralSpeed === 0 && body.forwardSpeed === 0 && body.yawRate === 0
+          && body.previousSector === body.sector) {
+          rests[index] = {matrix: body.matrix, sector: body.sector, pitch: body.pitch, yaw: body.yaw, roll: body.roll,
+            x: body.position[0], z: body.position[2]};
+        }
       }
     }
     return this.bodies;

@@ -4,9 +4,10 @@ import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f=Math.fround, lower=value=>String(value??'').trim().toLowerCase();
 const tuple=(value,fallback)=>value===undefined?[...fallback]:String(value).split(';').map(Number)
   .concat(fallback).slice(0,fallback.length).map(f);
+const unrounded=value=>value;
 const roundFor=precision=>{
-  if(![24,53].includes(precision))throw new RangeError('Unsupported native precision');
-  return precision===24?f:value=>value;
+  if(precision!==24&&precision!==53)throw new RangeError('Unsupported native precision');
+  return precision===24?f:unrounded;
 };
 
 /** HUD has its own90-degree horizontal projection (4604c0/462770), independent
@@ -39,10 +40,11 @@ export function nativeHudCompositeTransform({position=[0,0,0],scale=[1,1,1],
     ...s.map((x,i)=>f(x*parent[6+i])),...a.map((x,i)=>f(x+parent[9+i])),
   ];
 }
+const pixelScales={};
 export function nativeHudElementTransform({position=[0,0,0],scale=[1,1,1],
   rotation=[0,0,0]},parent,{precision=NATIVE_PRECISION}={}){
   const r=roundFor(precision),p=position.map(f),s=scale.map(f),a=rotation.map(f);
-  const pixelScale=getNativeHudCameraSpec(640,480,{precision}).pixelScale;
+  const pixelScale=pixelScales[precision]??=getNativeHudCameraSpec(640,480,{precision}).pixelScale;
   return {
     position:[f(r(r(p[0]*parent[4])+parent[0])),f(r(r(p[1]*parent[5])+parent[1])),
       f(r(r(p[2]+parent[2])+1))],
@@ -109,6 +111,7 @@ export function getHudMeshSpec(config,manifest,id,{trackId=0,animation=null,fram
     texture=resolveAsset(manifest,'images',textureSource.replace(/\.[^.]+$/,'.tga'));
   }
   return {id:name,animation:animationName||null,frame,source,textureSource,mesh,texture,
+    parentContext:parent.context,parents:[...seen].map(key=>[key,lower(overlay[key].visible)!=='false']),
     transform,rgba:override.rgba??tuple(section.rgba,[255,255,255,255]),
     visible:parent.visible&&(override.visible??lower(section.visible)!=='false'),
     blendMode:1,depthTest:false,
@@ -118,8 +121,8 @@ export function getHudMeshSpec(config,manifest,id,{trackId=0,animation=null,fram
 
 /** Project a render-space point using the recovered D3D viewport4acf40.
  * Geometry rotation/scale must already be applied. Useful for HUD anchors. */
+const hudTangent=Math.tan(f(f(Math.PI)*.5)/2);
 export function projectNativeHudPoint([x,y,z],{width=640,height=480}={}){
-  const {horizontalFov}=getNativeHudCameraSpec(width,height);
-  const factor=width/(2*Math.tan(horizontalFov/2)*z);
+  const factor=width/(2*hudTangent*z);
   return [width/2+x*factor,height/2-y*factor];
 }

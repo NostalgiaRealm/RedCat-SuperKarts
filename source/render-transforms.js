@@ -24,7 +24,7 @@ const cameraTarget=new THREE.Vector3();
  */
 export function presentNativeRaceCamera(world,camera,previous,current,alpha,mirrored){
   const reflection=mirrored?-1:1;
-  world.scale.x=reflection;
+  if(world.scale.x!==reflection){world.scale.x=reflection;world.updateMatrix();}
   for(const mesh of camera.children)mesh.scale.x=reflection;
   camera.position.lerpVectors(previous.position,current.position,alpha);
   cameraTarget.lerpVectors(previous.target,current.target,alpha);

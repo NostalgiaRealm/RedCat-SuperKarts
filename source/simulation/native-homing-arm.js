@@ -5,20 +5,22 @@ import { NATIVE_PRECISION } from './native-precision.js';
 const f = Math.fround;
 const baseVertices = [[-.5, .5, 0], [.5, .5, 0], [0, 0, 0]];
 const textureUV = [[.4296875, .1328125], [.453125, .1328125], [.453125, .15625]];
-const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-const translate = ([x, y, z]) => {
-  const result = identity();
-  result.splice(12, 3, x, y, z);
-  return result;
-};
+const matrix4 = () => Float64Array.of(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+// Filled completely before each read and never retained: one native update at a time.
+const poseScratch = matrix4(), offsetScratch = matrix4(), scaleScratch = matrix4(), lowerScratch = matrix4(), upperScratch = matrix4();
+const shiftScratch = matrix4(), spinScratch = matrix4(), productA = matrix4(), productB = matrix4(), sideScratch = [matrix4(), matrix4()];
+const translate = (out, x, y, z) => { out[12] = x; out[13] = y; out[14] = z; return out; };
 // 0x486ec0 copies the render-object matrix, which a rescue scales in place.
 const matrixOf = (body, renderPose) => {
   const pose = renderPose?.(body) ?? body;
   const matrix = pose.matrix ?? body.matrix, position = pose.position ?? body.position;
-  return matrix.length === 16 ? matrix : [
-    ...matrix.slice(0, 3), 0, ...matrix.slice(3, 6), 0,
-    ...matrix.slice(6, 9), 0, ...position, 1,
-  ];
+  if (matrix.length === 16) return matrix;
+  const m = poseScratch;
+  m[0] = matrix[0]; m[1] = matrix[1]; m[2] = matrix[2];
+  m[4] = matrix[3]; m[5] = matrix[4]; m[6] = matrix[5];
+  m[8] = matrix[6]; m[9] = matrix[7]; m[10] = matrix[8];
+  m[12] = position[0]; m[13] = position[1]; m[14] = position[2];
+  return m;
 };
 
 function planarDistanceSquared(a, b, r) {
@@ -41,13 +43,13 @@ export function createNativeHomingArm(body, shot, {precision = NATIVE_PRECISION,
 }
 
 /** Original0x4a2560 takes matrices in the reverse order to their row product. */
-function multiply(a, b, r) {
-  return Array.from({length: 16}, (_, index) => {
-    const row = Math.floor(index / 4), col = index % 4;
+function multiply(a, b, r, out) {
+  for (let row = 0; row < 4; row++) for (let col = 0; col < 4; col++) {
     let sum = 0;
     for (let k = 0; k < 4; k++) sum = r(r(a[k * 4 + col] * b[row * 4 + k]) + sum);
-    return f(sum);
-  });
+    out[row * 4 + col] = f(sum);
+  }
+  return out;
 }
 
 /** 0x487740→0x486ea0/0x486d50/0x486cc0, before rendering and shot motion. */
@@ -56,41 +58,35 @@ export function updateNativeHomingArm(entry, deltaSeconds, {precision = NATIVE_P
   const r = precision === 24 ? f : Number, dt = f(deltaSeconds);
   const velocity = entry.count === 8 ? 35 : 45;
   const increment = r(r(60 / r(1 / dt)) * velocity);
-  const wrap = angle => {
-    const next = r(increment + angle);
-    return f(next > 4096 ? r(next - 4096) : next);
-  };
-  entry.angle = wrap(entry.angle);
-  entry.growthAngle = wrap(entry.growthAngle);
+  const nextAngle = r(increment + entry.angle), nextGrowth = r(increment + entry.growthAngle);
+  entry.angle = f(nextAngle > 4096 ? r(nextAngle - 4096) : nextAngle);
+  entry.growthAngle = f(nextGrowth > 4096 ? r(nextGrowth - 4096) : nextGrowth);
   if (entry.count < 8 && entry.growthAngle > 512) {
     entry.count++;
     entry.growthAngle = f(r(entry.growthAngle - 512));
   }
 
   // Geometry uses the PREVIOUS callback's scale, before recalculating ratio.
-  const bodyMatrix = matrixOf(entry.body, renderPose), offset = translate(entry.offset);
-  const scale = identity();
-  scale[0] = scale[5] = entry.size;
-  const lower = multiply(scale, translate([0, entry.scale, 0]), r);
-  const upper = multiply(scale, translate([0, f(r(entry.scale + .5)), 0]), r);
-  const {sin, cos} = nativeTrigTable(precision);
+  const bodyMatrix = matrixOf(entry.body, renderPose), offset = translate(offsetScratch, entry.offset[0], entry.offset[1], entry.offset[2]);
+  scaleScratch[0] = scaleScratch[5] = entry.size;
+  const lower = multiply(scaleScratch, translate(shiftScratch, 0, entry.scale, 0), r, lowerScratch);
+  const upper = multiply(scaleScratch, translate(shiftScratch, 0, f(r(entry.scale + .5)), 0), r, upperScratch);
+  const {sin, cos} = nativeTrigTable(precision), vertices = entry.vertices;
   for (let ring = 0; ring < entry.count; ring++) {
     let positive = r(r(ring * 512) + entry.angle);
     const negative = f(r(4096 - f(positive)));
     if (positive > 4096) positive = r(positive - 4096);
     if (positive < 0) positive = r(positive + 4096);
-    const matrices = [upper, lower].map((translation, side) => {
+    for (let side = 0; side < 2; side++) {
       const index = Math.trunc(side === 0 ? negative : positive) & 4095;
-      const c = cos[index], s = sin[index];
-      const rotation = [c, -s, 0, 0, s, c, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-      const transformedOffset = multiply(offset, rotation, r);
-      return multiply(bodyMatrix, multiply(transformedOffset, translation, r), r);
-    });
-    for (let side = 0; side < 2; side++) for (let v = 0; v < 3; v++) {
-      const matrix = matrices[side], [x, y, z] = baseVertices[v];
-      entry.vertices[side * 24 + ring * 3 + v].position = [0, 1, 2].map(axis =>
-        f(r(r(r(r(x * matrix[axis]) + r(y * matrix[4 + axis])) +
-          r(z * matrix[8 + axis])) + matrix[12 + axis])));
+      spinScratch[0] = spinScratch[5] = cos[index]; spinScratch[1] = -sin[index]; spinScratch[4] = sin[index];
+      const matrix = multiply(bodyMatrix, multiply(multiply(offset, spinScratch, r, productA), side === 0 ? upper : lower, r, productB), r, sideScratch[side]);
+      for (let v = 0; v < 3; v++) {
+        const base = baseVertices[v], x = base[0], y = base[1], z = base[2], position = vertices[side * 24 + ring * 3 + v].position;
+        for (let axis = 0; axis < 3; axis++)
+          position[axis] = f(r(r(r(r(x * matrix[axis]) + r(y * matrix[4 + axis])) +
+            r(z * matrix[8 + axis])) + matrix[12 + axis]));
+      }
     }
   }
 
@@ -109,7 +105,8 @@ export function updateNativeHomingArm(entry, deltaSeconds, {precision = NATIVE_P
   // 0x486d50: unsigned color overflow is intentional.
   let tipColor = r(r(1 - r(entry.scale / f(1.5))) * 255);
   if (tipColor < 25) tipColor = 40;
-  entry.colors = entry.colors.map(value => (value + 10) >>> 0);
+  const colors = entry.colors;
+  colors[0] = (colors[0] + 10) >>> 0; colors[1] = (colors[1] + 10) >>> 0; colors[2] = (colors[2] + 10) >>> 0;
   for (let ring = 0; ring < entry.count; ring++) for (let v = 0; v < 3; v++) {
     const color = entry.colors[v], channel = Math.imul(v + 1, color);
     const first = (((((Math.imul(ring + v, color) | 0xffffc800) << 8) |
@@ -120,7 +117,7 @@ export function updateNativeHomingArm(entry, deltaSeconds, {precision = NATIVE_P
     entry.vertices[ring * 3 + v].specular = entry.vertices[24 + ring * 3 + v].specular = 0x64000000;
   }
   for (let side = 0; side < 2; side++) for (let vertex = 0; vertex < 24; vertex++)
-    entry.vertices[side * 24 + vertex].uv = [...textureUV[vertex % 3]];
+    { const uv = entry.vertices[side * 24 + vertex].uv, source = textureUV[vertex % 3]; uv[0] = source[0]; uv[1] = source[1]; }
   return audio.sample;
 }
 
@@ -168,7 +165,7 @@ export class NativeHomingArms {
   }
   /** The rescue update 0x42f618 precedes this 0x42f648 arm update. */
   step(deltaSeconds, {renderPose} = {}) {
-    if (!this.enabled) return this.entries;
+    if (!this.enabled || !this.entries.length) return this.entries;
     this.entries = advanceNativeArmQueue(this.entries, entry => {
       // 487740 returns false for an already inactive entry.
       if (!entry.active) return false;

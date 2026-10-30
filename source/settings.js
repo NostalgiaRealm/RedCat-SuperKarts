@@ -2,7 +2,7 @@ export const DEFAULT_BINDINGS=Object.freeze({accelerate:'ArrowUp',brake:'ArrowDo
 export const DEFAULT_DISPLAY_SETTINGS=Object.freeze({brightnessLight:true,bilinearFiltering:true,alphaBlending:true,particles:true});
 // Shipped Race.ini GAME_SETTINGS MX_VOLUME/FX_VOLUME, loaded by45ae70/42c320.
 export const DEFAULT_SETTINGS=Object.freeze({resolution:'auto',renderScale:100,msaaEnabled:false,msaaSamples:4,surfaceShadows:true,smoothEngineLights:true,freeFlight:false,music:1,effects:1,deadzone:0.18,touch:'auto',fullscreen:false,startInfo:true,controlType:0,bindings:DEFAULT_BINDINGS,display:DEFAULT_DISPLAY_SETTINGS});
-export const RESOLUTIONS=Object.freeze({'auto':null,'640x480':[640,480],'800x600':[800,600],'1024x768':[1024,768],'1280x720':[1280,720],'1920x1080':[1920,1080],'2560x1440':[2560,1440],'3840x2160':[3840,2160]});
+export const RESOLUTIONS=Object.freeze({'auto':null,'native':null,'640x480':[640,480],'800x600':[800,600],'1024x768':[1024,768],'1280x720':[1280,720],'1920x1080':[1920,1080],'2560x1440':[2560,1440],'3840x2160':[3840,2160]});
 const bounded=(v,a,b,d)=>typeof v==='number'&&Number.isFinite(v)?Math.min(b,Math.max(a,v)):d;
 export function normalizeSettings(value={}) {
   if(!value||typeof value!=='object')value={};
@@ -36,14 +36,23 @@ export function chooseMultisampleCount(requested,supported) {
   const values=[...new Set(supported.filter(value=>Number.isInteger(value)&&value>=2))].sort((a,b)=>a-b);
   return values.filter(value=>value<=requested).at(-1)??values[0]??0;
 }
+// Host adaptation: "Automatisch" on phones and tablets stops at about 1 megapixel
+// (the original runs at 640×480), since a phone screen can have 3 megapixels of
+// fragments to fill. "Volle schermresolutie" uses every screen pixel on any device.
+export const MOBILE_AUTO_PIXELS=1e6;
+export const autoPixelBudget=()=>globalThis.matchMedia?.('(pointer:coarse)').matches?MOBILE_AUTO_PIXELS:Infinity;
+export function surfacePixelRatio({width,height,dpr=1,resolution='auto',autoPixels=Infinity}){
+  dpr=bounded(dpr,.25,8,1);
+  return resolution==='native'?dpr:Math.min(dpr,Math.sqrt(autoPixels/(Math.max(1,width)*Math.max(1,height))));
+}
 // A preset is a maximum base rectangle; fit it to the viewport's aspect.
-// Auto uses CSS pixels × DPR once. Renderer pixel ratio must be 1.
-export function renderDimensions({width,height,dpr=1,resolution='auto',renderScale=100,maxSize=16384}){
+// Auto uses CSS pixels × DPR once, within autoPixels. Renderer pixel ratio must be 1.
+export function renderDimensions({width,height,dpr=1,resolution='auto',renderScale=100,maxSize=16384,autoPixels=Infinity}){
   width=Math.max(1,Number(width)||1);height=Math.max(1,Number(height)||1);
   dpr=bounded(dpr,.25,8,1);
   const preset=RESOLUTIONS[resolution];
   let baseWidth,baseHeight;
-  if(!preset){baseWidth=Math.round(width*dpr);baseHeight=Math.round(height*dpr);}
+  if(!preset){const ratio=surfacePixelRatio({width,height,dpr,resolution,autoPixels});baseWidth=Math.round(width*ratio);baseHeight=Math.round(height*ratio);}
   else{const fit=Math.min(preset[0]/width,preset[1]/height);baseWidth=Math.max(1,Math.round(width*fit));baseHeight=Math.max(1,Math.round(height*fit));}
   const scale=bounded(renderScale,25,200,100)/100;
   const factor=Math.min(scale,maxSize/baseWidth,maxSize/baseHeight);

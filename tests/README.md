@@ -48,6 +48,16 @@ entry still runs `/src/main.js` and its generated chunks. Normal `npm start`,
 preview hosting and Electron do not expose editable source modules or standalone
 Three.js modules. Do not use diagnostic mode as a production hosting setup.
 
+`tools/mobile-performance.mjs` measures a race on emulated phones, and
+`tools/golden-frames.mjs` compares exact framebuffer hashes between two builds; see
+[mobile performance](../docs/mobile-performance.md). Both need the normal server.
+
+`tests/subpath-browser.mjs` checks a built site served from a URL folder: the
+intro movie, menu artwork and buttons, help pictures and a race, with no
+request outside the folder. Point `RCSK_URL` at the folder, for example a local
+`python3 -m http.server` above a copy of `dist/` named `redcatsuperkarts`, or
+the live site after `tools/deploy-website.sh`.
+
 `tests/bundle-browser.mjs` creates its own temporary server and runtime, checks
 saved-data compatibility across a runtime refresh, and removes them afterward.
 It can include a Linux Electron relaunch with `RCSK_BUNDLE_ELECTRON=1`. Its default

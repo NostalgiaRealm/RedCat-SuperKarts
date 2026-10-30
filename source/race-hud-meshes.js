@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {getHudMeshSpec,getNativeHudCameraSpec,nativeHudIniTransform} from './hud-mesh.js';
+import {getHudMeshSpec,getNativeHudCameraSpec,nativeHudIniTransform,nativeHudElementTransform} from './hud-mesh.js';
 import {createNativeMeshMaterial} from './asset-materials.js';
 import {nativeMatrix} from './render-transforms.js';
 import {nativeRotationMatrix} from './simulation/native-transform.js';
@@ -13,6 +13,17 @@ import {createNativeStarHudConfig,getNativeStarHudCommands} from './simulation/n
 import {NativeHudArrows,NATIVE_ARROW_ALPHA} from './simulation/native-hud-arrows.js';
 import {nativeProjectileFacing} from './simulation/native-projectile.js';
 
+const NONE=Object.freeze({}),scratchScale=new THREE.Vector3();
+const ARROW_IDS=['backarrow','junctionarrow'];
+const portraitsMoved=(state,memo)=>{
+  let changed=false,k=0;
+  for(const {position}of state.portraits)for(let i=0;i<3;i++,k++)if(memo[k]!==position[i]){memo[k]=position[i];changed=true;}
+  for(const y of state.labelY){if(memo[k]!==y){memo[k]=y;changed=true;}k++;}
+  return changed;
+};
+function applyLayerViewport(renderer){
+  const v=this.parent.userData.viewport;renderer.setViewport(v.x,v.y,v.width,v.height);
+}
 const mergeOverrides=(base={},extra={})=>{
   const result={...base};
   for(const [id,value]of Object.entries(extra))result[id]={...result[id],...value};
@@ -31,12 +42,14 @@ export class RaceHudMeshes {
     const projection=getNativeHudCameraSpec();
     this.camera=new THREE.PerspectiveCamera(projection.verticalFov*180/Math.PI,640/480,projection.near,projection.far);
     this.layers=new Map();this.elements=new Map();this.resources=new Map();this.textures=new Map();
-    this.loadedTextures=new Set();
+    this.loadedTextures=new Set();this.materials=new Map();
     this.arrowEvents=new WeakSet();
   }
   layer(name) {
     if(!this.layers.has(name)){
       const scene=new THREE.Scene(),group=new THREE.Group();group.scale.z=-1;scene.add(group);
+      // The layer never moves: compose once so per-mesh world updates stay O(1).
+      group.updateMatrix();group.matrixAutoUpdate=false;group.updateMatrixWorld();
       this.layers.set(name,{scene,group});
     }
     return this.layers.get(name);
@@ -68,8 +81,11 @@ export class RaceHudMeshes {
       const geometry=original.clone(),colors=new Uint8Array(geometry.attributes.position.count*4);
       for(let i=0;i<geometry.attributes.position.count;i++)colors.set(spec.rgba,i*4);
       geometry.setAttribute('color',new THREE.Uint8BufferAttribute(colors,4,true));
-      const material=createNativeMeshMaterial(map,{blendMode:1});
-      material.depthTest=false;material.depthWrite=false;
+      let material=this.materials.get(map);
+      if(!material){
+        material=createNativeMeshMaterial(map,{blendMode:1});
+        material.depthTest=false;material.depthWrite=false;this.materials.set(map,material);
+      }
       return {geometry,material};
     })());
     return this.resources.get(key);
@@ -82,26 +98,47 @@ export class RaceHudMeshes {
       return [key,await this.resource(spec)];
     }));
     const mesh=new THREE.Mesh();mesh.matrixAutoUpdate=false;mesh.frustumCulled=false;
-    mesh.renderOrder=this.elements.size;
+    mesh.renderOrder=this.elements.size;mesh.onBeforeRender=applyLayerViewport;
     const parent=layer??this.config['overlay.ini'][id].parent.toLowerCase();
     this.layer(parent).group.add(mesh);
-    this.elements.set(id,{mesh,choices,defaultKey:choices.keys().next().value,frames:new Map(resources)});
+    // Overlay.ini-only inputs of getHudMeshSpec, parsed once per element.
+    const first=this.spec(id,{...choices.values().next().value}),section=this.config['overlay.ini'][id];
+    const ini=nativeHudIniTransform(section);
+    this.elements.set(id,{mesh,choices,defaultKey:choices.keys().next().value,frames:new Map(resources),
+      last:new Float64Array(9).fill(NaN),basis:null,
+      base:{context:first.parentContext,parents:first.parents,position:ini.position,scale:ini.scale,rotation:ini.rotation,
+        visible:String(section.visible??'').trim().toLowerCase()!=='false'}});
     this.update(id,{overrides});
   }
-  update(id,{frame,variant,overrides={},visible}={}) {
+  update(id,{frame,variant,overrides=NONE,visible}={}) {
     const element=this.elements.get(id);
     if(!element)throw new Error(`HUD element has not been loaded: ${id}`);
-    const key=variant??frame??element.defaultKey;
-    const choice=element.choices.get(key);
-    const spec=this.spec(id,{...choice,overrides:mergeOverrides(choice.overrides,overrides)});
-    const resource=element.frames.get(key);
+    const key=variant??frame??element.defaultKey,resource=element.frames.get(key);
     if(!resource)throw new Error(`HUD frame has not been loaded: ${id}/${key}`);
-    Object.assign(element.mesh,resource);
-    element.mesh.visible=visible??spec.visible;
-    const {position,scale,rotation}=spec.transform;
-    element.mesh.matrix.copy(nativeMatrix(nativeRotationMatrix(rotation),position));
-    element.mesh.matrix.scale(new THREE.Vector3(...scale));
-    element.mesh.matrixWorldNeedsUpdate=true;
+    const {mesh,base,last}=element,authored=element.choices.get(key)?.overrides;
+    const own=overrides[id],fixed=authored?.[id];
+    mesh.geometry=resource.geometry;mesh.material=resource.material;
+    if(visible===undefined){
+      visible=true;
+      // Same result as getHudMeshSpec's parent chain: only .visible overrides reach here.
+      for(const [parent,shown]of base.parents)visible=visible&&(overrides[parent]?.visible??authored?.[parent]?.visible??shown);
+      visible=visible&&(own?.visible??fixed?.visible??base.visible);
+    }
+    mesh.visible=visible;
+    const position=own?.position??fixed?.position??base.position;
+    const scale=own?.scale??fixed?.scale??base.scale,rotation=own?.rotation??fixed?.rotation??base.rotation;
+    if(last[0]===position[0]&&last[1]===position[1]&&last[2]===position[2]
+      &&last[3]===scale[0]&&last[4]===scale[1]&&last[5]===scale[2]
+      &&last[6]===rotation[0]&&last[7]===rotation[1]&&last[8]===rotation[2])return;
+    const turned=!(last[6]===rotation[0]&&last[7]===rotation[1]&&last[8]===rotation[2]);
+    last[0]=position[0];last[1]=position[1];last[2]=position[2];
+    last[3]=scale[0];last[4]=scale[1];last[5]=scale[2];
+    last[6]=rotation[0];last[7]=rotation[1];last[8]=rotation[2];
+    const transform=nativeHudElementTransform({position,scale,rotation},base.context);
+    if(turned)element.basis=nativeRotationMatrix(transform.rotation);
+    nativeMatrix(element.basis,transform.position,mesh.matrix);
+    mesh.matrix.scale(scratchScale.fromArray(transform.scale));
+    mesh.matrixWorldNeedsUpdate=true;
   }
   async load() {
     const {setup,rankStates}=this.simulation;
@@ -165,40 +202,50 @@ export class RaceHudMeshes {
     }
   }
   capture(playerPosition,deltaSeconds=0) {
-    this.arrowCommands=this.simulation.freeFlightActive?this.arrows.commands()
-      :this.arrows.update(this.arrowInput(deltaSeconds));
-    for(const command of this.arrowCommands)
-      this.update(command.id,{...command,variant:String(command.variant)});
-    updateNativeHudPortraits(this.portraits,deltaSeconds,this.simulation.rankStates.map(actor=>actor.rank));
-    for(const command of getNativeHudPortraitCommands(this.portraits,this.config))
-      this.update(command.id,command);
-    this.starCommands=getNativeStarHudCommands(this.simulation.pickups.stars,{
-      raceType:this.simulation.race.raceType,
-    });
-    for(const command of this.starCommands)this.update(command.id,command);
+    const simulation=this.simulation,flying=simulation.freeFlightActive;
+    if(!flying)this.arrows.step(this.arrowInput(deltaSeconds));
+    for(const id of ARROW_IDS){
+      const arrow=this.arrows.elements[id],element=this.elements.get(id);
+      if(arrow.visible===element.arrowVisible&&arrow.alphaStep===element.arrowStep)continue;
+      element.arrowVisible=arrow.visible;element.arrowStep=arrow.alphaStep;
+      this.update(id,{variant:String(arrow.alphaStep),visible:arrow.visible});
+    }
+    const ranks=this.ranks??=[],rankStates=simulation.rankStates;
+    for(let i=0;i<rankStates.length;i++)ranks[i]=rankStates[i].rank;
+    updateNativeHudPortraits(this.portraits,deltaSeconds,ranks);
+    if(portraitsMoved(this.portraits,this.portraitMemo??=[]))
+      for(const command of getNativeHudPortraitCommands(this.portraits,this.config))this.update(command.id,command);
+    const stars=simulation.pickups.stars,raceType=simulation.race.raceType;
+    if(stars!==this.lastStars||raceType!==this.lastRaceType){
+      this.lastStars=stars;this.lastRaceType=raceType;
+      this.starCommands=getNativeStarHudCommands(stars,{raceType});
+      for(const command of this.starCommands)this.update(command.id,command);
+    }
     const positions=nativeMinimapRacers(this.viewer.track.id,playerPosition,
-      this.simulation.opponents.map(actor=>actor.body.position));
+      simulation.opponents.map(actor=>actor.body.position));
     for(const dot of positions){
       const id=dot.player?'dotplayer':`dotracer${dot.index}`;
       this.update(id,{overrides:{[id]:{position:dot.position}}});
     }
-    const owned=this.simulation.pickups.owned.at(-1),bonus=this.bonus.step(owned,deltaSeconds);
+    const owned=simulation.pickups.owned.at(-1),bonus=this.bonus.step(owned,deltaSeconds);
     if(owned.type>=1&&owned.type<=5)this.update('bonusobject',{
       variant:`${owned.type}:${owned.level}`,visible:bonus.visible,
       overrides:{bonusobject:{position:bonus.position,rotation:bonus.angles}},
     });
-    if(this.simulation.countdown){
-      for(const event of this.simulation.countdown.events){
+    if(simulation.countdown){
+      for(const event of simulation.countdown.events){
         if(event.type==='frame')this.countdownFrames[event.element]=event.frame;
         if(event.type==='slide-in'||event.type==='slide-out')
           this.countdownY=nativeCountdownY(event.elapsed,{exiting:event.type==='slide-out'});
       }
-      for(let i=0;i<3;i++){
+      const visible=simulation.countdownStarted&&simulation.countdown.phase!==6;
+      if(visible||this.countdownShown!==false)for(let i=0;i<3;i++){
         const id=`321timer${i}`;
-        this.update(id,{frame:this.countdownFrames[i],visible:this.simulation.countdownStarted&&this.simulation.countdown.phase!==6,overrides:{
+        this.update(id,{frame:this.countdownFrames[i],visible,overrides:{
           [id]:{position:[[-.328125,0,.328125][i],this.countdownY,0]},
         }});
       }
+      this.countdownShown=visible;
     }
   }
   renderElement(renderer,id,width,height,layout=raceHudLayout(width,height)) {
@@ -209,17 +256,30 @@ export class RaceHudMeshes {
     renderer.setViewport(viewport.x,height-viewport.y-viewport.height,viewport.width,viewport.height);
     // Render the original node on its own so text and meshes can follow the
     // native Composite child list, including the label inside Bonus.
-    mesh.parent.updateMatrixWorld(true);
+    mesh.updateMatrixWorld();
     renderer.render(mesh,this.camera);
     return true;
+  }
+  /** Group the layers into draw-order runs and order each mesh by its native index. */
+  batch(drawOrder) {
+    drawOrder.forEach((id,index)=>{
+      const element=this.elements.get(id);if(element)element.mesh.renderOrder=index;
+    });
+  }
+  applyLayout(layout,height) {
+    for(const [name,{group}]of this.layers){
+      const v=layout.group(name);
+      group.userData.viewport={x:v.x,y:height-v.y-v.height,width:v.width,height:v.height};
+    }
   }
   async dispose() {
     const [resources,textures]=await Promise.all([
       Promise.allSettled(this.resources.values()),Promise.allSettled(this.textures.values()),
     ]);
     for(const result of resources)if(result.status==='fulfilled'){
-      result.value.geometry.dispose();result.value.material.dispose();
+      result.value.geometry.dispose();
     }
+    for(const material of this.materials.values())material.dispose();this.materials.clear();
     // The renderer and source images belong to the world. Retire only the
     // overlay's geometry/materials and independently sampled texture clones.
     for(const result of textures)if(result.status==='fulfilled')result.value.dispose();

@@ -77,7 +77,7 @@ export async function createGameProtocolHandler({root,assetsRoot,inspectSource=f
     let base,relative;
     if(decoded==='/'||decoded==='/index.html'){base=roots.game;relative='index.html';}
     else if(decoded.startsWith('/assets/')){base=roots.assets;relative=decoded.slice(8);}
-    else if(decoded.startsWith('/src/')&&['.js','.mjs','.css','.map'].includes(path.extname(decoded))){base=roots.src;relative=decoded.slice(5);}
+    else if(decoded.startsWith('/src/')&&['.js','.mjs','.css','.map','.bin','.json'].includes(path.extname(decoded))){base=roots.src;relative=decoded.slice(5);}
     else if(roots.source&&decoded.startsWith('/source/')&&['.js','.css'].includes(path.extname(decoded))){base=roots.source;relative=decoded.slice(8);}
     else if(roots.three&&decoded.startsWith('/node_modules/three/')&&threeFiles.has(decoded.slice(20))){base=roots.three;relative=decoded.slice(20);}
     else return error(403,'Forbidden');
@@ -118,7 +118,7 @@ export async function assertGameRuntime({root,assetsRoot}){
       ||!manifest.files.includes(manifest.entry)||!manifest.files.includes('src/style.css')
       ||!manifest.files.every(file=>typeof file==='string'&&/^src\/(?:[\w-]+\/)*[\w.-]+\.(?:js|css)$/.test(file)))
       throw Error('Invalid bundled runtime manifest.');
-    runtime=manifest.files;
+    runtime=[...manifest.files,...(manifest.data??[])];
   }catch(error){
     if(error.code==='ENOENT')throw Error('Required bundled runtime manifest is missing. Run npm ci and npm run bundle in the project folder.');
     throw error;

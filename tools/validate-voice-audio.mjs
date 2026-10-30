@@ -21,7 +21,7 @@ try {
     const bodies = Array.from({length: 5}, () => structuredClone(body));
     const banks = [], failures = [], observed = new Set();
     for (const roster of [[4, 5, 6, 7, 0], [5, 6, 7, 8, 1], [6, 7, 8, 9, 2], [4, 6, 8, 9, 3]]) {
-      await audio.prepareVoices(roster);
+      await audio.prepareVoices(roster,{allSamples:true});
       for (let voiceId = 0; voiceId < 11; voiceId++) {
         for (const entry of audio.voices.banks[voiceId]) {
           const key = `${voiceId}:${entry.sample}`;
@@ -40,7 +40,7 @@ try {
       }
     }
     audio.execute(audio.voices.clear());
-    await audio.prepareVoices([4, 5, 6, 7, 0]);
+    await audio.prepareVoices([4, 5, 6, 7, 0],{allSamples:true});
     const first = audio.voices.banks[0].find(x => x.sample === 'BONUS0');
     const second = audio.voices.banks[0].find(x => x.sample === 'BONUS1');
     audio.requestVoice({voiceId: 0, sample: first.sample});

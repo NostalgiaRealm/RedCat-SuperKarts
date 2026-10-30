@@ -11,16 +11,19 @@ export function updateNativeAIPriorities(state, efficiency, random) {
 }
 
 /** 0x412fd0 then0x4130e0; two shared random draws per normal drive update. */
-export function updateNativeAIWobble(body, dt, random, { precision = NATIVE_PRECISION, order = ['roll', 'pitch'] } = {}) {
+const WOBBLE_ROLL_PITCH = ['roll', 'pitch'];
+export function updateNativeAIWobble(body, dt, random, { precision = NATIVE_PRECISION, order = WOBBLE_ROLL_PITCH } = {}) {
   const r = precision === 53 ? Number : f32;
   dt = f32(dt);
-  for (const axis of order) {
-    const rate = `${axis}Rate`;
-    const change = f32(r(r(body[rate] * -3) - r(body[axis] * 3)));
-    body[rate] = f32(r(r(dt * change) + body[rate]));
-    body[axis] = f32(r(r(dt * body[rate]) + body[axis]));
+  for (let i = 0; i < 2; i++) {
+    const roll = order[i] === 'roll';
+    let rate = roll ? body.rollRate : body.pitchRate, angle = roll ? body.roll : body.pitch;
+    const change = f32(r(r(rate * -3) - r(angle * 3)));
+    rate = f32(r(r(dt * change) + rate));
+    angle = f32(r(r(dt * rate) + angle));
     const impulse = r(r(dt * body.forwardSpeed) * 4);
-    body[rate] = f32(r(body[rate] + (random.next() % 10 < 5 ? impulse : -impulse)));
+    rate = f32(r(rate + (random.next() % 10 < 5 ? impulse : -impulse)));
+    if (roll) { body.rollRate = rate; body.roll = angle; } else { body.pitchRate = rate; body.pitch = angle; }
   }
   return body;
 }
@@ -132,10 +135,12 @@ export const NATIVE_AI_TRANSITIONS = Object.freeze([
 
 /** 0x4024d0: preserve ordered, potentially side-effecting condition calls. */
 export function updateNativeAITransition(state, guards) {
-  for (const [, from, to, expected, address] of NATIVE_AI_TRANSITIONS) {
-    if (state.mode !== from) continue;
-    if (typeof guards[address] !== 'function') throw new Error(`Missing native NPC transition guard0x${address}`);
-    if (Number(guards[address]()) === expected) { state.mode = to; break; }
+  for (let i = 0; i < NATIVE_AI_TRANSITIONS.length; i++) {
+    const row = NATIVE_AI_TRANSITIONS[i];
+    if (state.mode !== row[1]) continue;
+    const guard = guards[row[4]];
+    if (typeof guard !== 'function') throw new Error(`Missing native NPC transition guard0x${row[4]}`);
+    if (Number(guard()) === row[3]) { state.mode = row[2]; break; }
   }
   return state.mode;
 }
@@ -152,11 +157,15 @@ export function applyNativeAICatchup(body, state, difficulty, difference, { prec
     // Integer division is intentional: original behavior jumps at the threshold.
     const amount = difference < slow[0] + slow[1] ? r(Math.trunc((difference - slow[0]) / slow[1]) * slow[2]) : slow[2];
     const factor = f32(r(1 - amount));
-    for (const key of ['lateralSpeed', 'verticalSpeed', 'forwardSpeed']) body[key] = f32(r(body[key] * factor));
-  } else if (difference < -fast[0] && difficulty !== 0 && [body.lateralSpeed, body.verticalSpeed, body.forwardSpeed].some(value => value >= 30)) {
+    body.lateralSpeed = f32(r(body.lateralSpeed * factor));
+    body.verticalSpeed = f32(r(body.verticalSpeed * factor));
+    body.forwardSpeed = f32(r(body.forwardSpeed * factor));
+  } else if (difference < -fast[0] && difficulty !== 0 && (body.lateralSpeed >= 30 || body.verticalSpeed >= 30 || body.forwardSpeed >= 30)) {
     state.specialTime = -difference < fast[0] + fast[1] ? Math.trunc((-difference - fast[0]) / fast[1]) : 1;
     const factor = r(1 + r(state.specialTime * fast[2]));
-    for (const key of ['lateralSpeed', 'verticalSpeed', 'forwardSpeed']) body[key] = f32(r(body[key] * factor));
+    body.lateralSpeed = f32(r(body.lateralSpeed * factor));
+    body.verticalSpeed = f32(r(body.verticalSpeed * factor));
+    body.forwardSpeed = f32(r(body.forwardSpeed * factor));
     body.forwardSpeed = Math.min(80, body.forwardSpeed);
     state.special = true;
   }
@@ -173,11 +182,12 @@ export function updateNativeAIWheels(body, state, dt, height, { precision = NATI
   // compares the stored float with -1.11f, which an unordered NaN also fails.
   const difference = r(height - body.y), stored = f32(difference);
   const suspension = difference > 0 ? 0 : stored >= f32(-1.11) ? stored : f32(-1.11);
-  state.wheels.forEach((wheel, index) => {
+  for (let index = 0; index < state.wheels.length; index++) {
+    const wheel = state.wheels[index];
     wheel.spin = f32(r(wheel.spin - spin));
     if (index < 2) wheel.steeringAngle = steeringAngle;
     wheel.local[1] = f32(r(suspension + wheel.radius));
-  });
+  }
   return state;
 }
 
@@ -259,16 +269,12 @@ export function updateNativeAISpeed(body, controls, state, racer, playerRacer, d
   }
   if (controls.throttle > 0) state.reverseLatch = false;
   const oldSpeed = body.forwardSpeed;
-  const acceleration = gear => {
-    const fraction = r(oldSpeed / racer.raw[18 + gear]);
-    return Math.max(0, r(r(1 - fraction) * racer.raw[6 + gear]));
-  };
-  let drive = acceleration(state.gear);
+  let drive = Math.max(0, r(r(1 - r(oldSpeed / racer.raw[18 + state.gear])) * racer.raw[6 + state.gear]));
   state.gear = 6;
   for (let gear = 0; gear < 6; gear++) {
     if (oldSpeed < r(racer.maxSpeed[gear] * racer.gearUpFraction)) {
       state.gear = gear;
-      drive = acceleration(gear);
+      drive = Math.max(0, r(r(1 - r(oldSpeed / racer.raw[18 + gear])) * racer.raw[6 + gear]));
       break;
     }
   }
@@ -342,9 +348,11 @@ export function updateNativeAISteering(body, controls, state, racer, playerRacer
       const angular = r(r(r(r(state.turnTime * steer) * f32(.17999999)) * wave) * (options.traffic ? 1.25 : .5));
       body.yawRate = f32(body.forwardSpeed >= 0 || !options.reverseTurn ? -angular : angular);
       state.turnIntegral = f32(r(r(dt * f32(angular)) + state.turnIntegral));
-      for (const key of ['lateralSpeed', 'forwardSpeed']) {
-        const damp = options.traffic ? r(body[key] * 3) : steer === 0 ? r(body[key] + body[key]) : body[key];
-        body[key] = f32(r(body[key] - r(damp * dt)));
+      for (let i = 0; i < 2; i++) {
+        const speed = i === 0 ? body.lateralSpeed : body.forwardSpeed;
+        const damp = options.traffic ? r(speed * 3) : steer === 0 ? r(speed + speed) : speed;
+        const damped = f32(r(speed - r(damp * dt)));
+        if (i === 0) body.lateralSpeed = damped; else body.forwardSpeed = damped;
       }
     }
   }
@@ -353,17 +361,20 @@ export function updateNativeAISteering(body, controls, state, racer, playerRacer
 
 /** 0x494000 selects the nearest waypoint from the current sector's right list. */
 export function nearestNativeAIWaypoint(track, body, { precision = NATIVE_PRECISION, side = 1 } = {}) {
-  if (![0, 1, -1].includes(side)) throw new RangeError('Native waypoint side must be -1, 0 or 1');
+  if (side !== 0 && side !== 1 && side !== -1) throw new RangeError('Native waypoint side must be -1, 0 or 1');
   const r = precision === 53 ? Number : f32;
   let closest = -1, distance = f32(3.4e38);
-  const position = body.position ?? [body.x, body.y, body.z];
+  const position = body.position, x = position ? position[0] : body.x, y = position ? position[1] : body.y, z = position ? position[2] : body.z;
   const route = track.route[body.sector];
-  const candidates = [...(side !== 0 ? route.driveIndices : []), ...(side !== 1 ? route.driveLeftIndices : [])];
-  for (const index of candidates) {
-    const delta = track.drive[index].position.map((v, axis) => f32(r(v - position[axis])));
-    const squared = r(r(r(delta[1] * delta[1]) + r(delta[0] * delta[0])) + r(delta[2] * delta[2]));
-    const candidate = f32(Math.sqrt(squared));
-    if (candidate < distance) { closest = index; distance = candidate; }
+  for (let list = 0; list < 2; list++) {
+    if (list === 0 ? side === 0 : side === 1) continue;
+    const indices = list === 0 ? route.driveIndices : route.driveLeftIndices;
+    for (let i = 0; i < indices.length; i++) {
+      const index = indices[i], p = track.drive[index].position;
+      const dx = f32(r(p[0] - x)), dy = f32(r(p[1] - y)), dz = f32(r(p[2] - z));
+      const candidate = f32(Math.sqrt(r(r(r(dy * dy) + r(dx * dx)) + r(dz * dz))));
+      if (candidate < distance) { closest = index; distance = candidate; }
+    }
   }
   return closest;
 }
@@ -382,11 +393,10 @@ export function searchNativeAIPath(track, start, {
   depth = 5, occupied = new Set(), priorities = [0, 1, 2], getPriorities,
   initial = { steering: null, speed: null }, sector = 0, precision = NATIVE_PRECISION,
 } = {}) {
-  const result = { waypoint: -1, steering: initial.steering && [...initial.steering], speed: initial.speed && [...initial.speed] };
-  if (depth > 25) return { ...result, waypoint: -2 };
+  if (depth > 25) return { waypoint: -2, steering: initial.steering && [...initial.steering], speed: initial.speed && [...initial.speed] };
   if (depth < 5 || start < 0 || !track.drive[start]) throw new RangeError('Native racer path requires a valid start and at least five look-ahead steps');
-  const blocked = index => occupied instanceof Set ? occupied.has(index) : Boolean(occupied[index]);
-  const path = [start], tried = [0];
+  const path = [start], tried = [0], live = occupied instanceof Map, set = occupied instanceof Set;
+  const result = { waypoint: -1, steering: initial.steering && [...initial.steering], speed: initial.speed && [...initial.speed] };
   let level = 0, current = start, order = priorities;
   while (true) {
     path[level] = current;
@@ -397,7 +407,7 @@ export function searchNativeAIPath(track, start, {
         const choice = (tried[level] ?? 0);
         tried[level] = choice + 1;
         const next = nativeAINextWaypoint(track, current, order[choice]);
-        if (next < 0 || blocked(next)) continue;
+        if (next < 0 || (live ? occupied.get(next)?.length > 0 : set ? occupied.has(next) : occupied[next])) continue;
         level++;
         path[level] = next;
         tried[level] = 0;
@@ -461,14 +471,13 @@ export function prepareNativeNormalAI(track, body, controls, state, racer, playe
   const nearest = nearestNativeAIWaypoint(track, body, options);
   if (nearest < 0) throw new RangeError('Native AI could not find a waypoint in the current sector');
   state.disabled = false;
-  const occupied = new Set([...occupancy].filter(([, actors]) => actors.length).map(([waypoint]) => waypoint));
   const path = searchNativeAIPath(track, nearest, {
-    occupied, sector: body.sector, precision: options.precision,
+    occupied: occupancy, sector: body.sector, precision: options.precision,
     initial: pathScratch ?? { steering: state.steeringTarget, speed: state.speedTarget },
     getPriorities: () => {
       const mode = state.mode ?? 0;
-      if (![0, 3, 23, 24, 25, 27].includes(mode)) return [1, 2, 0];
-      const result = [...state.priorities];
+      if (mode !== 0 && mode !== 3 && mode !== 23 && mode !== 24 && mode !== 25 && mode !== 27) return [1, 2, 0];
+      const result = state.priorities;
       if (mode === 0 || mode === 3) updateNativeAIPriorities(state, efficiency, random);
       return result;
     },
@@ -503,9 +512,8 @@ export function prepareNativeChaseAI(track, body, controls, state, racer, player
   if (chase && !player) throw new TypeError('Native chase requires the selected target body');
   const nearest = nearestNativeAIWaypoint(track, chase ? player : body, { precision });
   if (!chase) state.disabled = false;
-  const occupied = new Set([...occupancy].filter(([, actors]) => actors.length).map(([waypoint]) => waypoint));
   const path = searchNativeAIPath(track, nearest, {
-    priorities: [1, 2, 0], occupied, sector: body.sector, precision,
+    priorities: [1, 2, 0], occupied: occupancy, sector: body.sector, precision,
     initial: pathScratch ?? { steering: state.steeringTarget, speed: state.speedTarget },
   });
   if (pathScratch) Object.assign(pathScratch, { steering: path.steering, speed: path.speed });

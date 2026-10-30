@@ -37,15 +37,18 @@ export class BubbleShellVisuals {
     //Only active relative order matters to this draw pass. Compact it so an
     //ever-increasing host allocation counter cannot cross later effect phases.
     //This is submission ranking, not a claim about absolute native heap IDs.
-    const orders=this.controller.entries.filter(Boolean).map(entry=>entry.objectOrder).sort((a,b)=>a-b);
+    const entries=this.controller.entries;
     for(let slot=0;slot<this.meshes.length;slot++){
-      const mesh=this.meshes[slot],entry=this.controller.entries[slot];
+      const mesh=this.meshes[slot],entry=entries[slot];
       mesh.visible=Boolean(entry);
       if(!entry)continue;
+      // objectOrder values are unique, so its rank among the active shells is:
+      let rank=0;
+      for(let other=0;other<entries.length;other++)if(entries[other]&&entries[other].objectOrder<entry.objectOrder)rank++;
       mesh.position.fromArray(entry.position);
       setNativeMatrix(mesh,entry.matrix);
       mesh.userData.sector=entry.sector;
-      mesh.renderOrder=nativeObjectRenderOrder(this.firstOrder+orders.indexOf(entry.objectOrder));
+      mesh.renderOrder=nativeObjectRenderOrder(this.firstOrder+rank);
     }
   }
   dispose() {

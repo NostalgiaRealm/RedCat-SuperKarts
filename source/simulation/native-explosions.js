@@ -25,6 +25,7 @@ export class NativeExplosions {
   }
   /**482020 updates explosion list before weather; follows owner's current XYZ. */
   step(deltaSeconds) {
+    if(!this.entries.length)return;
     const r=this.precision===24?f:Number,dt=f(deltaSeconds);
     for(const entry of this.entries) {
       entry.position=entry.body.position.map(f);

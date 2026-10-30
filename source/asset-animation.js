@@ -132,17 +132,24 @@ export function getTrackMusic(manifest, trackId) {
   return resolveAsset(manifest, 'audio', `rclemu${String(trackId).padStart(2, '0')}.dat`);
 }
 
+const soundIndexes = new WeakMap();
 export function getSoundSpec(config, manifest, eventName) {
-  for (const [index, value] of Object.entries(config['sound.ini']?.sndtypes || {})) {
-    if (!/^\d+$/.test(index)) continue;
-    // Native4b1f60's default delimiters are comma, equals and colon.
-    // Sound.ini record404 uses CDT=cdt.wav, so comma-only parsing loses it.
-    const fields = value.split(/[,=:]/).map(part => part.trim());
-    if (lower(fields[0]) !== lower(eventName)) continue;
-    return {index: Number(index), event: fields[0], source: fields[1],
-      file: resolveAsset(manifest, 'audio', fields[1]), fields};
+  const types = config['sound.ini']?.sndtypes;
+  if (!types) return null;
+  let sounds = soundIndexes.get(types);
+  if (!sounds) {
+    sounds = new Map();soundIndexes.set(types, sounds);
+    for (const [index, value] of Object.entries(types)) {
+      if (!/^\d+$/.test(index)) continue;
+      // Native4b1f60's default delimiters are comma, equals and colon.
+      // Sound.ini record404 uses CDT=cdt.wav, so comma-only parsing loses it.
+      const fields = value.split(/[,=:]/).map(part => part.trim()), name = lower(fields[0]);
+      // The first matching record wins, as in the original's scan.
+      if (!sounds.has(name)) sounds.set(name, {index: Number(index), event: fields[0], source: fields[1], file: null, fields});
+    }
   }
-  return null;
+  const spec = sounds.get(lower(eventName));
+  return spec ? {...spec, file: resolveAsset(manifest, 'audio', spec.source)} : null;
 }
 
 export function getMenuSample(config, manifest, index, character = null) {

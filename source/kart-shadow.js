@@ -1,6 +1,6 @@
 import {resolveAsset} from './asset-animation.js';
 import {NATIVE_PRECISION} from './simulation/native-precision.js';
-import {sampleNativeTrack} from './simulation/native-track.js';
+import {nativeTrackHeight} from './simulation/native-track.js';
 const f = Math.fround;
 
 /** 416270 uses the shared original quad;4260c0 replaces only its X/Z bounds. */
@@ -64,13 +64,13 @@ export function getSurfaceKartShadowGrid(spec, quadIndex, segments = SURFACE_SHA
  * under each point from the kart's current sector hint. */
 export function surfaceKartShadowPositions(body, world, grid, out = new Float32Array(grid.count * 3),
   {precision = NATIVE_PRECISION} = {}) {
-  const m = body.matrix, t = body.matrixTranslation ?? body.position, options = {precision};
+  const m = body.matrix, t = body.matrixTranslation ?? body.position;
   for (let k = 0; k < grid.count; k++) {
     const lx = grid.local[k * 3], lz = grid.local[k * 3 + 2];
     // Sample at the float position the vertex is drawn at.
     const x = f(lx * m[0] + lz * m[6] + t[0] + 2), z = f(lx * m[2] + lz * m[8] + t[2] + 2);
     out[k * 3] = x; out[k * 3 + 2] = z;
-    out[k * 3 + 1] = sampleNativeTrack(world, body.sector, x, t[1], z, options).height + SURFACE_SHADOW_LIFT;
+    out[k * 3 + 1] = nativeTrackHeight(world, body.sector, x, z, precision) + SURFACE_SHADOW_LIFT;
   }
   return out;
 }

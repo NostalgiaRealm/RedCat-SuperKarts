@@ -31,7 +31,7 @@ const json=async url=>{const r=await fetch(url);if(!r.ok)throw Error(`${url}: ${
 export class DrivingView extends TrackViewer{
   constructor(canvas,input,hudCanvas){
     super(canvas);this.input=input;this.camera.near=NATIVE_CAMERA_PROJECTION.near;this.camera.far=NATIVE_CAMERA_PROJECTION.far;
-    this.controls.enabled=false;this.driverFrames=[];this.hudCanvas=hudCanvas;
+    this.controls.enabled=false;this.driverFrames=[];this.hudCanvas=hudCanvas;this.decodedSounds=new Map();
   }
   async mesh(spec){
     const [geometry,map]=await Promise.all([this.model(spec.mesh),this.texture(spec.texture)]);
@@ -63,8 +63,8 @@ export class DrivingView extends TrackViewer{
     this.active=false;
     const binary=async url=>{const r=await fetch(url);if(!r.ok)throw Error(`Original table missing: ${url}`);return r.arrayBuffer();};
     const [[originalConfig,manifest],cars,physicsBytes,racerBytes]=await Promise.all([
-      this.resources,json('/assets/cars.json'),binary(`/assets/physics/phys${difficulty}.dat`),
-      binary(`/assets/racer-tables/cars${difficulty}.dat`),
+      this.resources,json('assets/cars.json'),binary(`assets/physics/phys${difficulty}.dat`),
+      binary(`assets/racer-tables/cars${difficulty}.dat`),
     ]);
     const config=configWithRaceSave(this.runtimeConfig??originalConfig,readRaceSave());
     this.simulation=new RaceSimulation({config,manifest,cars,physicsBytes,racerBytes,
@@ -83,7 +83,7 @@ export class DrivingView extends TrackViewer{
     this.pickupMeshes=new Map(this.group.children.filter(mesh=>Number.isInteger(mesh.userData.placementIndex))
       .map(mesh=>[mesh.userData.placementIndex,mesh]));
     this.pickupEvents=[];
-    this.hud=new RaceHud(this.hudCanvas,config,manifest);
+    this.hud=new RaceHud(this.hudCanvas,config,manifest);this.hud.pixelRatio=this.surfaceRatio;
     this.hudMeshes=new RaceHudMeshes(this,config,manifest,this.simulation);
     await this.hudMeshes.load();this.hud.meshes=this.hudMeshes;
     await this.hud.load(file=>this.hudMeshes.texture(file));
@@ -98,7 +98,7 @@ export class DrivingView extends TrackViewer{
     this.hudMeshes.capture(this.motion.body.position);
     this.onLoadProgress?.(4);
     this.music=new TrackMusic(getTrackMusic(manifest,id));
-    this.audio=new NativeRaceAudio(config,manifest,{groupVolume:settingsAudioPercent(this.audioSettings?.effects??1)});
+    this.audio=new NativeRaceAudio(config,manifest,{groupVolume:settingsAudioPercent(this.audioSettings?.effects??1),decoded:this.decodedSounds});
     this.nativeAudioSettings=nativeAudioLoadSettings(config);
     await this.audio.prepareVoices(this.simulation.racerCharacters);
     await this.audio.prepareRaceEvents();
@@ -361,6 +361,7 @@ export class DrivingView extends TrackViewer{
   }
   resize(settings){
     const result=super.resize(settings);
+    if(this.hud){this.hud.pixelRatio=this.surfaceRatio;this.hud.invalidateLayout();}
     this.camera.fov=adaptVerticalFov(NATIVE_CAMERA_PROJECTION.verticalDegrees,this.camera.aspect);
     this.camera.updateProjectionMatrix();return result;
   }

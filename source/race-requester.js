@@ -1,4 +1,5 @@
 import {resolveAsset} from './asset-animation.js';
+import {assetURL} from './asset-url.js';
 import {NativeQuitRequester} from './native-quit-requester.js';
 
 /** The race executable's SndGfx.ini STOPPEN screen (0x470860/0x473f20). */
@@ -8,7 +9,7 @@ export function createRaceQuitRequester(config,manifest,onChoice,{onPress,now=()
     const [source,x,y]=definitions['h'+name].split(',');
     const file=resolveAsset(manifest,'images',source+'.tga');
     if(!file)throw new Error(`Missing original race requester image: ${source}`);
-    return {url:'/assets/'+file,x:Number(x),y:Number(y)};
+    return {url:assetURL('assets/'+file),x:Number(x),y:Number(y)};
   };
   const wrap=document.createElement('div');wrap.className='native-wrap';
   const stage=document.createElement('div');stage.className='native-stage race-requester';

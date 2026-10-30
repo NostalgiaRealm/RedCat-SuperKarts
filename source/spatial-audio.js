@@ -8,8 +8,9 @@ const f = Math.fround;
  * Attached sound clones set alwaysUpdate=true in43f020, bypassing both ranges. */
 export function nativeObjectCallbackCount({visible = true, alwaysUpdate = false, sector, ranges}) {
   if (!visible) return 0;
-  const inRange = range => range && range[0] <= sector && sector <= range[1];
-  return Number(alwaysUpdate || !!inRange(ranges?.[0])) + Number(!alwaysUpdate && !!inRange(ranges?.[1]));
+  const first = ranges?.[0], second = ranges?.[1];
+  return (alwaysUpdate || (first && first[0] <= sector && sector <= first[1]) ? 1 : 0)
+    + (!alwaysUpdate && second && second[0] <= sector && sector <= second[1] ? 1 : 0);
 }
 
 /** 49da60. Original Sound.ini range/volume/doppler are integer fields. */

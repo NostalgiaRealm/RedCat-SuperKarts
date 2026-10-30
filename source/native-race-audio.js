@@ -15,14 +15,19 @@ export const NATIVE_DIRECT_RACE_SOUNDS = Object.freeze([
   'CHECKPOINT', 'TIME_TICK', 'KT4', ...NATIVE_CRASH_SOUNDS,
 ]);
 
+// Bank entries that no recovered request site can select; loading them would only
+// hold memory on phones. The banks themselves stay complete.
+const UNREQUESTED_VOICE_SAMPLES=/^(SHOUT\d|DRAGON$|GOT_ITEM$|SOAP_UP$|SOAP_PLOPS\d|COMM([7-9]|1\d|20)$)/;
 /** WebAudio transport for recovered native sound commands. Timing/gear rules
  * stay in engine-audio.js; this class only owns decoded original WAV voices. */
 export class NativeRaceAudio {
-  constructor(config, manifest, {context = null, assetBase = '/assets/', groupVolume, precision = NATIVE_PRECISION} = {}) {
+  constructor(config, manifest, {context = null, assetBase = 'assets/', groupVolume, precision = NATIVE_PRECISION, decoded = new Map()} = {}) {
     this.config = config;
     this.manifest = manifest;
     this.context = context;
     this.ownsContext = !context;
+    // Decoded PCM kept by the viewer: the next race reuses what it shares with this one.
+    this.decoded = decoded;
     this.assetBase = assetBase;
     this.audioSettings = nativeAudioLoadSettings(config,{effectsPercent:groupVolume});
     this.effectsPercent = this.audioSettings.effectsPercent;
@@ -59,10 +64,16 @@ export class NativeRaceAudio {
       const spec = getSoundSpec(this.config, this.manifest, event);
       if (!spec?.file) throw new Error(`Missing original sound event: ${event}`);
       const context = this.ensureContext();
-      const response = await fetch(`${this.assetBase}${spec.file}`);
-      if (!response.ok) throw new Error(`Unable to load original sound: ${spec.file}`);
-      const bytes = await response.arrayBuffer(), sampleRate = nativeWavSampleRate(bytes);
-      const buffer = await context.decodeAudioData(bytes);
+      const url = `${this.assetBase}${spec.file}`;
+      let sound = this.decoded.get(url);
+      if (sound?.buffer.sampleRate !== context.sampleRate) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Unable to load original sound: ${spec.file}`);
+        const bytes = await response.arrayBuffer();
+        sound = {sampleRate: nativeWavSampleRate(bytes), buffer: await context.decodeAudioData(bytes)};
+        this.decoded.set(url, sound);
+      }
+      const {buffer, sampleRate} = sound;
       if (this.disposed) return null;
       const gainNode = context.createGain();
       gainNode.connect(context.destination);
@@ -89,10 +100,11 @@ export class NativeRaceAudio {
     await Promise.all(NATIVE_DIRECT_RACE_SOUNDS.map(event => this.loadEvent(event)));
   }
 
-  async prepareVoices(racerCharacters) {
+  async prepareVoices(racerCharacters, {allSamples = false} = {}) {
     this.voices=new NativeVoiceController(this.config,this.manifest,racerCharacters,{
       precision:this.engine.precision,enabled:this.controllerEnabled});
-    const events=[...new Set(this.voices.banks.flatMap(bank=>bank.map(entry=>entry.event)))];
+    const events=[...new Set(this.voices.banks.flatMap(bank=>bank
+      .filter(entry=>allSamples||!UNREQUESTED_VOICE_SAMPLES.test(entry.sample)).map(entry=>entry.event)))];
     await Promise.all(events.map(event=>this.loadEvent(event)));
     // Voice events use the same native pan path as positional scenery.
     for(const event of events)this.ensurePan(this.slots.get(event.toLowerCase()));
@@ -146,6 +158,10 @@ export class NativeRaceAudio {
       this.slots.set(entry.voiceId, slot);
       this.updateVolume(slot);
     }));
+    if (this.disposed) return;
+    // Memory stays bounded by one race: forget what this race does not use.
+    const used = new Set([...this.slots.values()].map(slot => `${this.assetBase}${slot.spec.file}`));
+    for (const url of this.decoded.keys()) if (!used.has(url)) this.decoded.delete(url);
   }
 
   /**43fe80→43b790: one positional update after the reactive prop is launched.

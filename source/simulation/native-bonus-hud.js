@@ -2,26 +2,27 @@ import { NATIVE_PRECISION } from './native-precision.js';
 const f32 = Math.fround;
 export const NATIVE_BONUS_HUD_ORIGIN = Object.freeze([f32(.7), f32(.1), 2]);
 
+const startBonus = state => {
+  state.origin = [...NATIVE_BONUS_HUD_ORIGIN];
+  state.position = [...state.origin];
+  state.phase = 1;
+  state.elapsedMs = 0;
+  state.visible = true;
+};
+
 /** 0x465c90, with the original moving-element callbacks and linear mode0. */
 export function updateNativeBonusHud(state, owned, deltaSeconds, { precision = NATIVE_PRECISION } = {}) {
   if (![0, 1, 2].includes(state.phase)) throw new RangeError('Original bonus HUD phase must be0,1 or2');
   const r = precision === 53 ? Number : f32;
   const unchanged = state.cached.state === owned.state && state.cached.type === owned.type
     && state.cached.level === owned.level;
-  const start = () => {
-    state.origin = [...NATIVE_BONUS_HUD_ORIGIN];
-    state.position = [...state.origin];
-    state.phase = 1;
-    state.elapsedMs = 0;
-    state.visible = true;
-  };
   if (state.phase === 0) {
-    if (state.cached.state !== owned.state) start();
+    if (state.cached.state !== owned.state) startBonus(state);
   } else if (!unchanged) {
     // 0x465fa0 clears phase/visibility before the immediate0x465f50 restart.
     state.phase = 0;
     state.visible = false;
-    start();
+    startBonus(state);
   } else if (state.phase === 1) {
     const elapsed = r(r(f32(deltaSeconds) * 1000) + state.elapsedMs);
     state.elapsedMs = f32(elapsed);

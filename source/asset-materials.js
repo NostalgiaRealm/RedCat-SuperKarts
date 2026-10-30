@@ -102,6 +102,9 @@ export function createNativeMeshMaterial(map, {
   colorKeyThreshold = null, textureHasNativeAlpha = false,
 } = {}) {
   const spec = getNativeMaterialSpec({placementType, blendMode});
+  // Without key texels the test below can never fire, but it still costs mobile
+  // GPUs their early depth rejection, so such textures compile without it.
+  const keyed = colorKeyThreshold !== null || map?.userData.nativeHasKey !== false;
   const material = new THREE.MeshBasicMaterial({
     map, vertexColors: true, side, transparent: spec.transparent, depthWrite: spec.depthWrite,
     blending: spec.transparent ? THREE.CustomBlending : THREE.NoBlending,
@@ -116,7 +119,7 @@ export function createNativeMeshMaterial(map, {
     shader.fragmentShader = shader.fragmentShader.replace('#include <map_fragment>', `
 #ifdef USE_MAP
   vec4 sampledDiffuseColor = texture2D(map, vMapUv);
-  ${colorKeyThreshold === null ? 'if (sampledDiffuseColor.a <= 0.0) discard;'
+  ${!keyed ? '' : colorKeyThreshold === null ? 'if (sampledDiffuseColor.a <= 0.0) discard;'
     : `if (sampledDiffuseColor.a < ${Number(colorKeyThreshold).toPrecision(12)}) discard;`}
   diffuseColor.rgb *= sampledDiffuseColor.rgb;
 #endif
@@ -128,6 +131,6 @@ export function createNativeMeshMaterial(map, {
         '#include <color_fragment>\n#ifdef USE_MAP\n diffuseColor.a = opacity * sampledDiffuseColor.a;\n#endif');
     }
   };
-  material.customProgramCacheKey = () => `rcsk-material-${colorKeyThreshold}-${textureHasNativeAlpha}`;
+  material.customProgramCacheKey = () => `rcsk-material-${colorKeyThreshold}-${textureHasNativeAlpha}-${keyed}`;
   return applyNativeByteColorPipeline(material);
 }

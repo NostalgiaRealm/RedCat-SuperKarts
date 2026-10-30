@@ -5,6 +5,7 @@ import {NATIVE_PRECISION} from './simulation/native-precision.js';
 const f = Math.fround, rfor = precision => precision === 24 ? f : Number;
 const names = ['redcat', 'whizzkitty', 'brutus', 'max'];
 const labels = ['first', 'second', 'third', 'fourth', 'fifth'];
+const portraitPrefixes = ['back', 'frame', 'portr'], iniCache = new WeakMap();
 
 /** Original Moving.cpp 0x4676d0: rank changes follow a half-circle, whereas
  * changes in spacing after another racer moves use linear interpolation. */
@@ -76,8 +77,8 @@ export function updateNativeHudPortraits(state, deltaSeconds, ranks) {
     throw new RangeError('Native HUD ranks must be zero-based racer ranks');
   }
   const r = rfor(state.precision), options = {precision: state.precision};
-  for (const [index, portrait] of state.portraits.entries()) {
-    const rank = ranks[index], layout = nativeHudPortraitRankLayout(rank, ranks[state.playerIndex], options);
+  for (let index = 0; index < state.portraits.length; index++) {
+    const portrait = state.portraits[index], rank = ranks[index], layout = nativeHudPortraitRankLayout(rank, ranks[state.playerIndex], options);
     if (portrait.state === 1) updateNativeHudPortrait(portrait, deltaSeconds, options);
     else if (portrait.state === 2) {
       const changedRank = rank !== portrait.rank;
@@ -99,11 +100,21 @@ export function updateNativeHudPortraits(state, deltaSeconds, ranks) {
  * Retain the Overlay.ini RGBA: backgrounds are alpha64, frames/faces alpha255. */
 export function getNativeHudPortraitCommands(state, config) {
   const overlay = config['overlay.ini'], commands = [];
-  for (const [index, portrait] of state.portraits.entries()) {
-    const player = index === state.playerIndex;
-    for (const prefix of ['back', 'frame', 'portr']) {
-      const id = `${prefix}${portrait.name}`;
-      const scale = nativeHudIniTransform(overlay[id]).scale;
+  let ini = iniCache.get(overlay);
+  if (!ini) {
+    ini = {transforms: new Map(), order: new Map(Object.entries(overlay.elements).filter(([key]) => /^\d+$/.test(key))
+      .sort(([a], [b]) => Number(a) - Number(b)).map(([, value], index) => [value.toLowerCase(), index]))};
+    iniCache.set(overlay, ini);
+  }
+  const transform = id => {
+    let value = ini.transforms.get(id);
+    if (!value) ini.transforms.set(id, value = nativeHudIniTransform(overlay[id]));
+    return value;
+  };
+  for (let index = 0; index < state.portraits.length; index++) {
+    const portrait = state.portraits[index], player = index === state.playerIndex;
+    for (const prefix of portraitPrefixes) {
+      const id = `${prefix}${portrait.name}`, scale = [...transform(id).scale];
       if (player) {
         scale[0] = f(scale[0] * 1.25); scale[1] = f(scale[1] * 1.25); scale[2] = f(scale[2] * f(.001));
       }
@@ -111,13 +122,12 @@ export function getNativeHudPortraitCommands(state, config) {
     }
   }
   for (let rank = 0; rank < state.portraits.length; rank++) {
-    const id = labels[rank], position = nativeHudIniTransform(overlay[id]).position;
+    const id = labels[rank], position = [...transform(id).position];
     if (state.labelY[rank] !== null) position[1] = state.labelY[rank];
     commands.push({id, overrides: {[id]: {position, visible: true}}});
   }
   // Elements are inserted by Overlay.ini's numbered list: all backgrounds,
   // then frames, faces and ordinal labels. Keep this order during overlap.
-  const order = Object.entries(overlay.elements).filter(([key]) => /^\d+$/.test(key))
-    .sort(([a], [b]) => Number(a) - Number(b)).map(([, value]) => value.toLowerCase());
-  return commands.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  const order = id => ini.order.get(id) ?? -1;
+  return commands.sort((a, b) => order(a.id) - order(b.id));
 }

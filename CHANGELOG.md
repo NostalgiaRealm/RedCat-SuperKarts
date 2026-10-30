@@ -4,6 +4,10 @@
 
 ### Added
 
+- `tools/deploy-website.sh` builds the website and uploads it to the Nginx
+  server in one command, sending only changed files and checking the live site
+  afterwards. `--dry-run` shows the changes first. See
+  [hosting](docs/hosting.md#deploy-to-the-website-with-one-command).
 - **Schaduwen op het wegdek** in **Meer instellingen**, on by default: kart
   shadows lie on the road surface under each kart. The original shadow sits on
   one flat plane per track section, so it disappears below the road in places,
@@ -13,6 +17,21 @@
   between game updates, but the light stayed at the latest update, so at speed
   it could sink into the engine and flicker. The original draws both from the
   same position once per update, so it never showed this.
+
+### Changed
+
+- Much smoother on phones. In emulated-phone tests the race needs about a quarter
+  of the main-thread time, with far less garbage collection, half the draw calls
+  and one full-screen pass less. Gameplay is unchanged and the Netherlands test
+  frames are pixel-identical. See [mobile performance](docs/mobile-performance.md).
+- On phones and tablets **Automatisch** now stops at about 1 megapixel, which looks
+  slightly softer. Choose **Volle schermresolutie** for every screen pixel.
+- A race loads much faster: one mesh pack replaces 1,241 JSON requests, and the
+  next race reuses decoded sounds.
+- The website also works from a URL folder, such as
+  `https://games.nostalgiarealm.com/redcatsuperkarts/`. It loads its files
+  relative to the page instead of from the domain root, so the server no longer
+  needs root-level `/assets/` and `/src/` locations.
 
 ## 1.0.2 — 2026-10-29
 

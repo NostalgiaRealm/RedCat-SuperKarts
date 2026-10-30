@@ -64,6 +64,8 @@ dist/
     main.js
     main.js.map
     style.css
+    mesh-pack.bin
+    mesh-pack.json
     chunks/
       ...
   assets/
@@ -82,10 +84,14 @@ Include `runtime-manifest.json`: it records the generated runtime files and
 sizes. Preview and Electron use its file list to reject missing generated
 chunks before launching; package verification separately checks payload bytes.
 
-The game uses paths beginning with `/`, including `/src/main.js` and `/assets/`.
-Therefore `index.html` must be at the subdomain's web root. Hosting it at `/dist/`
-or `/game/` requires code/path changes; adding an HTML `<base>` tag alone does
-not fix those absolute paths. The physical folder on the server may have any name.
+The game loads its files relative to `index.html` (`src/main.js`, `assets/…`).
+It works at a domain root, such as `https://karts.example.com/`, or in a URL
+folder, such as `https://games.nostalgiarealm.com/redcatsuperkarts/`. A folder
+address must end in `/`; redirect the address without it (see the
+[URL-folder example](#nginx-in-a-url-folder)). Artwork in CSS custom properties
+uses absolute addresses built from the page address (`source/asset-url.js`),
+because browsers resolve a relative `url()` there against the style sheet.
+The physical folder on the server may have any name.
 
 Before uploading, stop any local game server using port 4173 and run `npm run preview`.
 It serves the completed `dist/` at the same `http://127.0.0.1:4173/` origin as
@@ -195,6 +201,81 @@ The MIME file supplies file types; `try_files` returns an actual 404 for missing
 assets. No single-page-app fallback to `index.html` is needed: game screens use
 the root URL and query parameters. [Nginx HTTPS configuration](https://nginx.org/en/docs/http/configuring_https_servers.html), [root, types and try_files](https://nginx.org/en/docs/http/ngx_http_core_module.html)
 
+## Nginx in a URL folder
+
+To serve the game below an existing site, add a location for the folder to that
+site's `server` block. With `root` set to the parent directory, the folder name
+on disk matches the URL folder:
+
+```nginx
+location = /redcatsuperkarts {
+    return 301 /redcatsuperkarts/;
+}
+
+location /redcatsuperkarts/ {
+    root /var/www/games.nostalgiarealm.com;
+    index index.html;
+    add_header Cache-Control "no-cache" always;
+    try_files $uri $uri/ =404;
+}
+```
+
+Builds before folder support requested `/assets/`, `/src/` and `/node_modules/`
+from the domain root and needed root-level locations for them. Current builds
+request nothing outside their folder, so those locations can be removed.
+
+## Deploy to the website with one command
+
+`tools/deploy-website.sh` builds the website and mirrors `dist/` to the Nginx
+server over SSH. By default it deploys to `Debian:/var/www/games.nostalgiarealm.com/redcatsuperkarts/`
+(the `Debian` alias in `~/.ssh/config`) and checks
+`https://games.nostalgiarealm.com/redcatsuperkarts/`. Run it on the build computer:
+
+```sh
+tools/deploy-website.sh --dry-run   # build and list what would change on the server
+tools/deploy-website.sh             # build, upload and check the live site
+```
+
+It runs `npm run build` and then rsync:
+
+- only files whose contents changed are sent (every build gives `dist/` new
+  file times, so it compares contents);
+- they are all put in place at the end, so visitors do not load half an update;
+- files that no longer exist, such as old generated chunks, are removed
+  afterwards, inside the destination folder only;
+- folders become 755 and files 644.
+
+Nginx keeps running. Afterwards the script checks that the public site serves
+the new `runtime-manifest.json` and `src/main.js`; `index.html` is the same
+for every build. It refuses any destination that is not an absolute path
+ending in `/redcatsuperkarts`.
+
+**Settings.** To use another SSH target, folder or address, set them in
+`~/.config/redcat-superkarts/deploy.env` or the environment:
+
+```sh
+RCSK_DEPLOY_HOST=rick@192.168.178.203
+RCSK_DEPLOY_PATH=/var/www/games.nostalgiarealm.com/redcatsuperkarts
+RCSK_DEPLOY_URL=https://games.nostalgiarealm.com/redcatsuperkarts/
+```
+
+`RCSK_DEPLOY_URL=` (empty) skips the live check. `RCSK_DEPLOY_HOST=local`
+copies to a local folder, for testing.
+
+**One-time setup.** The SSH login must work without a password
+(`ssh-copy-id Debian`), and your account must own the web folder so no
+`sudo` is needed; Nginx only reads it. Add `Cache-Control: no-cache` as in the
+[URL-folder example](#nginx-in-a-url-folder): `src/main.js` keeps its name
+between builds, so without it a browser can reuse an old copy that imports
+generated chunks the update removed.
+
+To test the live site after a deployment, including that no request leaves the
+folder:
+
+```sh
+RCSK_URL=https://games.nostalgiarealm.com/redcatsuperkarts node tests/subpath-browser.mjs
+```
+
 ## File responses and caching
 
 Check that the host or CDN preserves these responses:
@@ -216,6 +297,20 @@ with status 200 still fails to load as a module. [Module serving requirements](h
 Images also need their normal image MIME types. Allow `GET` and `HEAD`, and
 preserve byte-range requests for movies. A request for the first 32 bytes should
 receive `206 Partial Content`, a matching `Content-Range`, and 32 bytes of data. [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests)
+
+Compress text and mesh data if the host allows it; the first load shrinks by about
+half. In Nginx, inside the game's location (byte-range media stays uncompressed):
+
+```nginx
+gzip on;
+gzip_vary on;
+gzip_comp_level 5;
+gzip_min_length 1024;
+gzip_types application/json application/javascript text/javascript text/css image/svg+xml font/ttf application/octet-stream;
+```
+
+With that list, make sure `.wav` has its own type (`audio/wav`), otherwise WAV files
+count as `application/octet-stream` and are compressed too.
 
 The examples use `Cache-Control: no-cache`: browsers may retain files but must
 revalidate before reuse. This covers the stable entry and asset names as well as generated chunks.

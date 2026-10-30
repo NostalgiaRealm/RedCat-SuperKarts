@@ -21,6 +21,21 @@ export function getNativeWeatherSpec(config, raceType, trackIndex, {hardware = t
  * All particles are initialized even if the system starts paused. Their draws
  * must use the race construction RNG; subsequent recycling uses the shared RNG.
  */
+// Reused capture storage, kept off the controller: only its live state is race state.
+const weatherScratches = new WeakMap();
+function weatherScratch(weather) {
+  let scratch = weatherScratches.get(weather);
+  if (!scratch) {
+    const rain = weather.kind === 'rain', count = weather.particles.length, u0 = f(rain ? .56 : .35), u1 = f(rain ? .63 : .54), v0 = f(.05), v1 = f(rain ? .4 : .25);
+    const uv = [u0, v0, u1, v0, u0, v1, u1, v0, u1, v1, u0, v1], noUV = new Array(12).fill(0);
+    const argb = new Array(6).fill(rain ? 0x806060c0 : 0x80ffffff), rows = Math.ceil(count / 6);
+    // Each frame's UV and colour are constant; only the positions change.
+    scratch = {framePool: Array.from({length: count}, (_, index) => ({
+      vertices: new Array(18).fill(0), uv: index < rows ? uv : noUV, argb})), frames: []};
+    weatherScratches.set(weather, scratch);
+  }
+  return scratch;
+}
 export class NativeWeather {
   constructor({kind, count = 400, enabled = true, random, precision = NATIVE_PRECISION, percentages = []}) {
     if (!random?.next) throw new Error('Original shared random stream is required');
@@ -47,13 +62,12 @@ export class NativeWeather {
     const x = f(this.randomRange(-range, range));
     const z = f(r((rain ? 35 : 50) + this.randomRange(-range, range)));
     const factor = this.randomRange(.75, 1.25);
-    Object.assign(particle, {
-      active: true, age: 0, lifetime,
-      position: [x, rain ? 25 : 35, z],
-      // 4824a0 deliberately retains previousPosition when reusing a slot.
-      acceleration: [...this.acceleration],
-      velocity: [f(r((rain ? 15 : 10) * factor)), f(r((rain ? -35 : -6) * factor)), 0],
-    });
+    particle.active = true; particle.age = 0; particle.lifetime = lifetime;
+    const p = particle.position, a = particle.acceleration, v = particle.velocity, source = this.acceleration;
+    p[0] = x; p[1] = rain ? 25 : 35; p[2] = z;
+    // 4824a0 deliberately retains previousPosition when reusing a slot.
+    a[0] = source[0]; a[1] = source[1]; a[2] = source[2];
+    v[0] = f(r((rain ? 15 : 10) * factor)); v[1] = f(r((rain ? -35 : -6) * factor)); v[2] = 0;
   }
   setFraction(value) {
     value = f(value);
@@ -82,10 +96,10 @@ export class NativeWeather {
   }
   step(deltaSeconds, velocity) {
     if (this.paused) return;
-    const r = this.precision === 24 ? f : Number, dt = f(deltaSeconds);
+    const r = this.precision === 24 ? f : Number, dt = f(deltaSeconds), particles = this.particles, active = this.activeCount;
     let survived = false;
-    for (let i = 0; i < this.activeCount; i++) {
-      const particle = this.particles[i];
+    for (let i = 0; i < active; i++) {
+      const particle = particles[i];
       if (!particle.active) continue;
       const age = r(dt + particle.age);
       particle.age = f(age);
@@ -95,23 +109,27 @@ export class NativeWeather {
         continue;
       }
       survived = true;
-      particle.previousPosition = [...particle.position];
-      const a = [...particle.acceleration];
-      a[1] = f(r(a[1] - r(particle.mass * f(9.81))));
-      particle.velocity = particle.velocity.map((v, axis) =>
-        f(r(r(r(a[axis] / particle.mass) * dt) + v)));
-      particle.position = particle.position.map((v, axis) => f(r(r(dt * particle.velocity[axis]) + v)));
+      const p = particle.position, q = particle.previousPosition, a = particle.acceleration, v = particle.velocity, mass = particle.mass;
+      q[0] = p[0]; q[1] = p[1]; q[2] = p[2];
+      const ay = f(r(a[1] - r(mass * f(9.81))));
+      v[0] = f(r(r(r(a[0] / mass) * dt) + v[0]));
+      v[1] = f(r(r(r(ay / mass) * dt) + v[1]));
+      v[2] = f(r(r(r(a[2] / mass) * dt) + v[2]));
+      p[0] = f(r(r(dt * v[0]) + p[0]));
+      p[1] = f(r(r(dt * v[1]) + p[1]));
+      p[2] = f(r(r(dt * v[2]) + p[2]));
     }
     // The weather-specific tail skips when every visited particle recycled.
     if (!survived) return;
-    const [x, y, z] = velocity.map(f);
+    const x = f(velocity[0]), y = f(velocity[1]), z = f(velocity[2]);
     const speed = r(Math.sqrt(r(r(r(z * z) + r(y * y)) + r(x * x))));
     this.acceleration[1] = f(r(speed * (this.kind === 'rain' ? -2.5 : -1)));
     this.acceleration[2] = f(r(speed * (this.kind === 'rain' ? -4.5 : -1.5)));
-    for (let i = 0; i < this.activeCount; i++) {
-      const particle = this.particles[i];
-      particle.velocity[2] = f(r(particle.velocity[2] + (this.kind === 'rain' ? 3 : 2)));
-      if (particle.velocity[2] > 0) particle.velocity[2] = 0;
+    const drag = this.kind === 'rain' ? 3 : 2;
+    for (let i = 0; i < active; i++) {
+      const v = particles[i].velocity;
+      v[2] = f(r(v[2] + drag));
+      if (v[2] > 0) v[2] = 0;
     }
   }
   /**483350 uses identity view/world matrices. These vertices are camera-space.
@@ -121,24 +139,29 @@ export class NativeWeather {
   capture() {
     if (this.paused) return [];
     const r = this.precision === 24 ? f : Number, rain = this.kind === 'rain';
-    const u0 = f(rain ? .56 : .35), u1 = f(rain ? .63 : .54),
-      v0 = f(.05), v1 = f(rain ? .4 : .25);
-    return this.particles.slice(0, this.activeCount).filter(particle => particle.active).map((particle, index) => {
-      let top = [...particle.previousPosition], bottom = [...particle.position];
+    const scratch = weatherScratch(this), frames = scratch.frames, particles = this.particles, active = this.activeCount;
+    let count = 0;
+    for (let i = 0; i < active; i++) {
+      const particle = particles[i];
+      if (!particle.active) continue;
+      const p = particle.position, width = particle.width;
+      let tx, ty, tz, bx, by, bz;
       if (rain) {
-        if (top[1] < bottom[1]) [top, bottom] = [bottom, top];
+        const q = particle.previousPosition;
+        if (q[1] < p[1]) {tx = p[0]; ty = p[1]; tz = p[2]; bx = q[0]; by = q[1]; bz = q[2];}
+        else {tx = q[0]; ty = q[1]; tz = q[2]; bx = p[0]; by = p[1]; bz = p[2];}
       } else {
-        top = [...particle.position];
-        bottom = [...particle.position];
-        bottom[1] = f(r(bottom[1] - particle.width));
+        tx = bx = p[0]; ty = p[1]; tz = bz = p[2];
+        by = f(r(p[1] - width));
       }
-      const br = [...top]; br[0] = f(r(br[0] + particle.width));
-      const tr = [...bottom]; tr[0] = f(r(tr[0] + particle.width));
-      return {
-        vertices: [...top, ...br, ...bottom, ...br, ...tr, ...bottom],
-        uv: index < Math.ceil(this.count / 6) ? [u0,v0,u1,v0,u0,v1,u1,v0,u1,v1,u0,v1] : Array(12).fill(0),
-        argb: Array(6).fill(particle.argb),
-      };
-    });
+      const brx = f(r(tx + width)), trx = f(r(bx + width));
+      const frame = scratch.framePool[count], v = frame.vertices;
+      v[0] = tx; v[1] = ty; v[2] = tz; v[3] = brx; v[4] = ty; v[5] = tz;
+      v[6] = bx; v[7] = by; v[8] = bz; v[9] = brx; v[10] = ty; v[11] = tz;
+      v[12] = trx; v[13] = by; v[14] = bz; v[15] = bx; v[16] = by; v[17] = bz;
+      frames[count++] = frame;
+    }
+    frames.length = count;
+    return frames;
   }
 }

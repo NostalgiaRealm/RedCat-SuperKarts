@@ -3,8 +3,8 @@ import { calculateNativePlayerForces } from './native-player.js';
 import { integrateNativeEuler, nativeIntegrationSchedule, quantizeNativePlanarVelocity } from './native-integrator.js';
 import { applyNativeRailContact } from './native-collision.js';
 import { createNativeGroundState, NativeGroundClock, nativeYawTrig, updateNativeGround, updateNativeWheelPose } from './native-ground.js';
-import { selectNativeSector, sampleNativeTrack } from './native-track.js';
-import { nativeRotationMatrix } from './native-transform.js';
+import { nativeSectorAt, nativeTrackHeight } from './native-track.js';
+import { nativeRotationMatrix, nativeRotationMatrix53 } from './native-transform.js';
 import { resetNativeInactivePlayer } from './native-game-timers.js';
 import { NATIVE_PRECISION } from './native-precision.js';
 
@@ -84,8 +84,7 @@ export class NativePlayerMotion {
 
   // 0x496290 returns the height in ST0. Each consumer (0x41c0b0 wheel pose,
   // 0x416650 ground callback) rounds where the original stores.
-  sampleGround = (x, y, z) => sampleNativeTrack(this.world, this.body.sector, x, y, z,
-    { precision: this.precision }).height;
+  sampleGround = (x, y, z) => nativeTrackHeight(this.world, this.body.sector, x, z, this.precision);
 
   /** 0x491530 updates every object's callback before 0x491d30 integrates any. */
   prepare(buttons, deltaSeconds, { active = true, phase = 0, analog = null, onBonus, matrix } = {}) {
@@ -126,7 +125,7 @@ export class NativePlayerMotion {
     return force;
   }
 
-  integrate() {
+  integrate(snapshot = true) {
     if (!this.prepared) throw new Error('Prepare the native frame before integrating');
     const { force, deltaSeconds } = this.prepared;
     const body = this.body, precision = this.precision;
@@ -135,9 +134,10 @@ export class NativePlayerMotion {
     const schedule = nativeIntegrationSchedule(deltaSeconds, { player: true, flags: 3 });
     for (let step = 0; step < schedule.count; step++) {
       const collision = this.collision.sample(body, schedule.dt);
-      integrateNativeEuler(body, force, schedule.dt, { ...collision, precision });
+      integrateNativeEuler(body, force, schedule.dt, collision, precision);
       // Native rebuilds render-object matrix 0x4a09e0 before contact response.
-      body.matrix = nativeRotationMatrix([body.pitch, body.yaw, body.roll], { precision });
+      body.matrix = precision === 24 ? nativeRotationMatrix([body.pitch, body.yaw, body.roll], { precision })
+        : nativeRotationMatrix53(body.pitch, body.yaw, body.roll);
       if (collision?.contact) {
         if(this.collision.resolve)this.collision.resolve(body,collision.contact);
         else applyNativeRailContact(body, collision.contact, { precision });
@@ -148,7 +148,7 @@ export class NativePlayerMotion {
     // Rescue relocation also calls it, so this is not interchangeable with
     // the last sector observed by the race/HUD callback.
     body.previousSector = body.sector;
-    body.sector = selectNativeSector(this.world, body.sector, body.x, body.z, { precision });
+    body.sector = nativeSectorAt(this.world, body.sector, body.x, body.z, precision);
     // 0x491d30 selects the waypoint (0x4937e0) before the +0x58 ground
     // callback 0x416650, as the NPC path does.
     this.occupancy?.insert(body);
@@ -160,7 +160,7 @@ export class NativePlayerMotion {
     updateNativeGround(body, this.ground, deltaSeconds, this.sampleGround, { clock: this.groundClock, precision });
     this.prepared = null;
     this.updates++;
-    return this.snapshot();
+    return snapshot ? this.snapshot() : undefined;
   }
 
   step(buttons, deltaSeconds) {

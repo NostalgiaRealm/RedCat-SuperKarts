@@ -42,6 +42,17 @@ canvas supplies layout dimensions only; actual HUD pixels share the opaque
 RGB565 composition path described in the
 [HUD rendering follow-up](research-hud-framebuffer.md).
 
+## Resolution on phones and tablets
+
+On touch devices **Automatisch** stops at about 1 megapixel, for the world and the
+HUD surface together. A phone screen can have 3 megapixels; the original runs at
+640×480. This is the one visible trade-off of the
+[mobile performance work](mobile-performance.md): the picture is slightly softer,
+with about a third of the pixels to fill. **Volle schermresolutie** uses every
+screen pixel on any device. Other presets and the render scale still control the
+world; on touch devices the HUD surface keeps the cap under those presets too.
+Desktop behaviour is unchanged.
+
 ## Shadows
 
 **Schaduwen op het wegdek** places each kart's shadow on the road surface

@@ -67,10 +67,10 @@ export class NativeBonusCombat {
   };
 
   activeCount() {
-    let primary=0,secondary=0;
-    for(const shot of this.shots)if(shot.state===2)primary++;
-    for(const shot of this.secondaryShots)if(shot.state===2)secondary++;
-    return primary+secondary;
+    let active=0;
+    for(let i=0;i<this.shots.length;i++)if(this.shots[i].state===2)active++;
+    for(let i=0;i<this.secondaryShots.length;i++)if(this.secondaryShots[i].state===2)active++;
+    return active;
   }
 
   emitAnimation(racer, event) {
@@ -164,18 +164,17 @@ export class NativeBonusCombat {
   /** Call after static pickups: 0x451200 main shots, then 0x456350 secondary. */
   step(deltaSeconds, nowSeconds) {
     const events = [];
-    const racers = this.actors.map(actor => ({
-      position: actor.body.position, radius: actor.radius,
-    }));
-    for (const shot of [...this.shots, ...this.secondaryShots]) {
+    const racers = this.actors.map(actor => ({ position: actor.body.position, radius: actor.radius })),
+      age = f32(deltaSeconds), options = { groundHeight: this.groundHeight,
+      rotationSpeed: this.rotationSpeed, invincibilitySeconds: this.invincibilitySeconds,
+      onExplosion: body => this.onExplosion?.(body), onState: (shot, state) => this.onProjectileState?.(shot, state),
+      precision: this.precision };
+    for (let index = 0, total = this.shots.length + this.secondaryShots.length; index < total; index++) {
+      const shot = index < this.shots.length ? this.shots[index] : this.secondaryShots[index - this.shots.length];
+      // 0x455a10 ages idle slots too, then returns.
+      if (shot.state === 1) { shot.ageSeconds = f32(shot.ageSeconds + age); continue; }
       const parameters = this.parameters[shot.type]?.[shot.level - 1];
-      const result = advanceNativeProjectile(shot, deltaSeconds, parameters, racers, {
-        groundHeight: this.groundHeight, rotationSpeed: this.rotationSpeed,
-        invincibilitySeconds: this.invincibilitySeconds,
-        onExplosion: body => this.onExplosion?.(body),
-        onState: (shot, state) => this.onProjectileState?.(shot, state),
-        precision: this.precision,
-      });
+      const result = advanceNativeProjectile(shot, deltaSeconds, parameters, racers, options);
       if (result && shot.state === 1) this.arms.remove(shot);
       if (!result) continue;
       if (result.type === 'hit') {

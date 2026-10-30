@@ -15,23 +15,28 @@ export function raceHudLayout(width,height,{left=0,right=0,top=0,bottom=0,touchH
   const topY=top,bottomY=height-bottom-touchHeight-h;
   const centerX=(width-w)/2,centerY=top+(availableHeight-h)/2;
   const rightX=width-right-w;
+  const groups=new Map(),texts=new Map();
   return {portrait,scale,width:w,height:h,
     group(name){
-      return {x:name==='map'?rightX:['321timer','arrows'].includes(name)?centerX:left,
+      let value=groups.get(name);
+      if(!value)groups.set(name,value={x:name==='map'?rightX:['321timer','arrows'].includes(name)?centerX:left,
         y:['map','bonus'].includes(name)?bottomY:['321timer','arrows'].includes(name)&&portrait?centerY
           :name==='stars'&&portrait?topY+110*scale:topY,
-        width:w,height:h};
+        width:w,height:h});
+      return value;
     },
     text(id){
-      if(raceTimeStrings.has(id))return {x:width-right-640*timeScale,y:topY,scale:timeScale};
-      return {x:id==='string_bonus'?left:['string_special','string_countdown_value'].includes(id)?centerX:rightX,
-        y:id==='string_bonus'?bottomY:id==='string_special'?centerY:topY};
+      let value=texts.get(id);
+      if(!value)texts.set(id,value=raceTimeStrings.has(id)?{x:width-right-640*timeScale,y:topY,scale:timeScale}
+        :{x:id==='string_bonus'?left:['string_special','string_countdown_value'].includes(id)?centerX:rightX,
+          y:id==='string_bonus'?bottomY:id==='string_special'?centerY:topY});
+      return value;
     },
   };
 }
 
-export function measureRaceHudLayout(canvas,width,height){
-  const dpr=devicePixelRatio||1,style=getComputedStyle(canvas);
+export function measureRaceHudLayout(canvas,width,height,dpr=devicePixelRatio||1){
+  const style=getComputedStyle(canvas);
   const safe=name=>Math.max(height>width&&name!=='bottom'?8:0,
     parseFloat(style.getPropertyValue(`--hud-safe-${name}`))||0)*dpr;
   const controls=document.getElementById('touch-controls');
@@ -39,4 +44,27 @@ export function measureRaceHudLayout(canvas,width,height){
     top:safe('top'),bottom:safe('bottom'),
     // The controls' box already includes its bottom safe-area padding.
     touchHeight:controls&&!controls.hidden?Math.max(0,controls.getBoundingClientRect().height*dpr-safe('bottom')):0});
+}
+
+/** Re-measure only when an input can have changed. Width, height and DPR are compared on
+ * every frame by the caller; RaceHud.invalidateLayout covers #touch-controls.hidden toggles
+ * (DrivingView.resize, zero-size frames), the observer CSS-driven box changes and the age
+ * limit env(safe-area-inset-*) changes that leave the canvas size alone. */
+export class RaceHudLayoutCache{
+  constructor(canvas){this.canvas=canvas;this.layout=null;this.dirty=true;this.age=0;this.observer=null;this.connected=false;}
+  connect(){
+    this.connected=true;
+    const controls=document.getElementById('touch-controls');
+    if(!controls||typeof ResizeObserver!=='function')return;
+    this.observer=new ResizeObserver(()=>{this.dirty=true;});this.observer.observe(controls);
+  }
+  get(width,height,dpr){
+    if(!this.connected)this.connect();
+    if(this.dirty||width!==this.width||height!==this.height||dpr!==this.dpr||++this.age>=60){
+      this.layout=measureRaceHudLayout(this.canvas,width,height,dpr);
+      this.width=width;this.height=height;this.dpr=dpr;this.dirty=false;this.age=0;
+    }
+    return this.layout;
+  }
+  dispose(){this.observer?.disconnect();this.observer=null;}
 }

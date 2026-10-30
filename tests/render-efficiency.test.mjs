@@ -17,9 +17,10 @@ function fixture(id='string_lap'){
   const anchor={x:0,y:0,scale:1},layout={text:()=>anchor};
   return {id,spec,hud,glyphs,renderer,anchor,layout};
 }
-const buffers=entry=>entry.meshes.filter(mesh=>mesh.visible).map(mesh=>
-  Object.fromEntries(['position','uv','color'].map(name=>[name,[...mesh.geometry.attributes[name].array]])));
-const versions=entry=>entry.meshes.map(mesh=>['position','uv','color'].map(name=>mesh.geometry.attributes[name].version));
+// One mesh per string; only the drawn glyphs of its buffers count.
+const buffers=entry=>entry.mesh?.visible?Object.fromEntries([['position',12],['uv',8],['color',16]].map(([name,size])=>
+  [name,[...entry.mesh.geometry.attributes[name].array.slice(0,entry.glyphCount*size)]])):null;
+const versions=entry=>['position','uv','color'].map(name=>entry.mesh.geometry.attributes[name].version);
 
 test('unchanged HUD redraws retain draw order and blending without new geometry uploads',()=>{
   const f=fixture(),draw=()=>f.glyphs.renderString(f.renderer,f.id,'ronde',640,480,f.layout);

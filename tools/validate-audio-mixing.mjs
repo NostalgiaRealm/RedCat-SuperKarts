@@ -20,7 +20,7 @@ try {
     await audio.prepareEngine();
     await audio.loadEvent('CAR_START');
     await audio.prepareRaceEvents();
-    await audio.prepareVoices([4, 5, 6, 7, 0]);
+    await audio.prepareVoices([4, 5, 6, 7, 0],{allSamples:true});
     await audio.prepareScenery(track);
     const ambient = audio.scenery.find(entry => entry.sound.event === 'NLMILL1');
     const impact = [...audio.reactiveScenery.values()][0];

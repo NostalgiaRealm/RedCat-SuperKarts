@@ -5,6 +5,16 @@ const f=Math.fround;
  * No RNG.20 strip pairs,98 vertices each, using the original rear-wheel local
  * positions and current body matrix; these are not ground-projected decals.
  */
+// Frames reference the live vertices: the renderer consumes them before the next emit.
+const skidmarkScratches=new WeakMap();
+const skidmarkScratch=skidmarks=>{
+  let scratch=skidmarkScratches.get(skidmarks);
+  if(!scratch){
+    scratch={framePool:skidmarks.strips.map(({id})=>({id,sides:null})),frames:[]};
+    skidmarkScratches.set(skidmarks,scratch);
+  }
+  return scratch;
+};
 export class NativeSkidmarks {
   constructor({precision=NATIVE_PRECISION,enabled=true,fade=true}={}) {
     Object.assign(this,{precision,enabled,fade,lastSlip:0,currentIndex:-1,texture:'s_sfx'});
@@ -48,24 +58,30 @@ export class NativeSkidmarks {
    */
   capture() {
     if (!this.enabled) return [];
-    for (const strip of this.strips) if (strip.active) {
+    const scratch=skidmarkScratch(this),frames=scratch.frames;let count=0;
+    for (let s=0;s<this.strips.length;s++) {
+      const strip=this.strips[s];
+      if (!strip.active) continue;
       strip.tick++;
       if (strip.tick>=strip.period) {
         strip.active=false;strip.tick=0;strip.sides=[[],[]];continue;
       }
+      const left=strip.sides[0],right=strip.sides[1];
       if (this.fade) {
         const remaining=strip.period-strip.tick;
-        strip.sides[0].forEach((vertex,index)=>{
-          const alpha=vertex.argb>>>24;
+        for (let index=0;index<left.length;index++) {
+          const vertex=left[index],alpha=vertex.argb>>>24;
           const next=Math.min(255,alpha+Math.max(1,Math.floor((255-alpha)/remaining)));
           const argb=((vertex.argb&0xffffff)|(next<<24))>>>0;
           vertex.argb=argb;
-          strip.sides[1][index].argb=argb;
-        });
+          right[index].argb=argb;
+        }
+      }
+      if (left.length>2) {
+        const frame=scratch.framePool[s];frame.sides=strip.sides;frames[count++]=frame;
       }
     }
-    return this.strips.filter(strip=>strip.active&&strip.sides[0].length>2).map(strip=>({
-      id:strip.id, sides:strip.sides.map(side=>side.map(vertex=>({...vertex,position:[...vertex.position],uv:[...vertex.uv]}))),
-    }));
+    frames.length=count;
+    return frames;
   }
 }

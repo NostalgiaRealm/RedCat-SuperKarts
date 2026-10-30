@@ -10,35 +10,63 @@ export const NATIVE_RACER_STREAM_OFFSET = [0, 10, -28]; // 0x489300
 export const NATIVE_SHOT_STREAM_OFFSET = [0, 0, -15]; // 0x489350
 const jetPoints = [[-.5, -.5, 0], [-.5, .5, 0], [.5, -.5, 0], [.5, .5, 0],
   [.5, -.5, 0], [-.5, .5, 0], [-.5, -.5, 0]];
-const identity = () => [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-const translate = xyz => { const m = identity(); m.splice(12, 3, ...xyz); return m; };
+const jetUV = [[.4921875, .984375], [.4921875, .4921875], [.984375, .984375],
+  [.984375, .4921875], [.984375, .984375], [.4921875, .4921875], [.4921875, .984375]];
+const shrinkFactors = [.4, 1.8, 1.8, 1.2, 1, .8];
+const ribbonInnerU = f(.88);
+const matrix4 = () => Float64Array.of(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
+// Filled completely before each read and never retained: one native update at a time.
+const poseScratch = matrix4(), translateScratch = matrix4(), rotateScratch = matrix4(), scaleScratch = matrix4();
+const productA = matrix4(), productB = matrix4(), productC = matrix4();
+const translate = xyz => {
+  translateScratch[12] = xyz[0]; translateScratch[13] = xyz[1]; translateScratch[14] = xyz[2];
+  return translateScratch;
+};
 const matrixOf = (body, renderPose) => {
   const pose = renderPose?.(body) ?? body;
   const matrix = pose.matrix ?? body.matrix;
   const position = pose.position ?? body.position;
-  return matrix.length === 16 ? matrix : [
-    ...matrix.slice(0, 3), 0, ...matrix.slice(3, 6), 0,
-    ...matrix.slice(6, 9), 0, ...position, 1,
-  ];
+  if (matrix.length === 16) return matrix;
+  const m = poseScratch;
+  m[0] = matrix[0]; m[1] = matrix[1]; m[2] = matrix[2];
+  m[4] = matrix[3]; m[5] = matrix[4]; m[6] = matrix[5];
+  m[8] = matrix[6]; m[9] = matrix[7]; m[10] = matrix[8];
+  m[12] = position[0]; m[13] = position[1]; m[14] = position[2];
+  return m;
 };
 const packed = rgb => ((rgb[0] | 0xffffff00) << 16 | rgb[1] << 8 | rgb[2]) >>> 0;
 const vertex = position => ({position, color: 0, specular: 0, uv: [0, 0]});
+// Retired ribbon vertices are reused by the next update; packets never outlive a tick.
+const freeVertices = [];
+const takeVertex = () => {
+  const v = freeVertices.pop() ?? vertex([0, 0, 0]);
+  v.specular = 0;
+  return v;
+};
+const retire = (points, from) => {
+  for (let i = from; i < points.length; i++) if (freeVertices.length < 512) freeVertices.push(points[i]);
+  points.length = from;
+};
 
 // Original 0x4a2560 reverses the arguments relative to row-matrix product.
-function multiply(a, b, r) {
-  return Array.from({length: 16}, (_, index) => {
-    const row = Math.floor(index / 4), col = index % 4;
+function multiply(a, b, r, out) {
+  for (let row = 0; row < 4; row++) for (let col = 0; col < 4; col++) {
     let sum = 0;
     for (let k = 0; k < 4; k++) sum = r(r(a[k * 4 + col] * b[row * 4 + k]) + sum);
-    return f(sum);
-  });
+    out[row * 4 + col] = f(sum);
+  }
+  return out;
 }
-const transform = (point, matrix, r) => [0, 1, 2].map(axis =>
-  f(r(r(r(r(point[0] * matrix[axis]) + r(point[1] * matrix[4 + axis])) +
-    r(point[2] * matrix[8 + axis])) + matrix[12 + axis])));
+function transform(out, x, y, z, matrix, r) {
+  for (let axis = 0; axis < 3; axis++)
+    out[axis] = f(r(r(r(r(x * matrix[axis]) + r(y * matrix[4 + axis])) +
+      r(z * matrix[8 + axis])) + matrix[12 + axis]));
+  return out;
+}
 function rotation(angle, precision) {
-  const {sin, cos} = nativeTrigTable(precision), index = Math.trunc(angle) & 4095;
-  return [cos[index], -sin[index], 0, 0, sin[index], cos[index], 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+  const {sin, cos} = nativeTrigTable(precision), index = Math.trunc(angle) & 4095, m = rotateScratch;
+  m[0] = cos[index]; m[1] = -sin[index]; m[4] = sin[index]; m[5] = cos[index];
+  return m;
 }
 
 /** 0x488100/0x488210. Initial untouched vertex memory is explicitly zeroed. */
@@ -57,21 +85,22 @@ export function updateNativeJetFlare(entry, {player = false, throttle = 0, preci
   entry.angle += entry.clockwise ? 15 : -15;
   if (entry.angle > 4096) entry.angle -= 4096;
   if (entry.angle < 0) entry.angle += 4096;
-  const scale = identity(); scale[0] = scale[5] = size;
-  const matrix = multiply(matrixOf(entry.body, renderPose),
-    multiply(multiply(translate(entry.offset), rotation(entry.angle, precision), r), scale, r), r);
+  scaleScratch[0] = scaleScratch[5] = size;
+  const pose = matrixOf(entry.body, renderPose);
+  const matrix = multiply(pose, multiply(multiply(translate(entry.offset), rotation(entry.angle, precision), r, productA),
+    scaleScratch, r, productB), r, productC);
   let color = NATIVE_STREAM_COLORS[entry.colorIndex];
   if (entry.rainbow) {
     const previous = entry.vertices[0].color;
     color = [(previous >>> 16) & 255, (previous >>> 8) & 255, previous & 255]
       .map((value, i) => value + [45, 65, 85][i] > 255 ? 0 : value + [45, 65, 85][i]);
   }
-  const uv = [[.4921875, .984375], [.4921875, .4921875], [.984375, .984375],
-    [.984375, .4921875], [.984375, .984375], [.4921875, .4921875], [.4921875, .984375]];
-  entry.vertices.forEach((v, i) => {
-    v.position = transform(jetPoints[i], matrix, r);
-    v.color = packed(color); v.specular = 0; v.uv = [...uv[i]];
-  });
+  const argb = packed(color), vertices = entry.vertices;
+  for (let i = 0; i < vertices.length; i++) {
+    const v = vertices[i], point = jetPoints[i], uv = jetUV[i];
+    transform(v.position, point[0], point[1], point[2], matrix, r);
+    v.color = argb; v.specular = 0; v.uv[0] = uv[0]; v.uv[1] = uv[1];
+  }
 }
 
 /** 0x489400/0x4894c0. Rainbow channels left uninitialized by native constructor
@@ -93,29 +122,32 @@ export function updateNativeRibbon(entry, deltaSeconds,
   {player = false, speedKmh = 0, precision = NATIVE_PRECISION, renderPose} = {}) {
   if (!entry.active || (player && speedKmh <= 0)) return;
   const r = precision === 24 ? f : Number;
-  if (entry.vertices.length + 2 > 999) entry.vertices.splice(-2);
-  let matrix = multiply(matrixOf(entry.body, renderPose), translate(entry.offset), r);
-  let halfWidth = 10;
+  const vertices = entry.vertices;
+  if (vertices.length + 2 > 999) retire(vertices, vertices.length - 2);
+  let matrix, halfWidth = 10;
   if (entry.rotate) {
     const next = r(r(r(60 / r(1 / f(deltaSeconds))) * 100) + entry.angle);
     entry.angle = f(next > 4096 ? r(next - 4096) : next);
-    matrix = multiply(matrixOf(entry.body, renderPose),
-      multiply(translate(entry.offset), rotation(entry.angle, precision), r), r);
+    const pose = matrixOf(entry.body, renderPose);
+    matrix = multiply(pose, multiply(translate(entry.offset), rotation(entry.angle, precision), r, productA), r, productB);
     halfWidth = f(r(entry.size * .5));
-  }
+  } else matrix = multiply(matrixOf(entry.body, renderPose), translate(entry.offset), r, productB);
   // Native always uses -10 for the second endpoint, even with rotating size!=20.
-  const first = vertex(transform([-10, 0, 0], matrix, r));
-  const second = vertex(transform([halfWidth, 0, 0], matrix, r));
-  entry.vertices.unshift(first, second);
+  const first = takeVertex(), second = takeVertex();
+  transform(first.position, -10, 0, 0, matrix, r);
+  transform(second.position, halfWidth, 0, 0, matrix, r);
+  vertices.unshift(first, second);
   let rgb = NATIVE_STREAM_COLORS[entry.colorIndex];
   if (entry.rainbow) {
-    entry.colors = entry.colors.map((value, i) => value + [25, 75, 125][i] > 255
-      ? 0 : value + [25, 75, 125][i]);
-    rgb = entry.colors;
+    const c = entry.colors;
+    c[0] = c[0] + 25 > 255 ? 0 : c[0] + 25;
+    c[1] = c[1] + 75 > 255 ? 0 : c[1] + 75;
+    c[2] = c[2] + 125 > 255 ? 0 : c[2] + 125;
+    rgb = c;
   }
-  const v = entry.vertices.length % 2 ? .1640625 : .1484375;
+  const v = vertices.length % 2 ? .1640625 : .1484375;
   first.color = second.color = packed(rgb);
-  first.uv = [f(.88), v]; second.uv = [.984375, v];
+  first.uv[0] = ribbonInnerU; first.uv[1] = v; second.uv[0] = .984375; second.uv[1] = v;
 }
 
 /** 0x489f50 runs inside DRAW 0x48a170, not the effect-update callback. */
@@ -125,22 +157,17 @@ export function shrinkNativeRibbon(entry, {precision = NATIVE_PRECISION} = {}) {
   const count = points.length;
   for (let i = 0; i < count - 1; i += 2) {
     const a = points[i].position, b = points[i + 1].position;
-    let factor = i < 6 && count > 12 ? [.4, 1.8, 1.8, 1.2, 1, .8][i] : .7;
-    factor = f(factor);
+    let factor = f(i < 6 && count > 12 ? shrinkFactors[i] : .7);
     if (entry.fastShrink) factor = r(factor * f(.7));
-    const center = a.map((value, axis) => {
-      const result = r(r(value + b[axis]) * .5);
-      return axis === 0 ? result : f(result);
-    });
-    const delta = a.map((value, axis) => r(value - center[axis]));
-    const distance = r(r(r(delta[0] * delta[0]) + r(delta[1] * delta[1])) + r(delta[2] * delta[2]));
+    const cx = r(r(a[0] + b[0]) * .5), cy = f(r(r(a[1] + b[1]) * .5)), cz = f(r(r(a[2] + b[2]) * .5));
+    const dx = r(a[0] - cx), dy = r(a[1] - cy), dz = r(a[2] - cz);
+    const distance = r(r(r(dx * dx) + r(dy * dy)) + r(dz * dz));
     if (distance < .25) {
-      points.splice(i);
+      retire(points, i);
       return;
     }
-    points[i].position = delta.map((value, axis) =>
-      f(r(r((axis === 2 ? value : f(value)) * factor) + center[axis])));
-    points[i + 1].position = b.map((value, axis) => f(r(r(r(value - center[axis]) * factor) + center[axis])));
+    a[0] = f(r(r(f(dx) * factor) + cx)); a[1] = f(r(r(f(dy) * factor) + cy)); a[2] = f(r(r(dz * factor) + cz));
+    b[0] = f(r(r(r(b[0] - cx) * factor) + cx)); b[1] = f(r(r(r(b[1] - cy) * factor) + cy)); b[2] = f(r(r(r(b[2] - cz) * factor) + cz));
   }
 }
 
@@ -235,22 +262,34 @@ export class NativeStreams {
   /** After halos and before arms. Player speed is4325b0's PRE-update integer. */
   step(deltaSeconds, {playerSpeedKmh = 0, playerThrottle = 0, renderPose} = {}) {
     if (!this.jetstreams || this.paletted) return;
-    for (const entry of this.ribbons) updateNativeRibbon(entry, deltaSeconds, {
-      player: entry.body === this.playerBody, speedKmh: playerSpeedKmh, precision: this.precision, renderPose,
-    });
-    for (const entry of this.jets) updateNativeJetFlare(entry, {
-      player: entry.body === this.playerBody, throttle: playerThrottle, precision: this.precision, renderPose,
-    });
+    const playerBody = this.playerBody, precision = this.precision;
+    const ribbon = {player: false, speedKmh: playerSpeedKmh, precision, renderPose};
+    const jet = {player: false, throttle: playerThrottle, precision, renderPose};
+    for (let i = 0; i < this.ribbons.length; i++) {
+      const entry = this.ribbons[i];
+      ribbon.player = entry.body === playerBody;
+      updateNativeRibbon(entry, deltaSeconds, ribbon);
+    }
+    for (let i = 0; i < this.jets.length; i++) {
+      const entry = this.jets[i];
+      jet.player = entry.body === playerBody;
+      updateNativeJetFlare(entry, jet);
+    }
   }
 
   /** Jet draw precedes ribbon draw; this mutates ribbon widths and retirement. */
   draw() {
-    if (!this.jetstreams || this.paletted) return {jets: [], ribbons: []};
-    const jets = this.jets.filter(entry => entry.active).map(entry => entry.vertices);
-    const ribbons = this.ribbons.flatMap(entry => {
-      shrinkNativeRibbon(entry, {precision: this.precision});
-      return nativeRibbonDrawPackets(entry);
-    });
+    const jets = [], ribbons = [], options = {precision: this.precision};
+    if (!this.jetstreams || this.paletted) return {jets, ribbons};
+    for (let i = 0; i < this.jets.length; i++) if (this.jets[i].active) jets.push(this.jets[i].vertices);
+    for (let i = 0; i < this.ribbons.length; i++) {
+      const entry = this.ribbons[i];
+      shrinkNativeRibbon(entry, options);
+      if (!entry.active) continue;
+      const vertices = entry.vertices;
+      if (vertices.length > 3) ribbons.push(vertices);
+      if (entry.doubleSided && vertices.length - 1 > 3) ribbons.push(vertices.slice(0, -1).reverse());
+    }
     return {jets, ribbons};
   }
 }

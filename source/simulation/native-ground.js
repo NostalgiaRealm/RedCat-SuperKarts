@@ -1,4 +1,4 @@
-import { nativeTrigTable, NATIVE_ANGLE_COUNT } from './native-integrator.js';
+import { nativeTrigTable, NATIVE_ANGLE_COUNT, NATIVE_SIN, NATIVE_COS } from './native-integrator.js';
 import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
@@ -23,6 +23,10 @@ function transform(offset, matrix, position, precision = NATIVE_PRECISION) {
     r(offset[0] * matrix[axis]) + r(offset[1] * matrix[3 + axis])) +
     r(offset[2] * matrix[6 + axis]))) + position[axis]));
 }
+
+// One axis of transform(), without its arrays.
+const toWorld = (x, y, z, matrix, position, axis, r) => f32(f32(r(r(
+  r(x * matrix[axis]) + r(y * matrix[3 + axis])) + r(z * matrix[6 + axis]))) + position[axis]);
 
 /** Four original child wheel offsets and mesh radii are required inputs. */
 export function createNativeGroundState(body, wheels, options = {}) {
@@ -61,7 +65,7 @@ export function updateNativeWheelPose(body, state, deltaSeconds, steering, sampl
   // options.matrix: the body render matrix 0x41c29f..0x41c30b reads, which a
   // rescue leaves scaled until 0x491d30 rebuilds it (default body.matrix).
   const { precision = NATIVE_PRECISION, matrix = body.matrix } = options;
-  const r = registerRounding(precision);
+  const r = registerRounding(precision), position = body.position;
   const radius = state.wheels[0].radius;
   // 0x41c136..0x41c14e: 2r, 4096/2r and both products stay in ST0 until FSTP [ESP+0x48].
   const spin = f32(r(r(NATIVE_ANGLE_COUNT / r(radius + radius)) * f32(deltaSeconds)) * body.forwardSpeed);
@@ -71,10 +75,10 @@ export function updateNativeWheelPose(body, state, deltaSeconds, steering, sampl
     const wheel = state.wheels[i];
     wheel.spin = f32((wheel.spin ?? 0) - spin);
     wheel.steeringAngle = i < 2 ? steeringAngle : 0;
-    const point = transform([wheel.local[0], 0, wheel.local[2]], matrix, body.position, precision);
+    const local = wheel.local, lx = local[0], lz = local[2], y = toWorld(lx, 0, lz, matrix, position, 1, r);
     // 0x41c401 FSUB then FST float [ESP+0x44]; the 0.5 clamp compares ST0,
     // which orders identically to the stored float.
-    const difference = f32(sampleGround(...point) - point[1]);
+    const difference = f32(sampleGround(toWorld(lx, 0, lz, matrix, position, 0, r), y, toWorld(lx, 0, lz, matrix, position, 2, r)) - y);
     // Original uses the front radius for all four wheel suspension offsets.
     wheel.local[1] = f32(Math.max(f32(-1.11), Math.min(f32(0.5), difference)) + radius);
   }
@@ -95,29 +99,29 @@ export function updateNativeGround(body, state, deltaSeconds, sampleGround, opti
   if (!clock) throw new TypeError('A shared NativeGroundClock is required');
   const r = registerRounding(precision);
   const dt = clock.sample(deltaSeconds, precision);
-  const { sin, cos } = nativeYawTrig(body.yaw, precision);
+  const yawIndex = Math.trunc(body.yaw) & (NATIVE_ANGLE_COUNT - 1), sin = NATIVE_SIN[yawIndex], cos = NATIVE_COS[yawIndex];
   // Native stores Z velocity (FSTP [ESP+0x74], 0x416ace), but retains X
   // arithmetic on the x87 stack (0x416ab2 FSUBP .. 0x416ae0 FSTP point X).
   const velocityZ = f32(r(cos * body.forwardSpeed) + r(sin * body.lateralSpeed));
   const velocityX = r(r(cos * body.lateralSpeed) - r(sin * body.forwardSpeed));
+  const matrix = body.matrix, position = body.position, wheels = state.wheels;
   state.groundCount = 0;
   if (player) state.playerContact = true;
   for (let i = 0; i < 4; i++) {
-    const wheel = state.wheels[i];
-    const point = transform(wheel.local, body.matrix, body.position, precision);
-    point[1] = wheel.position[1];
-    const oldHeight = f32(sampleGround(...point));
-    point[0] = f32(r(r(velocityX * dt) * 10) + point[0]);
-    point[2] = f32(r(r(velocityZ * dt) * 10) + point[2]);
-    const newHeight = f32(sampleGround(...point));
+    const wheel = wheels[i], local = wheel.local, lx = local[0], ly = local[1], lz = local[2], stored = wheel.position;
+    let x = toWorld(lx, ly, lz, matrix, position, 0, r), y = stored[1], z = toWorld(lx, ly, lz, matrix, position, 2, r);
+    const oldHeight = f32(sampleGround(x, y, z));
+    x = f32(r(r(velocityX * dt) * 10) + x);
+    z = f32(r(r(velocityZ * dt) * 10) + z);
+    const newHeight = f32(sampleGround(x, y, z));
     // 0x416b94..0x416b9b: y - radius is compared from ST0.
-    if (oldHeight < r(point[1] - wheel.radius)) {
+    if (oldHeight < r(y - wheel.radius)) {
       // 0x416bee FMUL, 0x416bf4 FSUBR, 0x416bf6 FSTP float.
       wheel.verticalSpeed = f32(wheel.verticalSpeed - r(f32(gravity) * dt));
     }
     // 0x416c05..0x416c20: candidate and candidate - radius stay in ST0;
     // only the airborne branch stores the candidate (0x416c38).
-    const candidateY = r(r(dt * wheel.verticalSpeed) + point[1]);
+    const candidateY = r(r(dt * wheel.verticalSpeed) + y);
     if (r(candidateY - wheel.radius) <= newHeight) {
       state.groundCount++;
       // Both the difference (0x416c70) and the quotient (0x416c83) are stored.
@@ -132,44 +136,39 @@ export function updateNativeGround(body, state, deltaSeconds, sampleGround, opti
           wheel.verticalSpeed = f32(r(body.forwardSpeed * f32(0.015)) * wheel.verticalSpeed);
         }
       }
-      point[1] = f32(newHeight + wheel.radius);
+      y = f32(newHeight + wheel.radius);
     } else {
-      point[1] = f32(candidateY);
+      y = f32(candidateY);
       // Original callback checks only wheel 3 for this particular player flag.
       if (player && i === 3) state.playerContact = false;
     }
-    wheel.position = point;
+    stored[0] = x; stored[1] = y; stored[2] = z;
   }
-  const [a, b, c, d] = state.wheels.map(wheel => wheel.position);
+  const a = wheels[0].position, b = wheels[1].position, c = wheels[2].position, d = wheels[3].position;
   // 0x416d45..0x416d72 sums in ST0 before FSTP; *0.25 and -radius are stored.
-  body.position[1] = f32(f32(f32(r(r(d[1] + c[1]) + b[1]) + a[1]) * f32(0.25)) - state.wheels[0].radius);
+  position[1] = f32(f32(f32(r(r(d[1] + c[1]) + b[1]) + a[1]) * f32(0.25)) - wheels[0].radius);
   // Each half-difference is stored, except b.x-d.x (0x416e0b) and d.x-c.x
   // (0x416e82), which stay in ST0. Forward X itself is never stored before
   // its normalisation (0x416f0a); lateral X is stored at 0x416ed0.
-  const forward = [0, 1, 2].map(i => f32(f32(b[i] - d[i]) + f32(a[i] - c[i])));
-  const lateral = [0, 1, 2].map(i => f32(f32(d[i] - c[i]) + f32(b[i] - a[i])));
+  const forwardY = f32(f32(b[1] - d[1]) + f32(a[1] - c[1])), forwardZ = f32(f32(b[2] - d[2]) + f32(a[2] - c[2]));
+  const lateralY = f32(f32(d[1] - c[1]) + f32(b[1] - a[1])), lateralZ = f32(f32(d[2] - c[2]) + f32(b[2] - a[2]));
   const forwardX = r(r(b[0] - d[0]) + f32(a[0] - c[0]));
-  lateral[0] = f32(r(d[0] - c[0]) + f32(b[0] - a[0]));
-  const squaredLength = (x, y, z) => r(r(r(z * z) + r(y * y)) + r(x * x));
+  const lateralX = f32(r(d[0] - c[0]) + f32(b[0] - a[0]));
   // Forward length is stored to [ESP+0x10] (0x416f06); lateral stays in ST0.
-  const forwardLength = f32(Math.sqrt(squaredLength(forwardX, forward[1], forward[2])));
-  const lateralLength = r(Math.sqrt(squaredLength(...lateral)));
+  const forwardLength = f32(Math.sqrt(r(r(r(forwardZ * forwardZ) + r(forwardY * forwardY)) + r(forwardX * forwardX))));
+  const lateralLength = r(Math.sqrt(r(r(r(lateralZ * lateralZ) + r(lateralY * lateralY)) + r(lateralX * lateralX))));
   // f.x (0x416f0a) and r.z (0x416f58) stay in ST0 until the matrix stores.
   const fX = r(forwardX / forwardLength);
-  const f = [f32(fX), f32(forward[1] / forwardLength), f32(forward[2] / forwardLength)];
-  const rZ = r(lateral[2] / lateralLength);
-  const side = [f32(lateral[0] / lateralLength), f32(lateral[1] / lateralLength), f32(rZ)];
+  const f0 = f32(fX), f1 = f32(forwardY / forwardLength), f2 = f32(forwardZ / forwardLength);
+  const rZ = r(lateralZ / lateralLength);
+  const side0 = f32(lateralX / lateralLength), side1 = f32(lateralY / lateralLength);
   // ux/uy stay in ST0; uz is stored to [ESP+0x68] (0x416f8a).
-  const upX = r(r(rZ * f[1]) - r(side[1] * f[2]));
-  const upY = r(r(f[2] * side[0]) - r(rZ * fX));
-  const upZ = f32(r(side[1] * fX) - r(f[1] * side[0]));
+  const upX = r(r(rZ * f1) - r(side1 * f2));
+  const upY = r(r(f2 * side0) - r(rZ * fX));
+  const upZ = f32(r(side1 * fX) - r(f1 * side0));
   // Length sums (ux*ux + uz*uz) + uy*uy and is stored to [ESP+0x2c] (0x416fae).
   const upLength = f32(Math.sqrt(r(r(r(upX * upX) + r(upZ * upZ)) + r(upY * upY))));
   // The original leaves matrix +0x24 (up Y) untouched; verified in assembly.
-  body.matrix = [
-    ...side,
-    f32(upX / upLength), body.matrix[4], f32(upZ / upLength),
-    ...f,
-  ];
+  body.matrix = [side0, side1, f32(rZ), f32(upX / upLength), matrix[4], f32(upZ / upLength), f0, f1, f2];
   return state;
 }

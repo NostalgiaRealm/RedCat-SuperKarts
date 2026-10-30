@@ -19,11 +19,12 @@ const scaleRescueMatrix = (matrix, scale, r) => matrix.map(value => f32(r(value 
 
 /** 0x48c030/0x494b70: marker50 and strict height above the selected route plane. */
 export function nativeEnvironmentRescueRequired(track, world, body, {precision = NATIVE_PRECISION} = {}) {
+  if (track.drive[body.waypoint]?.unknown[1] !== 50) return false;
   const r = precision === 24 ? f32 : Number, [x, y, z] = positionOf(body);
   const sector = selectNativeSector(world, body.sector, x, z);
   const {normal, distance} = world.sectors[sector].fallback;
   const height = r(r(r(distance - r(x * normal[0])) - r(z * normal[2])) / normal[1]);
-  return track.drive[body.waypoint]?.unknown[1] === 50 && r(y - height) < 1.5;
+  return r(y - height) < 1.5;
 }
 
 /** 0x48bf80 scans array slots, wrapping; it does not follow waypoint links. */
@@ -197,8 +198,12 @@ export class NativeRescueController {
     this.playerOverlapDeferrals=0;
   }
   get(body) {
-    return this.entries.find(entry => entry.body === body ||
-      (body.id !== undefined && entry.body.id === body.id));
+    const entries = this.entries;
+    for (let i = 0; i < entries.length; i++) {
+      const entry = entries[i];
+      if (entry.body === body || (body.id !== undefined && entry.body.id === body.id)) return entry;
+    }
+    return undefined;
   }
   enqueue(driver, options = {}) {
     const body = driver.body ?? driver;
@@ -289,6 +294,7 @@ export class NativeRescueController {
    * is another entry, dropping it with its flag set; this retires only the
    * stale slot's own entry, so an unfinished rescue is never dropped. */
   finishRender() {
+    if (!this.entries.length) return;
     const storage = [...this.entries], count = storage.length;
     let live = count;
     for (let i = 0; i < count; i++) {
@@ -302,34 +308,40 @@ export class NativeRescueController {
   }
 }
 
-/** Recovered 0x48c370 seven vertices and 0x48d610 matrix sequence. */
-export function nativeRescueRingPositions(entry, {precision = NATIVE_PRECISION} = {}) {
-  const r = precision === 24 ? f32 : Number;
-  const {sin, cos} = nativeTrigTable(precision);
-  const vertices = [[-.5, -.5], [-.5, .5], [.5, -.5], [.5, .5], [.5, -.5], [-.5, .5], [-.5, -.5]];
-  const output = [];
-  const car = [
-    ...entry.matrix.slice(0, 3), 0, ...entry.matrix.slice(3, 6), 0,
-    ...entry.matrix.slice(6, 9), 0, ...entry.renderPosition, 1,
-  ];
-  const multiply = (a, b) => Array.from({length: 16}, (_, i) => {
-    const row = Math.floor(i / 4), col = i % 4;
+const ringVertices = [[-.5, -.5], [-.5, .5], [.5, -.5], [.5, .5], [.5, -.5], [-.5, .5], [-.5, -.5]];
+const ringMatrix = () => new Float64Array(16);
+const carScratch = ringMatrix(), spinScratch = ringMatrix(), shiftScratch = ringMatrix(), scaleScratch = ringMatrix(),
+  innerScratch = ringMatrix(), outerScratch = ringMatrix(), finalScratch = ringMatrix();
+function ringMultiply(a, b, r, out) {
+  for (let row = 0; row < 4; row++) for (let col = 0; col < 4; col++) {
     let sum = 0;
     for (let k = 0; k < 4; k++) sum = r(r(a[row * 4 + k] * b[k * 4 + col]) + sum);
-    return f32(sum);
-  });
+    out[row * 4 + col] = f32(sum);
+  }
+  return out;
+}
+/** Recovered 0x48c370 seven vertices and 0x48d610 matrix sequence. */
+export function nativeRescueRingPositions(entry, {precision = NATIVE_PRECISION, target = new Array(420)} = {}) {
+  const r = precision === 24 ? f32 : Number;
+  const {sin, cos} = nativeTrigTable(precision), m = entry.matrix, p = entry.renderPosition, car = carScratch;
+  car[0] = m[0]; car[1] = m[1]; car[2] = m[2]; car[3] = 0; car[4] = m[3]; car[5] = m[4]; car[6] = m[5]; car[7] = 0;
+  car[8] = m[6]; car[9] = m[7]; car[10] = m[8]; car[11] = 0; car[12] = p[0]; car[13] = p[1]; car[14] = p[2]; car[15] = 1;
+  const rotation = spinScratch, translate = shiftScratch, scale = scaleScratch;
+  rotation.fill(0); rotation[5] = 1; rotation[15] = 1;
+  translate.fill(0); translate[0] = translate[5] = translate[10] = translate[15] = 1; translate[13] = -999; translate[14] = -40;
+  scale.fill(0); scale[0] = scale[5] = 10; scale[10] = scale[15] = 1;
+  let at = 0;
   for (let ring = 0; ring < 20; ring++) {
     const index = Math.trunc(r(entry.angle + ring * 408)) & 4095;
     const s = sin[index], c = cos[index];
-    const rotation = [c, 0, s, 0, 0, 1, 0, 0, -s, 0, c, 0, 0, 0, 0, 1];
-    const translate = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, (ring + 1) * 2, -40, 1];
-    const scale = [10, 0, 0, 0, 0, 10, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-    const matrix = multiply(multiply(scale, multiply(translate, rotation)), car);
-    for (const [x, y] of vertices) {
-      for (let axis = 0; axis < 3; axis++) {
-        output.push(f32(r(r(r(r(x * matrix[axis]) + r(y * matrix[4 + axis])) + r(0 * matrix[8 + axis])) + matrix[12 + axis])));
-      }
+    rotation[0] = c; rotation[2] = s; rotation[8] = -s; rotation[10] = c;
+    translate[13] = (ring + 1) * 2;
+    const matrix = ringMultiply(ringMultiply(scale, ringMultiply(translate, rotation, r, innerScratch), r, outerScratch), car, r, finalScratch);
+    for (let v = 0; v < 7; v++) {
+      const x = ringVertices[v][0], y = ringVertices[v][1];
+      for (let axis = 0; axis < 3; axis++)
+        target[at++] = f32(r(r(r(r(x * matrix[axis]) + r(y * matrix[4 + axis])) + r(0 * matrix[8 + axis])) + matrix[12 + axis]));
     }
   }
-  return output;
+  return target;
 }

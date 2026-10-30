@@ -23,9 +23,10 @@ The authored `source/` files remain readable and retain native address comments,
 focused tests and useful subsystem boundaries. Combining their generated output
 avoids making native-code comparisons depend on one large hand-maintained file.
 The pinned [esbuild configuration](../tools/bundle.mjs) uses module splitting,
-unused-code removal and whitespace reduction. It retains function/class names,
-property names, source maps and license comments, with syntax minification
-disabled to preserve arithmetic expressions. See the
+unused-code removal and whitespace reduction. It retains property names, source
+maps and license comments, with syntax minification disabled to preserve
+arithmetic expressions. The later [mobile performance work](mobile-performance.md)
+removed `keepNames` for its per-closure cost. See the
 [esbuild API](https://esbuild.github.io/api/#splitting) for those build options.
 
 All normal launches now use bundles and defer the WebGL renderer until a course

@@ -34,15 +34,14 @@ export function tireLateralForce(body, physics, axle, steering, tireUpgrade = 0,
   if (tireUpgrade !== 0 && tireUpgrade !== 1) throw new RangeError('Invalid tire upgrade');
   const r = arithmetic(precision);
   const front = axle === 'front';
-  const prefix = front ? 'front' : 'rear';
   // 0x415388/0x4153b4 store the slip angle into a float argument.
   const angle = f32(slipAngle(body, physics, axle, steering, { precision }));
   // 0x4150f0 returns 1/inverseMass * share * 9.8 (* 0.6) in ST0, unstored.
   let load = r(r(r(body.mass) * (front ? physics.frontWeightShare : physics.rearWeightShare)) * f32(9.8));
   if (!front && handbrake) load = r(load * f32(0.6));
-  const a = physics[`${prefix}TireA`][tireUpgrade];
-  const b = physics[`${prefix}TireB`][tireUpgrade];
-  const c = physics[`${prefix}TireC`][tireUpgrade];
+  const a = (front ? physics.frontTireA : physics.rearTireA)[tireUpgrade];
+  const b = (front ? physics.frontTireB : physics.rearTireB)[tireUpgrade];
+  const c = (front ? physics.frontTireC : physics.rearTireC)[tireUpgrade];
   // 0x41521f FSTP float stores the steer angle that FCOS later reads.
   const cosine = Math.cos(f32(r(steering * physics.maxSteerAngle) * f32(0.01)));
   // 0x415242 FST keeps the extended FSIN result in ST0 for the FMUL.

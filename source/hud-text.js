@@ -10,6 +10,7 @@ const pair = (value, defaults) => {
   const values = String(value ?? '').split(';');
   return defaults.map((fallback, i) => values[i]?.trim() ? Number(values[i]) : fallback);
 };
+const HUD_TANGENT = Math.tan(getNativeHudCameraSpec().horizontalFov / 2);
 const namedCharacters = {
   space: ' ', dot: '.', plus: '+', minus: '-', product: '*',
   div: ':', equals: '=', exclamation: '!', question: '?',
@@ -39,10 +40,10 @@ export function getHudFont(config, name) {
     maxWidth: Math.max(0, ...Object.values(glyphs).map(glyph => glyph.width))};
 }
 
-export function getHudStringSpec(config, id, {overrides = {}, precision = NATIVE_PRECISION} = {}) {
+export function getHudStringSpec(config, id, {overrides = {}, precision = NATIVE_PRECISION, font: reusedFont} = {}) {
   const overlay = config['overlay.ini'] ?? config, section = overlay[key(id)];
   if (!section) throw new Error(`Missing original HUD string: ${id}`);
-  const type = key(section.type), font = getHudFont(overlay, section.font);
+  const type = key(section.type), font = reusedFont ?? getHudFont(overlay, section.font);
   if (!['fixed', 'proportional'].includes(type)) throw new Error(`Unknown HUD string type: ${type}`);
   const options = {precision};
   const transform = name => {
@@ -136,19 +137,20 @@ export function nativeGlyphCenters(font, type, alignment, length, cellWidth, inp
 // top-left rectangles in the original 640x480 HUD coordinate system.
 export function layoutHudText(spec, text = spec.text) {
   const cellWidth = spec.cellWidth ?? f(f(2 * spec.maxCharWidth) / spec.coordinateSpace.width);
-  return nativeGlyphCenters(spec.font, spec.type, spec.alignment, spec.length, cellWidth, text,
-    spec.precision).flatMap(({character, center}, cell) => {
-      const source = spec.font.glyphs[character];
-      if (!source) return [];
-      const transform = nativeHudElementTransform({position: [center, 0, 0]}, spec.context,
-        {precision: spec.precision});
-      const [centerX, centerY] = projectNativeHudPoint(transform.position);
-      const factor = 320 / (Math.tan(getNativeHudCameraSpec().horizontalFov / 2) * transform.position[2]);
-      const width = source.width * transform.scale[0] * factor;
-      const height = source.height * transform.scale[1] * factor;
-      return [{character, cell, source, centerX, centerY,
-        x: centerX - width / 2, y: centerY - height / 2, width, height}];
-    });
+  const centers = nativeGlyphCenters(spec.font, spec.type, spec.alignment, spec.length, cellWidth, text, spec.precision);
+  const result = [], options = {precision: spec.precision};
+  for (let cell = 0; cell < centers.length; cell++) {
+    const {character, center} = centers[cell], source = spec.font.glyphs[character];
+    if (!source) continue;
+    const transform = nativeHudElementTransform({position: [center, 0, 0]}, spec.context, options);
+    const [centerX, centerY] = projectNativeHudPoint(transform.position);
+    const factor = 320 / (HUD_TANGENT * transform.position[2]);
+    const width = source.width * transform.scale[0] * factor;
+    const height = source.height * transform.scale[1] * factor;
+    result.push({character, cell, source, centerX, centerY,
+      x: centerX - width / 2, y: centerY - height / 2, width, height});
+  }
+  return result;
 }
 
 const signedDecimal = (value, width = 0) => {

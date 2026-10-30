@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {renderDimensions,adaptVerticalFov} from './settings.js';
+import {renderDimensions,surfacePixelRatio,autoPixelBudget,adaptVerticalFov} from './settings.js';
 import {NativeUpdateClock,NativeEngineTimer,NATIVE_REFERENCE_UPTIME_MS} from './simulation/clock.js';
 import {NativeUpdateLoop} from './native-update-loop.js';
 import {getSkySpec,getSceneryAnimation,getRotationSpec,createNativeRotation,advanceNativeRotation,createNativeMeshAnimation,advanceNativeMeshAnimation,placementExistsInMode,resolveAsset} from './asset-animation.js';
@@ -11,7 +11,7 @@ import {isNativeBonusPlacementVisible,nativeBonusTypeFromObject,nativeBonusVisua
 import {nativeColorAttribute,createNativeMeshMaterial,applyNativeByteColorPipeline,configureNativeTextureColorKey} from './asset-materials.js';
 import {NativeSceneryPaths} from './scenery-paths.js';
 import {nativeObjectCallbackCount} from './spatial-audio.js';
-import {NATIVE_RENDER_ORDER,nativeObjectRenderOrder,nativeRoadDrawGroups} from './render-order.js';
+import {NATIVE_RENDER_ORDER,nativeObjectRenderOrder,nativeRoadDrawGroups,nativeRoadIndex,mergeRoadDrawGroups} from './render-order.js';
 import {configWithNativeDisplaySettings} from './simulation/native-display-settings.js';
 import {packNativeTextureRGBA,nativeTexturePixelsRGBA,nativeTextureChannelScale} from './native-texture-upload.js';
 import {MultisampleSceneRenderer} from './multisample-renderer.js';
@@ -21,15 +21,34 @@ function geometry(data){
   const g=new THREE.BufferGeometry();
   for(const [key,size]of [['position',3],['uv',2]])if(data[key])g.setAttribute(key,new THREE.Float32BufferAttribute(data[key],size));
   g.setAttribute('color',nativeColorAttribute(data));
-  if(data.index)g.setIndex(data.index);g.computeVertexNormals();g.computeBoundingSphere();return g;
+  if(data.index)g.setIndex(data.index);g.computeBoundingSphere();return g;
 }
+/** The generated pack holds these exact values; views avoid copying them.
+ * Identical arrays share one attribute, and so one GPU buffer. */
+const packAttribute=(pack,Type,offset,length,size,normalized=false)=>{
+  const key=offset+':'+size;let attribute=pack.attributes.get(key);
+  if(!attribute)pack.attributes.set(key,attribute=new THREE.BufferAttribute(new Type(pack.buffer,offset,length),size,normalized));
+  return attribute;
+};
+function packGeometry(pack,[vertices,indices,position,uv,color,index]){
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',packAttribute(pack,Float32Array,position,vertices*3,3));
+  if(uv>=0)g.setAttribute('uv',packAttribute(pack,Float32Array,uv,vertices*2,2));
+  g.setAttribute('color',packAttribute(pack,Uint8Array,color,vertices*4,4,true));
+  if(index>=0)g.setIndex(packAttribute(pack,Uint16Array,index,indices,1));
+  g.computeBoundingSphere();return g;
+}
+const meshPack=()=>Promise.all([getJSON('src/mesh-pack.json'),fetch('src/mesh-pack.bin').then(r=>{
+  if(!r.ok)throw Error(`mesh pack: ${r.status}`);return r.arrayBuffer();
+})]).then(([entries,buffer])=>({entries,buffer,attributes:new Map()}));
 export class TrackViewer{
   constructor(canvas){
     // Three r186 requests an alpha-bearing context even with alpha:false.
     // Native SRCALPHA blending also writes alpha; an HTML compositor would
     // otherwise blend the completed shadow with the page a second time.
     // Original Direct3D presents opaque RGB, so create that context explicitly.
-    const context=canvas.getContext('webgl2',{alpha:false,antialias:false});
+    // All depth testing happens in the RGB565 targets; the canvas only presents.
+    const context=canvas.getContext('webgl2',{alpha:false,antialias:false,depth:false,stencil:false,powerPreference:'high-performance'});
     if(!context)throw new Error('WebGL2 is niet beschikbaar.');
     this.renderer=new THREE.WebGLRenderer({canvas,context,antialias:false,alpha:false});
     this.renderer.setPixelRatio(1);this.renderer.outputColorSpace=THREE.SRGBColorSpace;this.renderer.setClearColor(0x151d2b);
@@ -37,20 +56,20 @@ export class TrackViewer{
     this.renderer.setTransparentSort((a,b)=>a.groupOrder-b.groupOrder||a.renderOrder-b.renderOrder||a.id-b.id);
     this.renderer.setOpaqueSort((a,b)=>a.groupOrder-b.groupOrder||a.renderOrder-b.renderOrder||a.id-b.id);
     this.multisampling=new MultisampleSceneRenderer(this.renderer);
-    this.scene=new THREE.Scene();this.camera=new THREE.PerspectiveCamera(60,1,.5,100000);
+    this.scene=new THREE.Scene();this.scene.matrixAutoUpdate=false;this.camera=new THREE.PerspectiveCamera(60,1,.5,100000);
     this.controls=new OrbitControls(this.camera,canvas);this.controls.enableDamping=false;
     this.controls.minDistance=30;this.controls.maxDistance=30000;this.controls.maxPolarAngle=Math.PI*.49;
     this.textureLoader=new THREE.TextureLoader();this.textures=new Map();this.meshData=new Map();
     this.textureFilter=THREE.LinearFilter;this.textureGamma=false;
     this.group=null;this.active=false;this.errors=[];this.generation=0;
     this.animations=[];this.rotations=[];
-    this.resources=Promise.all([getJSON('/assets/config.json'),getJSON('/assets/manifest.json')]);
+    this.resources=Promise.all([getJSON('assets/config.json'),getJSON('assets/manifest.json')]);
     this.textureRecords=this.resources.then(([,manifest])=>new Map(
       Object.values(manifest.images).map(record=>[record.file,record])));
   }
   async texture(file){
     if(!this.textures.has(file))this.textures.set(file,Promise.all([
-      this.textureLoader.loadAsync('/assets/'+file),this.textureRecords,
+      this.textureLoader.loadAsync('assets/'+file),this.textureRecords,
     ]).then(([source,records])=>{
       const record=records.get(file);let t=source;
       if(record?.nativeRGB){
@@ -68,6 +87,8 @@ export class TrackViewer{
         const format='RGB565',packed=packNativeTextureRGBA(image.data,{format,gamma:this.textureGamma});
         t=new THREE.DataTexture(nativeTexturePixelsRGBA(packed,{format}),canvas.width,canvas.height);
         t.userData.nativeTextureFormat=format;t.userData.nativeGamma=this.textureGamma;
+        // Packed zero is the key mask, so its absence means no texel can be discarded.
+        t.userData.nativeHasKey=packed.includes(0);
         source.dispose();
       }
       t.colorSpace=THREE.NoColorSpace;t.flipY=false;t.wrapS=t.wrapT=THREE.RepeatWrapping;
@@ -97,14 +118,20 @@ export class TrackViewer{
   }
   async model(name){
     const file=name.toLowerCase().replace(/^meshes\//,'').replace(/\.(d3d|json)$/,'');
-    if(!this.meshData.has(file))this.meshData.set(file,getJSON(`/assets/meshes/${file}.json`).then(geometry));
+    if(!this.meshData.has(file))this.meshData.set(file,this.loadMesh(file));
     return this.meshData.get(file);
+  }
+  async loadMesh(file){
+    // A runtime without a pack, or a failed fetch, falls back to the JSON file.
+    const pack=await (this.meshPack??=meshPack().catch(()=>{this.meshPack=null;return null;}));
+    const entry=pack?.entries[file];
+    return entry?packGeometry(pack,entry):getJSON(`assets/meshes/${file}.json`).then(geometry);
   }
   async load(id,{raceMode=0,randomSeed=0}={}){
     this.updateLoop?.stop();
     const generation=++this.generation;this.active=false;this.errors=[];
     this.sceneryBodies=null;this.sceneryReactions=null;this.sceneryHazards=null;this.sceneryCallbacksOwned=false;
-    const [track,[originalConfig,manifest]]=await Promise.all([getJSON(`/assets/tracks/etappe${id}.json`),this.resources]);
+    const [track,[originalConfig,manifest]]=await Promise.all([getJSON(`assets/tracks/etappe${id}.json`),this.resources]);
     const config=configWithNativeDisplaySettings(originalConfig,this.displaySettings);
     this.runtimeConfig=config;
     const filter=Number(config['game.ini'].options.filter)===2?THREE.LinearFilter:THREE.NearestFilter;
@@ -116,12 +143,14 @@ export class TrackViewer{
     const group=new THREE.Group();
     const animations=[],rotations=[],random=new NativeRandom(randomSeed);
     // Direct3D left-handed XYZ -> Three right-handed XYZ, preserving Y up.
-    group.scale.z=-1;
+    group.scale.z=-1;group.updateMatrix();group.matrixAutoUpdate=false;
     const maps=await Promise.all(track.textures.map(file=>this.texture(file)));
     this.onLoadProgress?.(1);
     const mats=maps.map(map=>createNativeMeshMaterial(map));
-    const g=geometry(track);for(const chunk of nativeRoadDrawGroups(track))g.addGroup(chunk.start,chunk.count,chunk.textureIndex);
-    const roadMesh=new THREE.Mesh(g,mats);roadMesh.renderOrder=NATIVE_RENDER_ORDER.road;group.add(roadMesh);
+    const g=geometry(track),road=nativeRoadIndex(track);g.setIndex(new THREE.BufferAttribute(road.index,1));
+    this.roadStarts=road.starts;this.roadRangeKey=null;
+    for(const chunk of mergeRoadDrawGroups(nativeRoadDrawGroups(track),road.starts))g.addGroup(chunk.start,chunk.count,chunk.textureIndex);
+    const roadMesh=new THREE.Mesh(g,mats);roadMesh.renderOrder=NATIVE_RENDER_ORDER.road;roadMesh.matrixAutoUpdate=false;roadMesh.updateMatrix();group.add(roadMesh);
     const definitions=track.objectDefinitions;
     const definitionFor=obj=>{
       const bonusType=nativeBonusTypeFromObject(obj.type);
@@ -286,19 +315,31 @@ export class TrackViewer{
    * controller visibility (pickups and paths still update outside this window). */
   applyVisibleSectors(ranges){
     this.visibleSectorRanges=ranges;
-    const visible=sector=>ranges.some(([start,end])=>sector>=start&&sector<=end);
-    this.roadMesh.geometry.clearGroups();
-    for(const chunk of nativeRoadDrawGroups(this.track,ranges))
-      this.roadMesh.geometry.addGroup(chunk.start,chunk.count,chunk.textureIndex);
-    for(const object of this.group.children){
-      if(!Number.isInteger(object.userData.sector))continue;
-      const enabled=visible(object.userData.sector);
+    let key='';for(let i=0;i<ranges.length;i++)key+=ranges[i][0]+','+ranges[i][1]+';';
+    if(key!==this.roadRangeKey){
+      this.roadRangeKey=key;
+      this.roadMesh.geometry.clearGroups();
+      for(const chunk of mergeRoadDrawGroups(nativeRoadDrawGroups(this.track,ranges),this.roadStarts))
+        this.roadMesh.geometry.addGroup(chunk.start,chunk.count,chunk.textureIndex);
+    }
+    const children=this.group.children;
+    for(let c=0;c<children.length;c++){
+      const object=children[c],sector=object.userData.sector;
+      if(!Number.isInteger(sector))continue;
+      let enabled=false;
+      for(let i=0;i<ranges.length&&!enabled;i++)enabled=sector>=ranges[i][0]&&sector<=ranges[i][1];
+      // Moving objects change sector, so every object is still tested each update.
+      if(object.layers.isEnabled(0)===enabled)continue;
       object.traverse(mesh=>enabled?mesh.layers.enable(0):mesh.layers.disable(0));
     }
   }
   resize(settings){
     const canvas=this.renderer.domElement,rect=canvas.getBoundingClientRect();
-    const size=renderDimensions({width:rect.width,height:rect.height,dpr:devicePixelRatio,...settings,maxSize:this.renderer.capabilities.maxTextureSize});
+    const autoPixels=autoPixelBudget();
+    const size=renderDimensions({width:rect.width,height:rect.height,dpr:devicePixelRatio,...settings,autoPixels,maxSize:this.renderer.capabilities.maxTextureSize});
+    // Presets and render scale control the world only; the HUD surface follows this.
+    this.surfaceRatio=surfacePixelRatio({width:rect.width,height:rect.height,dpr:devicePixelRatio,
+      resolution:settings.resolution==='native'?'native':'auto',autoPixels});
     this.renderer.setSize(size.width,size.height,false);
     this.multisampling.configure(settings,size.width,size.height);
     this.camera.aspect=rect.width/Math.max(1,rect.height);

@@ -6,37 +6,40 @@ const uvFrames=[
  [.199703,.491571,0,.654971,0,.328171,.395406,.328171,.395406,.654971,0,.654971],
  [.199703,.820462,0,.983863,0,.657062,.395406,.657062,.395406,.983863,0,.983863],
 ].map(values=>values.map(f));
+const sortStack=[];
+const smokeFrame=()=>({id:0,active:true,position:[0,0,0],matrix:[...identity],velocity:[0,0,0],period:0,tick:0,
+ width:0,height:0,alpha:0,uvFrame:0,vertices:new Array(18).fill(0),uv:[...uvFrames[0]],
+ rgba:[132,132,164,0,100,100,100,0,100,100,100,0,100,100,100,0,100,100,100,0,100,100,100,0]});
 
 /** Original CRT4bf5b9/4bf70d, including equal-key swaps and small partitions.
  * Smoke sorts ALL70records in place, so sorting also changes later free slots. */
 export function nativeSmokeSort(values,compare){
- const swap=(a,b)=>{const value=values[a];values[a]=values[b];values[b]=value;};
- const stack=[[0,values.length-1]];
+ const stack=sortStack;stack.length=0;stack.push(0,values.length-1);
  while(stack.length){
-  let [lo,hi]=stack.pop();
+  let hi=stack.pop(),lo=stack.pop();
   while(lo<hi){
    const count=hi-lo+1;
    if(count<=8){
     for(let end=hi;end>lo;end--){let greatest=lo;
      for(let at=lo+1;at<=end;at++)if(compare(values[at],values[greatest])>0)greatest=at;
-     swap(greatest,end);
+     const value=values[greatest];values[greatest]=values[end];values[end]=value;
     }
     break;
    }
-   swap(lo+Math.floor(count/2),lo);
+   const middle=lo+Math.floor(count/2),pivot=values[middle];values[middle]=values[lo];values[lo]=pivot;
    let left=lo,right=hi+1;
    while(true){
     do{left++;}while(left<=hi&&compare(values[left],values[lo])<=0);
     do{right--;}while(right>lo&&compare(values[right],values[lo])>=0);
     if(left>right)break;
-    swap(left,right);
+    const value=values[left];values[left]=values[right];values[right]=value;
    }
-   swap(lo,right);
+   const value=values[lo];values[lo]=values[right];values[right]=value;
    if(right-lo-1<hi-left){
-    if(left<hi)stack.push([left,hi]);
+    if(left<hi)stack.push(left,hi);
     if(lo+1<right)hi=right-1;else break;
    }else{
-    if(lo+1<right)stack.push([lo,right-1]);
+    if(lo+1<right)stack.push(lo,right-1);
     if(left<hi)lo=left;else break;
    }
   }
@@ -46,6 +49,19 @@ export function nativeSmokeSort(values,compare){
 
 /** Original cloud pool428690/428490/4282e0/428a00. These are tyre/damage
  * smoke fans using S_SFX, separate from the general particle-system manager. */
+// Reused capture storage, kept off the controller: only its live state is race state.
+const smokeScratches=new WeakMap();
+const smokeScratch=smoke=>{
+ let scratch=smokeScratches.get(smoke);
+ if(!scratch){
+  // Distances are pure between position updates, so compute each once per sort.
+  const keys=new Float64Array(70);
+  scratch={keys,compare:(a,b)=>{const x=keys[a.id],y=keys[b.id];return x<y?1:x===y?0:-1;},
+   framePool:Array.from({length:70},smokeFrame),drawn:[]};
+  smokeScratches.set(smoke,scratch);
+ }
+ return scratch;
+};
 export class NativeSmoke{
  constructor({random,precision=NATIVE_PRECISION,enabled=true,hardware=true,alphaBlending=true,carIndex=0}={}){
   if(!random?.next)throw new Error('Original shared random stream is required');
@@ -105,28 +121,41 @@ export class NativeSmoke{
   const r=this.precision===24?f:Number;
   if(!this.enabled)return [];
   if(r(1/f(deltaSeconds))<10){for(const cloud of this.clouds)cloud.active=false;return [];}
-  for(const cloud of this.clouds)if(cloud.active){
-   const remainder=cloud.tick%5;cloud.uvFrame=Math.max(0,Math.min(2,remainder>2?4-remainder:remainder));
-   cloud.width=f(r(cloud.width+r(29/cloud.period)));cloud.height=f(r(cloud.height+r(29/cloud.period)));
-   if(cloud.alpha!==0)cloud.alpha=(cloud.alpha-Math.max(1,Math.trunc(80/cloud.period)))&255;
-   cloud.position=cloud.position.map((value,i)=>f(r(value+cloud.velocity[i])));
-   cloud.velocity=cloud.velocity.map(value=>f(r(value*f(.9))));
-   cloud.matrix=[...cameraMatrix];
+  const scratch=smokeScratch(this),clouds=this.clouds,keys=scratch.keys,cameraX=cameraPosition[0],cameraZ=cameraPosition[2];
+  for(let index=0;index<clouds.length;index++){
+   const cloud=clouds[index],p=cloud.position;
+   if(cloud.active){
+    const remainder=cloud.tick%5;cloud.uvFrame=Math.max(0,Math.min(2,remainder>2?4-remainder:remainder));
+    cloud.width=f(r(cloud.width+r(29/cloud.period)));cloud.height=f(r(cloud.height+r(29/cloud.period)));
+    if(cloud.alpha!==0)cloud.alpha=(cloud.alpha-Math.max(1,Math.trunc(80/cloud.period)))&255;
+    const v=cloud.velocity,m=cloud.matrix;
+    p[0]=f(r(p[0]+v[0]));p[1]=f(r(p[1]+v[1]));p[2]=f(r(p[2]+v[2]));
+    v[0]=f(r(v[0]*f(.9)));v[1]=f(r(v[1]*f(.9)));v[2]=f(r(v[2]*f(.9)));
+    for(let k=0;k<9;k++)m[k]=cameraMatrix[k];
+   }
+   const x=r(p[0]-cameraX),z=r(p[2]-cameraZ);
+   keys[cloud.id]=r(r(z*z)+r(x*x));
   }
-  const distance=cloud=>{
-   const x=r(cloud.position[0]-cameraPosition[0]),z=r(cloud.position[2]-cameraPosition[2]);
-   return r(r(z*z)+r(x*x));
-  };
-  nativeSmokeSort(this.clouds,(a,b)=>distance(a)<distance(b)?1:distance(a)===distance(b)?0:-1);
-  const drawn=[];
-  for(const cloud of this.clouds)if(cloud.active){
-   const w=f(r(cloud.width*.5)),h=f(r(cloud.height*.5));
-   drawn.push({...cloud,position:[...cloud.position],matrix:[...cloud.matrix],velocity:[...cloud.velocity],
-    vertices:[0,0,0,-w,-h,0,-w,h,0,w,h,0,w,-h,0,-w,-h,0],
-    uv:[...uvFrames[cloud.uvFrame]],rgba:[132,132,164,cloud.alpha,...Array.from({length:5},()=>[100,100,100,0]).flat()]});
+  nativeSmokeSort(clouds,scratch.compare);
+  const drawn=scratch.drawn;let count=0;
+  for(let index=0;index<clouds.length;index++){
+   const cloud=clouds[index];
+   if(!cloud.active)continue;
+   const w=f(r(cloud.width*.5)),h=f(r(cloud.height*.5)),frame=scratch.framePool[count];
+   frame.id=cloud.id;frame.period=cloud.period;frame.tick=cloud.tick;frame.width=cloud.width;frame.height=cloud.height;
+   frame.alpha=cloud.alpha;frame.uvFrame=cloud.uvFrame;
+   const a=cloud.position,b=frame.position,c=cloud.velocity,d=frame.velocity,m=cloud.matrix,n=frame.matrix,q=frame.vertices;
+   b[0]=a[0];b[1]=a[1];b[2]=a[2];d[0]=c[0];d[1]=c[1];d[2]=c[2];
+   for(let k=0;k<9;k++)n[k]=m[k];
+   q[3]=-w;q[4]=-h;q[6]=-w;q[7]=h;q[9]=w;q[10]=h;q[12]=w;q[13]=-h;q[15]=-w;q[16]=-h;
+   const uv=uvFrames[cloud.uvFrame],frameUv=frame.uv;
+   for(let k=0;k<uv.length;k++)frameUv[k]=uv[k];
+   frame.rgba[3]=cloud.alpha;
+   drawn[count++]=frame;
    cloud.tick++;
    if(cloud.tick>=cloud.period)cloud.active=false;
   }
+  drawn.length=count;
   return drawn;
  }
 }

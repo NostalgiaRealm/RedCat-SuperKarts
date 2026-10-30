@@ -24,6 +24,9 @@ const writeVertexColor=(target,index,color)=>{
   target[offset+2]=color&255;target[offset+3]=color>>>24;
 };
 
+// What the two shadow routines read from a kart, reused by every capture.
+const shadowSource={position:null,sector:0,matrixTranslation:null,matrix:null};
+
 export class KartVisual {
   static async load(viewer,config,manifest,character,carIndex,actor) {
     const visual=new KartVisual();
@@ -71,8 +74,9 @@ export class KartVisual {
   advanceAnimation(now,requests=[]){
     this.driver.geometry=this.colorFrame(advanceDriverAnimation(this.animation,now,requests).file);
     //44cac0 applies persistent body diffuse when it assigns the animated
-    // frame.4903c0 will overwrite it with ground+country brightness on draw.
-    this.applyDiffuse(this.diffuse);
+    // frame.4903c0 will overwrite it with ground+country brightness on draw,
+    // so only a kart drawn without that capture ever shows this one (present).
+    this.pendingDiffuse=this.diffuse;
   }
   cloneColorGeometry(source){
     const geometry=source.clone();
@@ -86,13 +90,17 @@ export class KartVisual {
     return this.colorFrames.get(file);
   }
   applyDiffuse(color){
-    const rgba=[color>>>16&255,color>>>8&255,color&255,color>>>24];
     // All racer children use native mode0. Modes1/2 are excluded by4902d0.
-    for(const mesh of [this.body,...this.wheels,this.driver]){
-      const attribute=mesh.geometry.attributes.color;
-      for(let index=0;index<attribute.count;index++)attribute.array.set(rgba,index*4);
-      attribute.needsUpdate=true;
-    }
+    this.writeDiffuse(this.body,color);this.writeDiffuse(this.driver,color);
+    for(let i=0;i<this.wheels.length;i++)this.writeDiffuse(this.wheels[i],color);
+  }
+  writeDiffuse(mesh,color){
+    // Each cloned frame remembers its bytes, so an unchanged colour uploads nothing.
+    const attribute=mesh.geometry.attributes.color,array=attribute.array;
+    if(attribute.nativeColor===color)return;
+    attribute.nativeColor=color;
+    for(let offset=0;offset<array.length;offset+=4)writeVertexColor(array,offset/4,color);
+    attribute.needsUpdate=true;
   }
   captureColor(world,deltaSeconds,rescue=null){
     const body=this.actor.body;
@@ -101,6 +109,7 @@ export class KartVisual {
     const color=advanceNativeKartColor(this.diffuse,sampleNativeKartGroundColor(world,body),
       body.forwardSpeed,deltaSeconds,this.brightness);
     this.diffuse=color.diffuse;this.renderDiffuse=color.renderDiffuse;
+    this.pendingDiffuse=null;
     this.applyDiffuse(this.renderDiffuse);
   }
   dispose(){
@@ -112,6 +121,7 @@ export class KartVisual {
     this.colorGeometries.clear();this.colorFrames.clear();
   }
   present(alpha) {
+    if(this.pendingDiffuse!=null){this.applyDiffuse(this.pendingDiffuse);this.pendingDiffuse=null;}
     this.group.position.lerpVectors(this.previous.position,this.current.position,alpha);
     // Suspension produces a non-orthonormal basis. Preserve its native scale
     // and tilt at each tick endpoint instead of converting it to a quaternion.
@@ -189,7 +199,9 @@ export class KartShadowVisual {
   capture(world,rescue=null) {
     const body=this.actor.body;
     this.mesh.userData.sector=body.sector;
-    const source={...body,matrixTranslation:rescue?.renderPosition??body.position,matrix:rescue?.matrix??body.matrix};
+    const source=shadowSource;
+    source.position=body.position;source.sector=body.sector;
+    source.matrixTranslation=rescue?.renderPosition??body.position;source.matrix=rescue?.matrix??body.matrix;
     const current=getNativeKartShadowPose(source,world.sectors[body.sector].fallback);
     // Convert each captured endpoint once. Unlocked presentation can reuse
     // these matrices until the next simulation capture without allocations.
@@ -267,12 +279,18 @@ export class SmokeVisuals {
     const material=createNativeMeshMaterial(map,{blendMode:1,side:THREE.FrontSide});
     material.blendSrc=THREE.SrcAlphaFactor;material.blendDst=THREE.OneFactor;
     material.depthWrite=true;
+    // One buffer per attribute for all 70 fans: 3 uploads per update, not 3 per cloud.
+    const position=new THREE.Float32BufferAttribute(new Float32Array(70*18),3);
+    const uv=new THREE.Float32BufferAttribute(new Float32Array(70*12),2);
+    const color=new THREE.Uint8BufferAttribute(new Uint8Array(70*24),4,true);
+    const indices=[];
+    for(let index=0;index<70;index++)for(const i of [0,1,2,0,2,3,0,3,4,0,4,5])indices.push(index*6+i);
+    const shared=new THREE.BufferAttribute(new Uint16Array(indices),1);
+    this.attributes={position,uv,color};
     for(let index=0;index<70;index++){
       const geometry=new THREE.BufferGeometry();
-      geometry.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(18),3));
-      geometry.setAttribute('uv',new THREE.Float32BufferAttribute(new Float32Array(12),2));
-      geometry.setAttribute('color',new THREE.Uint8BufferAttribute(new Uint8Array(24),4,true));
-      geometry.setIndex([0,1,2,0,2,3,0,3,4,0,4,5]);
+      geometry.setAttribute('position',position);geometry.setAttribute('uv',uv);geometry.setAttribute('color',color);
+      geometry.setIndex(shared);geometry.setDrawRange(index*12,12);
       const mesh=new THREE.Mesh(geometry,material);
       mesh.matrixAutoUpdate=false;mesh.visible=false;mesh.frustumCulled=false;
       mesh.userData.ownedGeometry=true;mesh.renderOrder=NATIVE_RENDER_ORDER.smoke+index;
@@ -281,13 +299,20 @@ export class SmokeVisuals {
     return this;
   }
   capture(frames=[]) {
-    this.meshes.forEach((mesh,index)=>{
-      const frame=frames[index];mesh.visible=Boolean(frame);if(!frame)return;
-      for(const [name,values]of [['position',frame.vertices],['uv',frame.uv],['color',frame.rgba]]){
-        mesh.geometry.attributes[name].array.set(values);mesh.geometry.attributes[name].needsUpdate=true;
-      }
+    const meshes=this.meshes,count=frames.length,{position,uv,color}=this.attributes;
+    for(let index=0;index<meshes.length;index++){
+      const mesh=meshes[index],frame=frames[index];mesh.visible=index<count;
+      if(index>=count)continue;
+      const p=frame.vertices,t=frame.uv,c=frame.rgba,base=index*18,baseUV=index*12,baseColor=index*24;
+      for(let i=0;i<18;i++)position.array[base+i]=p[i];
+      for(let i=0;i<12;i++)uv.array[baseUV+i]=t[i];
+      for(let i=0;i<24;i++)color.array[baseColor+i]=c[i];
       nativeMatrix(frame.matrix,frame.position,mesh.matrix);mesh.matrixWorldNeedsUpdate=true;
-    });
+    }
+    if(!count)return;
+    position.clearUpdateRanges();position.addUpdateRange(0,count*18);position.needsUpdate=true;
+    uv.clearUpdateRanges();uv.addUpdateRange(0,count*12);uv.needsUpdate=true;
+    color.clearUpdateRanges();color.addUpdateRange(0,count*24);color.needsUpdate=true;
   }
 }
 
@@ -295,7 +320,7 @@ export class SmokeVisuals {
  * to the camera cancels its view matrix; local-Z reflection converts native
  * +Z camera coordinates to Three's -Z without changing the source vertices. */
 export class WeatherVisuals {
-  constructor(viewer,controller){this.viewer=viewer;this.controller=controller;this.mesh=null;}
+  constructor(viewer,controller){this.viewer=viewer;this.controller=controller;this.mesh=null;this.written=0;}
   async load(manifest){
     if(!this.controller)return this;
     const map=await this.viewer.texture(resolveAsset(manifest,'images','s_sfx.tga'));
@@ -314,15 +339,25 @@ export class WeatherVisuals {
   }
   capture(frames=[]){
     if(!this.mesh)return;
-    this.mesh.visible=frames.length>0;
-    const attributes=this.mesh.geometry.attributes;
-    frames.forEach((frame,index)=>{
-      attributes.position.array.set(frame.vertices,index*18);
-      attributes.uv.array.set(frame.uv,index*12);
-      frame.argb.forEach((color,vertex)=>writeVertexColor(attributes.color.array,index*6+vertex,color));
-    });
-    this.mesh.geometry.setDrawRange(0,frames.length*6);
-    for(const attribute of Object.values(attributes))attribute.needsUpdate=true;
+    const count=frames.length,attributes=this.mesh.geometry.attributes,position=attributes.position,target=position.array;
+    this.mesh.visible=count>0;
+    if(!count)return;
+    for(let index=0;index<count;index++){
+      const vertices=frames[index].vertices,base=index*18;
+      for(let i=0;i<18;i++)target[base+i]=vertices[i];
+    }
+    // A slot's UV and colour never change: write each slot the first time it is used.
+    if(count>this.written){
+      for(let index=this.written;index<count;index++){
+        attributes.uv.array.set(frames[index].uv,index*12);
+        frames[index].argb.forEach((color,vertex)=>writeVertexColor(attributes.color.array,index*6+vertex,color));
+      }
+      attributes.uv.addUpdateRange(this.written*12,(count-this.written)*12);attributes.uv.needsUpdate=true;
+      attributes.color.addUpdateRange(this.written*24,(count-this.written)*24);attributes.color.needsUpdate=true;
+      this.written=count;
+    }
+    this.mesh.geometry.setDrawRange(0,count*6);
+    position.clearUpdateRanges();position.addUpdateRange(0,count*18);position.needsUpdate=true;
   }
   dispose(){
     if(!this.mesh)return;
@@ -356,19 +391,41 @@ export class SkidmarkVisuals {
     return this;
   }
   capture(frames=[]){
-    for(const mesh of this.meshes)mesh.visible=false;
-    for(const frame of frames)frame.sides.forEach((vertices,side)=>{
-      const mesh=this.meshes[frame.id*2+side];mesh.visible=vertices.length>2;
-      const attributes=mesh.geometry.attributes;
-      vertices.forEach((vertex,index)=>{
-        attributes.position.array.set(vertex.position,index*3);
-        attributes.uv.array.set(vertex.uv,index*2);
-        const color=vertex.argb;
-        writeVertexColor(attributes.color.array,index,color);
-      });
-      mesh.geometry.setDrawRange(0,Math.max(0,vertices.length-2)*3);
-      for(const attribute of Object.values(attributes))attribute.needsUpdate=true;
-    });
+    const meshes=this.meshes;
+    for(let i=0;i<meshes.length;i++)meshes[i].visible=false;
+    for(let f=0;f<frames.length;f++){
+      const frame=frames[f];
+      for(let side=0;side<2;side++){
+        const vertices=frame.sides[side],count=vertices.length,mesh=meshes[frame.id*2+side];
+        mesh.visible=count>2;
+        // Vertices only ever append, and only alpha fades until it reaches 255.
+        const state=mesh.userData;
+        if(state.source!==vertices){state.source=vertices;state.written=0;state.settled=false;}
+        if(state.settled&&state.written===count)continue;
+        const {position,uv,color}=mesh.geometry.attributes,c=color.array,first=state.written;
+        for(let i=first;i<count;i++){
+          const vertex=vertices[i],q=vertex.position,t=vertex.uv,ip=i*3,it=i*2;
+          position.array[ip]=q[0];position.array[ip+1]=q[1];position.array[ip+2]=q[2];
+          uv.array[it]=t[0];uv.array[it+1]=t[1];
+          writeVertexColor(c,i,vertex.argb);
+        }
+        let changed=first<count,settled=true;
+        for(let i=0;i<first;i++){
+          const alpha=vertices[i].argb>>>24;
+          if(alpha!==255)settled=false;
+          if(c[i*4+3]!==alpha){c[i*4+3]=alpha;changed=true;}
+        }
+        if(first<count){
+          for(let i=first;i<count;i++)if(vertices[i].argb>>>24!==255)settled=false;
+          position.clearUpdateRanges();position.addUpdateRange(0,count*3);position.needsUpdate=true;
+          uv.clearUpdateRanges();uv.addUpdateRange(0,count*2);uv.needsUpdate=true;
+          mesh.geometry.setDrawRange(0,Math.max(0,count-2)*3);
+          state.written=count;
+        }
+        if(changed){color.clearUpdateRanges();color.addUpdateRange(0,count*4);color.needsUpdate=true;}
+        state.settled=settled;
+      }
+    }
   }
 }
 
@@ -384,6 +441,7 @@ export class ExplosionVisuals {
     return this;
   }
   capture(frames=[]){
+    if(!frames.length&&!this.meshes.size)return;
     const active=new Set(frames.map(frame=>frame.id));
     for(const [id,mesh]of this.meshes)if(!active.has(id)){
       mesh.removeFromParent();mesh.geometry.dispose();this.meshes.delete(id);
@@ -442,33 +500,51 @@ export class StreamVisuals {
     }
     return pool[index];
   }
-  capture({jets=[],ribbons=[]}={},{follow=[]}={}){
-    for(const [pool,frames,capacity,order]of [[this.jets,jets,7,NATIVE_RENDER_ORDER.jets],
-      [this.ribbons,ribbons,1000,NATIVE_RENDER_ORDER.ribbons]]){
-      for(const mesh of pool)mesh.visible=false;
-      frames.forEach((vertices,index)=>{
-        const mesh=this.mesh(pool,index,capacity,order),attributes=mesh.geometry.attributes;
-        mesh.visible=vertices.length>2;
-        vertices.forEach((vertex,i)=>{
-          attributes.position.array.set(vertex.position,i*3);attributes.uv.array.set(vertex.uv,i*2);
-          const color=vertex.color;
-          writeVertexColor(attributes.color.array,i,color);
-        });
-        mesh.geometry.setDrawRange(0,Math.max(0,vertices.length-2)*3);
-        for(const attribute of Object.values(attributes))attribute.needsUpdate=true;
-      });
+  copy(pool,frames,capacity,order){
+    for(let i=0;i<pool.length;i++)pool[i].visible=false;
+    for(let index=0;index<frames.length;index++){
+      const vertices=frames[index],count=vertices.length,mesh=this.mesh(pool,index,capacity,order);
+      const {position,uv,color}=mesh.geometry.attributes,p=position.array,t=uv.array,c=color.array;
+      mesh.visible=count>2;
+      let uvChanged=false,colorChanged=false;
+      for(let i=0;i<count;i++){
+        const vertex=vertices[i],q=vertex.position,s=vertex.uv,argb=vertex.color,ip=i*3,it=i*2,ic=i*4;
+        p[ip]=q[0];p[ip+1]=q[1];p[ip+2]=q[2];
+        if(t[it]!==s[0]||t[it+1]!==s[1]){t[it]=s[0];t[it+1]=s[1];uvChanged=true;}
+        const red=argb>>>16&255,green=argb>>>8&255,blue=argb&255,alpha=argb>>>24;
+        if(c[ic]!==red||c[ic+1]!==green||c[ic+2]!==blue||c[ic+3]!==alpha){
+          c[ic]=red;c[ic+1]=green;c[ic+2]=blue;c[ic+3]=alpha;colorChanged=true;
+        }
+      }
+      mesh.geometry.setDrawRange(0,Math.max(0,count-2)*3);
+      // Only the used vertices: ribbon buffers hold 1000, ribbons use about 10-24.
+      if(count>0){position.clearUpdateRanges();position.addUpdateRange(0,count*3);position.needsUpdate=true;}
+      if(uvChanged){uv.addUpdateRange(0,count*2);uv.needsUpdate=true;}
+      if(colorChanged){color.addUpdateRange(0,count*4);color.needsUpdate=true;}
     }
+  }
+  capture({jets=[],ribbons=[]}={},{follow=[]}={}){
+    this.copy(this.jets,jets,7,NATIVE_RENDER_ORDER.jets);
+    this.copy(this.ribbons,ribbons,1000,NATIVE_RENDER_ORDER.ribbons);
     // "Motorlicht volgt de kart" (browser enhancement): 488850 and the kart
     // draw read one matrix per native update. Karts are drawn between their
     // last two tick poses, so their flares keep both tick captures as well,
     // keyed by the flare's own vertex list across pool reordering.
-    jets.forEach((vertices,index)=>{
-      const mesh=this.jets[index];
-      if(!follow.includes(vertices)){mesh.userData.follow=null;return;}
-      const after=mesh.geometry.attributes.position.array.slice(0,vertices.length*3);
-      mesh.userData.follow={before:this.followed.get(vertices)??after,after};
-      this.followed.set(vertices,after);
-    });
+    for(let index=0;index<jets.length;index++){
+      const vertices=jets[index],mesh=this.jets[index],position=mesh.geometry.attributes.position.array;
+      if(!follow.includes(vertices)){mesh.userData.follow=null;continue;}
+      const size=vertices.length*3;
+      let record=this.followed.get(vertices);
+      if(!record){
+        record={before:position.slice(0,size),after:position.slice(0,size)};
+        this.followed.set(vertices,record);
+      }else{
+        const before=record.after,after=record.before;
+        for(let i=0;i<size;i++)after[i]=position[i];
+        record.before=before;record.after=after;
+      }
+      mesh.userData.follow=record;
+    }
   }
   /** Same alpha as KartVisual.present; rocket flares keep their tick pose. */
   present(alpha){
@@ -516,18 +592,19 @@ export class HomingArmVisuals {
     }
   }
   capture(){
-    this.meshes.forEach((mesh,index)=>{
-      const entry=this.controller.entries[index];mesh.visible=Boolean(entry);
-      if(!entry)return;
-      const attributes=mesh.geometry.attributes;
-      entry.vertices.forEach((vertex,i)=>{
+    const entries=this.controller.entries;
+    for(let index=0;index<this.meshes.length;index++){
+      const mesh=this.meshes[index],entry=entries[index];mesh.visible=Boolean(entry);
+      if(!entry)continue;
+      const attributes=mesh.geometry.attributes,vertices=entry.vertices;
+      for(let i=0;i<vertices.length;i++){
+        const vertex=vertices[i];
         attributes.position.array.set(vertex.position,i*3);
         attributes.uv.array.set(vertex.uv,i*2);
-        const color=vertex.color;
-        writeVertexColor(attributes.color.array,i,color);
-      });
-      for(const attribute of Object.values(attributes))attribute.needsUpdate=true;
-    });
+        writeVertexColor(attributes.color.array,i,vertex.color);
+      }
+      attributes.position.needsUpdate=attributes.uv.needsUpdate=attributes.color.needsUpdate=true;
+    }
   }
 }
 
@@ -555,12 +632,13 @@ export class RescueVisuals {
     }
   }
   capture() {
-    this.meshes.forEach((mesh,index)=>{
-      const entry=this.controller.entries[index];mesh.visible=this.enabled&&Boolean(entry);
-      if(!mesh.visible)return;
-      mesh.geometry.attributes.position.array.set(nativeRescueRingPositions(entry));
+    const entries=this.controller.entries;
+    for(let index=0;index<this.meshes.length;index++){
+      const mesh=this.meshes[index],entry=entries[index];mesh.visible=this.enabled&&Boolean(entry);
+      if(!mesh.visible)continue;
+      nativeRescueRingPositions(entry,{target:mesh.geometry.attributes.position.array});
       mesh.geometry.attributes.position.needsUpdate=true;
-    });
+    }
   }
 }
 
@@ -583,9 +661,11 @@ export class ProjectileVisuals {
         this.viewer.simulation.actors.length+this.meshes.size);
       this.viewer.group.add(mesh);this.meshes.set(shot,mesh);
     }
+    this.slots=[...this.meshes];
   }
   capture() {
-    for(const [shot,mesh]of this.meshes){
+    for(let index=0;index<this.slots.length;index++){
+      const shot=this.slots[index][0],mesh=this.slots[index][1];
       mesh.visible=shot.state===2;
       if(!mesh.visible)continue;
       const resource=this.resources.get(`${shot.type}:${shot.level}`);

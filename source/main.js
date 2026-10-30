@@ -1,4 +1,5 @@
-import {readSettings,writeSettings,renderDimensions,chooseMultisampleCount} from './settings.js';
+import {readSettings,writeSettings,renderDimensions,autoPixelBudget,chooseMultisampleCount} from './settings.js';
+import {assetURL} from './asset-url.js';
 import {GAME_VERSION} from './version.js';
 import {MoviePlayback} from './movie-playback.js';
 import {InputController,nativeIntroSkipKey} from './input.js';
@@ -80,7 +81,7 @@ function button(text,handler,attrs={}){
   const b=document.createElement('button');b.textContent=text;
   const definitions={Help:['mn_0222','defHelpButtonButtonStateChange'],Instellingen:['mn_0219','defOptionButtonButtonStateChange'],Stoppen:['mn_0220','defQuitButtonButtonStateChange'],Terug:['mn_0216','defBackButtonButtonStateChange'],OK:['mn_0217','defOkButtonButtonStateChange'],Start:['mn_0217','defOkButtonButtonStateChange']};
   const radio=text&&Object.hasOwn(attrs,'aria-pressed'),[art,press]=radio?['mn_0005',null]:definitions[text]||['mn_0004',null];
-  for(const [state,suffix]of [['up',radio?'b':'a'],['hover',radio?'d':'b'],['down','c']])b.style.setProperty('--'+state,`url("/assets/menu/${art}${suffix}.png")`);
+  for(const [state,suffix]of [['up',radio?'b':'a'],['hover',radio?'d':'b'],['down','c']])b.style.setProperty('--'+state,`url("${assetURL(`assets/menu/${art}${suffix}.png`)}")`);
   if(text){
     const width=radio?117:119,height=radio?40:43;b.style.width=width+'px';b.style.height=height+'px';
     const mask=radio?'mn_0005z.bmp':text==='OK'||text==='Start'?'mn_0217z.bmp':'mn_0004z.bmp';
@@ -92,9 +93,9 @@ function button(text,handler,attrs={}){
 }
 function artButton(art,text,handler,selected=false){
   const b=button('',handler,{'aria-label':text,'aria-pressed':String(selected)});b.className='art-button';
-  const img=document.createElement('img');img.src='/assets/menu/'+art+'.png';img.alt='';
+  const img=document.createElement('img');img.src='assets/menu/'+art+'.png';img.alt='';
   if(art.endsWith('a')&&nativeMenu?.manifest[art.slice(0,-1)+'b.bmp']&&nativeMenu?.manifest[art.slice(0,-1)+'c.bmp']){
-    const state=suffix=>img.src='/assets/menu/'+art.slice(0,-1)+suffix+'.png';
+    const state=suffix=>img.src='assets/menu/'+art.slice(0,-1)+suffix+'.png';
     b.addEventListener('pointerenter',()=>state('b'));b.addEventListener('pointerleave',()=>state('a'));
     b.addEventListener('pointerdown',()=>state('c'));b.addEventListener('pointerup',()=>state('b'));
     b.addEventListener('pointercancel',()=>state('a'));b.addEventListener('focus',()=>state('b'));b.addEventListener('blur',()=>state('a'));
@@ -104,8 +105,8 @@ function artButton(art,text,handler,selected=false){
 function base(title,art,variant=''){
   bindingCapture=null;mode='menu';input.setMode('menu');screen.hidden=false;$('intro').hidden=true;$('viewer-hud').hidden=true;$('race-hud').hidden=true;viewer?.suspend();$('touch-controls').hidden=true;
   const wrap=document.createElement('div');wrap.className='menu '+variant;
-  const header=document.createElement('header');header.className='menu-header';const logo=document.createElement('img');logo.className='brand';logo.src='/assets/menu/mn_0003x.png';logo.alt='RedCat SuperKarts';header.append(logo,button('Help',showHelp));wrap.append(header);
-  if(art){const img=document.createElement('img');img.className='menu-title';img.src='/assets/menu/'+art+'.png';img.alt=title;wrap.append(img);}else{const h=document.createElement('h1');h.textContent=title;wrap.append(h);}
+  const header=document.createElement('header');header.className='menu-header';const logo=document.createElement('img');logo.className='brand';logo.src='assets/menu/mn_0003x.png';logo.alt='RedCat SuperKarts';header.append(logo,button('Help',showHelp));wrap.append(header);
+  if(art){const img=document.createElement('img');img.className='menu-title';img.src='assets/menu/'+art+'.png';img.alt=title;wrap.append(img);}else{const h=document.createElement('h1');h.textContent=title;wrap.append(h);}
   const content=document.createElement('div');content.className='menu-content';wrap.append(content);
   const footer=document.createElement('footer');footer.className='footer';footer.append(button('Terug',()=>showMain()));wrap.append(footer);
   screen.replaceChildren(wrap);return {wrap,content,footer};
@@ -334,7 +335,7 @@ function showCountryInfo(){
   }
   const {content,footer}=base('Landinfo','mn_2200x');
   const cards=document.createElement('div');cards.className='cards';
-  for(const value of Object.values(entries)){const [image,label]=value.split(',');const card=document.createElement('figure');card.style.margin='10px';const img=document.createElement('img');img.src='/assets/menu/'+image.trim().replace('(IMAGEBASE)','').replace('.bmp','.png');img.width=121;img.height=137;img.alt=label?.trim()||'';const caption=document.createElement('figcaption');caption.textContent=label?.trim();card.append(img,caption);cards.append(card);}content.append(cards);footer.replaceChildren(button('Terug',closeCountryInfo));
+  for(const value of Object.values(entries)){const [image,label]=value.split(',');const card=document.createElement('figure');card.style.margin='10px';const img=document.createElement('img');img.src='assets/menu/'+image.trim().replace('(IMAGEBASE)','').replace('.bmp','.png');img.width=121;img.height=137;img.alt=label?.trim()||'';const caption=document.createElement('figcaption');caption.textContent=label?.trim();card.append(img,caption);cards.append(card);}content.append(cards);footer.replaceChildren(button('Terug',closeCountryInfo));
 }
 function captureMenu(){
   return {page,mode,inputMode:input.mode,bindingCapture,nodes:[...screen.childNodes],
@@ -369,7 +370,7 @@ async function showHelp(topicId){
   helpSession=session;helpReturn=closeHelp;
   page='help';base('Help',null);
   try{
-    helpData||=await fetch('/assets/help/topics.json').then(r=>{if(!r.ok)throw Error('Original help: '+r.status);return r.json();});
+    helpData||=await fetch('assets/help/topics.json').then(r=>{if(!r.ok)throw Error('Original help: '+r.status);return r.json();});
     if(helpSession!==session||page!=='help')return;
     const context=typeof topicId==='string'?topicId:nativeHelpContext(previous,{playMode})??1;
     helpViewer=new HelpViewer(helpData,context,{screen,button,onClose:closeHelp});
@@ -537,7 +538,7 @@ function playAdventureReward(kind,index){
       showNative(reward.form,{images:{imgBackGround:reward.source}});mode='reward';
       setTimeout(()=>rewardDone?.(),reward.durationMs);
     }else{
-      moviePlayback.start('/assets/media/'+reward.source.replace(/\.[^.]+$/,'.mp4').toLowerCase(),NATIVE_MOVIE_GAIN);
+      moviePlayback.start('assets/media/'+reward.source.replace(/\.[^.]+$/,'.mp4').toLowerCase(),NATIVE_MOVIE_GAIN);
     }
   });
 }
@@ -609,8 +610,9 @@ function showBrowserSettings(from='main'){
   const draft=moreSettingsDraft;
   const {content,footer}=base('Meer instellingen',null,'more-settings');
   const form=document.createElement('div');form.className='settings-form';
-  form.innerHTML=`<h2>Beeld</h2><label>Resolutie<select id="resolution"><option value="auto">Automatisch</option>${['640x480','800x600','1024x768','1280x720','1920x1080','2560x1440','3840x2160'].map(x=>`<option value="${x}">${x.replace('x',' × ')}</option>`).join('')}</select></label>
+  form.innerHTML=`<h2>Beeld</h2><label>Resolutie<select id="resolution"><option value="auto">Automatisch</option><option value="native">Volle schermresolutie</option>${['640x480','800x600','1024x768','1280x720','1920x1080','2560x1440','3840x2160'].map(x=>`<option value="${x}">${x.replace('x',' × ')}</option>`).join('')}</select></label>
   <label>Renderschaal <output id="scale-value"></output><input id="scale" aria-label="Renderschaal" type="range" min="25" max="200" step="5"><small id="effective-resolution"></small></label>
+  <p class="settings-detail">Automatisch beperkt het beeld op telefoons en tablets tot ongeveer 1 megapixel: vloeiender en zuiniger, iets minder scherp. Kies Volle schermresolutie voor elke schermpixel.</p>
   <label class="settings-toggle"><input id="msaa-enabled" type="checkbox">Randen gladmaken (MSAA)</label>
   <label>MSAA-kwaliteit<select id="msaa-samples"><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
   <p id="msaa-status" class="settings-detail" role="status"></p>
@@ -646,7 +648,7 @@ function showBrowserSettings(from='main'){
       msaaEnabled:$('msaa-enabled').checked,msaaSamples:Number($('msaa-samples').value),surfaceShadows:$('surface-shadows').checked,smoothEngineLights:$('smooth-engine-lights').checked,
       freeFlight:flightToggle.getAttribute('aria-pressed')==='true'});
     flightToggle.textContent=draft.freeFlight?'Aan':'Uit';
-    const size=renderDimensions({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,...draft});
+    const size=renderDimensions({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,...draft,autoPixels:autoPixelBudget()});
     $('scale-value').textContent=draft.renderScale+'%';$('effective-resolution').textContent=`Basis ${size.baseWidth} × ${size.baseHeight} → 3D ${size.width} × ${size.height} pixels`;
     $('msaa-samples').disabled=!draft.msaaEnabled;
     const supported=viewer?.msaaStatus?.supportedSamples;
@@ -660,9 +662,9 @@ function showBrowserSettings(from='main'){
   const accept=button('OK',()=>finishMoreSettings(true));accept.classList.add('more-settings-accept');
   // Load the original art eagerly: a CSS-only background below the scroll
   // viewport can otherwise appear after the caption on its first reveal.
-  const acceptArt=document.createElement('img');acceptArt.alt='';acceptArt.src='/assets/menu/mn_0217a.png';accept.prepend(acceptArt);
+  const acceptArt=document.createElement('img');acceptArt.alt='';acceptArt.src='assets/menu/mn_0217a.png';accept.prepend(acceptArt);
   for(const [event,state]of [['pointerenter','b'],['focus','b'],['pointerleave','a'],['blur','a'],['pointerdown','c'],['pointerup','b'],['pointercancel','a']])
-    accept.addEventListener(event,()=>acceptArt.src=`/assets/menu/mn_0217${state}.png`);
+    accept.addEventListener(event,()=>acceptArt.src=`assets/menu/mn_0217${state}.png`);
   footer.replaceChildren(button('Terug',()=>finishMoreSettings(false)),button('Volledig scherm',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{message('Volledig scherm is niet beschikbaar in deze browser.');}}),accept);
 }
 function finishMoreSettings(commit){
@@ -816,7 +818,7 @@ function menuKey(key,source){
 function playIntro(){
   menuAudio?.stop();
   page='intro';mode='intro';input.setMode('menu');screen.hidden=true;$('viewer-hud').hidden=true;$('intro').hidden=false;
-  moviePlayback.start('/assets/media/intro.mp4',NATIVE_MOVIE_GAIN);
+  moviePlayback.start('assets/media/intro.mp4',NATIVE_MOVIE_GAIN);
 }
 function finishIntro(){moviePlayback.stop();showMain();}
 $('skip-movie').onclick=e=>{e.stopPropagation();finishIntro();};
@@ -851,9 +853,10 @@ window.addEventListener('resize',()=>{resize();const now=matchMedia('(orientatio
 function frame(time){
   input.poll(time);
   advanceRacePause();
+  viewer?.updateLoop?.serveLate();
   viewer?.render(time);
   const flying=mode==='race'&&viewer?.simulation?.freeFlightActive===true;
-  flightPanel.hidden=!flying;flightTouch.hidden=!flying;
+  if(flightPanel.hidden===flying){flightPanel.hidden=!flying;flightTouch.hidden=!flying;}
   requestAnimationFrame(frame);
 }
 function advanceRacePause(){
@@ -886,7 +889,7 @@ function advanceRacePause(){
 requestAnimationFrame(frame);
 // Read-only diagnostics are used by automated checks; no simulated race completion.
 window.rcsk={get state(){return {mode,page,selection:{...selection},settings:{...settings},input:input.state.snapshot(),track:viewer?.track?.id,objects:viewer?.group?.children.length,assetErrors:viewer?.errors||[],menuAudio:menuAudio?.last};},get viewer(){return viewer;}};
-try{const [r,m,c,a]=await Promise.all([fetch('/assets/ui/forms.json'),fetch('/assets/menu/manifest.json'),fetch('/assets/config.json'),fetch('/assets/manifest.json')]);if(r.ok&&m.ok){forms=await r.json();nativeMenu=new NativeMenu(forms,await m.json(),commonPress);}if(c.ok)configs=await c.json();if(a.ok)assetManifest=await a.json();}catch(error){console.error(error);}
+try{const [r,m,c,a]=await Promise.all([fetch('assets/ui/forms.json'),fetch('assets/menu/manifest.json'),fetch('assets/config.json'),fetch('assets/manifest.json')]);if(r.ok&&m.ok){forms=await r.json();nativeMenu=new NativeMenu(forms,await m.json(),commonPress);}if(c.ok)configs=await c.json();if(a.ok)assetManifest=await a.json();}catch(error){console.error(error);}
 menuAudio=new MenuAudio(configs,()=>settings.effects,assetManifest);
 if(nativeMenu)nativeMenu.language=configs['ini/shellang.ini']?.dutch||{};
 adventureConfig=nativeAdventureConfiguration(configs);raceSave.locks??=[...adventureConfig.locks];

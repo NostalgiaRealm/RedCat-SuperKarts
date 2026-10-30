@@ -5,24 +5,33 @@ import {getHudStringSpec,layoutHudText} from './hud-text.js';
 
 const specFields=['type','alignment','length','maxCharWidth','cellWidth','precision','visible'];
 const glyphFields=['texture','x','y','width','height'];
-const sameValues=(a,b)=>a.length===b.length&&a.every((value,index)=>Object.is(value,b[index]));
+const sameValues=(a,b)=>{
+  if(a.length!==b.length)return false;
+  for(let i=0;i<a.length;i++)if(!Object.is(a[i],b[i]))return false;
+  return true;
+};
 
 // Cache only the most recently drawn state per string. Layout, font geometry,
 // tint and notification animation are independent inputs; all can invalidate
 // the buffers without skipping a draw into the original RGB565 destination.
 function unchanged(state,spec,text,width,height,x,y,scale,textures){
-  return state&&state.text===text&&state.width===width&&state.height===height
-    &&state.x===x&&state.y===y&&state.scale===scale&&state.font===spec.font
-    &&state.fontWidth===spec.font.maxWidth&&state.fontDistance===spec.font.distance
-    &&state.coordinateWidth===spec.coordinateSpace.width
-    &&specFields.every(name=>Object.is(state[name],spec[name]))
-    &&sameValues(state.context,spec.context)&&sameValues(state.rgba,spec.rgba)
-    &&state.glyphs.every(({character,source,values,image,width,height})=>{
-      const current=spec.font.glyphs[character];
-      const currentImage=current&&textures.get(current.texture)?.image;
-      return current===source&&(!current||(glyphFields.every((name,index)=>Object.is(current[name],values[index]))
-        &&currentImage===image&&currentImage?.width===width&&currentImage?.height===height));
-    });
+  if(!state||state.text!==text||state.width!==width||state.height!==height
+    ||state.x!==x||state.y!==y||state.scale!==scale)return false;
+  const font=spec.font,stored=state.glyphs;
+  if(state.font!==font||state.fontWidth!==font.maxWidth||state.fontDistance!==font.distance
+    ||state.coordinateWidth!==spec.coordinateSpace.width)return false;
+  for(let i=0;i<specFields.length;i++)if(!Object.is(state[specFields[i]],spec[specFields[i]]))return false;
+  if(!sameValues(state.context,spec.context)||!sameValues(state.rgba,spec.rgba))return false;
+  for(let i=0;i<stored.length;i++){
+    const glyph=stored[i],current=font.glyphs[glyph.character];
+    if(current!==glyph.source)return false;
+    if(!current)continue;
+    const values=glyph.values;
+    for(let k=0;k<glyphFields.length;k++)if(!Object.is(current[glyphFields[k]],values[k]))return false;
+    const image=textures.get(current.texture)?.image;
+    if(image!==glyph.image||image?.width!==glyph.width||image?.height!==glyph.height)return false;
+  }
+  return true;
 }
 function remember(spec,text,width,height,x,y,scale,textures){
   // Include space even when it is absent from text: fixed fonts pad with it.
@@ -80,36 +89,36 @@ export class HudTextRenderer {
     return this.materials.get(name);
   }
   string(id) {
-    if(!this.strings.has(id))this.strings.set(id,{
-      scene:new THREE.Scene(),meshes:[],glyphCount:0,spec:null,
-    });
+    if(!this.strings.has(id)){
+      const spec=id==='string_special'?null:this.hud.specs.get(id);
+      this.strings.set(id,{mesh:null,glyphCount:0,spec,capacity:0});
+    }
     return this.strings.get(id);
   }
-  glyphMesh(entry,index,texture) {
-    if(!entry.meshes[index]){
-      const geometry=new THREE.BufferGeometry();
-      geometry.setAttribute('position',new THREE.Float32BufferAttribute(new Float32Array(12),3)
-        .setUsage(THREE.DynamicDrawUsage));
-      geometry.setAttribute('uv',new THREE.Float32BufferAttribute(new Float32Array(8),2)
-        .setUsage(THREE.DynamicDrawUsage));
-      geometry.setAttribute('color',new THREE.Uint8BufferAttribute(new Uint8Array(16),4,true)
-        .setUsage(THREE.DynamicDrawUsage));
+  stringMesh(entry,spec,texture) {
+    if(!entry.mesh){
+      const capacity=entry.capacity=spec.length,geometry=new THREE.BufferGeometry();
+      const dynamic=(array,size,normalized)=>new THREE.BufferAttribute(array,size,normalized).setUsage(THREE.DynamicDrawUsage);
+      geometry.setAttribute('position',dynamic(new Float32Array(12*capacity),3));
+      geometry.setAttribute('uv',dynamic(new Float32Array(8*capacity),2));
+      geometry.setAttribute('color',dynamic(new Uint8Array(16*capacity),4,true));
       // TL, TR, BL, BR. Retain 0045ed60's TL-to-BR diagonal; the pixel
       // camera reverses Y, so reverse winding to remain front-facing.
-      geometry.setIndex([0,3,1,0,2,3]);
+      const index=new Uint16Array(6*capacity);
+      for(let i=0;i<capacity;i++)index.set([i*4,i*4+3,i*4+1,i*4,i*4+2,i*4+3],i*6);
+      geometry.setIndex(new THREE.BufferAttribute(index,1));
       const mesh=new THREE.Mesh(geometry,this.material(texture));
-      mesh.frustumCulled=false;mesh.renderOrder=index;
-      entry.meshes.push(mesh);entry.scene.add(mesh);
+      mesh.frustumCulled=false;mesh.matrixAutoUpdate=false;
+      entry.mesh=mesh;entry.scene=null;
     }
-    return entry.meshes[index];
+    return entry.mesh;
   }
-  renderString(renderer,id,text,width,height,layout) {
+  /** Refresh one string's buffers; returns its glyph count. Drawing is the caller's. */
+  prepareString(id,text,width,height,layout) {
     const entry=this.string(id);
-    // captureNotification replaces the override on each native HUD update.
-    // Interpolated draws use that same snapshot, including while paused.
     if(id==='string_special'&&(!entry.spec||!sameOverride(entry.override,this.hud.specialOverride))){
       entry.override=copyOverride(this.hud.specialOverride);
-      entry.spec=getHudStringSpec(this.hud.config,id,{overrides:{[id]:entry.override}});
+      entry.spec=getHudStringSpec(this.hud.config,id,{overrides:{[id]:entry.override},font:entry.spec?.font});
     }
     const spec=id==='string_special'?entry.spec:this.hud.specs.get(id);
     if(!spec)throw new Error(`Original HUD string has not been loaded: ${id}`);
@@ -119,44 +128,42 @@ export class HudTextRenderer {
     if(!unchanged(entry.bufferState,spec,value,width,height,offsetX,offsetY,scale,this.textures)){
       const glyphs=spec.visible&&width>0&&height>0?layoutHudText(spec,text):[];
       entry.glyphCount=glyphs.length;
-      for(let i=glyphs.length;i<entry.meshes.length;i++)entry.meshes[i].visible=false;
       for(const [index,glyph]of glyphs.entries()){
         const source=glyph.source,texture=this.textures.get(source.texture);
         if(!texture)throw new Error(`Original HUD texture has not been loaded: ${source.texture}`);
-        const mesh=this.glyphMesh(entry,index,source.texture);
-        mesh.material=this.material(source.texture);mesh.visible=true;
+        const mesh=this.stringMesh(entry,spec,source.texture);
         const {position,uv,color}=mesh.geometry.attributes;
         const left=offsetX+glyph.x*scale,top=offsetY+glyph.y*scale;
         const right=left+glyph.width*scale,bottom=top+glyph.height*scale;
-        position.setXYZ(0,left,top,0);position.setXYZ(1,right,top,0);
-        position.setXYZ(2,left,bottom,0);position.setXYZ(3,right,bottom,0);
-        // 0045ed60 uses the atlas rectangle's exact edges, with no half-texel
-        // inset. Native DataTextures retain top-down row order (flipY=false),
-        // so original source y=0 is v=0 at the top of this quad.
+        const q=index*4;
+        position.setXYZ(q,left,top,0);position.setXYZ(q+1,right,top,0);
+        position.setXYZ(q+2,left,bottom,0);position.setXYZ(q+3,right,bottom,0);
         const image=texture.image,u0=source.x/image.width,v0=source.y/image.height;
         const u1=(source.x+source.width)/image.width,v1=(source.y+source.height)/image.height;
-        uv.setXY(0,u0,v0);uv.setXY(1,u1,v0);uv.setXY(2,u0,v1);uv.setXY(3,u1,v1);
-        for(let vertex=0;vertex<4;vertex++)color.array.set(spec.rgba,vertex*4);
+        uv.setXY(q,u0,v0);uv.setXY(q+1,u1,v0);uv.setXY(q+2,u0,v1);uv.setXY(q+3,u1,v1);
+        for(let channel=0,c=q*4;channel<16;channel++)color.array[c+channel]=spec.rgba[channel&3];
         position.needsUpdate=uv.needsUpdate=color.needsUpdate=true;
       }
+      if(entry.mesh){entry.mesh.geometry.setDrawRange(0,entry.glyphCount*6);entry.mesh.visible=entry.glyphCount>0;}
       entry.bufferState=remember(spec,value,width,height,offsetX,offsetY,scale,this.textures);
     }
-    if(!entry.glyphCount)return 0;
     if(this.width!==width||this.height!==height){
       this.width=width;this.height=height;
       this.camera.right=width;this.camera.bottom=height;this.camera.updateProjectionMatrix();
     }
-    renderer.setViewport(0,0,width,height);
-    const autoClear=renderer.autoClear;renderer.autoClear=false;
-    try{renderer.render(entry.scene,this.camera);}
-    finally{renderer.autoClear=autoClear;}
     return entry.glyphCount;
   }
+  renderString(renderer,id,text,width,height,layout) {
+    const count=this.prepareString(id,text,width,height,layout);
+    if(!count)return 0;
+    renderer.setViewport(0,0,width,height);
+    const autoClear=renderer.autoClear;renderer.autoClear=false;
+    try{renderer.render(this.strings.get(id).mesh,this.camera);}
+    finally{renderer.autoClear=autoClear;}
+    return count;
+  }
   dispose() {
-    for(const {scene,meshes}of this.strings.values()){
-      for(const mesh of meshes)mesh.geometry.dispose();
-      scene.clear();
-    }
+    for(const {mesh}of this.strings.values())mesh?.geometry.dispose();
     for(const material of this.materials.values())material.dispose();
     this.strings.clear();this.materials.clear();this.textures.clear();
     // Textures belong to textureLoader (shared with the native overlay).

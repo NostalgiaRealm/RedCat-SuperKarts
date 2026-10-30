@@ -234,7 +234,7 @@ def main():
             rgb=im.convert('RGB');rgb.save(target)
             with Image.open(target) as converted:
                 if converted.convert('RGB').tobytes()!=rgb.tobytes():raise ValueError('Lossy help image conversion')
-            images[source_image.name.lower()]={'file':'/assets/help/images/'+target.name,'width':im.width,'height':im.height,
+            images[source_image.name.lower()]={'file':'assets/help/images/'+target.name,'width':im.width,'height':im.height,
                 'sourceSHA256':sha(source_image.read_bytes()),'pixelSHA256':sha(rgb.tobytes())}
     native_topics={context:topic for topic in navigation['topics'] for context in topic['contextIds']}
     topics=[];ids={t['id'] for t in reader.topics}
@@ -272,7 +272,7 @@ def main():
     baggage=[]
     for source_audio in sorted(args.raw/name for name in extracted_names if name.lower().endswith('.wav')):
         target=args.output/source_audio.name.lower();shutil.copyfile(source_audio,target)
-        baggage.append({'file':'/assets/help/'+target.name,'sourceSHA256':sha(source_audio.read_bytes())})
+        baggage.append({'file':'assets/help/'+target.name,'sourceSHA256':sha(source_audio.read_bytes())})
     # Helpdeco recovers context names by hash guessing; numeric map is authoritative.
     limits=['Context aliases may be helpdeco hash guesses; numeric contexts and link hashes are checked directly against the original HLP.',
             'Browser window layout adapts to the viewport; native Windows window-manager placement is not emulated.',

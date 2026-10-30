@@ -7,7 +7,7 @@ export function originalMusicGain(percent){
 
 export class TrackMusic{
   constructor(file,percent=100){
-    this.audio=new Audio('/assets/'+file);
+    this.audio=new Audio('assets/'+file);
     // 0x48ec20(1), 0x48ef80: reset/restart on a game-thread completion poll.
     // An autonomous HTML loop would incorrectly restart during P/quit pause.
     this.audio.loop=false;this.setVolume(percent);this.blocked=false;

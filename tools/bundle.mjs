@@ -2,6 +2,8 @@ import {build} from 'esbuild';
 import {mkdir,readFile,writeFile,cp} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {existsSync} from 'node:fs';
+import {buildMeshPack} from './mesh-pack.mjs';
 
 export const projectRoot=fileURLToPath(new URL('..',import.meta.url));
 
@@ -19,7 +21,7 @@ export async function bundleRuntime(destination,{root=projectRoot}={}){
     absWorkingDir:root,entryPoints:['source/main.js'],outdir:path.join(output,'src'),
     entryNames:'[name]',chunkNames:'chunks/[name]-[hash]',bundle:true,splitting:true,
     format:'esm',platform:'browser',target:'es2022',metafile:true,write:true,
-    sourcemap:true,keepNames:true,legalComments:'eof',
+    sourcemap:true,legalComments:'eof',
     // Whitespace only: preserve arithmetic expressions and property names.
     minifyWhitespace:true,minifyIdentifiers:false,minifySyntax:false,
     treeShaking:true,logLevel:'silent',
@@ -47,8 +49,15 @@ export async function bundleRuntime(destination,{root=projectRoot}={}){
     return {path:path.relative(output,absolute).split(path.sep).join('/'),bytes};
   }));
   outputs.sort((a,b)=>a.path.localeCompare(b.path));
+  const meshes=path.join(root,'public/assets/meshes'),data=[];
+  if(existsSync(meshes)){
+    const pack=await buildMeshPack(meshes);
+    await writeFile(path.join(output,'src/mesh-pack.bin'),pack.buffer);
+    await writeFile(path.join(output,'src/mesh-pack.json'),JSON.stringify(pack.entries)+'\n');
+    data.push('src/mesh-pack.bin','src/mesh-pack.json');
+  }
   const manifest={format:'rcsk-runtime-v1',entry:'src/main.js',
-    files:[...outputs.filter(file=>file.path.endsWith('.js')).map(file=>file.path),'src/style.css'],
+    files:[...outputs.filter(file=>file.path.endsWith('.js')).map(file=>file.path),'src/style.css'],data,
     sourceModules:Object.keys(result.metafile.inputs).length,
     javascriptBytes:outputs.filter(file=>file.path.endsWith('.js')).reduce((sum,file)=>sum+file.bytes,0),
     outputs};

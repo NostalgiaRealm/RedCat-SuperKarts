@@ -98,7 +98,7 @@ directly during suspension or free-flight changes.
 
 The source HTTP server and Electron protocol now serve SVG as `image/svg+xml`.
 No external asset service is needed at runtime. The generated bonus button is
-stored locally as [bonus.png](../public/assets/touch/bonus.png), with the complete
+stored locally, at 320×320 pixels since the [mobile performance work](mobile-performance.md), as [bonus.png](../public/assets/touch/bonus.png), with the complete
 [built-in image-generation prompt](../public/assets/touch/bonus-prompt.txt).
 Its transparent RGBA image is new artwork, separate from the CC0 SVG set and
 the recovered RedCat assets.

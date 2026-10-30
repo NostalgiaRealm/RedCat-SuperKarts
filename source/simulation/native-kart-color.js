@@ -1,4 +1,4 @@
-import { nativeTriangleContainsXZ } from './native-track.js';
+import { nativeFacePlane } from './native-track.js';
 import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
@@ -15,15 +15,8 @@ export function nativeKartBrightness(config, trackId) {
 export function sampleNativeKartGroundColor(world, body) {
   const sector = world.sectors[body.sector];
   if (!sector) throw new RangeError('Invalid native kart sector');
-  const [x, , z] = body.position ?? [body.x, body.y, body.z];
-  for (const kind of ['road', 'land', 'extra']) {
-    for (const plane of sector.triangles[kind]) {
-      if (plane.normal[1] > f32(.4) && nativeTriangleContainsXZ(x, z, plane.vertices)) {
-        return plane.diffuse;
-      }
-    }
-  }
-  return 0xffffff;
+  const position = body.position, x = position ? position[0] : body.x, z = position ? position[2] : body.z;
+  return nativeFacePlane(sector, x, z)?.diffuse ?? 0xffffff;
 }
 
 /**
@@ -33,20 +26,17 @@ export function sampleNativeKartGroundColor(world, body) {
  */
 export function advanceNativeKartColor(diffuse, groundDiffuse, forwardSpeed, deltaSeconds,
   brightness = [0, 0, 0], { precision = NATIVE_PRECISION } = {}) {
-  const r = precision === 24 ? f32 : value => value;
+  const r = precision === 24 ? f32 : Number;
   const alpha = diffuse >>> 24;
-  const old = [(diffuse >>> 16) & 255, (diffuse >>> 8) & 255, diffuse & 255];
-  const target = [(groundDiffuse >>> 16) & 255, (groundDiffuse >>> 8) & 255, groundDiffuse & 255];
+  const oldR = (diffuse >>> 16) & 255, oldG = (diffuse >>> 8) & 255, oldB = diffuse & 255;
   const speedFactor = f32(r(r(Math.abs(f32(forwardSpeed)) * f32(.1)) + 1));
   const factor = r(f32(deltaSeconds) * speedFactor);
-  const smooth = old.map((value, i) => {
-    const channel = r(r((target[i] - value) * factor) + value);
-    // Blue stays on the x87 stack; red and green spill to float locals.
-    return i === 2 ? channel : f32(channel);
-  });
-  const render = smooth.map((value, i) => {
-    const channel = r(value + f32(brightness[i]));
-    return Math.min(255, i === 2 ? channel : f32(channel));
-  });
-  return { diffuse: pack(alpha, ...smooth), renderDiffuse: pack(alpha, ...render) };
+  // Blue stays on the x87 stack; red and green spill to float locals.
+  const smoothR = f32(r(r((((groundDiffuse >>> 16) & 255) - oldR) * factor) + oldR));
+  const smoothG = f32(r(r((((groundDiffuse >>> 8) & 255) - oldG) * factor) + oldG));
+  const smoothB = r(r(((groundDiffuse & 255) - oldB) * factor) + oldB);
+  return { diffuse: pack(alpha, smoothR, smoothG, smoothB), renderDiffuse: pack(alpha,
+    Math.min(255, f32(r(smoothR + f32(brightness[0])))),
+    Math.min(255, f32(r(smoothG + f32(brightness[1])))),
+    Math.min(255, r(smoothB + f32(brightness[2])))) };
 }

@@ -1,4 +1,5 @@
-const artPath=name=>'/assets/menu/'+name.replace('(IMAGEBASE)','').replace(/\.bmp$/i,'.png').toLowerCase();
+import {assetURL} from './asset-url.js';
+const artPath=name=>'assets/menu/'+name.replace('(IMAGEBASE)','').replace(/\.bmp$/i,'.png').toLowerCase();
 import {adaptNativePortrait} from './native-portrait.js';
 import {nativeFormTabOrder} from './native-tab-order.js';
 import {bindNativeSlider,nativeSliderProperties} from './native-slider.js';
@@ -48,7 +49,7 @@ export class NativeMenu {
         if(def){
           for(const [state,field]of [['up','UpLink.Filename'],['hover','HoveredLink.Filename'],['focus','FocusedLink.Filename'],['down','DownLink.Filename'],['disabled','DisabledLink.Filename']]){
             const file=def[field]||def['UpLink.Filename'];
-            if(file)element.style.setProperty('--'+state,`url("${artPath(file)}")`);
+            if(file)element.style.setProperty('--'+state,`url("${assetURL(artPath(file))}")`);
           }
           applyNativeMenuRegion(element,manifest[def['RegionLink.Filename']?.replace('(IMAGEBASE)','').toLowerCase()]?.region,w,h);
         }

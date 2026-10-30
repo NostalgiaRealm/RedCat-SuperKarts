@@ -6,10 +6,10 @@ import { nativeAIItemGuard, nativeAICatchupGuard, prepareNativeAIFireState,
   prepareNativeAICatchupState, resetNativeAIItemState, applyNativeAITrackTriggers } from './native-ai-items.js';
 import { nativeStandardKartInertia } from './native-motion.js';
 import { integrateNativeEuler, quantizeNativePlanarVelocity } from './native-integrator.js';
-import { nativeRotationMatrix } from './native-transform.js';
+import { nativeRotationMatrix, nativeRotationMatrix53 } from './native-transform.js';
 import { applyNativeRailContact } from './native-collision.js';
 import { createNativeGroundState, updateNativeGround } from './native-ground.js';
-import { selectNativeSector, sampleNativeTrack } from './native-track.js';
+import { selectNativeSector, nativeSectorAt, nativeTrackHeight } from './native-track.js';
 import { NATIVE_PRECISION } from './native-precision.js';
 
 const f32 = Math.fround;
@@ -82,6 +82,39 @@ export class NativeWaypointOccupancy {
   }
 }
 
+// 0x4024d0's condition table, one for all NPCs. decide() names the asker; a
+// guard never re-enters decide().
+let guardDriver, guardDelta, guardContext;
+const NPC_GUARDS = Object.freeze({
+  '402040': () => nativeAIStuck(guardDriver.state),
+  '401570': () => nativeAIPlayerBehind(guardDriver.body, guardDriver.state, guardContext.player, guardContext.rank, { precision: guardDriver.precision }),
+  '4016e0': () => nativeAIStartChase(guardDriver.body, guardDriver.state, guardContext.rank, guardDelta, guardDriver.random, { precision: guardDriver.precision }),
+  '40ca90': () => !guardDriver.state.forcedRoute,
+  '40cd00': () => false, // Empty original condition.
+  '40cd30': () => false, // Computes an unused scan limit; always returns0.
+  '40cde0': () => {
+    const { owned, itemRank, rank, player, racers, time, shared, reactionMs, playerProtected } = guardContext;
+    if (owned.state === 2 && (owned.type === 1 || owned.type === 2) && !Number.isInteger(itemRank)) {
+      throw new TypeError('Native shooter rank uses its object index and must be supplied explicitly');
+    }
+    return nativeAIItemGuard(guardDriver.track, guardDriver.body, guardDriver.state, owned, {
+      player, racers, rank: itemRank ?? rank, now: time, shared, reactionMs, playerProtected, precision: guardDriver.precision,
+    });
+  },
+  '40d070': () => {
+    const { rank, playerRank, catchupMs, time, reactionMs, player } = guardContext, driver = guardDriver, mode = driver.state.mode;
+    const result = nativeAICatchupGuard(driver.state, {
+      rank, playerRank, catchupMs, now: time, reactionMs, precision: driver.precision,
+    });
+    if (result) driver.voices?.npcCatchup({
+      racer: driver.body.id, mode, activated: result.announce,
+      sector: driver.body.sector, playerSector: player.sector,
+      sectorCount: driver.track.sectorCount,
+    });
+    return Boolean(result);
+  },
+});
+
 /**
  * Connected racer movement and the active original FSM. Supply decision
  * context for automatic selection; isolated handler tests can omit selection.
@@ -131,8 +164,7 @@ export class NativeAIDriver {
   }
 
   // 0x496290 leaves the height in ST0; updateNativeGround stores it where 0x416650 does.
-  sampleGround = (x, y, z) => sampleNativeTrack(this.world, this.body.sector, x, y, z,
-    { precision: this.precision }).height;
+  sampleGround = (x, y, z) => nativeTrackHeight(this.world, this.body.sector, x, z, this.precision);
   // 0x413330: 0x4977d0 selection, then the 0x494b70 ST0 height. Its caller
   // updateNativeAIVerticalSpring performs the 0x41346e FSTP float.
   sampleRouteHeight = (x, y, z) => nativeRouteSpringHeight(this.world, this.body.sector, x, z,
@@ -150,34 +182,8 @@ export class NativeAIDriver {
       || !Number.isInteger(playerRank) || !Number.isFinite(time)) {
       throw new TypeError('Complete original NPC decision context is required');
     }
-    return updateNativeAITransition(this.state, {
-      '402040': () => nativeAIStuck(this.state),
-      '401570': () => nativeAIPlayerBehind(this.body, this.state, player, rank, { precision }),
-      '4016e0': () => nativeAIStartChase(this.body, this.state, rank, dt, this.random, { precision }),
-      '40ca90': () => !this.state.forcedRoute,
-      '40cd00': () => false, // Empty original condition.
-      '40cd30': () => false, // Computes an unused scan limit; always returns0.
-      '40cde0': () => {
-        if (owned.state === 2 && [1, 2].includes(owned.type) && !Number.isInteger(itemRank)) {
-          throw new TypeError('Native shooter rank uses its object index and must be supplied explicitly');
-        }
-        return nativeAIItemGuard(this.track, this.body, this.state, owned, {
-          player, racers, rank: itemRank ?? rank, now: time, shared, reactionMs, playerProtected, precision,
-        });
-      },
-      '40d070': () => {
-        const mode = this.state.mode;
-        const result = nativeAICatchupGuard(this.state, {
-          rank, playerRank, catchupMs, now: time, reactionMs, precision,
-        });
-        if (result) this.voices?.npcCatchup({
-          racer: this.body.id, mode, activated: result.announce,
-          sector: this.body.sector, playerSector: player.sector,
-          sectorCount: this.track.sectorCount,
-        });
-        return Boolean(result);
-      },
-    });
+    guardDriver = this; guardDelta = dt; guardContext = context;
+    return updateNativeAITransition(this.state, NPC_GUARDS);
   }
 
   /** 0x40b0b0 -> selector ->0x406940; no normal-driving substitute for other states. */
@@ -191,7 +197,7 @@ export class NativeAIDriver {
     // NPCs can change mode during the countdown, while movement remains idle.
     if (decision && (active || decision.player)) this.decide(deltaSeconds, decision);
     if (active) {
-      if (!Number.isInteger(progressDifference) || ![0, 1, 2].includes(difficulty)) {
+      if (!Number.isInteger(progressDifference) || (difficulty !== 0 && difficulty !== 1 && difficulty !== 2)) {
         throw new TypeError('Native catch-up requires difficulty and integer progress difference');
       }
       const normal = () => {
@@ -203,7 +209,7 @@ export class NativeAIDriver {
           });
       };
       if (this.state.mode === 0) normal();
-      else if ([1, 2, 3].includes(this.state.mode)) {
+      else if (this.state.mode === 1 || this.state.mode === 2 || this.state.mode === 3) {
         this.path = prepareNativeChaseAI(this.track, this.body, this.controls, this.state,
           this.racer, this.playerRacer, deltaSeconds, this.random, {
             occupancy: this.occupancy.nodes, player: decision?.player,
@@ -218,7 +224,7 @@ export class NativeAIDriver {
           time: decision?.time, sampleRouteHeight: this.sampleRouteHeight,
           respawn: decision?.rescue, precision,
         });
-      } else if ([24, 25].includes(this.state.mode)) {
+      } else if (this.state.mode === 24 || this.state.mode === 25) {
         // 0x40e6d0 replaces normal driving while the native hit effect is active.
         if (typeof effect !== 'function') throw new TypeError('NPC hit state requires the original effect callback');
         if (!effect()) {
@@ -270,7 +276,9 @@ export class NativeAIDriver {
     if (slippery || this.state.slippery || slipperyWaypoint) {
       // 0x40b417..0x40b442: each FLD/FMUL .98/FSTP float is one stored float
       // product, so the damping is precision-independent.
-      for (const key of ['lateralSpeed', 'verticalSpeed', 'forwardSpeed']) this.body[key] = f32(this.body[key] * f32(.98));
+      this.body.lateralSpeed = f32(this.body.lateralSpeed * f32(.98));
+      this.body.verticalSpeed = f32(this.body.verticalSpeed * f32(.98));
+      this.body.forwardSpeed = f32(this.body.forwardSpeed * f32(.98));
     }
     // NPC 0x41c4b0 uses the route's derived plane, before the triangle ground
     // callback. The 0x494b70 height stays in ST0 for the FSUB at 0x41c72f.
@@ -282,21 +290,22 @@ export class NativeAIDriver {
   }
 
   /** Flags3 NPCs use one Euler step and skip the player's sliding second sweep. */
-  integrate() {
+  integrate(snapshot = true) {
     if (!this.prepared) throw new Error('Prepare the native frame before integrating');
     const { deltaSeconds } = this.prepared, body = this.body, precision = this.precision;
     quantizeNativePlanarVelocity(body, precision);
     this.occupancy.remove(body);
     const collision = this.collision.sweep(body, deltaSeconds);
-    integrateNativeEuler(body, NO_FORCE, deltaSeconds, { ...collision, precision });
-    body.matrix = nativeRotationMatrix([body.pitch, body.yaw, body.roll], { precision });
+    integrateNativeEuler(body, NO_FORCE, deltaSeconds, collision, precision);
+    body.matrix = precision === 24 ? nativeRotationMatrix([body.pitch, body.yaw, body.roll], { precision })
+      : nativeRotationMatrix53(body.pitch, body.yaw, body.roll);
     if (collision?.contact) {
       if (this.collision.resolve) this.collision.resolve(body, collision.contact);
       else applyNativeRailContact(body, collision.contact, { precision });
     }
     this.collision.finishStep?.(body, collision?.contact);
     body.previousSector = body.sector;
-    body.sector = selectNativeSector(this.world, body.sector, body.x, body.z, { precision });
+    body.sector = nativeSectorAt(this.world, body.sector, body.x, body.z, precision);
     this.occupancy.insert(body);
     if (!this.groundInitialized) {
       const initial = createNativeGroundState(body, this.ground.wheels, { precision });
@@ -307,7 +316,7 @@ export class NativeAIDriver {
       { clock: this.groundClock, player: false, precision });
     this.prepared = null;
     this.updates++;
-    return this.snapshot();
+    return snapshot ? this.snapshot() : undefined;
   }
 
   snapshot() {

@@ -148,7 +148,8 @@ measured wall clock and gives native absolute-time consumers the same clock
 with the declared60-second epoch. Physical-key events remain immediate, and
 gamepad state is polled at update admission as well as display refresh.
 
-Every active browser animation frame still draws the world and HUD. Kart and
+A display frame can serve an update timer that is already late (more than 4 ms past
+the 25 ms minimum), through the same gate and measured delta as the timer. Every active browser animation frame still draws the world and HUD. Kart and
 camera interpolation uses the previous measured update interval. Kart shadows
 and, with **Motorlicht volgt de kart** on, kart engine flares use the same
 alpha; see [streams](research-streams.md#browser-enhancement-engine-lights-follow-the-kart). Rendering
