@@ -100,7 +100,10 @@ Two apparent gaps were rejected after checking original reachability:
 The caller review also checked `0x42f4c0`, `0x491530/0x491d30`, player
 `0x4325b0`, NPC `0x40b0b0/0x406940`, lap/timer handlers, and results
 `0x417d00/0x42c4c0`. No further confirmed mismatch was established in those
-reviewed compositions. This is bounded evidence, not a claim that every
+reviewed compositions at the time. The later
+[28 October comparison](original-comparison-2026-10-28.md) found three there:
+the player's waypoint order in `0x491d30`, the player-record random draw
+reached from `0x4325b0`, and live progress in `0x417d00`. This is bounded evidence, not a claim that every
 instruction in every game subsystem has an equivalent JavaScript statement.
 
 ## Focused verification

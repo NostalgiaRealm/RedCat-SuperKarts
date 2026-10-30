@@ -17,6 +17,13 @@ test also ran in Firefox 146. Their evidence outputs were restored, so
 existing evidence records are unchanged. Package launch tests, full races and
 physical devices were not run.
 
+## Full unit suite after 1.0.1 — 28 October 2026
+
+One `npm test` run on the released 1.0.1 source passed all 668 tests, with
+none failed or skipped. The 1.0.1 packages passed their packaging integrity
+checks on all four platforms but were not launch-tested. See the comparison
+report's [later validation](original-comparison-2026-10-28.md#later-validation).
+
 ## Original-code follow-up — 28 October 2026
 
 After 1.0.1, the [comparison report](original-comparison-2026-10-28.md)

@@ -88,6 +88,9 @@ The [26 October original-code comparison](full-source-audit.md) adds the complet
 five-module decompilation reference and fixes newly confirmed menu entry,
 name-release, bonus/engine order and pause/music differences. Its focused
 instruction/browser checks do not replace the broader validation below.
+The [28 October comparison](original-comparison-2026-10-28.md) fixes ten
+further differences, released in 1.0.1, and records its coverage and open
+questions.
 
 | Priority | Work | Evidence and limits |
 | --- | --- | --- |
@@ -96,6 +99,8 @@ instruction/browser checks do not replace the broader validation below.
 | Medium | Drive all 24 Adventure events consecutively through the normal UI, saving, unlocks and movies. | Existing consecutive checks inject final-lap/star outcomes; they verify transitions, not a naturally driven campaign. Only 40/72 historical matrix cases qualify for Adventure; legitimate losses are separate from finishing. See [campaign check scope](research-followup-audit.md#consecutive-adventure-integration). |
 | Medium | Compare against a functioning original Windows race. | Full framebuffer, audible mix, trajectories, cameras and animation comparisons remain unavailable under WineD3D. x87 precision: runs under dgVoodoo2 and Wine, the disc's DirectX 7 runtime and static checks of DirectX 5.0/6.0/8.0/9 indicate 53-bit gameplay arithmetic, and the port defaults to 53-bit (`NATIVE_PRECISION`); real Windows, DirectX 5.2/6.1 and retail drivers are not observed (see [gameplay precision](original-comparison-2026-10-28.md#gameplay-precision-runtime-check) and [phase 3](original-comparison-2026-10-28.md#53-bit-switch-phase-3-default-switched)). Historical GPU filtering, rounding and dithering need a defined reference device. See [AI precision](research-ai.md#validation-and-precision) and [validation limits](validation.md#platform-and-device-limits). |
 | Medium | Check target platforms and real devices. | Native Windows/macOS gameplay, Safari, real Android/iOS, physical controllers, GPU/audio hardware and high-refresh displays remain outside the recorded Linux software-rendered scope. Both Mac package architectures are now built on macOS, with ad-hoc signing; that does not establish gameplay validation. See [desktop scope](desktop.md#validation-scope) and [platform matrix](validation.md#platform-and-device-limits). |
+| Medium | Finish the 28 October comparison's open items. | Re-derive the areas it relied on earlier evidence for: weather, jet streams, rescue internals, explosion particles, kart contact routines, start camera and countdown timing, and Adventure progression and unlocks. Settle the opponent object-index/AI-slot question, the `0x416650` summation order and the extra phase-4 frame. Precision mode, zero lap-time text, slider steps and Tab need a working original Windows setup. See its [coverage](original-comparison-2026-10-28.md#coverage) and [open questions](original-comparison-2026-10-28.md#unresolved-questions). |
+| Medium | Launch-test the 1.0.1 packages and run the remaining browser and desktop checks. | Packaging integrity checks passed on all four platforms, and 14 browser tests passed in headless Chromium, but the finished packages were not launched, 31 browser tests and the Electron checks were not run, and controller paths were not exercised. See [browser validation](original-comparison-2026-10-28.md#browser-validation). |
 | Lower | Broaden recovery coverage during those playthroughs. | The England tyre case is fixed in all four modes. Initial-node coverage does not guarantee a safe destination with arbitrary moving occupancy, every character or at a new lap. No new broken recovery case was established by this audit. See [recovery limits](research-player-recovery-regressions.md#all-course-candidate-audit). |
 
 ## Optional or intentionally deferred
@@ -107,9 +112,9 @@ instruction/browser checks do not replace the broader validation below.
   is resolved: the source has no authored sequence or popup links. Native
   Windows window placement and non-scrolling header rendering remain browser
   presentation adaptations. See [Help navigation](research-help-navigation.md).
-- URL-subdirectory hosting, nonstandard controller mappings, the old software
-  renderer and custom fog/device profiles would extend the current supported
-  scope. Subdomain-root hosting and standard controllers already have source
+- Nonstandard controller mappings, the old software renderer and custom
+  fog/device profiles would extend the current supported scope. Hosting at a
+  domain root or in a URL folder and standard controllers already have source
   support.
 
 ## Already implemented or deliberately unchanged

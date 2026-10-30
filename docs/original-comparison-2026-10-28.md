@@ -1,8 +1,11 @@
 # Original-code comparison — 28 October 2026
 
 This report covers a read-only comparison of the `main` checkout at
-`991cba9f` against the recovered native code, followed by six approved
-corrections. It records bounded static and instruction evidence. It does not
+`991cba9f` against the recovered native code and the ten approved corrections
+that followed: items 1–6 with a pause follow-up, then items 7–10. All ten are
+in the published 1.0.1 release. It
+records bounded static and instruction evidence; see [coverage](#coverage)
+for what this pass did and did not re-check. It does not
 establish complete equivalence with the original game, and no comparison
 against a working original Windows installation was possible.
 
@@ -1149,6 +1152,45 @@ No difficulty table, deadline, qualification rule or collision geometry was
 changed. Saves, profiles, unlocks, settings, high scores and records load
 unchanged; the only storage addition is `playerPosition`.
 
+## Coverage
+
+The comparison traced call order, data and state for the areas below. Apart
+from the ten corrections, the reviewers found them matching, checked against
+assembly, original tables and callers (addresses in `rcskspel.dat` unless
+noted). Matching here means no difference was found in the traced paths, not
+that every instruction was compared.
+
+- **Player driving:** callback order in `0x4325b0`; forces `0x414160`,
+  `0x415990` and their helpers; gears `0x415840`; body setup `0x48fda0`;
+  integration `0x491d30`/`0x4911a0`; wheel pose `0x41c0b0`; ground callback
+  `0x416650`; keyboard and analog mapping.
+- **Opponent AI:** callback order `0x40b0b0`; state transitions
+  `0x406940`/`0x407150`; rubber-band tables `0x4062b0`, `0x405fd0`,
+  `0x406100`; ranking `0x406be0`; guards `0x401570`, `0x4016e0`, `0x402040`,
+  `0x40cde0`, `0x40d070`; lane order `0x40f0b0`; markers `0x4067e0`/`0x406470`;
+  profiles `0x40fe50`; delta filter `0x48f4e0`.
+- **Race rules:** lap and finish handlers `0x440dd0`, `0x440e40`, `0x440c30`,
+  `0x440d70`; time gates `0x441e70`/`0x42f170`; timer bank
+  `0x42a210`–`0x42a700`; result gates `0x41fd90`/`0x420850`; result writer
+  `0x42c4c0`; `rcskmenu.dat` debrief and briefing records.
+- **Items and effects:** bonus controller `0x451200`; pickups `0x4514e0`,
+  `0x453fd0`, `0x4540c0`; firing `0x451640`/`0x455490`; flight and hits
+  `0x455ce0`/`0x455b00`; hit effects `0x411830`, `0x411b40`, `0x411e50`,
+  `0x412090`; skidmarks `0x426aa0`; smoke `0x428690`, `0x432240`, `0x420490`;
+  squash `0x48e480` and related routines; type-2 scenery `0x43df60`.
+- **Presentation and audio:** cameras `0x41d920`, `0x41e280`, `0x498950`; HUD
+  notices `0x430610`, statistics `0x46ecc0`, minimap, stars `0x46e070` and
+  portraits `0x46b5e0`; audio conversions `0x49d520`, `0x49d5e0`, `0x431610`;
+  skid and crash sounds `0x432190`/`0x434f20`; `rcskmenu.dat` menu sounds,
+  options, requester `0x470560` and movie forms.
+
+**Not re-derived in this pass** (it relied on earlier research and fixtures):
+weather `0x4818c0`/`0x482020`; jet streams `0x488b40`/`0x48a530`; rescue
+internals; explosion particles `0x483fc0`; kart sweep and contact routines
+`0x499c30`, `0x492470`, `0x49c220`, `0x49b9c0`; start camera and countdown
+timing; and, in `rcskmenu.dat`, Adventure progression, unlocks, the profile
+bank, Help and high-score name entry.
+
 ## Validation performed
 
 - `npm run bundle` regenerated `src/` and `runtime-manifest.json`.
@@ -1182,7 +1224,23 @@ unchanged; the only storage addition is `playerPosition`.
 - **Not run at the time:** `tests/star-hud-browser.mjs` and
   `tests/powerup-audio-browser.mjs`, because no Chrome or Chromium was
   installed. Both later passed; see [browser validation](#browser-validation).
-- The full test suite, desktop packages and full races were not run.
+- The full test suite, desktop packages and full races were not run at that
+  time; see [later validation](#later-validation).
+
+## Later validation
+
+- **Release packaging (1.0.1):** the normal build checks passed for all four
+  packages. Each integrity report says "passed", with the same 6,748 game
+  files and game-tree hash `80a99e1d…` on Linux x64, Windows x64 (both built
+  on Fedora Linux) and macOS Intel and Apple Silicon (built by the
+  [macOS workflow](https://github.com/NostalgiaRealm/RedCat-SuperKarts/actions/runs/40708703181)).
+  The finished packages were not launched.
+- **Full unit suite:** one `npm test` run on the released source (tag
+  `v1.0.1`, plus documentation-only edits) passed all 668 tests, with none
+  failed or skipped, in about 24 seconds on Fedora Linux x64 with Node.js
+  v24.13.1.
+- Still not run: the remaining 31 browser tests, Electron desktop checks,
+  launch tests of the packages, full races and physical devices.
 
 ## Unresolved questions
 
@@ -1195,7 +1253,10 @@ unchanged; the only storage addition is `playerPosition`.
   no reference here.
 - Settled: the HUD text when timer 0 reads 0 (`00:00:00`), the slider steps,
   and Tab on the intro (no skip); see [remaining items closed](#remaining-items-closed-29-october-2026).
-- The opponent object index and the `0x416650` up-vector order are settled;
-  see [questions settled by the second pass](#questions-settled-by-the-second-pass).
+- The opponent object index, the `0x416650` up-vector order and the extra
+  phase-4 frame are settled; see
+  [questions settled by the second pass](#questions-settled-by-the-second-pass).
+- Controller skipping of the intro and other gamepad paths were not exercised
+  in a browser.
 - Whole-race trajectories, audio and rendering against a working original
   Windows installation; WineD3D is not an authoritative reference.

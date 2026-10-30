@@ -2,7 +2,9 @@
 
 Date: 26 October 2026. This document records the requested source-only
 decompilation and comparison. It is separate from the release changelog and
-from historical validation checkpoints.
+from historical validation checkpoints. The later
+[28 October comparison](original-comparison-2026-10-28.md) records ten further
+corrections, released in 1.0.1.
 
 ## Reading the original-code reference
 

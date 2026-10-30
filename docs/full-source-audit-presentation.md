@@ -6,6 +6,8 @@ inferred types and identifiers, not the lost author-written source. Findings
 below use the shipped `rcskspel.dat` instructions (SHA-256
 `68e5c9139a9251d36b5cbb526738c5a3ce7d85c17bc95793927da705ad65fd4f`),
 the existing per-function exports, original configuration and current callers.
+The later [28 October comparison](original-comparison-2026-10-28.md) corrected
+two further presentation differences: volume percentages and intro skip keys.
 
 ## Corrections made
 
