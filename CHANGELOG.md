@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **FPS weergeven** in **Meer instellingen**, off by default: shows the frames per
+  second during a race.
+
+### Changed
+
+- Phones and tablets with a 90 or 120 Hz display draw at most about 60 frames per
+  second, which keeps them cooler. Desktops stay uncapped.
+
 ## 1.0.3 — 2026-10-30
 
 Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS

@@ -17,6 +17,7 @@ const profiles={
   portrait:{viewport:{width:393,height:852},deviceScaleFactor:3,isMobile:true,hasTouch:true},
   landscape:{viewport:{width:852,height:393},deviceScaleFactor:3,isMobile:true,hasTouch:true},
   budget:{viewport:{width:360,height:800},deviceScaleFactor:2,isMobile:true,hasTouch:true},
+  target:{viewport:{width:800,height:360},deviceScaleFactor:2,isMobile:true,hasTouch:true},
   desktop:{viewport:{width:1280,height:720},deviceScaleFactor:1},
 };
 const profileName=option('profile','portrait'),device=profiles[profileName];
@@ -222,24 +223,46 @@ async function countPass(browser){
 }
 
 async function livePass(browser){
-  // The real loops with rAF, timers and throttled main thread.
+  // The real loops with rAF, timers and a throttled main thread. The player follows
+  // the route and fires bonuses, and every 90 updates moves 6 sectors ahead, so
+  // the run draws the whole track, not only the part this simple driver reaches.
   const {context,page}=await openRace(browser);
   const client=await context.newCDPSession(page);
   await client.send('Emulation.setCPUThrottlingRate',{rate:throttle});
-  await page.keyboard.down('ArrowUp');
-  const live=await page.evaluate(()=>new Promise(resolve=>{
-    const view=window.rcsk.viewer,frames=[],long=[];
-    const startTick=view.clock.tick;
+  const live=await page.evaluate(seconds=>new Promise(resolve=>{
+    const view=window.rcsk.viewer,sim=view.simulation,route=sim.race.track.route,mirror=sim.race.track.mirrored?-1:1;
+    const snapshot=view.input.snapshot.bind(view.input),sectors=new Set();let polls=0,visit=sim.motion.body.sector;
+    view.input.snapshot=()=>{
+      const body=sim.motion.body;
+      if(polls&&polls%90===0){
+        visit=(visit+6)%route.length;
+        body.position[0]=route[visit].position[0];body.position[1]=route[visit].position[1]+10;body.position[2]=route[visit].position[2];
+        body.sector=body.previousSector=visit;body.forwardSpeed=20;
+      }
+      const target=route[(body.sector+3)%route.length].position;
+      const dx=target[0]-body.position[0],dz=target[2]-body.position[2];
+      const angle=Math.atan2(body.matrix[8]*dx-body.matrix[6]*dz,body.matrix[6]*dx+body.matrix[8]*dz)*mirror;
+      sectors.add(body.sector);
+      const sharp=Math.abs(angle)>.5&&body.forwardSpeed>0;
+      return {...snapshot(),throttle:sharp&&polls%4?0:1,brake:0,steer:angle>.08?1:angle<-.08?-1:0,bonus:polls++%90<3?1:0};
+    };
+    const frames=[],windows=[],long=[],startTick=view.clock.tick,first=performance.now(),calls=[];
     new PerformanceObserver(list=>{for(const entry of list.getEntries())long.push(entry.duration);}).observe({type:'longtask',buffered:false});
-    let last=performance.now();const end=last+12000;
-    const step=now=>{frames.push(now-last);last=now;if(now<end)requestAnimationFrame(step);
-      else resolve({frames,long,ticks:view.clock.tick-startTick,seconds:12});};
+    let last=first,count=0,mark=first,maxSpeed=0,calledMax=0;const secondSectors=[];
+    const step=now=>{
+      frames.push(now-last);last=now;count++;
+      maxSpeed=Math.max(maxSpeed,sim.playerSpeedKmh);if(now-mark>=1000)secondSectors.push(sim.motion.body.sector);calledMax=Math.max(calledMax,view.renderStats?.world?.calls??0);
+      if(now-mark>=1000){windows.push(count*1000/(now-mark));count=0;mark=now;}
+      if(now-first<seconds*1000)requestAnimationFrame(step);
+      else resolve({frames,windows,long,ticks:view.clock.tick-startTick,seconds:(now-first)/1000,maxSpeed,calledMax,laps:sim.race.lapCount,sector:sim.motion.body.sector,sectors:sectors.size,sectorCount:route.length,secondSectors,errors:view.errors});
+    };
     requestAnimationFrame(step);
-  }));
-  await page.keyboard.up('ArrowUp');
+  }),Number(option('seconds','60')));
   await context.close();
-  return {fps:Math.round(live.frames.length/live.seconds*10)/10,updatesPerSecond:Math.round(live.ticks/live.seconds*10)/10,
-    frameIntervalMs:statistics(live.frames),longTasks:{count:live.long.length,totalMs:Math.round(live.long.reduce((a,b)=>a+b,0))}};
+  const sorted=[...live.windows].sort((a,b)=>a-b),round=value=>Math.round(value*10)/10;
+  return {fps:round(live.frames.length/live.seconds),worstSecondFps:round(sorted[0]??0),fifthPercentileSecondFps:round(sorted[Math.floor(sorted.length*.05)]??0),
+    updatesPerSecond:round(live.ticks/live.seconds),frameIntervalMs:statistics(live.frames),longTasks:{count:live.long.length,totalMs:Math.round(live.long.reduce((a,b)=>a+b,0))},
+    laps:live.laps,sector:live.sector,sectorsVisited:live.sectors,sectorCount:live.sectorCount,worstSeconds:live.windows.map((value,index)=>[round(value),live.secondSectors[index]]).sort((a,b)=>a[0]-b[0]).slice(0,6),maxSpeedKmh:live.maxSpeed,maxWorldDraws:live.calledMax,errors:live.errors};
 }
 
 const browser=await launch();

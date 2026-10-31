@@ -38,6 +38,26 @@ between builds; they do not predict a real phone's frame rate. No physical phone
 or real Safari was measured. Reports:
 [`evidence/mobile-performance`](../evidence/mobile-performance/).
 
+## 30 FPS target at 800×360, DPR 2, 6× throttle
+
+Goal from 31 October 2026: 30 FPS on the Netherlands track. Measured: **57.5 FPS on
+average and 48.4 in the worst second**, with 28.8 updates per second and no long
+tasks. The run lasted 110 seconds with the player following the route and firing
+bonuses, moving 6 sectors ahead every 90 updates so that most of the track gets
+drawn; it reached 132 of 178 sectors. The canvas is 1491×671 at the phone cap. See
+[the report](../evidence/mobile-performance/target-800x360-dpr2.json).
+
+Earlier versions of this live test only held the throttle, so the numbers in the
+table above came from a kart that soon hit a wall. They stay valid for comparing
+those two builds, but not with this run. The same limits apply: emulation, a
+software GPU and one track.
+
+The other port's 30 FPS work was checked for what applies here. Its 60 FPS limit
+carried over (below). Its 960×540 budget was not needed, so the sharper 1 megapixel
+stays. Its lighting shader, BSP sweeps, corona rays, anisotropy and sRGB curve have
+no counterpart in this game, MSAA already starts off, and `keepNames` was already
+removed.
+
 ## What changed
 
 **Simulation (same results):**
@@ -75,6 +95,10 @@ or real Safari was measured. Reports:
 
 **Phones and tablets (visible):** see
 [Resolution on phones](more-settings.md#resolution-on-phones-and-tablets).
+
+**Frame limit on phones and tablets:** a 90 or 120 Hz display draws at most about
+60 frames per second, which keeps the phone cooler (`source/frame-limit.js`).
+Updates and input are not limited, and desktops stay uncapped.
 
 **Frame pacing:** a display frame now serves an update timer that is already
 late, so a busy main thread does not draw while the update waits. The 25 ms

@@ -1,6 +1,8 @@
 import {readSettings,writeSettings,renderDimensions,autoPixelBudget,chooseMultisampleCount} from './settings.js';
 import {assetURL} from './asset-url.js';
 import {GAME_VERSION} from './version.js';
+import {FrameLimiter} from './frame-limit.js';
+import {FpsCounter} from './fps-counter.js';
 import {MoviePlayback} from './movie-playback.js';
 import {InputController,nativeIntroSkipKey} from './input.js';
 import {NativeMenu} from './native-menu.js';
@@ -613,6 +615,8 @@ function showBrowserSettings(from='main'){
   form.innerHTML=`<h2>Beeld</h2><label>Resolutie<select id="resolution"><option value="auto">Automatisch</option><option value="native">Volle schermresolutie</option>${['640x480','800x600','1024x768','1280x720','1920x1080','2560x1440','3840x2160'].map(x=>`<option value="${x}">${x.replace('x',' × ')}</option>`).join('')}</select></label>
   <label>Renderschaal <output id="scale-value"></output><input id="scale" aria-label="Renderschaal" type="range" min="25" max="200" step="5"><small id="effective-resolution"></small></label>
   <p class="settings-detail">Automatisch beperkt het beeld op telefoons en tablets tot ongeveer 1 megapixel: vloeiender en zuiniger, iets minder scherp. Kies Volle schermresolutie voor elke schermpixel.</p>
+  <label class="settings-toggle"><input id="show-fps" type="checkbox">FPS weergeven</label>
+  <p class="settings-detail">Toon het aantal beelden per seconde tijdens het spelen.</p>
   <label class="settings-toggle"><input id="msaa-enabled" type="checkbox">Randen gladmaken (MSAA)</label>
   <label>MSAA-kwaliteit<select id="msaa-samples"><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label>
   <p id="msaa-status" class="settings-detail" role="status"></p>
@@ -630,7 +634,7 @@ function showBrowserSettings(from='main'){
   <p id="game-version" class="settings-detail settings-version">Versie ${GAME_VERSION}</p>`;
   content.append(form);
   $('resolution').value=draft.resolution;$('scale').value=draft.renderScale;$('deadzone').value=draft.deadzone*100;$('touch').value=draft.touch;
-  $('msaa-enabled').checked=draft.msaaEnabled;$('msaa-samples').value=draft.msaaSamples;$('surface-shadows').checked=draft.surfaceShadows;$('smooth-engine-lights').checked=draft.smoothEngineLights;
+  $('msaa-enabled').checked=draft.msaaEnabled;$('msaa-samples').value=draft.msaaSamples;$('show-fps').checked=draft.showFps;$('surface-shadows').checked=draft.surfaceShadows;$('smooth-engine-lights').checked=draft.smoothEngineLights;
   const flightToggle=button(draft.freeFlight?'Aan':'Uit',()=>{
     flightToggle.setAttribute('aria-pressed',String(flightToggle.getAttribute('aria-pressed')!=='true'));update();
   },{'aria-label':'Vrij vliegen (no-clip)','aria-pressed':String(Boolean(draft.freeFlight))});
@@ -645,7 +649,7 @@ function showBrowserSettings(from='main'){
   $('unlock-status').textContent=raceSave.locks?.every(locked=>!locked)?'Alle landen en circuits zijn al ontgrendeld.':'Ontgrendelt direct alle landen en circuits. Voortgang en scores blijven behouden.';
   const update=()=>{
     Object.assign(draft,{resolution:$('resolution').value,renderScale:Number($('scale').value),deadzone:Number($('deadzone').value)/100,touch:$('touch').value,
-      msaaEnabled:$('msaa-enabled').checked,msaaSamples:Number($('msaa-samples').value),surfaceShadows:$('surface-shadows').checked,smoothEngineLights:$('smooth-engine-lights').checked,
+      msaaEnabled:$('msaa-enabled').checked,msaaSamples:Number($('msaa-samples').value),showFps:$('show-fps').checked,surfaceShadows:$('surface-shadows').checked,smoothEngineLights:$('smooth-engine-lights').checked,
       freeFlight:flightToggle.getAttribute('aria-pressed')==='true'});
     flightToggle.textContent=draft.freeFlight?'Aan':'Uit';
     const size=renderDimensions({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,...draft,autoPixels:autoPixelBudget()});
@@ -670,7 +674,7 @@ function showBrowserSettings(from='main'){
 function finishMoreSettings(commit){
   if(commit&&moreSettingsDraft){
     optionsDraft??=nativeOptionsDraft(settings);
-    for(const key of ['resolution','renderScale','deadzone','touch','msaaEnabled','msaaSamples','surfaceShadows','smoothEngineLights','freeFlight'])optionsDraft[key]=moreSettingsDraft[key];
+    for(const key of ['resolution','renderScale','deadzone','touch','msaaEnabled','msaaSamples','showFps','surfaceShadows','smoothEngineLights','freeFlight'])optionsDraft[key]=moreSettingsDraft[key];
   }
   moreSettingsDraft=null;showSettings(returnFromSettings);
 }
@@ -850,11 +854,20 @@ $('world').addEventListener('pointerdown',()=>{
 for(const event of ['pointerup','pointercancel'])window.addEventListener(event,()=>input.state.keys.delete('Space'));
 let portrait=matchMedia('(orientation: portrait)').matches;
 window.addEventListener('resize',()=>{resize();const now=matchMedia('(orientation: portrait)').matches;if(now!==portrait){portrait=now;({main:showMain,characters:showCharacters,countries:showCountries})[page]?.();}});
+const phoneFrames=matchMedia('(pointer:coarse)').matches?new FrameLimiter():null;
+const fpsDisplay=$('fps-counter'),fpsCounter=new FpsCounter();
 function frame(time){
   input.poll(time);
   advanceRacePause();
   viewer?.updateLoop?.serveLate();
-  viewer?.render(time);
+  const drawing=!phoneFrames||phoneFrames.due(time);
+  if(drawing)viewer?.render(time);
+  const showFps=settings.showFps===true&&viewer?.active===true&&(mode==='race'||mode==='viewer');
+  if(fpsDisplay.hidden===showFps)fpsDisplay.hidden=!showFps;
+  if(showFps){
+    if(drawing)fpsCounter.frame(time);
+    if(fpsDisplay.textContent!==fpsCounter.label)fpsDisplay.textContent=fpsCounter.label;
+  }else if(fpsCounter.previous!==null)fpsCounter.reset();
   const flying=mode==='race'&&viewer?.simulation?.freeFlightActive===true;
   if(flightPanel.hidden===flying){flightPanel.hidden=!flying;flightTouch.hidden=!flying;}
   requestAnimationFrame(frame);

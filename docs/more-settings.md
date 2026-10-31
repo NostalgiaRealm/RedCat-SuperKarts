@@ -53,6 +53,12 @@ screen pixel on any device. Other presets and the render scale still control the
 world; on touch devices the HUD surface keeps the cap under those presets too.
 Desktop behaviour is unchanged.
 
+## FPS counter
+
+**FPS weergeven** shows the drawn frames per second during a race, updated every
+second, below the lap and time display. It is off by default and hidden in menus
+and while paused.
+
 ## Shadows
 
 **Schaduwen op het wegdek** places each kart's shadow on the road surface
