@@ -1,371 +1,337 @@
-# Host RedCat SuperKarts on a subdomain
+# Hosting this port
 
-The browser game is a static website. Build it locally, then serve the contents
-of `dist/` at a dedicated address such as `https://karts.example.com/`.
-Gameplay runs on the player's device; the host only serves files. It needs no
-game server, database, Electron installation or running Node.js process.
+How to build the folder a web server needs, what the server has to send with it, and how to put it in the place of
+the JavaScript port at **https://games.nostalgiarealm.com/redcatsuperkarts/** with the JavaScript port kept at
+`/redcatsuperkarts/classic/`, the way RedCat Spookkasteel 2.0.0 was put on the site (its `docs/hosting.md` is the
+model). Nothing in this project uploads or changes anything on a server: the steps under "Putting it on the site" are
+for you to carry out. The desktop app serves the same folder from its own protocol ([`building.md`](building.md)).
 
-Replace `karts.example.com`, `deploy` and the server paths below with your own
-domain, upload account and hosting directory.
+## Build and check
 
-## Requirements
-
-| Where | Needed |
-| --- | --- |
-| Build computer | Node.js 24, npm, this project's source and complete prepared `public/assets/` |
-| Hosting | A static web host or VPS, control of the subdomain's DNS, HTTPS, and support for the files and response types below |
-| Storage | Allow at least 1 GB per deployed copy; the current payload is approximately 420 MiB, with thousands of files and original video/audio |
-| Player | A browser with WebGL 2, JavaScript modules, Web Audio and H.264/AAC video playback |
-
-Check the host's file-count, individual-file-size and bandwidth limits as well
-as its storage allowance; players also download original movies and audio.
-Normal browser and desktop launches use generated bundles without import maps.
-Editable modules live in `source/`; they are not uploaded or loaded by the game.
-See [the folder guide](runtime-layout.md) for local refresh and inspection commands.
-
-The Git repository and published source release include the complete prepared
-`public/assets/` folder, including menu fonts and converted movies. A fresh
-checkout or extracted source archive needs `npm ci` to install dependencies;
-it does not need original-disc extraction before building the website.
-`node_modules/` and the generated `dist/` are excluded from Git.
-
-To regenerate assets from original game/CD/font files, follow
-[Prepare original assets](../README.md#prepare-original-assets). Python, Pillow,
-pefile, ffmpeg and helpdeco are only needed for that optional preparation step,
-not for building with the included assets or on the web host.
-
-Use HTTPS for the public site, including controller support: the browser
-Gamepad API is restricted to secure contexts. [Gamepad API requirements](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/getGamepads)
-
-## Build the website
-
-From the project directory on the build computer:
-
-```sh
-npm ci
-npm run build
+```bash
+npm run package
 ```
 
-Run `npm ci` when installing dependencies or when the lockfile changes. Run
-`npm run build` when preparing a new deployment; it replaces `dist/` with the
-current source and prepared assets. Existing desktop packages and an older
-`dist/` do not automatically receive later source changes.
+```bash
+npm run package:check
+```
 
-The build combines the source modules and the needed Three.js code into a small
-set of generated files. The menu loads the renderer only when needed. Source
-maps retain readable debugging references; original assets are copied unchanged.
-Keep the entire generated output together:
+`npm run package` (`tools/package.mjs`, a few seconds) writes `dist/site/` and copies the three nginx files next to it
+(`dist/nginx-redcatsuperkarts*.conf`). `npm run package:check` (`tools/package-check.mjs`, about two minutes; add
+`--firefox` to try Playwright's Firefox too) serves that folder below `/redcatsuperkarts/` with the headers of those
+files and uses it as a browser would; see "Checked" at the end. Both read the original game files from the CD copy and
+the installation copy inside the JavaScript port's folder (`SUPERKARTS_DISC`, `SUPERKARTS_DATA` name others;
+`tools/game-data.mjs`) and write only under `dist/` and `evidence/package/`.
+
+Before packaging, when they are out of date:
+
+| Command | Needed after |
+|---|---|
+| `npm run recompile` | a change in `tools/recomp/` |
+| `npm run manifest` (`tools/build-manifest.mjs`) | a change in which original files exist |
+| `npm run preload` (`tools/build-preload.mjs`, 15 seconds) | either of the two above, or a change in how the host reads files |
+| `npm run assets` (`tools/build-assets.mjs`) | a change in which of the JS port's menu assets the menu uses |
+
+`npm run package` refuses to build when `public/game/files.json` does not list the game files as they are.
+
+## What is in `dist/site/`
 
 ```text
-dist/
-  index.html
-  runtime-manifest.json
-  src/
-    main.js
-    main.js.map
-    style.css
-    mesh-pack.bin
-    mesh-pack.json
-    chunks/
-      ...
-  assets/
-    config.json
-    manifest.json
-    menu/
-    media/
-    ...
+site/
+├── index.html, build.json    the page; what was built (revision, date, sizes)
+├── app/<revision>/
+│   ├── source/               the scripts and style sheets of the page, the game worker and the render worker
+│   └── game/                 rcskspel.wasm (the recompiled race), its tables, files.json, preload.json
+├── assets/                   the menu's art, voices, intro and reward movies, help, touch art
+└── data/                     the original game files the race reads (89), and index.json (their names and sizes)
 ```
 
-Upload everything inside `dist/`. The generated chunk names may change with
-source changes; do not select individual JavaScript files to upload. The build
-includes the required library code, so a separate `node_modules/three/` tree is
-no longer needed in a new deployment. Preserve file names and letter case.
-Include `runtime-manifest.json`: it records the generated runtime files and
-sizes. Preview and Electron use its file list to reject missing generated
-chunks before launching; package verification separately checks payload bytes.
+918 files, 366.8 MB (app 4.6 MB, assets 173.9 MB, data 188.2 MB), plus 157 `.gz` copies. Every URL in it is relative:
+it works below any folder.
 
-The game loads its files relative to `index.html` (`src/main.js`, `assets/…`).
-It works at a domain root, such as `https://karts.example.com/`, or in a URL
-folder, such as `https://games.nostalgiarealm.com/redcatsuperkarts/`. A folder
-address must end in `/`; redirect the address without it (see the
-[URL-folder example](#nginx-in-a-url-folder)). Artwork in CSS custom properties
-uses absolute addresses built from the page address (`source/asset-url.js`),
-because browsers resolve a relative `url()` there against the style sheet.
-The physical folder on the server may have any name.
+- **`app/<revision>/`**: twelve hex digits made from the content of everything below it. Another script or another
+  game module gives another folder name and `index.html` names its own, so a browser never combines the files of two
+  builds, files below `app/` can be kept by browsers for good, and a page that is open during an upload keeps finding
+  its files as long as its folder is left on the server.
+- **`data/`**: the race's own files, as the original installation has them (`tools/game-data.mjs`): the CD's
+  `data\Game` files and the archives `rcs.img`/`rcs.ind` and `rc.img`/`rc.ind`, taken from the CD copy under the
+  installation's names. Not in it: `debug.txt` and the installation's `race.ini`, which the original wrote under Wine
+  (the CD's `race.ini` is in it), the programs (`RCSK.exe`, `rcskspel.dat`, `rcskmenu.dat`, `RCMovie.dat`,
+  `SMACKW32.DLL`), the help and the menu's own folders (`gfx/`, `ini/`, `Players/`), which the race never reads.
+- **`assets/`**: only what this port's menu uses: 758 files, 174 MB of the JS port's 418 MB (`tools/build-assets.mjs`
+  copies them into `public/assets`, so neither the development server nor the package needs the JS port's folder).
+  138 MB of it are the menu's voices (398 `.wav`, each fetched when it plays).
+- **`.gz` copies**: next to every file that gzip makes at least a tenth smaller, `<file>.gz`; nginx sends it to a
+  browser that accepts it (`gzip_static`). The game module goes from 3.8 MB to 0.6 MB, a track's `.rmp` from 0.5 to
+  0.1 MB. **None** next to `rcs.img` and `rc.img` (read by byte ranges), the `.wav` voices and the `.mp4` movies (the
+  browser's media elements ask for byte ranges): nginx's `gzip_static` would answer a Range request with bytes of the
+  `.gz` (`tools/package-check.mjs` checks there is none).
 
-Before uploading, stop any local game server using port 4173 and run `npm run preview`.
-It serves the completed `dist/` at the same `http://127.0.0.1:4173/` origin as
-`npm start`, keeping that browser's existing saves. It does not rebuild on edits.
+## How the game's files reach the browser
 
-## Connect the subdomain and upload
+The race reads its files as the original did: it opens one and reads it, or seeks into `rcs.img` (180 MB, the packed
+textures, meshes and sounds of all six tracks and four karts) and reads a member. Until 2026-11-25 the worker fetched
+every file whole before a race: 185 MB, almost all `rcs.img`. Now (`source/web/game-files.js`):
 
-1. Create the subdomain/site in your hosting panel, or add a virtual host on
-   your VPS. Give it a dedicated document root, such as
-   `/srv/redcat-superkarts`.
-2. Set its DNS `A` record to the server's public IPv4 address. Add an `AAAA`
-   record only if that server also serves the site over IPv6. For managed
-   static hosting, use the `CNAME` or other records specified by the provider.
-3. Upload the **contents** of `dist/` into that document root using SFTP, the
-   hosting panel, or rsync. For an existing writable upload directory:
+- **`rcs.img` and `rc.img` are read by byte ranges** (`Range: bytes=a-b`, answered `206`) in pages of 16 KB; a page
+  once fetched is kept by the game worker for the races after it.
+- **Before a race** the worker fetches what the race's lists name and it does not have yet: its files whole, and the
+  archive pages in runs (one request per run, runs less than 64 KB apart in one), six requests at a time, each asked
+  again twice when it fails. All INI files come along. The lists (`game/preload.json`, 8 KB) are measured
+  (`tools/build-preload.mjs`): every country, race type and character (96 races) run in Node from boot through the
+  countdown, 400 passes of driving and the finish (the cheat Ctrl+F+I) to the race's exit; what all races read, what
+  each country, race type and character adds, and what each race adds beyond that.
+- **Anything else** is fetched when the race reads it, with the game thread waiting: a whole file, or the missing
+  pages from the read on, 128 KB at least. Mostly a voice or sound the measured races did not play (the game loads a
+  sound when it first plays it). Measured on whole races driven by a test bot in Node with the browser's file code
+  (`tools/checks/loading-full-race.mjs`, `evidence/loading/full-races.json`): 1 to 8 such waits in a race of five laps,
+  64 to 128 KB each; in the browser one took 29 to 50 ms on the local stand-in server.
+- A server that ignores `Range` and answers `200` with the whole file still works: the first request of an archive is
+  made alone, and its whole answer is kept (180 MB, as before).
 
-   ```sh
-   rsync -av dist/ deploy@your-server:/srv/redcat-superkarts/
-   ```
+What a race fetches (headless Chromium on the packaged site, `npm run package:check`; MB as sent, `.gz` counted packed;
+`evidence/package/result.json`; before: the development server, `evidence/checks/loading-before.json`):
 
-   The slash after `dist/` copies its contents. The resulting file must be
-   `/srv/redcat-superkarts/index.html`, not
-   `/srv/redcat-superkarts/dist/index.html`.
-4. Make the uploaded files readable by the web server and their parent
-   directories traversable. On Linux, directories 755 and files 644 are usual
-   choices for this public payload; the web server needs no write access.
-5. Enable an HTTPS certificate covering the exact subdomain, and redirect HTTP
-   to HTTPS. For direct VPS hosting, allow inbound TCP ports 80 and 443 through
-   both the provider firewall and the server firewall.
+| | Before (whole files) | Now |
+|---|---|---|
+| First race (Nederland, RedCat, Landenrace), game module included | 180.2 MB | 30.3 MB (28.6 MB of game files; 0.7 MB module; 1.0 MB the menu's loading screen and voices) |
+| Second race, another track (Groot-Brittannië), same page | 2.4 MB | 7.9 MB |
+| Both | 182.5 MB | 38.2 MB |
+| Second visit, first race again | 180 MB again from the browser's cache | about 1 MB sent (the scripts, module and pages from the browser's cache) |
 
-With a hosting panel, enable its static-file hosting and SSL options, then
-continue to the checks below. Choose one of the following examples if you
-manage the web server yourself. The project’s `npm start` server listens only
-on `127.0.0.1:4173` and is intended for local source development; public hosting
-can serve the built files directly.
+A race reads 22 to 30 MB of the original files (`evidence/loading/preload-summary.json`): `rcs.img` 19 to 26 MB of it,
+uncompressible by `gzip_static` because it is read by ranges (as its members, about 40% smaller gzipped; a possible
+next step is the archive's members as separate packed files). The JavaScript port's race needs about 15 MB gzipped.
 
-## Caddy example
+## The server as it is, and what changes
 
-Install Caddy using its [official installation instructions](https://caddyserver.com/docs/install).
-On a Linux installation using its standard service, add this site to
-`/etc/caddy/Caddyfile`:
+Looked at on 25 November 2026 over SSH, read only (`/etc/nginx/sites-available/games.nostalgiarealm.com`):
 
-```caddyfile
-karts.example.com {
-    root * /srv/redcat-superkarts
-    encode zstd gzip
-    header Cache-Control "no-cache"
-    file_server
-}
+| | Now |
+|---|---|
+| Server | nginx 1.26.3 with `http_gzip_static_module`, HTTP/2; `conf.d/*.conf` included in the `http` block (RedCat Spookkasteel's cache map is there already) |
+| The game's location | `location /redcatsuperkarts/` with `root /var/www/games.nostalgiarealm.com`, `try_files $uri $uri/ =404`, dynamic gzip (JSON, JS, CSS, SVG, TTF and `application/octet-stream`); before it `location = /redcatsuperkarts` (301) and the regex against dotfiles |
+| Headers | from the server block: `Cache-Control: no-cache` (always), the security headers (`snippets/security-headers.conf`: HSTS, nosniff, X-Frame-Options, Referrer-Policy, a CSP without script rules); no isolation headers |
+| The live build | `/var/www/games.nostalgiarealm.com/redcatsuperkarts/` (owner `rick`, 428 MB): `index.html`, `src/main.js` and `runtime-manifest.json` are byte for byte `../RedCat Superkarts/dist` |
+| Request limits | `limit_req` only on the two WordPress sites' logins; none for the games |
+
+What this port needs on top of that:
+
+| Change | Why |
+|---|---|
+| `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp` on every answer of this port | The page, the game worker and the render worker share memory, which a browser allows only on an isolated page. **Without them no race starts**; the page says so (in Dutch, in the menu's style) and links to `classic/` |
+| `Range` for `data/` | nginx's static module answers single ranges by itself (`206`); nothing to configure, but no `.gz` copy and no dynamic gzip may come in its way: the location has `gzip off` and the package has no `.gz` of the archives |
+| `Cache-Control` by folder: `app/` and `data/` a year and `immutable`, `assets/` a day, the rest `no-cache` as now | `index.html` is asked for at every visit; what it names never changes under its name |
+| `gzip_static on` | Sends the `.gz` copies (the module is there) |
+| The security headers repeated in the location | A location with `add_header` lines of its own no longer inherits the server's |
+
+The old version needs nothing new: it gets its own location, `classic/`, answered exactly as today (the server's
+headers, its gzip). No `Cross-Origin-Resource-Policy` header is sent: everything the page loads is its own origin's.
+
+**The folder.** The new port goes into a folder of its own **beside** the old one, not inside it: the JavaScript
+port's `tools/deploy-website.sh` mirrors its build into `redcatsuperkarts/` with `--delete`, which would remove a
+folder inside it.
+
+```text
+/var/www/games.nostalgiarealm.com/
+├── redcatsuperkarts/           the JavaScript port, where it is now    ->  /redcatsuperkarts/classic/
+└── redcatsuperkarts-recomp/    this port (the content of dist/site)    ->  /redcatsuperkarts/
 ```
 
-Validate the configuration, then reload an already running service:
+The switch is a change of the nginx configuration and a reload; going back is the old configuration and a reload.
+The JavaScript port's own `tools/deploy-website.sh` keeps working on `redcatsuperkarts/`; after the switch set
+`RCSK_DEPLOY_URL=https://games.nostalgiarealm.com/redcatsuperkarts/classic/` in `~/.config/redcat-superkarts/deploy.env`,
+or its check of the public address reports a difference.
 
-```sh
-sudo caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
-sudo systemctl reload caddy
+Three configuration files, all in `dist/` after packaging (their sources are in this folder):
+
+| File | Goes to | What it is |
+|---|---|---|
+| `nginx-redcatsuperkarts-cache.conf` | `/etc/nginx/conf.d/redcatsuperkarts-recomp-cache.conf` (`http` block) | What a browser may keep, by folder (`$redcatsuperkarts_cache_control`) |
+| `nginx-redcatsuperkarts-test.conf` | `/etc/nginx/snippets/redcatsuperkarts-recomp-test.conf` | A temporary address, `/redcatsuperkarts-test/`, to try the upload on the real server |
+| `nginx-redcatsuperkarts.conf` | `/etc/nginx/snippets/redcatsuperkarts-recomp.conf` | The two final locations: this port, and the old one at `classic/` |
+
+**Not run through nginx here** (none is installed on this machine): the package was checked behind a stand-in server
+that answers as these files describe (`tools/serve-site.mjs`). That is what the temporary address is for.
+
+## Saves
+
+The JavaScript port and this port keep their saves in the browser's `localStorage` under the same keys
+(`rcsk.race-save.v1`, `rcsk.settings.v1`, `rcsk.selection.v1`, `rcsk.firsttime.*`), read and written by the same code.
+`localStorage` belongs to the origin (`https://games.nostalgiarealm.com`), not to the folder, so **`/redcatsuperkarts/`
+and `/redcatsuperkarts/classic/` share the saves automatically**: a visitor's Adventure profiles, highscores, records
+and settings from the old version are there in the new one at the first visit, and playing either version updates the
+same saves. Nothing to migrate, nothing to do on the server. (Other origins and the old desktop app: README, "Saves".)
+
+## Putting it on the site
+
+Commands marked *server* are run on the web server (`ssh Debian`), the others in this project's folder.
+
+**1. A folder for the new port** (*server*). `/var/www/games.nostalgiarealm.com` belongs to root; the new folder gets
+your account, as `redcatsuperkarts/` has.
+
+```bash
+sudo install -d -m 755 -o rick -g rick /var/www/games.nostalgiarealm.com/redcatsuperkarts-recomp && ls -ld /var/www/games.nostalgiarealm.com/redcatsuperkarts* && df -h /var/www
 ```
 
-For a newly installed service that is not running yet, use
-`sudo systemctl enable --now caddy` after validation. With working DNS and
-reachable ports 80/443, Caddy obtains and renews the certificate and redirects
-HTTP automatically. Its file server serves the site from the configured root. [HTTPS setup](https://caddyserver.com/docs/quick-starts/https), [file server](https://caddyserver.com/docs/caddyfile/directives/file_server), [service management](https://caddyserver.com/docs/running#using-the-service)
+The package needs 380 MB there.
 
-## Nginx example
+**2. The nginx files on the server.**
 
-For an Nginx server, first provision a certificate for the subdomain using your
-hosting panel or certificate manager. This example assumes that certificate
-already exists at the shown Let's Encrypt paths; adjust them to your setup.
-Add these server blocks in the configuration included by Nginx's `http` block:
-
-```nginx
-server {
-    listen 80;
-    server_name karts.example.com;
-    return 301 https://karts.example.com$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name karts.example.com;
-
-    ssl_certificate /etc/letsencrypt/live/karts.example.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/karts.example.com/privkey.pem;
-
-    root /srv/redcat-superkarts;
-    index index.html;
-    include /etc/nginx/mime.types;
-    default_type application/octet-stream;
-    add_header Cache-Control "no-cache" always;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-}
+```bash
+npm run package && rsync -a dist/nginx-redcatsuperkarts.conf dist/nginx-redcatsuperkarts-cache.conf dist/nginx-redcatsuperkarts-test.conf Debian:
 ```
 
-If you publish an `AAAA` record, also configure the corresponding IPv6
-listeners, such as `listen [::]:80;` and `listen [::]:443 ssl;`, in their
-respective blocks. Check the configuration before reloading:
+(*server*) The first command must print nothing (no file of that name yet); then the copies, and a backup of the site's
+configuration that is kept for going back (`cp -n`: a second run never overwrites it):
 
-```sh
-sudo nginx -t
-sudo systemctl reload nginx
+```bash
+ls /etc/nginx/conf.d/redcatsuperkarts* /etc/nginx/snippets/redcatsuperkarts* 2>/dev/null
 ```
 
-The MIME file supplies file types; `try_files` returns an actual 404 for missing
-assets. No single-page-app fallback to `index.html` is needed: game screens use
-the root URL and query parameters. [Nginx HTTPS configuration](https://nginx.org/en/docs/http/configuring_https_servers.html), [root, types and try_files](https://nginx.org/en/docs/http/ngx_http_core_module.html)
-
-## Nginx in a URL folder
-
-To serve the game below an existing site, add a location for the folder to that
-site's `server` block. With `root` set to the parent directory, the folder name
-on disk matches the URL folder:
-
-```nginx
-location = /redcatsuperkarts {
-    return 301 /redcatsuperkarts/;
-}
-
-location /redcatsuperkarts/ {
-    root /var/www/games.nostalgiarealm.com;
-    index index.html;
-    add_header Cache-Control "no-cache" always;
-    try_files $uri $uri/ =404;
-}
+```bash
+sudo cp ~/nginx-redcatsuperkarts-cache.conf /etc/nginx/conf.d/redcatsuperkarts-recomp-cache.conf && sudo cp ~/nginx-redcatsuperkarts-test.conf /etc/nginx/snippets/redcatsuperkarts-recomp-test.conf && sudo cp ~/nginx-redcatsuperkarts.conf /etc/nginx/snippets/redcatsuperkarts-recomp.conf
 ```
 
-Builds before folder support requested `/assets/`, `/src/` and `/node_modules/`
-from the domain root and needed root-level locations for them. Current builds
-request nothing outside their folder, so those locations can be removed.
-
-## Deploy to the website with one command
-
-`tools/deploy-website.sh` builds the website and mirrors `dist/` to the Nginx
-server over SSH. By default it deploys to `Debian:/var/www/games.nostalgiarealm.com/redcatsuperkarts/`
-(the `Debian` alias in `~/.ssh/config`) and checks
-`https://games.nostalgiarealm.com/redcatsuperkarts/`. Run it on the build computer:
-
-```sh
-tools/deploy-website.sh --dry-run   # build and list what would change on the server
-tools/deploy-website.sh             # build, upload and check the live site
+```bash
+sudo cp -n -p /etc/nginx/sites-available/games.nostalgiarealm.com /etc/nginx/sites-available/games.nostalgiarealm.com.bak-before-redcatsuperkarts-recomp
 ```
 
-It runs `npm run build` and then rsync:
+**3. The temporary address** (*server*). Adds one line, `include /etc/nginx/snippets/redcatsuperkarts-recomp-test.conf;`,
+directly above `include /etc/nginx/snippets/barbiepaardrijclub.conf;`; the live game is not touched. The edit stops
+without changing anything when the file is not as expected.
 
-- only files whose contents changed are sent (every build gives `dist/` new
-  file times, so it compares contents);
-- they are all put in place at the end, so visitors do not load half an update;
-- files that no longer exist, such as old generated chunks, are removed
-  afterwards, inside the destination folder only;
-- folders become 755 and files 644.
-
-Nginx keeps running. Afterwards the script checks that the public site serves
-the new `runtime-manifest.json` and `src/main.js`; `index.html` is the same
-for every build. It refuses any destination that is not an absolute path
-ending in `/redcatsuperkarts`.
-
-**Settings.** To use another SSH target, folder or address, set them in
-`~/.config/redcat-superkarts/deploy.env` or the environment:
-
-```sh
-RCSK_DEPLOY_HOST=rick@192.168.178.203
-RCSK_DEPLOY_PATH=/var/www/games.nostalgiarealm.com/redcatsuperkarts
-RCSK_DEPLOY_URL=https://games.nostalgiarealm.com/redcatsuperkarts/
+```bash
+sudo python3 - <<'EOF'
+p = '/etc/nginx/sites-available/games.nostalgiarealm.com'
+s = open(p).read()
+anchor = '    include /etc/nginx/snippets/barbiepaardrijclub.conf;\n'
+line = '    include /etc/nginx/snippets/redcatsuperkarts-recomp-test.conf;\n'
+assert s.count(anchor) == 1 and line not in s, 'unexpected file: nothing changed'
+open(p, 'w').write(s.replace(anchor, line + '\n' + anchor))
+EOF
 ```
 
-`RCSK_DEPLOY_URL=` (empty) skips the live check. `RCSK_DEPLOY_HOST=local`
-copies to a local folder, for testing.
-
-**One-time setup.** The SSH login must work without a password
-(`ssh-copy-id Debian`), and your account must own the web folder so no
-`sudo` is needed; Nginx only reads it. Add `Cache-Control: no-cache` as in the
-[URL-folder example](#nginx-in-a-url-folder): `src/main.js` keeps its name
-between builds, so without it a browser can reuse an old copy that imports
-generated chunks the update removed.
-
-To test the live site after a deployment, including that no request leaves the
-folder:
-
-```sh
-RCSK_URL=https://games.nostalgiarealm.com/redcatsuperkarts node tests/subpath-browser.mjs
+```bash
+sudo nginx -t && sudo systemctl reload nginx
 ```
 
-## File responses and caching
+`nginx -t` must say `syntax is ok` and `test is successful`; only then is it reloaded.
 
-Check that the host or CDN preserves these responses:
+**4. Upload and check the temporary address.**
 
-| File | Expected response type |
-| --- | --- |
-| `.html` | `text/html` |
-| `.js` | `text/javascript` or `application/javascript`, including every generated JavaScript chunk |
-| `.css` | `text/css` |
-| `.json` | `application/json` |
-| `.mp4` | `video/mp4` |
-| `.wav` | `audio/wav` or the host's equivalent WAV type |
-| `.ttf` | `font/ttf` |
-| `.bin` and `.dat` | `application/octet-stream` is suitable for the binary asset fetches |
-
-JavaScript modules require a JavaScript MIME type; an HTML error page returned
-with status 200 still fails to load as a module. [Module serving requirements](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
-
-Images also need their normal image MIME types. Allow `GET` and `HEAD`, and
-preserve byte-range requests for movies. A request for the first 32 bytes should
-receive `206 Partial Content`, a matching `Content-Range`, and 32 bytes of data. [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests)
-
-Compress text and mesh data if the host allows it; the first load shrinks by about
-half. In Nginx, inside the game's location (byte-range media stays uncompressed):
-
-```nginx
-gzip on;
-gzip_vary on;
-gzip_comp_level 5;
-gzip_min_length 1024;
-gzip_types application/json application/javascript text/javascript text/css image/svg+xml font/ttf application/octet-stream;
+```bash
+REDCAT_SITE_URL=https://games.nostalgiarealm.com/redcatsuperkarts-test/ tools/deploy-site.sh
 ```
 
-With that list, make sure `.wav` has its own type (`audio/wav`), otherwise WAV files
-count as `application/octet-stream` and are compressed too.
-
-The examples use `Cache-Control: no-cache`: browsers may retain files but must
-revalidate before reuse. This covers the stable entry and asset names as well as generated chunks.
-Avoid long-lived `immutable` caching for the whole deployment.
-When using a CDN, apply the same policy and purge old content on updates. [Caddy response headers](https://caddyserver.com/docs/caddyfile/directives/header)
-
-Preserve the prepared assets without host-side transcoding or image optimization.
-Keep all assets on the same subdomain. The current build needs no cross-origin
-asset setup. Avoid host-side script rewriting or rebundling: deploy the generated
-JavaScript chunks and their imports together as produced by the build.
-
-## Check the deployed game
-
-Run these against your actual subdomain:
-
-```sh
-curl -I https://karts.example.com/
-curl -I https://karts.example.com/src/main.js
-curl -I https://karts.example.com/assets/menu/manifest.json
-curl -sS -D - -o /dev/null -H 'Range: bytes=0-31' https://karts.example.com/assets/media/intro.mp4
-curl -I https://karts.example.com/assets/this-file-does-not-exist.json
+```bash
+npm run site:check -- --url https://games.nostalgiarealm.com/redcatsuperkarts-test/ --burst
 ```
 
-The first three requests should return 200 with the correct types. The range
-request should return 206 and `Content-Length: 32`. The deliberately missing
-file should return 404, not 200 with HTML.
+The first builds, checks the package, uploads (the first time all of it, 367 MB) and ends with `all checks passed` from
+`tools/site-check.mjs`; the second asks the real server for every file again and for what a browser asks for before a
+first race, twice. A `note` is something that works but could be better (it says what). Then open
+<https://games.nostalgiarealm.com/redcatsuperkarts-test/> in your own browsers (desktop, phone) and race: this is the
+first time the port runs from the real server in a real browser, with sound. The saves there are already yours (same
+origin).
 
-Open the site in a browser. The intro starts automatically; if sound is blocked,
-use **Geluid inschakelen** at the bottom left. This also enters fullscreen.
-Check the original menu, a QuickRace, music/effects and a page reload. Developer
-tools should show no missing assets, generated chunks or module MIME errors. `/?skipIntro` opens
-the menu directly when diagnosing startup.
+**5. The switch** (*server*). Replaces the whole block `location /redcatsuperkarts/ { … }` (the one with
+`root /var/www/games.nostalgiarealm.com;` and `try_files`) by `include /etc/nginx/snippets/redcatsuperkarts-recomp.conf;`
+and removes the temporary address's line; the two locations above it (`= /redcatsuperkarts` and the regex against
+dotfiles) stay. Checked on a copy of the live file (2026-11-25): exactly those lines change.
 
-| Symptom | Check |
-| --- | --- |
-| Empty or blue screen | Missing/blocked generated JavaScript chunks, a wrong document root, JavaScript served as HTML, or a host Content Security Policy blocking scripts |
-| Movies fail or cannot seek | MP4 MIME type, byte-range responses and proxy/CDN handling |
-| Missing artwork, fonts or sound | Incomplete `assets/` upload, changed letter case, or wrong MIME types |
-| HTTP visitors lack controller support | Use the HTTPS URL and redirect HTTP to it |
-| Old behavior after deployment | Rebuild from current source, upload the whole output, purge CDN caches, then reload |
-| 403 despite files being present | Directory/file permissions and, on an SELinux host, the web server's permitted file labels |
+```bash
+sudo python3 - <<'EOF'
+import re
+p = '/etc/nginx/sites-available/games.nostalgiarealm.com'
+s = open(p).read()
+test = '    include /etc/nginx/snippets/redcatsuperkarts-recomp-test.conf;\n\n'
+block = re.findall(r'\n    location /redcatsuperkarts/ \{\n.*?\n    \}\n', s, re.S)
+assert len(block) == 1 and 'try_files $uri $uri/ =404;' in block[0], 'unexpected file: nothing changed'
+s = s.replace(block[0], '\n    include /etc/nginx/snippets/redcatsuperkarts-recomp.conf;\n').replace(test, '')
+open(p, 'w').write(s)
+EOF
+```
 
-## Updates and saved games
+```bash
+sudo nginx -t && sudo systemctl reload nginx
+```
 
-For each deployment, build the intended source revision and upload its complete
-output. For updates to a live site, upload to a separate release directory,
-then switch the document root or release symlink to it as one operation. Keep
-the previous directory for rollback; avoid mixing old modules with new assets
-while players are loading. Ask active players to reload after switching.
+Do it at a quiet moment. A reload drops no connection; somebody who has the old game open keeps what his page has
+loaded, and the next file it asks for is no longer at its old address (the page then stops until it is loaded again,
+which brings this port). The saves are in the browser, not in the page, and are the same for both versions. Everybody
+else gets this port at the next visit, because the old page was always sent with `no-cache`.
 
-Settings, records and adventure saves live in each browser's local storage.
-They are not stored on the web server or synchronized between devices. Updating
-files on the same HTTPS origin preserves them. Changing the hostname, protocol,
-port or browser profile uses a different storage area; local development and
-the Electron application therefore have separate saves from the public site. [Browser storage behavior](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+**6. Check the public address.**
 
-These commands are deployment instructions. Actual DNS, certificate issuance
-and public-server responses must be checked on the host you choose.
+```bash
+npm run site:check -- --url https://games.nostalgiarealm.com/redcatsuperkarts/ --classic
+```
+
+Then, in a browser that played the JavaScript port there: the menu shows its players and records; `classic/` opens the
+old version with the same saves.
+
+**Going back** (*server*):
+
+```bash
+sudo cp /etc/nginx/sites-available/games.nostalgiarealm.com.bak-before-redcatsuperkarts-recomp /etc/nginx/sites-available/games.nostalgiarealm.com && sudo nginx -t && sudo systemctl reload nginx
+```
+
+Nothing in a visitor's browser has to be undone. The new folder and the snippet files may stay; they are not used.
+
+## A later build
+
+```bash
+tools/deploy-site.sh --dry-run
+```
+
+```bash
+tools/deploy-site.sh
+```
+
+One command builds the site, checks the package, uploads and checks the public address (`tools/deploy-site.sh`;
+settings in `~/.config/redcat-superkarts/deploy-site.env`: `REDCAT_SITE_HOST` (default `Debian`), `REDCAT_SITE_PATH`
+(default `/var/www/games.nostalgiarealm.com/redcatsuperkarts-recomp`), `REDCAT_SITE_URL`). It needs no `sudo`: the
+folder belongs to your account.
+
+- It refuses a destination that is not an absolute path ending in `/redcatsuperkarts-recomp`, and a folder on the
+  server that is neither empty nor holds a `build.json` of this project (the JavaScript port's folder is never its
+  target).
+- The new `app/<revision>/` is uploaded beside the one in use, and of `assets/` and `data/` only files whose content
+  changed are sent. Then `index.html`, `index.html.gz` and `build.json` go together: that is the switch. nginx sends
+  the `.gz` copy without comparing it with the file, so those two must never be uploaded apart.
+- Nothing is deleted on the server. `tools/deploy-site.sh --prune` removes the revisions under `app/` that the live
+  page no longer names; leave a day between an update and a prune, so pages that are still open keep their files.
+- A change of the nginx files themselves still needs `sudo` on the server, as the first time (steps 2 and 5's
+  `nginx -t` and reload).
+
+## Checked
+
+On 25 November 2026, on the development machine (`evidence/package/result.json`):
+
+- **The folder** (`npm run package:check`): the revision is its content's; every file the page, the scripts reachable
+  from it (the game worker, the render worker, the file loader and the host among them) and the style sheets refer to
+  is there; the 89 game files are `files.json`'s at their sizes, and nothing else is in `data/` (no `debug.txt`, no
+  program); every file the lists name is in `files.json`; the loading screens and voices the menu names through
+  `manifest.json` (429) and the movies are in `assets/`; the `.gz` copies unpack to their files and there is none next
+  to the archives, voices or movies; names are plain and differ in more than case.
+- **The stand-in server's answers** (`tools/serve-site.mjs`): the redirect, the isolation headers, each folder's cache
+  rule, `.gz` to a client that takes it, 304, `rcs.img` by a byte range from a client that takes gzip (206, the exact
+  bytes, not packed), 416 beyond the end, 404 for a missing script and a dotfile, nothing outside the prefix;
+  `classic/` (the JavaScript port's `dist/`) as the site answers it today.
+- **`tools/site-check.mjs`** against the stand-in server, with `--classic --burst`: all checks pass.
+- **Headless Chromium, 25 ms before every answer** (software WebGL): the menu comes up with every picture and nothing
+  missing; a QuickRace from the menu (Nederland) loads in 1.7 s from its loading screen, runs, is finished with the
+  race's cheat, and the debrief and highscore follow; a second QuickRace on Groot-Brittannië in the same page; the game
+  thread waited 0 and 1 time; nothing is asked for outside `/redcatsuperkarts/`. A second visit fetches no script or
+  module file again.
+- **Not supported**: without the isolation headers the menu shows "De races kunnen in deze browser niet starten: …"
+  with a link to `classic/`; with WebGL 2 on an OffscreenCanvas taken away, the same notice naming WebGL 2.
+- **Playwright's Firefox** (146, headless) on the package: the page is isolated and a race runs (`--firefox`).
+
+Not checked:
+
+- **nginx** with the three files, and the real server. Steps 3 to 6 are how that gets checked.
+- **A real network, a real GPU, phones, Safari.** The delay was a fixed 25 ms per answer on one machine. About 30 MB
+  have to arrive before a first race starts.
+- **The desktop app** on this package (another check: `tools/desktop-check.mjs`, [`building.md`](building.md)).

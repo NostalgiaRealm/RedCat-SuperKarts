@@ -1,10 +1,21 @@
 name: macOS release packages
 
+# The JS port's workflow (1.0.x) for the recomp. The packages carry the built website (dist/site, npm run package),
+# and that cannot be built from the checkout: the original game files (data/, rcs.img alone ~180 MB) are not in git.
+# So the release process uploads the same dist/site the Linux and Windows packages were built from to the draft
+# release as RedCat-SuperKarts-<version>-site.tar.gz (with its .sha256), and this workflow packages that archive.
+# The afterPack check (tools/verify-desktop-package.mjs) writes the site's gameTreeSha256; it must equal the one of
+# the Linux build (integrity-linux-x64.json), so every platform ships the same game. docs/building.md has the steps.
+
 on:
   workflow_dispatch:
     inputs:
       tag:
-        description: Existing version tag and draft release to package
+        description: Existing version tag and draft release to package (v2.0.0)
+        required: true
+        type: string
+      game_tree_sha256:
+        description: gameTreeSha256 of the Linux build (release/<version>/integrity-linux-x64.json)
         required: true
         type: string
       skip_build_checks:
@@ -24,7 +35,7 @@ jobs:
   package:
     name: macOS ${{ matrix.arch }}
     runs-on: macos-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     permissions:
       contents: write
     strategy:
@@ -34,9 +45,11 @@ jobs:
     env:
       RCSK_RELEASE_TAG: ${{ inputs.tag }}
       RCSK_BUILD_ARCH: ${{ matrix.arch }}
+      RCSK_GAME_TREE: ${{ inputs.game_tree_sha256 }}
       RCSK_SKIP_BUILD_CHECKS: ${{ inputs.skip_build_checks && '1' || '0' }}
       CSC_IDENTITY_AUTO_DISCOVERY: 'false'
       ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
     steps:
       - name: Check out the frozen release source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -60,16 +73,36 @@ jobs:
           const pkg=JSON.parse(await readFile('package.json','utf8'));
           assert.equal(process.env.RCSK_RELEASE_TAG,'v'+pkg.version);
           assert.equal(GAME_VERSION,pkg.version);
+          assert.match(process.env.RCSK_GAME_TREE,/^[0-9a-f]{64}$/);
           JS
           gh release view "$RCSK_RELEASE_TAG" --repo "$GITHUB_REPOSITORY"
+      - name: Download and check the built site
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${RCSK_RELEASE_TAG#v}"
+          mkdir -p work dist
+          gh release download "$RCSK_RELEASE_TAG" --repo "$GITHUB_REPOSITORY" --dir work \
+            --pattern "RedCat-SuperKarts-$version-site.tar.gz" --pattern "RedCat-SuperKarts-$version-site.tar.gz.sha256"
+          (cd work && shasum -a 256 -c "RedCat-SuperKarts-$version-site.tar.gz.sha256")
+          tar -xzf "work/RedCat-SuperKarts-$version-site.tar.gz" -C dist
+          test -f dist/site/index.html && test -f dist/site/build.json
       - name: Install locked dependencies
         run: npm ci
-      - name: Prepare the game payload and original icons
-        run: npm run desktop:prepare
       - name: Create DMG and ZIP packages with ad-hoc signing
         run: |
           npx --no-install electron-builder --mac "--$RCSK_BUILD_ARCH" --publish never \
             "-c.directories.output=release/macos-$RCSK_BUILD_ARCH"
+      - name: Check the packaged game is the Linux build's
+        if: ${{ !inputs.skip_build_checks }}
+        run: |
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {readFile} from 'node:fs/promises';
+          const report=JSON.parse(await readFile(`release/macos-${process.env.RCSK_BUILD_ARCH}/integrity-darwin-${process.env.RCSK_BUILD_ARCH}.json`,'utf8'));
+          assert.equal(report.status,'passed');
+          assert.equal(report.gameTreeSha256,process.env.RCSK_GAME_TREE,'the packaged site differs from the Linux build');
+          JS
       - name: Upload packages
         env:
           GH_TOKEN: ${{ github.token }}

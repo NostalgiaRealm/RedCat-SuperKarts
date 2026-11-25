@@ -2,14 +2,14 @@
   "$schema": "https://raw.githubusercontent.com/electron-userland/electron-builder/master/packages/app-builder-lib/scheme.json",
   "appId": "org.redcat.superkarts.port",
   "productName": "RedCat SuperKarts",
-  "directories": { "output": "release", "buildResources": "desktop" },
+  "directories": { "output": "release/${version}", "buildResources": "desktop" },
   "artifactName": "RedCat-SuperKarts-${version}-${os}-${arch}.${ext}",
   "asar": true,
   "npmRebuild": false,
   "afterPack": "tools/verify-desktop-package.mjs",
   "files": ["electron/**/*", "desktop/icons/icon.png", "package.json", "!node_modules/**"],
   "extraResources": [
-    { "from": "dist", "to": "game", "filter": ["**/*"] }
+    { "from": "dist/site", "to": "site", "filter": ["**/*", "!**/*.gz", "!**/*.br"] }
   ],
   "linux": {
     "executableName": "redcat-superkarts",

@@ -1,0 +1,171 @@
+{
+ "date": "2026-11-25T21:35:26.881Z",
+ "failed": 0,
+ "results": {
+  "pause": [
+   {
+    "name": "the repaints ran inside the pause loop (pause kind 1, after the pause entry's render)",
+    "ok": true,
+    "detail": {
+     "res": "returned",
+     "marks": {
+      "held": true,
+      "esp": 4062572,
+      "inLoop": 1,
+      "before": 2,
+      "after": 5
+     },
+     "framesA": 2,
+     "framesB": 5
+    }
+   },
+   {
+    "name": "the pause entry's picture is the same with and without the repaints",
+    "ok": true
+   },
+   {
+    "name": "a repaint draws the pause entry's picture draw for draw (scene and HUD)",
+    "ok": true,
+    "detail": {
+     "scene": "142/142",
+     "hud": "92/92"
+    }
+   },
+   {
+    "name": "a repaint with a 9:16 HUD layout: the same scene, the HUD moved",
+    "ok": true,
+    "detail": {
+     "hudDraws": 92,
+     "hudChanged": 86
+    }
+   },
+   {
+    "name": "a repaint with the HUD as before draws the pause entry's picture again",
+    "ok": true
+   },
+   {
+    "name": "160 passes after the pause: every picture draw for draw the same with and without the repaints",
+    "ok": true,
+    "detail": {
+     "passes": "160/160",
+     "firstDiff": -1
+    }
+   },
+   {
+    "name": "the game's memory outside the stack is the same after them (but the object draw count 0x6a5c84)",
+    "ok": true,
+    "detail": {
+     "A": {
+      "hash": "d8825244a959cea2",
+      "drawCount": 149812
+     },
+     "B": {
+      "hash": "d8825244a959cea2",
+      "drawCount": 150430
+     },
+     "state": {
+      "tick": 721,
+      "running": 1,
+      "phase": 0,
+      "pauseKind": 0,
+      "damage": 0,
+      "laps": 0,
+      "lapLimit": 5,
+      "finished": 0,
+      "kmh": 3,
+      "trackTime": 0,
+      "position": 4,
+      "fastestLap": 0,
+      "virtualMs": 19025,
+      "sector": 174,
+      "x": -2630.2,
+      "y": 0,
+      "z": 8585.1
+     }
+    }
+   },
+   {
+    "name": "the repaints restored every aging draw and drew no kart part off its body (render-replay.js stats)",
+    "ok": true,
+    "detail": {
+     "repaints": 3,
+     "pauseEntries": 4,
+     "effectsRestored": 48,
+     "effectsSkipped": 0,
+     "effectsDiffer": 0,
+     "displaced": 0
+    }
+   }
+  ],
+  "finish": [
+   {
+    "name": "the finish screen (Ctrl+F+I): phase 3, the special text idle 40 passes into it",
+    "ok": true,
+    "detail": {
+     "phase": 3,
+     "textState": 0,
+     "statesSeen": [
+      0
+     ]
+    }
+   },
+   {
+    "name": "notice(true) shows \"pauze\" (the special text runs), notice(false) takes it off (idle again)",
+    "ok": true,
+    "detail": {
+     "phase": 3,
+     "textState": 0,
+     "shown": true,
+     "textWhileShown": 1,
+     "textAfter": 0
+    }
+   },
+   {
+    "name": "the held picture: the notice's draws on top of the HUD, then the same scene with a 9:16 HUD",
+    "ok": true,
+    "detail": {
+     "hud": "91/91 (next pass 86)",
+     "scene": 186
+    }
+   },
+   {
+    "name": "every pass after the hold until the race ends: draw for draw the same with and without it",
+    "ok": true,
+    "detail": {
+     "passes": "282/282",
+     "frames": "283/283",
+     "firstDiff": -1,
+     "end": "ended/ended"
+    }
+   },
+   {
+    "name": "race.ini at the end the same",
+    "ok": true,
+    "detail": {
+     "bytes": 6745
+    }
+   },
+   {
+    "name": "the game's globals at the end the same (but the object draw count 0x6a5c84); bytes differ only in the heap",
+    "ok": true,
+    "detail": {
+     "low": 0,
+     "globals": 0,
+     "heap": 515
+    }
+   }
+  ],
+  "gameover": [
+   {
+    "name": "Tijdrace game over (phase 6): \"tijd is om!\" runs as the special text, so no \"pauze\" over it",
+    "ok": true,
+    "detail": {
+     "passes": 960,
+     "phase": 6,
+     "textState": 1,
+     "shown": false
+    }
+   }
+  ]
+ }
+}

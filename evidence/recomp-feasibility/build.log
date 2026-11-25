@@ -1,0 +1,63 @@
+GAME      base 00400000 (preferred 00400000) size 2b8000 entry 004c04ec exports 0 sha256 68e5c9139a9251d3
+  replacement 004be698 __ftol
+  replacement 004be800 _CIasin_004be800
+  replacement 004bef90 _memcpy
+  replacement 004bfa20 _CIpow_004bfa20
+  replacement 004bfd50 _fmod_004bfd50
+  replacement 004bfd5a _CIfmod_004bfd5a
+  replacement 004bfe60 _strrchr
+  replacement 004c0200 _chkstk
+  replacement 004c08a0 _CIacos_004c08a0
+  replacement 004c0dec __EH_prolog
+  replacement 004c0e10 _memcpy
+  replacement 004c13e0 _memset
+eh: 411 handler stubs, 24 with try blocks, 1543 unwind funclets, 53 catch funclets, 23 continuations
+unowned code ranges added as entries: 524
+entries 5630 address-taken 1434 3.4s
+functions 5620 instructions 238238 3.7s
+eh: 22 guarded functions
+functions with register inputs: 1690
+analysis done 4.4s
+lifted 5604 failed 16 5.3s
+  FAIL sub_004bfd64 Unsupported: x87 analysis: x87 underflow at 004bfd64; x87 depth conflict (fpu in=0 out=1)
+  FAIL sub_004c1ec4 Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)
+  FAIL sub_004c1ecd Unsupported: x87 analysis: x87 underflow at 004c1ecd (fpu in=0 out=1)
+  FAIL sub_004c1ed2 Unsupported: x87 analysis: x87 underflow at 004c1ed2 (fpu in=0 out=1)
+  FAIL sub_004c1efd Unsupported: x87 analysis: x87 underflow at 004c1efd (fpu in=0 out=1)
+  FAIL sub_004c1eff Unsupported: x87 analysis: x87 underflow at 004c1f24 (fpu in=0 out=1)
+  FAIL sub_004c1f27 Unsupported: x87 analysis: x87 underflow at 004c1f3c; x87 depth conflict (fpu in=0 out=1)
+  FAIL sub_004c1f66 Unsupported: x87 analysis: x87 underflow at 004c1f68 (fpu in=0 out=1)
+  FAIL GAME_FUN_004c4d71_004c4d71 Unsupported: x87 analysis: x87 underflow at 004c4d7c; x87 depth conflict (fpu in=0 out=1)
+  FAIL sub_004c4e64 Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)
+  FAIL sub_004c4eb1 Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)
+  FAIL GAME_FUN_004c4ebe_004c4ebe Unsupported: x87 analysis: x87 underflow at 004c4ebe; x87 depth 2 at return (fpu in=0 out=1)
+  FAIL sub_004c4f52 Unsupported: instruction les edx, ptr [ebx*8 + 0x6dd0866] at 004c4f52 in sub_004c4f52 (fpu in=0 out=0)
+  FAIL GAME_FUN_004c5d21_004c5d21 Unsupported: x87 analysis: x87 underflow at 004c5d29 (fpu in=0 out=1)
+  FAIL GAME_FUN_004c5d36_004c5d36 Unsupported: x87 analysis: x87 depth 2 at return (fpu in=0 out=1)
+  FAIL GAME_FUN_004c5f3c_004c5f3c Unsupported: x87 analysis: x87 underflow at 004c5f44; x87 depth 2 at return (fpu in=0 out=1)
+copied 12 data tables from .text, 25960 bytes
+wasm 4.0 MB, 5.4s
+problem data_refs_outside_functions 648 ['004018b0<-00407334', '004018b0<-00407346', '004021c0<-0040735b', '00402980<-004dd020', '00402a70<-00402a60', '00402ad0<-004dd024', '00402bc0<-00402bb0', '00407620<-004dd034', '004076a0<-00407630', '004076a0<-00407660', '0040f3e0<-004dd068', '00413233<-004dc058']
+problem build 1 ['undecodable at 00413234']
+problem eh 2 ['try-block handler stub 004cdbe1: its function is not reachable (not discovered), no guard needed', 'try-block handler stub 004cfbba: its function is not reachable (not discovered), no guard needed']
+problem register_input_functions 1690 ['0040a3b0 GAME_FUN_0040a3b0_0040a3b0 [4]', '0040b0b0 GAME_FUN_0040b0b0_0040b0b0 [6]', '0040b779 Catch@0040b779 [4, 5, 6, 7]', '0040b79a sub_0040b79a [4, 5, 6, 7]', '0040f400 sub_0040f400 [4]', '00411b40 GAME_FUN_00411b40_00411b40 [5]', '00414850 sub_00414850 [4, 5, 7]', '00415d70 GAME_FUN_00415d70_00415d70 [4]', '00423450 GAME_FUN_00423450_00423450 [7]', '00426aa0 GAME_FUN_00426aa0_00426aa0 [6]', '00435d50 GAME_FUN_00435d50_00435d50 [5]', '004433dc sub_004433dc [4, 5, 6, 7]']
+problem irreducible 6 ['GAME_FUN_00417aa0_00417aa0', 'GAME_FUN_0044d4d0_0044d4d0', 'GAME__strncpy_004be6f0', 'GAME__strstr_004c0970', 'GAME_FUN_004c3b68_004c3b68', 'GAME_FUN_004c76e0_004c76e0']
+problem unsupported 16 ['sub_004bfd64: Unsupported: x87 analysis: x87 underflow at 004bfd64; x87 depth conflict (fpu in=0 out=1)', 'sub_004c1ec4: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'sub_004c1ecd: Unsupported: x87 analysis: x87 underflow at 004c1ecd (fpu in=0 out=1)', 'sub_004c1ed2: Unsupported: x87 analysis: x87 underflow at 004c1ed2 (fpu in=0 out=1)', 'sub_004c1efd: Unsupported: x87 analysis: x87 underflow at 004c1efd (fpu in=0 out=1)', 'sub_004c1eff: Unsupported: x87 analysis: x87 underflow at 004c1f24 (fpu in=0 out=1)', 'sub_004c1f27: Unsupported: x87 analysis: x87 underflow at 004c1f3c; x87 depth conflict (fpu in=0 out=1)', 'sub_004c1f66: Unsupported: x87 analysis: x87 underflow at 004c1f68 (fpu in=0 out=1)', 'GAME_FUN_004c4d71_004c4d71: Unsupported: x87 analysis: x87 underflow at 004c4d7c; x87 depth conflict (fpu in=0 out=1)', 'sub_004c4e64: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'sub_004c4eb1: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'GAME_FUN_004c4ebe_004c4ebe: Unsupported: x87 analysis: x87 underflow at 004c4ebe; x87 depth 2 at return (fpu in=0 out=1)']
+problem failed 16 ['sub_004bfd64: Unsupported: x87 analysis: x87 underflow at 004bfd64; x87 depth conflict (fpu in=0 out=1)', 'sub_004c1ec4: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'sub_004c1ecd: Unsupported: x87 analysis: x87 underflow at 004c1ecd (fpu in=0 out=1)', 'sub_004c1ed2: Unsupported: x87 analysis: x87 underflow at 004c1ed2 (fpu in=0 out=1)', 'sub_004c1efd: Unsupported: x87 analysis: x87 underflow at 004c1efd (fpu in=0 out=1)', 'sub_004c1eff: Unsupported: x87 analysis: x87 underflow at 004c1f24 (fpu in=0 out=1)', 'sub_004c1f27: Unsupported: x87 analysis: x87 underflow at 004c1f3c; x87 depth conflict (fpu in=0 out=1)', 'sub_004c1f66: Unsupported: x87 analysis: x87 underflow at 004c1f68 (fpu in=0 out=1)', 'GAME_FUN_004c4d71_004c4d71: Unsupported: x87 analysis: x87 underflow at 004c4d7c; x87 depth conflict (fpu in=0 out=1)', 'sub_004c4e64: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'sub_004c4eb1: Unsupported: x87 analysis: x87 underflow at 004c1ec6 (fpu in=0 out=1)', 'GAME_FUN_004c4ebe_004c4ebe: Unsupported: x87 analysis: x87 underflow at 004c4ebe; x87 depth 2 at return (fpu in=0 out=1)']
+fpu return functions 58 indirect float calls 5
+x87-bad functions: 15
+  004c5d36 callers=2 GAME_FUN_004c5d36_004c5d36 x87 depth 2 at return
+  004c5f3c callers=1 GAME_FUN_004c5f3c_004c5f3c x87 underflow at 004c5f44; x87 depth 2 at return
+  004c5d21 callers=1 GAME_FUN_004c5d21_004c5d21 x87 underflow at 004c5d29
+  004c4ebe callers=1 GAME_FUN_004c4ebe_004c4ebe x87 underflow at 004c4ebe; x87 depth 2 at return
+  004c4eb1 callers=0 sub_004c4eb1 x87 underflow at 004c1ec6
+  004c4e64 callers=0 sub_004c4e64 x87 underflow at 004c1ec6
+  004c1ecd callers=0 sub_004c1ecd x87 underflow at 004c1ecd
+  004c1ec4 callers=0 sub_004c1ec4 x87 underflow at 004c1ec6
+  004bfd64 callers=0 sub_004bfd64 x87 underflow at 004bfd64; x87 depth conflict
+  004c4d71 callers=0 GAME_FUN_004c4d71_004c4d71 x87 underflow at 004c4d7c; x87 depth conflict
+  004c1f66 callers=0 sub_004c1f66 x87 underflow at 004c1f68
+  004c1f27 callers=0 sub_004c1f27 x87 underflow at 004c1f3c; x87 depth conflict
+  004c1eff callers=0 sub_004c1eff x87 underflow at 004c1f24
+  004c1efd callers=0 sub_004c1efd x87 underflow at 004c1efd
+  004c1ed2 callers=0 sub_004c1ed2 x87 underflow at 004c1ed2

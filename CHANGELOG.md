@@ -1,16 +1,53 @@
 # Changelog
 
-## Unreleased
+## 2.0.0 — 2026-11-25
 
-### Added
+**A new port: the race now runs the game's own original code.** Until now RedCat SuperKarts was a
+reconstruction written by hand in JavaScript and Three.js. In 2.0.0 the original race program, `rcskspel.dat`
+(Davilex, 2000), is recompiled from x86 machine code to WebAssembly. Physics, AI, rules, timing, HUD, camera,
+sound and the race's own screens (pause, quit requester, finish and game over) are the original code as
+shipped. A JavaScript layer gives it what Windows and DirectX 5 gave it: files, timers, input, sound
+(DirectSound and DirectShow on Web Audio) and a Direct3D render driver drawn with WebGL 2. The menu, saves and
+settings are the JavaScript reconstruction's, unchanged. See the [2.0.0 release notes](docs/releases/2.0.0.md).
 
-- **FPS weergeven** in **Meer instellingen**, off by default: shows the frames per
-  second during a race.
+### Your saves
+
+- Profiles, highscores, records, unlocked countries and settings carry over: on the website at the same
+  address, and in the desktop app, which keeps the 1.0.x app's identity and save folder. Nothing is reset.
+- **Opslag exporteren / Opslag importeren** (Meer instellingen → Opslag) moves saves between sites or
+  browsers as a file.
+
+### Kept from the JavaScript reconstruction, around the original code
+
+- The original menus, Adventure, QuickRace, highscores, intro and reward movies, help, settings.
+- Any screen shape (wider shows more at the sides), the HUD laid out like 1.0.3's, resolution, render scale
+  and MSAA, pictures smoothed to the display's rate between the game's 25 ms steps.
+- Keyboard, controller and touch controls; the pad and the touch wheel steer through the game's own analog
+  joystick code.
+- Schaduwen op het wegdek, Motorlicht volgt de kart, Vrij vliegen, recovery of a stuck kart, a pause when
+  the window loses focus, FPS weergeven (new, off by default), at most 60 frames a second on phones.
 
 ### Changed
 
-- Phones and tablets with a 90 or 120 Hz display draw at most about 60 frames per
-  second, which keeps them cooler. Desktops stay uncapped.
+- The race is the original program, so it behaves as the original does, including where the
+  reconstruction differed. What still differs from the original on purpose is listed in
+  [docs/intentional-differences.md](docs/intentional-differences.md).
+- Key bindings now work on letter keys as set; the original's own debug and cheat keys only work with
+  `?cheats` in the address.
+- The website needs a browser with cross-origin isolation, SharedArrayBuffer, WebAssembly and WebGL 2
+  (current Chrome, Edge, Firefox; Safari not yet tested). Other browsers get a notice with a link to the
+  previous version at `classic/`.
+- A first race on the website downloads about 30 MB (1.0.3: about 15 MB); a second race on another track
+  about 8 MB.
+
+### The JavaScript reconstruction
+
+Its source (up to 1.0.3 and the unreleased FPS counter) is on the branch `javascript-port`, and its releases
+and tags are unchanged. On the website it stays at `classic/`.
+
+## Earlier versions: the JavaScript reconstruction
+
+Links in these entries point to the `javascript-port` branch.
 
 ## 1.0.3 — 2026-10-30
 
@@ -18,14 +55,14 @@ Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
 Apple Silicon. The race is far lighter, above all on phones, and loads much
 faster, and two optional improvements over the original are added. Gameplay is
 unchanged. Existing saves, profiles, unlocks, settings and records keep working
-without migration. See the [1.0.3 release notes](docs/releases/1.0.3.md).
+without migration. See the [1.0.3 release notes](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/releases/1.0.3.md).
 
 ### Added
 
 - `tools/deploy-website.sh` builds the website and uploads it to the Nginx
   server in one command, sending only changed files and checking the live site
   afterwards. `--dry-run` shows the changes first. See
-  [hosting](docs/hosting.md#deploy-to-the-website-with-one-command).
+  [hosting](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/hosting.md#deploy-to-the-website-with-one-command).
 - **Schaduwen op het wegdek** in **Meer instellingen**, on by default: kart
   shadows lie on the road surface under each kart. The original shadow sits on
   one flat plane per track section, so it disappears below the road in places,
@@ -41,7 +78,7 @@ without migration. See the [1.0.3 release notes](docs/releases/1.0.3.md).
 - Much smoother on phones. In emulated-phone tests the race needs about a quarter
   of the main-thread time, with far less garbage collection, half the draw calls
   and one full-screen pass less. Gameplay is unchanged and the Netherlands test
-  frames are pixel-identical. See [mobile performance](docs/mobile-performance.md).
+  frames are pixel-identical. See [mobile performance](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/mobile-performance.md).
 - On phones and tablets **Automatisch** now stops at about 1 megapixel, which looks
   slightly softer. Choose **Volle schermresolutie** for every screen pixel.
 - A race loads much faster: one mesh pack replaces 1,241 JSON requests, and the
@@ -58,8 +95,8 @@ Apple Silicon. A second comparison against the recovered original code
 corrects Adventure, rescue, track, HUD and menu details, and the game now
 calculates with the same double precision as the original. Existing saves,
 profiles, unlocks, settings and records keep working without migration. See
-the [1.0.2 release notes](docs/releases/1.0.2.md) and the
-[comparison report](docs/original-comparison-2026-10-28.md).
+the [1.0.2 release notes](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/releases/1.0.2.md) and the
+[comparison report](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/original-comparison-2026-10-28.md).
 
 ### Changed
 
@@ -107,8 +144,8 @@ Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
 Apple Silicon, with ten gameplay and menu corrections from a comparison
 against the recovered original code. Existing saves, profiles, unlocks,
 settings and records keep working without migration. See the
-[1.0.1 release notes](docs/releases/1.0.1.md) and the
-[comparison report](docs/original-comparison-2026-10-28.md).
+[1.0.1 release notes](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/releases/1.0.1.md) and the
+[comparison report](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/original-comparison-2026-10-28.md).
 
 ### Fixed
 
@@ -145,7 +182,7 @@ settings and records keep working without migration. See the
 Source and desktop release for Linux x64, Windows x64, macOS Intel and macOS
 Apple Silicon. The complete `original-source/` reference is published with the
 source on GitHub and GitLab and included in release source archives. See the
-[1.0.0 release notes](docs/releases/1.0.0.md).
+[1.0.0 release notes](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/releases/1.0.0.md).
 
 ### Changed and fixed
 
@@ -160,7 +197,7 @@ source on GitHub and GitLab and included in release source archives. See the
 - Shared browser/desktop file serving and fixed canceled track loads returning
   after Back. Hardened settings fallback without migrating valid saves.
 - Reorganized documentation and corrected stale setup/status instructions while
-  preserving historical evidence. See [the efficiency review](docs/code-efficiency.md).
+  preserving historical evidence. See [the efficiency review](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/code-efficiency.md).
 - Movies start immediately, retrying muted when the browser blocks sound.
   A bottom-left **Geluid inschakelen** button enables audio without restarting
   playback and enters fullscreen if needed. Removed the intro Start button
@@ -171,7 +208,7 @@ source on GitHub and GitLab and included in release source archives. See the
 - Corrected bonus/turbo and engine-sound ordering within the player update.
 - Restored sound continuity during native Pause/Quit screens and music restart
   polling; retained host focus-loss suspension across pending pause dismissal.
-  See [the separate original-code comparison](docs/full-source-audit.md).
+  See [the separate original-code comparison](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/full-source-audit.md).
 
 ### Distribution and compatibility
 
@@ -192,7 +229,7 @@ release, as requested. Packages are built and published without those checks.
 Earlier focused source and compatibility results remain historical evidence;
 they do not establish that these 1.0.0 packages have been tested. Existing
 original-game parity and target-device limits remain documented in
-[remaining work](docs/remaining-work.md).
+[remaining work](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/remaining-work.md).
 
 ## 0.9.0 — 2026-10-25
 
@@ -260,11 +297,11 @@ Complete original Windows race parity, a fresh full race matrix on the current
 source, historical GPU precision and physical target-device validation remain
 open. Windows packages have no publisher signature; macOS packages use ad-hoc
 signing without notarization. See
-[remaining work](docs/remaining-work.md) and [validation](docs/validation.md).
+[remaining work](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/remaining-work.md) and [validation](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/validation.md).
 
 ## 0.1.0 — previous source release
 
 The first published source snapshot included the browser and Electron game,
 prepared assets, original menus and race modes, local setup and packaging
 instructions, research and retained validation. See the
-[original release notes](docs/releases/v0.1.0.md).
+[original release notes](https://github.com/NostalgiaRealm/RedCat-SuperKarts/blob/javascript-port/docs/releases/v0.1.0.md).

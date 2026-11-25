@@ -1,436 +1,236 @@
-# RedCat SuperKarts browser and desktop reconstruction
+# RedCat SuperKarts, recompiled
 
-A reconstruction of the original Windows game using **Three.js**, **Electron**
-and the original supplied assets. Play in a browser or in a desktop window.
+**Version 2.0.0** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.0.md) ·
+[Play in the browser](https://games.nostalgiarealm.com/redcatsuperkarts/) ·
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.0) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.0)
 
-**Version 1.0.3** · [Changelog](CHANGELOG.md) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v1.0.3) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v1.0.3)
+> **This is a static recompilation, not a reconstruction.** From version 2.0.0 RedCat SuperKarts runs the
+> game's own original race program, `rcskspel.dat` (Davilex, 2000), recompiled from x86 machine code to
+> WebAssembly. Physics, AI, rules, timing, HUD, camera, sound and the race's own screens are the original
+> code as shipped. Versions up to 1.0.3 were a reconstruction written by hand in JavaScript and Three.js;
+> that port is kept on the branch [`javascript-port`](https://github.com/NostalgiaRealm/RedCat-SuperKarts/tree/javascript-port)
+> with its releases, and on the website at
+> [`classic/`](https://games.nostalgiarealm.com/redcatsuperkarts/classic/).
 
-- **Six circuits**, **four playable characters**, **four active race modes** and
-  **three difficulty levels**, with the original menus.
-- **QuickRace:** character and race selection, countdown, racing, results,
-  highscores and retry.
-- **Adventure:** player profiles, progression, unlocks, and the original
-  character and country reward movies.
-- Recovered player and opponent behavior, collisions, weapons, cameras,
-  animations, weather, trails, race HUD, sound and music follow the recorded
-  original evidence. The HUD is the information shown on screen during a race.
+A JavaScript layer gives the recompiled race what Windows and DirectX 5 gave it: files, timers, input,
+DirectSound and DirectShow on Web Audio, and a Direct3D render driver drawn with WebGL 2 in a worker. The
+menus, Adventure, QuickRace, highscores, settings and saves are the JavaScript reconstruction's, unchanged,
+and so are its additions around the race: any screen shape, resolution, render scale and MSAA, pictures
+smoothed to the display's rate, keyboard, controller and touch controls, surface shadows, engine lights
+that follow the kart, free flight, recovery of a stuck kart and a pause when the window loses focus. What
+differs from the original on purpose is listed in [`docs/intentional-differences.md`](docs/intentional-differences.md).
 
-**Status:** the game is playable. Implemented features and comparisons against
-original behavior are recorded separately. Full visual, audio and handling
-parity has not been established: WineD3D does not provide a reliable original
-race baseline here. See [feature status](docs/feature-parity.md) and
-[validation](docs/validation.md) for the tested scope, rendering adaptations and
-unavailable platforms. The [remaining-work audit](docs/remaining-work.md)
-separates confirmed improvements from validation gaps and optional work.
+- **Play:** in a browser at [games.nostalgiarealm.com/redcatsuperkarts](https://games.nostalgiarealm.com/redcatsuperkarts/)
+  (current Chrome, Edge or Firefox; the page needs cross-origin isolation, shared memory and WebGL 2), or
+  download the desktop app for Linux, Windows or macOS from the release links above.
+- **Saves:** profiles, highscores, records, unlocks and settings of 1.0.x carry over, on the website and in the
+  desktop app ([Saves](#saves)).
+- **Status:** the whole game plays from the menu to the results. Checked in headless Chromium and Firefox and
+  in the Linux desktop build; not yet on real phones, in Safari, or on Windows and macOS machines
+  ([release notes](docs/releases/2.0.0.md#tested-and-not-tested)). [`PLAN.md`](PLAN.md) has what is next.
 
-To inspect how the original worked, see the [recovered C and assembly](original-source/README.md).
-This is decompiled reference code, not the developers' original source project.
-The [source comparison report](docs/full-source-audit.md) records the earlier
-confirmed corrections and the intentional port features that were preserved.
-The [28 October 2026 comparison](docs/original-comparison-2026-10-28.md)
-records the latest six corrections.
+The original program, its decompilation and the analysis that the recompiler and host are built on are in
+[`original-source/`](original-source/README.md) (recovered code and indexes, not the developers' source
+project). The game's data files (`rcs.img` and the rest, 204 MB) are not in the repository; the website and the
+desktop packages carry them, and a build reads them from an installation ([Run it](#run-it)).
 
-[Run the game](#run-the-game) · [Controls](#controls) ·
-[Settings and saves](#settings-and-saves) ·
-[Prepare original assets](#prepare-original-assets) ·
-[Build and host](#build-and-host) · [Testing](#testing) ·
-[Technical documentation](#technical-documentation)
+## How it fits together
 
-## Run the game
+| Part | Where | From |
+|---|---|---|
+| Recompiler | `tools/recomp/` | RedCat Spookkasteel's (`RCSPOOK_MAIN/tools/recomp`), which took its core from Maisy's Playhouse and A2 Racer 4. Changes: [`docs/recompiler.md`](docs/recompiler.md) |
+| Recompiled race | `public/game/rcskspel.{wasm,meta.json,codemap.bin}` | Generated from `original-source/inputs/rcskspel.dat` |
+| Memory, thunks, COM, C++ exceptions | `source/host/machine.js`, `eh.js` | Spookkasteel host |
+| Win32, DirectDraw/Direct3D/DirectSound, files and INI | `source/host/win32.js`, `directx.js`, `vfs.js` | A2 Racer 4 host, adapted ([`docs/host.md`](docs/host.md)) |
+| DirectInput (mouse), joystick, DirectShow music | `source/host/dinput.js`, `winmm.js`, `dshow.js` | New, `winmm.js` after Spookkasteel |
+| DirectSound | `source/host/dsound.js`; on the page `source/web/audio.js` | After Spookkasteel: play state on the race's clock, Web Audio plays what the worker sends |
+| The race's loop | `source/host/race.js`, `race-setup.js` | New, A2's pattern: WinMain 0x4432a0 is a host hook |
+| Game worker | `source/web/worker.js`, `shared.js` | New, Spookkasteel's model: the race in a worker that may block, input in shared memory |
+| Recorder and render worker | `source/render/recorder.js`, `gl-renderer.js`, `source/web/render-worker.js` | New: Direct3D 5 and 2D screen calls written down per frame, replayed with WebGL2 on an OffscreenCanvas |
+| Menu, saves, settings | `source/index.html`, `main.js`, `style.css`, `source/menu/` | The JS reconstruction's, copied; changes marked `// recomp:` |
+| Race runner and handoff | `source/race-runner.js`, `source/host/race-handoff.js`, `source/input/` | New: one game worker for every race; the INI keys rcskmenu.dat writes, and the results read back from race.ini |
+| Development race page | `source/dev/race.html`, `race.js` | New: one race with URL parameters, for the checks |
 
-For a ready-to-run desktop app, download a package from the release links above.
-Choose the Linux AppImage or archive, Windows installer or ZIP, or the macOS
-DMG or ZIP for your Mac's processor. These packages include the game and do
-not require Node.js. See [desktop instructions](docs/desktop.md) for details.
+The engine is Davilex's racing engine that A2 Racer 4 also uses (113 shared source files, the same
+DirectX 5 interfaces), which is why A2's host fits. Background: [`docs/recomp-feasibility.md`](docs/recomp-feasibility.md).
 
-The published source release includes the prepared game assets. Download and
-extract the source archive, or clone the repository, then follow the commands
-below. You do not need to import the original disc files for this release.
-The source archive is separate from the ready-to-run desktop downloads.
-Version 1.0.3 was packaged with the normal build checks; see
-[its release notes](docs/releases/1.0.3.md) for the validation scope.
+In the published repository `original-source/` lies in the repository itself. On the development machine this
+port was built in a folder of its own beside a checkout of the JavaScript port (`../RedCat Superkarts`, branch
+`javascript-port`); several tools still read from there: Playwright for the browser checks, the installation copy
+of the game's data, and the JavaScript port's runtime for side-by-side comparisons. Point them elsewhere with
+`PLAYWRIGHT_MODULE`, `SUPERKARTS_DATA` and `SUPERKARTS_ORIGINAL_SOURCE`.
 
-Install **Node.js 24 and npm**, then open a terminal in this project folder.
-The instructions below assume the original assets have already been prepared
-in `public/assets/`. For a fresh checkout that still needs those files, follow
-[Prepare original assets](#prepare-original-assets) first.
+## Run it
 
-### In a browser
+Inputs stay where they are and are only read: the executable and Ghidra's function lists from
+`../RedCat Superkarts/original-source/` (`SUPERKARTS_ORIGINAL_SOURCE` overrides), the game's files from the
+installation copy in `../RedCat Superkarts/evidence/native/runtime/wineprefix/.../RedCat Super Karts/data`
+(`SUPERKARTS_DATA` or `--data` overrides).
 
-Install the JavaScript dependencies once, then start the local server:
+Rebuild the WebAssembly module (5 s; needs Python with capstone, e.g. the reverse-engineering environment):
 
-```sh
-npm ci
-npm start
+```bash
+RCSK_PYTHON=~/.local/share/reverse-engineering/python-analysis/bin/python npm run recompile
 ```
 
-Open **[http://127.0.0.1:4173/](http://127.0.0.1:4173/)**.
-Keep the terminal open while playing. Press **Ctrl+C** in that terminal to stop
-the server. The intro starts automatically; if the browser blocks sound, use
-**Geluid inschakelen** at the bottom left to enable audio while it keeps playing.
-This button also enters fullscreen if the game is not already fullscreen.
+Run a race without a browser (boot, 400 ticks of 25 ms with throttle held, the player's position every 40):
 
-For later launches, run only `npm start`, unless `node_modules/` was removed.
-The command refreshes the small generated runtime in `src/`, then serves it
-with the prepared `public/assets/`. **No separate build command is needed.**
-The editable modules live in [`source/`](source/README.md); the game does not
-load those individual files. Changes made while the server is running need
-`npm run bundle` and a browser reload, or a server restart.
-Startup reports missing Three.js dependencies and shows the reinstall command.
-The `node_modules/` dependency folder is intentionally excluded from Git.
-
-The server accepts local connections only and uses port 4173.
-`npm run dev` also starts it. To use a different port, run
-`PORT=4174 npm run dev`.
-
-### In a desktop window
-
-After installing dependencies and preparing the assets, run:
-
-```sh
-npm run desktop
+```bash
+node tools/run-headless.mjs --ticks 400 --gas --pos-every 40
 ```
 
-This opens the game without a server or a build step. The first launch downloads
-its pinned Electron runtime if needed. Press **F11** to toggle fullscreen.
-Desktop saves use a separate application profile. Menus, movies, sound, controls
-and gameplay use the same game code and assets as the browser version.
+The game: start the server and open <http://127.0.0.1:4190/> (the intro, then the menu). A race on its own, for
+development: <http://127.0.0.1:4190/dev/race.html>, click into it and drive.
 
-For installable or portable packages, see [Desktop packages](#desktop-packages)
-and the [desktop build instructions](docs/desktop.md).
+| Action | Keyboard | Gamepad (standard) | Touch |
+|---|---|---|---|
+| Steer | Left, Right | Left stick, D-pad (analog) | Wheel, left and right (analog) |
+| Gas | Up | RT or A (analog) | Wheel, upper half |
+| Brake, then reverse | Down | LT or B (analog) | Wheel, lower half |
+| Bonus | Ctrl | X | Bonus |
+| Handbrake | Alt | Y | Rem |
+| Pause, then any key | P | Start, then A or Start (after a focus loss also B, the D-pad or the stick) | Then tap the picture (the controls stay, inert) |
+| Stop: the original requester (J/N or the mouse) | Esc, then J/N, or the arrows and Enter (focus starts on nee) | None, as in the JS port; in the requester the stick or D-pad moves between ja and nee (from nee), A presses, B is nee | Stoppen (while racing), then tap ja or nee |
+| Finish and game-over screens | Enter, Space, Esc | A | Tap the picture (holds Space) |
+| Free flight (Meer instellingen → Vrij vliegen): up, down | Space, C (with the driving keys) | LB, RB (with the stick and pedals) | Omhoog, Omlaag (with the wheel) |
 
-## Controls
+Keys are the menu's bindings (Instellingen → Instellen); the table shows the defaults. On the development page touch
+controls show on a touch screen (`?touch=1` anywhere, `?touch=0` never); `?deadzone=18` is the pad's steering dead
+zone in percent, `?etappe=N` picks another country, `?stats` shows tick, phase and draw counts, `?flight` turns free flight on, and `?res`,
+`?scale`, `?msaa` set the drawing. On the menu page `?skipIntro` skips the intro and `?drive=N` starts a QuickRace
+in country N. The page must be cross-origin isolated (the workers share memory with it): the server
+sends `Cross-Origin-Opener-Policy: same-origin` and `Cross-Origin-Embedder-Policy: require-corp`, and a
+website hosting it needs the same two headers.
 
-### Keyboard and touch
-
-The original race keys were recovered from `data/game.ini`:
-
-| Key or control | Action |
-| --- | --- |
-| Arrow keys | Accelerate, brake and steer. |
-| Ctrl | Use a bonus. |
-| Alt | Handbrake. |
-| 1 | Chase camera. |
-| 2 | Body-aligned first-person view. |
-| Hold 3 | Rear view; release to restore the preceding camera. |
-| 4 | Lower-target chase camera. |
-| Esc or the touch **Stoppen** button | Open the original **STOPPEN** quit requester. |
-| P | Pause, using the original release/keypress/release sequence. |
-| Click the circuit, Enter or controller Start | Resume after focus loss pauses the game. |
-| F11 in the desktop app | Toggle fullscreen. |
-
-The original restrictions on camera changes during different race phases are
-retained. In menus, use the mouse, touch, arrow keys or Enter. In the separate
-track-inspection views, drag to orbit and use the wheel or pinch to zoom.
-
-On a touchscreen, hold the **steering wheel on the left** and slide your finger:
-
-- Left/right steers; the distance from the centre controls how sharply you turn.
-- The upper half gives gas; the lower half brakes and then reverses. A small
-  neutral area around the centre helps avoid accidental input.
-- The **pedal on the right** operates the same handbrake as **Alt**. The orange
-  lightning **Bonus** button uses your power-up, like **Ctrl**.
-
-You can hold the wheel and an action button together. Sliding outside the wheel
-keeps control until you lift your finger. Enable or hide these controls under
-**Instellingen → Meer instellingen → Aanraakbediening**. Their layout adapts to
-portrait and landscape screens.
-
-### Controllers
-
-Controllers using the browser's standard Gamepad API mapping support:
-
-| Control | Action |
-| --- | --- |
-| Left stick or D-pad | Navigate menus. |
-| Bottom face button | Confirm. |
-| Right face button | Go back. |
-| Analog throttle, brake and steering | Drive, with a steering deadzone. |
-
-Keyboard input uses the original digital ramps; controllers and the touch
-steering wheel use the recovered proportional joystick routine. The wheel's
-finger-position response follows SuperTuxKart's touch controls. Independent
-touch pointers are supported. Simulated controller and browser touch tests
-cover partial throttle, steering and braking. Physical controllers and mobile
-devices remain unverified. [Touch-control sources and artwork licenses](docs/research-touch-controls.md)
-are documented separately from the original game's assets.
-
-## Settings and saves
-
-**Instellingen → Geavanceerd** keeps the original display options. Added browser
-display and input settings are presented separately.
-
-**Meer instellingen**, below the two sound sliders, contains:
-
-| Option | What it does |
-| --- | --- |
-| MSAA: **2× / 4× / 8×** | Multisample anti-aliasing to smooth polygon edges. |
-| **FPS weergeven** | Show the frames per second during a race (off by default). |
-| **Schaduwen op het wegdek** | Kart shadows lie on the road surface under each kart (on by default). Off shows the original shadow, which disappears below the road in places. |
-| **Motorlicht volgt de kart** | The light behind each kart's engine moves smoothly with the kart (on by default). Off: at speed it can sink into the engine between game updates. |
-| **Vrij vliegen (no-clip)** | Explore freely using the normal driving controls and **Space/C** for up/down. The race pauses while exploring, and stopping free flight returns the kart safely to the track. |
-| **Alles ontgrendelen** | Unlock all tracks/countries while preserving profiles and scores. |
-
-See [extra settings](docs/more-settings.md) for more information.
-The current version is shown at the bottom of **Meer instellingen**.
-
-### Resolution and render scale
-
-- **Auto** uses the viewport's CSS dimensions multiplied by the device pixel
-  ratio once. On phones and tablets it stops at about 1 megapixel.
-- **Volle schermresolutie** uses every screen pixel on any device.
-- An explicit resolution preset fits inside its named rectangle while keeping
-  the viewport's aspect ratio.
-- **100%** uses that base size. **25–200%** multiplies both dimensions.
-- The actual WebGL size is shown. Menus remain separate HTML artwork, and GPU
-  texture limits proportionally constrain extremely large rendering buffers.
-
-### Where progress is saved
-
-Selections, browser settings, original highscore rows, records and Adventure
-profiles persist in local storage for the same origin—the same website address
-and port. Desktop saves use their separate application profile. The supplied
-original save and configuration files are not modified.
-
-### Adventure reward movies
-
-Adventure plays a country-star movie after each successful duel. Completing all
-**24 events** also plays the selected character's original movie after the
-highscore step:
-
-| Character | Original movie |
-| --- | --- |
-| RedCat | `RCWIN` |
-| WhizzKitty | `WKwin` |
-| Brutus | `BRwin` |
-| Max | `MXwin` |
-
-An individual QuickRace win does not trigger these movies.
-
-## Original presentation and sound
-
-The menus use extracted bitmap states, original component coordinates, Dutch
-labels and locally available Comic Sans fonts. Original up, hover and pressed
-images, click masks, menu voices and button samples are connected.
-
-Portrait screens rearrange the artwork while preserving its proportions.
-There are bounded checks of **26 layouts** at **320/390 pixels**. The race HUD
-also keeps the original artwork proportions and reserves space above touch
-controls. The original WinHelp content supplies **13 topics and 46
-illustrations**.
-
-Five referenced menu samples are absent from both supplied copies; their exact
-names are retained in the audio manifest.
-
-Sound follows the original source and group levels:
-
-- Menu speech and movies are independent of the race volume sliders.
-- When a race starts, the original loader changes an enabled effects setting
-  of **0 to 75**. That saved-setting behavior is preserved.
-- Engine layers and roadside clones follow their own original volume rules,
-  rather than a blanket effects multiplier.
-
-Rendering has **no game-imposed frame-rate cap**. Simulation uses the original
-minimum **25 ms** update gate, measured elapsed time and native smoothing, on a
-timer independent of display refresh. See
-[timing behavior and validation](docs/research-variable-update-timing.md).
-
-## Prepare original assets
-
-**Skip this section if your checkout already has the prepared assets.** Asset
-preparation converts the supplied original files into formats the port can use.
-It reads those source files and writes only into this project folder. The
-default paths are the ones supplied for this project.
-
-### Requirements
-
-| Tool | Needed for |
-| --- | --- |
-| Node.js 24 and npm | Install dependencies and run the preparation command. |
-| Python 3 with Pillow and pefile | Read and convert the original assets. |
-| ffmpeg with H.264/AAC encoding support | Convert movies. |
-| helpdeco | Extract the original WinHelp content. |
-
-Ghidra and Unicorn are only needed to reproduce native research. They are not
-needed to run the browser code or retained regression fixtures.
-
-Install helpdeco on `PATH`, or build the tested revision in this folder. This
-one-time build requires a C compiler and Make:
-
-```sh
-git clone https://github.com/pmachapman/helpdeco.git work/helpdeco
-git -C work/helpdeco checkout 785273788af17fde4fba7df7162d547f8645d7d8
-make -C work/helpdeco/gcc
+```bash
+node tools/serve.mjs
 ```
 
-### Prepare and launch
+Screenshots in headless Chromium (needs the server; Playwright comes from the SuperKarts reconstruction):
 
-From this project folder:
-
-```sh
-npm ci
-npm run prepare:assets
-npm run dev
+```bash
+CHROME_PATH=~/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome node tools/shot.mjs --ticks 20,340,800 --gas
 ```
 
-Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/).
+All checks in a row (about an hour): `node --test`, the Node checks, then the browser checks one at a time, each
+with a time limit, and a table of pass/fail and time at the end (exit code 1 when one failed). It starts the dev
+server and the JS reconstruction's read-only server when they are not running. Each check's output and the table
+go to a new folder in the temp folder (`--logs DIR` picks one). `--only unit,node,browser` or check names, `--skip`
+and `--list` choose the checks, and `--timeout-scale 2` doubles the limits on a busy machine:
 
-Preparation extracts both archives and converts imagery, models, tracks, fonts
-and movies. It also parses all **20 native menu forms**, extracts their original
-hit masks, reconstructs the launcher icon, recovers Dutch WinHelp text and
-illustrations, imports the separate CD menu voices, and inventories gameplay
-configuration. Output manifests retain source hashes and record ranges so the
-converted content can be traced back to the original files.
-
-### Use a different local installation
-
-```sh
-npm run prepare:assets -- \
-  --installation "/path/to/RedCat Super Karts" \
-  --cd "/path/to/extracted/RedCat Superkarts" \
-  --font-dir "/path/to/local/Microsoft/fonts"
+```bash
+CHROME_PATH=~/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome node tools/run-checks.mjs
 ```
 
-The font directory must contain `comic.ttf`, `comicbd.ttf`, `comici.ttf` and
-`comicz.ttf`, the family used by the original Delphi menus. On this machine,
-the default is `/home/rick/.local/share/fonts/microsoft`.
+The game's files reach the browser by the race's lists, the archives `rcs.img` and `rc.img` by byte ranges
+(`source/web/game-files.js`). After a change in which original files exist, or in how the host reads them, make the
+file list and the per-race lists again (`public/game/files.json`, `preload.json`; 96 races in Node, 15 s), and after a
+change in which menu assets the menu uses, copy them from the JS port (`public/assets`):
 
-Set `PYTHON` to select another interpreter. A local virtual environment can
-provide Pillow and pefile without changing the system Python. Add `--skip-media`
-to reuse existing movie conversions while refreshing other assets.
-
-## Build and host
-
-Building creates a separate copy for distribution. It is not required for the
-local browser or desktop commands above.
-
-### Static browser build
-
-```sh
-npm run build
+```bash
+npm run manifest && npm run preload && npm run assets
 ```
 
-This creates `dist/` with the prepared original assets. The build combines the
-JavaScript modules into a small set of files, loads the renderer when needed
-and removes unused library code. Editable files stay in [`source/`](source/README.md).
-Use `npm run bundle` to refresh only the local runtime, without copying assets
-or creating `dist/` or desktop packages. See [the folder guide](docs/runtime-layout.md).
+What two races fetch on the dev page (`evidence/checks/loading.json`), and what a whole five-lap race would still
+wait for beyond the lists (Node, a test bot; `evidence/loading/full-races.json`):
 
-To try that output locally, stop any server already using port 4173, then run:
-
-```sh
-npm run preview
+```bash
+CHROME_PATH=~/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome node tools/check-loading.mjs
+node tools/checks/loading-full-race.mjs
 ```
 
-Open the same [local address](http://127.0.0.1:4173/). Switching between `npm start`
-and `npm run preview` on that address keeps existing browser saves and settings;
-no migration is needed. Preview requires a completed build and does not rebuild
-when you edit source. Use `npm start` to refresh and run the local runtime.
+The website (`dist/site/`, the nginx files beside it), its check below `/redcatsuperkarts/` in headless Chromium
+(`--firefox` also tries Playwright's Firefox), a check of the real server, and the upload: [`docs/hosting.md`](docs/hosting.md).
 
-You can also serve `dist/` through any static HTTP server; opening `index.html`
-through `file://` is not supported. For example:
-
-```sh
-python3 -m http.server 4175 --bind 127.0.0.1 --directory dist
+```bash
+npm run package && CHROME_PATH=~/.cache/ms-playwright/chromium-1208/chrome-linux64/chrome npm run package:check
+npm run site:check -- --url https://games.nostalgiarealm.com/redcatsuperkarts-test/
+tools/deploy-site.sh --dry-run
 ```
 
-That different port has separate browser saves. See [build and loading
-details](docs/code-efficiency.md) for the changes and focused validation.
+## Saves
 
-### Host as a website
+The recomp keeps its saves where the JS reconstruction keeps them: `localStorage` keys `rcsk.race-save.v1` (Adventure
+profiles, highscores, records, grid position, unlocked countries), `rcsk.settings.v1`, `rcsk.selection.v1` and
+`rcsk.firsttime.*`, read and written by the same code (`source/menu/race-save.js` and `settings.js` are copies).
+On one site (the same scheme, host and port, any folder) the two ports share them: nothing to do (on the website the
+new port at `/redcatsuperkarts/` and the JS port at `/redcatsuperkarts/classic/` see the same saves: `docs/hosting.md`)
+(`tools/checks/save-transfer.mjs` makes saves with the JS port's own menu and checks the recomp shows and races
+with them). From another site or port they move as a file: Meer instellingen →
+Opslag → **Opslag exporteren** / **Opslag importeren** (importing replaces the saves in that browser). The JS port has
+no export button; on its site, this line in the browser console (F12) writes the same file:
 
-The browser build can run as a static site at a domain root, such as
-`https://karts.example.com/`, or in a URL folder, such as
-`https://games.nostalgiarealm.com/redcatsuperkarts/`. Serve the **contents of
-`dist/`**, including every generated JavaScript chunk and prepared asset.
-`tools/deploy-website.sh` builds and uploads it to the Nginx server in one
-command; `--dry-run` shows the changes first.
+```js
+(()=>{const k=Object.fromEntries(Object.keys(localStorage).filter(x=>x.startsWith('rcsk.')).map(x=>[x,localStorage.getItem(x)]));const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({format:'rcsk-saves',version:1,keys:k})],{type:'application/json'}));a.download='redcat-superkarts-opslag.json';a.click();})()
+```
 
-The [hosting instructions](docs/hosting.md) cover build requirements, the exact
-upload layout, DNS and HTTPS, Caddy/Nginx examples, the deploy script, caching,
-media checks and updates.
+The desktop app 2.0.0 has the JS port's desktop app's identity (origin `rcsk://game`, profile folder
+`RedCat SuperKarts`), so it opens a 1.0.x player's saves where they are: nothing to do.
 
-### Desktop packages
+## Desktop app
 
-Run the packaging command on the corresponding operating system:
+Version 2.0.0 is this port in an Electron window and replaces the JS port's desktop app (1.0.x): the packaged site
+(`dist/site`) served by the app under `rcsk://game` with the isolation headers, the JS app's window, menu bar, F11,
+single instance and navigation lock, and its name, appId and profile, so saves, settings and highscores carry over.
+Linux (AppImage, tar.gz) and Windows (installer, zip) x64 are built here, macOS (DMG, ZIP; x64, arm64) by a GitHub
+workflow. How to build and check them: [`docs/building.md`](docs/building.md).
 
-| Platform | Command | Output in `release/` |
-| --- | --- | --- |
-| Linux | `npm run dist:linux` | AppImage and tar.gz. |
-| Windows | `npm run dist:win` | Installer and ZIP. |
-| macOS | `npm run dist:mac` | Separate Intel and Apple Silicon DMG/ZIP packages. |
+```bash
+npm ci && npm run package && npm run dist:linux && npm run dist:win    # release/2.0.0/
+node tools/desktop-check.mjs --legacy /path/to/1.0.3/redcat-superkarts  # launch check of the Linux build
+```
 
-`npm run desktop:pack` creates an unpacked application for the host platform.
-These commands build locally without publishing. Normal packaging verifies
-missing or changed game files. The 1.0.0 release deliberately skipped package
-verification and all other build checks; 1.0.1 and later run them.
+## Evidence
 
-See [desktop build instructions](docs/desktop.md) for prerequisites, exact
-commands for all three platforms, save locations, optional signing and the
-scope of actual platform validation.
+The screenshots under `evidence/frames/` are not in the repository (164 MB): the checks named below write them
+when they run. The measured results under `evidence/checks/` and `evidence/audio/` are.
 
-## Browser shortcuts for investigation
 
-Normal play starts at `/`. The other paths make repeated checks easier:
-
-| Path | Opens |
-| --- | --- |
-| `/` | Original intro, then the menu. Click or press a key to skip playback. |
-| `/?skipIntro` | The main menu directly. |
-| `/?track=0` through `/?track=5` | Separate asset-inspection views for Nederland, Duitsland, Engeland, Frankrijk, Spanje and Italië. |
-| `/?drive=0` through `/?drive=5` | Driving research views with original kart, drivers, four opponents, difficulty tables, weapons, recovery, camera, music, HUD lettering and minimap. |
-
-Track inspection uses an orbit camera. Driving research uses recovered player,
-opponent, ground and contact routines with the original chase camera. It skips
-the menu and countdown for repeatable investigation. Use **QuickRace** to check
-the full menu, countdown and results path. See the
-[parity inventory](docs/feature-parity.md) for comparison limits.
-
-## Testing
-
-Checks are for development, not required each time you launch the game. The
-[development guide](docs/development.md) lists focused unit, asset, browser,
-Firefox and native checks, their requirements and evidence limits.
-
-## Recorded validation checkpoints
-
-See [current validation](docs/validation.md) for dated results and platform
-coverage. The [earlier checkpoint overview](docs/history/validation-overview.md)
-preserves the broad race, greeting/recovery, full-matrix and shadow records.
-Historical results remain tied to their tested source; the [remaining-work
-list](docs/remaining-work.md) identifies the open validation gaps.
-
-## Technical documentation
-
-In these notes, **native** means the behavior or files of the original Windows
-game. Research records distinguish recovered routines, observed behavior and
-remaining comparison limits.
-
-The repository includes retained test fixtures, validation reports and the
-complete [recovered C/assembly reference](original-source/README.md), including
-its copied runtime inputs and export tools. The entire `original-source/`
-folder is included on GitHub and GitLab and in every release source archive.
-It is inspection material, not a runtime requirement. This includes any
-working databases and helper files inside `original-source/`. Other local
-analysis directories, Wine environments and unrelated raw extraction folders
-remain local; historical paths to those files are not required to run the game.
-See the [release publication policy](docs/releases/README.md).
-
-The source game uses Davilex's **M25/A2 Racer** engine lineage. Spookkasteel uses
-**Genesis3D** worlds and **DaviScript** formats, so only proven-compatible
-extraction and technical findings are reused. The Spookkasteel checkout and
-supplied original installation/ISO remain read-only inputs.
-
-The [documentation index](docs/README.md) organizes every guide and research
-report by topic. Start with [PLAN.md](PLAN.md) for current priorities,
-[feature parity](docs/feature-parity.md) for implementation/comparison status,
-and [original behavior](docs/original-behavior.md) for evidence definitions.
-The complete original request remains in [docs/request.txt](docs/request.txt).
-
-## Original assets and rights
-
-The original game, media and font assets retain their owners' rights. Extraction
-does not imply ownership or a redistribution license. Source preparation
-commands operate on the supplied local copies.
+- `evidence/frames/`: frames of the development page. `nederland-tick0340.png` set beside the original
+  under Wine (`../RedCat Superkarts/evidence/native/runtime/race-native16.png`) shows the same start
+  lights, HUD, banner and kart glows.
+- `evidence/headless/files-read.txt`: the 28 files a Nederland race reads.
+- `evidence/loading/`: what each of 96 races reads (`preload-summary.json`, `tools/build-preload.mjs`) and what whole
+  races driven by a test bot would wait for beyond the lists (`full-races.json`); `evidence/checks/loading-before.json`
+  and `loading.json`: two races on the dev page before (180 MB, whole files) and after (30 MB, byte ranges);
+  `evidence/package/`: the packaged site's check (`result.json`, the menu, both races, the not-supported notice).
+- `evidence/checks/`: start-sequence and full-race checks (see PLAN.md).
+- `evidence/frames/input/`: pause, quit requester and finish on the worker page, driven by real key presses
+  (`node tools/check-input.mjs`, results in `result.json`).
+- `evidence/frames/shapes/`: the race at 4:3, 16:9, 21:9 and portrait with the HUD at the edges, 16:9 with MSAA
+  4x, the requester, a mouse click on its button and the finish flag at 16:9 (`node tools/check-shapes.mjs`).
+- `evidence/checks/wide-cull*`, `hud-layout*.txt`: no culling by aspect in the game (6 tracks), and the HUD
+  layout's groups, shifts and exact restore (`tools/checks/wide-cull.mjs`, `hud-layout-check.mjs`).
+- `evidence/frames/input/touch-*.png`, `pad-driving.png`, `touch-pad.json`: touch wheel, Stoppen and a tap on the
+  requester, the controls shown but inert in the pause and the focus hold (`touch-pause.png`), a tap on the picture
+  ending the finish screen, Stoppen doing nothing on the game-over screen (`touch-gameover-stoppen.png`), pad driving,
+  pause and focus pause, the requester's focus on nee and ja (`pad-requester-*.png`) (`node tools/check-touch-pad.mjs`); `evidence/checks/input-modes.txt`:
+  the original's input modes, run headless.
+- `evidence/frames/shapes/phone-*.png`, `evidence/checks/hud-scale-*.txt`: the HUD on phones, upright and in
+  landscape, with and without the touch controls, every draw and its cut to its frame held to the JS
+  reconstruction's `raceHudLayout` (`tools/checks/hud-phone-shot.mjs`, `hud-scale-check.mjs`);
+  `evidence/frames/hud/`: the HUD of the JS reconstruction (`js/`) and of the recomp before and after taking over
+  its layout, in the same seven shapes, and both side by side with each group cut to its frame, also while the start
+  lights slide in (`clip/`, `tools/checks/hud-shots.mjs [--moment slide]`); `evidence/frames/hud/touch/`,
+  `evidence/checks/hud-touch-boxes.json`: the touch controls of both ports pixel for pixel on seven screens
+  (`tools/checks/hud-touch-boxes.mjs`).
+- `evidence/frames/smooth/`: pictures per second with and without smoothing, how many draws were paired
+  (`node tools/check-smooth.mjs`, `result.json`), and a still forced halfway between two passes in a corner.
+- `evidence/audio/check-audio.json`: what sounds at the start, during the countdown, while driving and in the
+  pause, with the output's loudness (master, music and effects apart), a focus pause's silence (also for a hidden
+  page and in free flight), music and effects levels changed during the race, and the FPS counter hidden in the
+  pauses (`node tools/check-audio.mjs`, exit code 1 on a failure; screenshots next to it).
+- `evidence/frames/menu/`: the menu screens, side by side with the JS reconstruction's (`compare/`, pixel-identical),
+  and the menu's own checks with a stand-in race (`node tools/checks/menu/check-menu.mjs`).
+- `evidence/frames/menu-race/`: the menu with the real race: a QuickRace finished, its debrief and highscore, a
+  second QuickRace with the saved records quit with a quick Esc tap, and an Adventure event
+  (`node tools/check-menu-race.mjs`).
+- `evidence/checks/flight.txt`, `flight-browser.json`, `evidence/frames/flight/`: free flight headless (the race and
+  HUD frozen, the whole kart at the flight pose in its take-off colour, pause and requester inside a flight pass,
+  landing restored with the JS port's camera reset; `node tools/checks/flight.mjs [--etappe N --car N]`) and on the
+  menu page (panel, keys, pad, touch buttons, "pauze" in `flight-pause.png`, settings over the race, Stop vliegen;
+  `node tools/check-flight.mjs`, `airborne.png` beside the JS reconstruction's `evidence/free-flight/airborne.png`).
+- `evidence/checks/runner.json`: three races on one page, their load times and memory (`node tools/check-runner.mjs`);
+  `evidence/checks/race-handoff/`: the INI handoff and result reader against recorded races (`node --test`,
+  `tools/checks/race-handoff-probe.mjs`).

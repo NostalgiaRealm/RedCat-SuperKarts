@@ -1,0 +1,21 @@
+// Do 0x430ff0 and 0x496290 hand their x87 result to a host m.call through G_ST0 (m.gSt0)? NED, tick 400 with Up.
+import { makeRace, VK } from '/home/rick/Documents/Rebuilds/RedCat Superkarts Recomp/tools/checks/full-race-gaps-lib.mjs';
+const r = await makeRace({ etappe: 0 });
+r.race.boot();
+r.ctl.keys = new Set([VK.UP]);
+for (let k = 0; k < 400; k++) r.tick();
+const m = r.m, f32 = r.f32, i32 = r.i32, u32 = r.u32;
+const bits = (x) => { const b = new DataView(new ArrayBuffer(4)); b.setFloat32(0, x, true); return b.getUint32(0, true); };
+const me = i32(0x53be28), body = u32(0x67ee20) + me * 0xd0, ro = u32(0x6a5c38) + i32(body + 0xc) * 0xa9;
+const x = f32(ro + 0x50), y = f32(ro + 0x54), z = f32(ro + 0x58);
+m.gSt0.value = NaN;
+m.call(0x430ff0, [me]);
+const h1 = m.gSt0.value;
+const s = m.call(0x4977d0, [i32(body + 0x1c), bits(x), 0, bits(z)], 0x680218);
+const sec = u32(0x680b28) + s * 0x984;
+const outs = m.lowAlloc(12);
+m.call(0x495fe0, [bits(x), 0, bits(z), outs, outs + 4, outs + 8], sec);
+m.gSt0.value = NaN;
+m.call(0x496290, [bits(x), 0, bits(z), u32(outs + 4), u32(outs + 8)], sec);
+const h2 = m.gSt0.value;
+console.log(JSON.stringify({ me, pos: [x, y, z], hint: i32(body + 0x1c), sector: s, face: [i32(outs), i32(outs + 4), i32(outs + 8)], st0_430ff0: h1, st0_496290: h2 }));

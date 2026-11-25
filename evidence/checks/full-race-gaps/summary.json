@@ -1,0 +1,31 @@
+{
+ "command": "node tools/checks/full-race-gaps.mjs",
+ "node": "v24.13.1",
+ "date": "2026-11-25T11:00:40.207Z",
+ "wasmSha256": "19bc2aaf56f4313557fd699f8efc0e623cf66982d04b9b92e7b552ccd5f6c7cf",
+ "metaSha256": "127b35324bc3bc5cce99c837a58d942ce00ca44d1e63cc8c1963c80c7adc8960",
+ "spinLimitPerTick": 400000,
+ "lines": [
+  "pause-frozen           HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 P:199950 CONTROL:8 0x67:5 0x68:5 0x69:5 0x0:4 LEFT:2; phase 0, pause 1)",
+  "pause-tap-frozen       HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200782 CONTROL:789 0x0:786 0x67:786 0x68:786 0x69:786 0x9:784 LEFT:783; phase 0, pause 1)",
+  "pause-live             returned: keyPolls 26354, clockQueries 107, +0 ms inside the tick, phase 0 | then []",
+  "esc-frozen             HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 ESCAPE:199950 CONTROL:8 0x67:5 0x68:5 0x69:5 0x0:4 LEFT:2; phase 0, pause 2)",
+  "esc-tap-frozen         HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 LBUTTON:57129 0x2:57129 ESCAPE:28566 J:28563 N:28563 CONTROL:8 0x67:5; phase 0, pause 2)",
+  "esc-live-no            returned: keyPolls 3466, clockQueries 2208, +104 ms inside the tick, phase 0 | then []",
+  "esc-live-yes           returned: keyPolls 3486, clockQueries 2208, +104 ms inside the tick, phase 4 | then [{\"tick\":342,\"ended\":true,\"exitCode\":0}]",
+  "d-key-frozen           HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 D:199963 CONTROL:6 0x67:5 0x68:5 0x69:5 0x0:2 LEFT:1; phase 0, pause 0)",
+  "d-key-live             returned: keyPolls 122, clockQueries 47, +0 ms inside the tick, phase 0",
+  "finish-cheat-frozen    HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 CONTROL:199966 0x67:5 0x68:5 0x69:5 0x0:2 F:2 LEFT:1; phase 0, pause 0)",
+  "finish-cheat-live      returned: keyPolls 188, clockQueries 54, +0 ms inside the tick, phase 3 | then [{\"tick\":842,\"phase\":4,\"running\":0,\"laps\":0,\"finished\":1,\"virtualMs\":22050},{\"tick\":843,\"ended\":true,\"exitCode\":0}]",
+  "finish-enter-frozen    HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 ESCAPE:99982 RETURN:99980 CONTROL:6 0x67:5 0x68:5 0x69:5 0x0:2; phase 3, pause 0)",
+  "finish-enter-live      returned: keyPolls 184, clockQueries 64, +0 ms inside the tick, phase 4 | then [{\"tick\":593,\"ended\":true,\"exitCode\":0}]",
+  "gameover-injected      returned: keyPolls 86, clockQueries 67, +0 ms inside the tick, phase 4 | then [{\"tick\":2342,\"ended\":true,\"exitCode\":0}]",
+  "inactive-pump          HANG (PeekMessageA called 400001 times in one tick; polled SHIFT:40 CONTROL:6 0x67:5 0x68:5 0x69:5 0x0:2 LEFT:1 RIGHT:1; phase 0, pause 0)",
+  "ctrl-e-n-frozen        HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 CONTROL:199964 0x67:5 0x68:5 0x69:5 0x0:2 F:2 W:2; phase 0, pause 0)",
+  "ctrl-e-n-released      HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 1:22214 2:22214 3:22214 4:22214 5:22212 6:22212 7:22212; phase 0, pause 0)",
+  "numpad7-frozen         HANG (GetAsyncKeyState polled 400001 times in one tick; polled SHIFT:200001 0x67:199985 CONTROL:2 0x0:2 LEFT:1 RIGHT:1 UP:1 DOWN:1; phase 0, pause 0)",
+  "ctrl-q                 returned: keyPolls 94, clockQueries 49, +0 ms inside the tick, phase 0",
+  "backspace-screenshot   returned: keyPolls 84, clockQueries 47, +0 ms inside the tick, phase 0",
+  "full-race-bot            | laps [{\"lap\":1,\"tick\":3582,\"virtualMs\":90550,\"position\":4,\"fastestLap\":81550,\"stucks\":1}]"
+ ]
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RedCat SuperKarts recompiled: race</title>
+<!-- Development page: races without the menu, through source/race-runner.js (parameters in race.js). Served at
+     /dev/race.html (tools/serve.mjs): its script and the assets are found from there. -->
+<style>
+  html, body { margin: 0; height: 100%; background: #000; color: #ccc; font: 14px system-ui, sans-serif; }
+  body { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #game { display: block; width: 100vw; height: 100vh; touch-action: none; }
+  #status { position: fixed; left: 8px; bottom: 8px; white-space: pre; pointer-events: none; }
+  /* the JS reconstruction's FPS label (its source/style.css) */
+  #fps-counter { position: absolute; right: max(12px, env(safe-area-inset-right)); top: calc(env(safe-area-inset-top, 0px) + 22vmin); z-index: 5; padding: 3px 6px; background: #000b; color: #fff; font: 12px ui-monospace, monospace; pointer-events: none; border-radius: 4px; }
+  #fps-counter[hidden] { display: none; }
+  /* touch controls: the JS reconstruction's rules (its source/style.css:108-124, :129-131 and :149-152 at 5bfe0b62), as
+     in source/style.css, with what they take there from its page-wide rules: the font (:6-8, Original Comic Sans),
+     border-box sizes (:24) and Stoppen's menu-button art and text (:25-27, :122 .held); tools/checks/hud-touch-boxes.mjs
+     compares the pixels with the JS port's */
+  @font-face { font-family: 'Original Comic Sans'; src: url('../assets/fonts/comic.ttf') format('truetype'); font-weight: 400; font-display: swap; }
+  @font-face { font-family: 'Original Comic Sans'; src: url('../assets/fonts/comicbd.ttf') format('truetype'); font-weight: 700; font-display: swap; }
+  #touch-controls { position: absolute; inset: auto 0 0; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px;
+    padding: 12px max(20px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+    pointer-events: none; --wheel-size: clamp(148px, 44vmin, 224px); --action-size: clamp(84px, 23vmin, 112px);
+    font: 16px 'Original Comic Sans', Arial, sans-serif; font-synthesis: none; color: #fff; }
+  #touch-controls, #touch-controls * { box-sizing: border-box; }
+  #touch-controls[hidden] { display: none; }
+  #touch-controls button, #touch-wheel { pointer-events: auto; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+  #touch-controls button:focus-visible { outline: 3px solid #edff53; outline-offset: 5px; }
+  #touch-wheel { position: relative; width: var(--wheel-size); height: var(--wheel-size); flex-shrink: 0; border-radius: 50%; cursor: grab; outline-offset: 5px; background: radial-gradient(circle, #15203875 0 44%, transparent 65%); }
+  #touch-wheel img { display: block; width: 100%; height: 100%; pointer-events: none; will-change: transform; transform: rotate(var(--steer-angle, 0deg)); filter: drop-shadow(0 2px 2px #0008); opacity: .85; }
+  #touch-wheel.held { cursor: grabbing; } #touch-wheel.held img { opacity: 1; }
+  #touch-wheel:focus-visible { outline: 3px solid #edff53; }
+  #touch-wheel span { position: absolute; left: 50%; transform: translateX(-50%); padding: 2px 7px; border-radius: 10px; background: #111c32d9; color: #fff; font-size: 12px; font-weight: bold; white-space: nowrap; pointer-events: none; }
+  .touch-wheel-forward { top: 19%; } .touch-wheel-reverse { bottom: 18%; }
+  #touch-wheel[data-drive=forward] .touch-wheel-forward, #touch-wheel[data-drive=reverse] .touch-wheel-reverse { background: #ffcb35; color: #111; }
+  .touch-actions { display: flex; align-items: flex-end; gap: 18px; }
+  #touch-controls .touch-actions button { position: relative; display: block; width: var(--action-size); height: calc(var(--action-size) + 18px); padding: 0; min-height: 0; border: 0; background: none !important; box-shadow: none; flex-shrink: 0; transform: none; filter: none; cursor: pointer;
+    font: inherit; font-size: 15px; font-weight: bold; /* the menu buttons' text, which Rem's and Bonus's labels inherit */ }
+  .touch-actions img { display: block; width: 100%; height: calc(100% - 18px); object-fit: contain; pointer-events: none; filter: drop-shadow(0 2px 2px #0009); opacity: .85; transform-origin: center bottom; }
+  .touch-actions span { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 12px; line-height: 18px; color: #fff; text-shadow: 1px 1px 2px #000, -1px -1px 2px #000; pointer-events: none; }
+  .touch-actions button.held img { opacity: 1; transform: scale(.92); filter: drop-shadow(0 0 5px #ffdc66); }
+  #touch-stop { --up: url('../assets/menu/mn_0220a.png'); --hover: url('../assets/menu/mn_0220b.png'); --down: url('../assets/menu/mn_0220c.png');
+    position: absolute; left: 50%; bottom: max(16px, env(safe-area-inset-bottom)); transform: translateX(-50%); width: 119px; height: 43px; min-height: 43px; flex-shrink: 0;
+    border: 0; border-radius: 0; background: var(--up) center / contain no-repeat; color: #000; padding: 0 0 0 26px; font: inherit; font-size: 15px; font-weight: bold; box-shadow: none; cursor: pointer; }
+  #touch-stop:hover, #touch-stop:focus-visible { background-image: var(--hover); }
+  #touch-stop:active, #touch-stop.held { background-image: var(--down); }
+  #touch-stop span { pointer-events: none; }
+  @media (orientation: portrait) {
+    #touch-controls { --wheel-size: clamp(148px, 45vw, 224px); --action-size: clamp(72px, 20vw, 96px); gap: 12px; padding-top: 62px; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    .touch-actions { flex-direction: column-reverse; gap: 10px; }
+    #touch-stop { top: 8px; bottom: auto; }
+  }
+  @media (max-width: 600px) and (orientation: landscape) { #touch-controls { --wheel-size: 140px; --action-size: 64px; } .touch-actions { gap: 12px; } }
+</style>
+</head>
+<body>
+<canvas id="game" width="640" height="480"></canvas>
+<div id="fps-counter" hidden>FPS: …</div>
+<div id="touch-controls" aria-label="Aanraakbediening" hidden>
+  <div id="touch-wheel" role="group" aria-label="Stuur: links en rechts sturen, boven gas geven, onder achteruit" tabindex="0">
+    <img src="../assets/touch/steering-wheel.svg" alt="" draggable="false">
+    <span class="touch-wheel-forward" aria-hidden="true">▲ Gas</span>
+    <span class="touch-wheel-reverse" aria-hidden="true">Achteruit ▼</span>
+  </div>
+  <div class="touch-actions">
+    <button id="touch-brake" aria-label="Rem (Alt)" title="Rem — dezelfde handrem als Alt">
+      <img src="../assets/touch/brake-pedal.svg" alt="" draggable="false"><span aria-hidden="true">Rem</span>
+    </button>
+    <button id="touch-bonus" aria-label="Gebruik bonus (Ctrl)" title="Gebruik bonus">
+      <img src="../assets/touch/bonus.png" alt="" draggable="false"><span aria-hidden="true">Bonus</span>
+    </button>
+  </div>
+  <button id="touch-stop" aria-label="Stoppen (Esc)"><span>Stoppen</span></button>
+</div>
+<div id="status">Laden…</div>
+<script type="module" src="../source/dev/race.js"></script>
+</body>
+</html>

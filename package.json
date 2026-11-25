@@ -1,47 +1,35 @@
 {
-  "name": "redcat-superkarts-port",
-  "version": "1.0.3",
+  "name": "redcat-superkarts-recomp",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
-  "description": "Evidence-led browser and desktop reconstruction of RedCat SuperKarts",
   "main": "electron/main.mjs",
   "desktopName": "redcat-superkarts.desktop",
-  "author": "RedCat SuperKarts port contributors",
+  "description": "RedCat SuperKarts (2000) with its original race program recompiled from x86 to WebAssembly",
+  "author": "NostalgiaRealm",
   "license": "UNLICENSED",
-  "engines": {
-    "node": "24.x"
-  },
+  "engines": { "node": "24.x" },
   "scripts": {
-    "version": "node tools/sync-version.mjs && npm run bundle",
-    "prepare:assets": "node tools/prepare.mjs",
-    "dev": "node tools/serve.mjs",
-    "start": "node tools/serve.mjs",
-    "preview": "node tools/serve.mjs --dist",
-    "build": "node tools/build.mjs",
-    "desktop:icons": "node tools/prepare-desktop-icons.mjs",
-    "desktop": "npm run bundle && npm run desktop:icons && electron .",
-    "desktop:prepare": "npm run build && npm run desktop:icons",
-    "desktop:pack": "npm run desktop:prepare && electron-builder --dir --publish never",
-    "dist:linux": "npm run desktop:prepare && electron-builder --linux --x64 --publish never",
-    "dist:win": "npm run desktop:prepare && electron-builder --win --x64 --publish never",
-    "dist:mac": "npm run desktop:prepare && electron-builder --mac --x64 --arm64 --publish never",
-    "test:desktop": "node tests/desktop.mjs",
-    "test": "node --test tests/*.test.mjs",
-    "test:browser": "node tests/browser.mjs",
-    "test:driving": "node tests/driving-browser.mjs",
-    "test:firefox": "node tests/firefox.mjs",
-    "test:assets": "python3 tools/validate-assets.py",
-    "test:parsers": "python3 -m unittest discover -s tests -p 'test_*.py'",
-    "bundle": "node tools/refresh-runtime.mjs",
-    "release:source": "node tools/package-release-source.mjs"
-  },
-  "dependencies": {
-    "three": "0.186.0"
+    "recompile": "${RCSK_PYTHON:-python3} -I tools/recomp/build.py",
+    "headless": "node tools/run-headless.mjs",
+    "manifest": "node tools/build-manifest.mjs",
+    "preload": "node tools/build-preload.mjs",
+    "assets": "node tools/build-assets.mjs",
+    "package": "node tools/package.mjs",
+    "package:check": "node tools/package-check.mjs",
+    "site:check": "node tools/site-check.mjs",
+    "version": "node tools/sync-version.mjs",
+    "version:sync": "node tools/sync-version.mjs",
+    "desktop": "electron .",
+    "dist:linux": "electron-builder --linux --x64 --publish never",
+    "dist:win": "electron-builder --win --x64 --publish never",
+    "dist:mac": "electron-builder --mac --x64 --arm64 --publish never",
+    "test:desktop": "node tools/desktop-check.mjs",
+    "site:archive": "node tools/site-archive.mjs"
   },
   "devDependencies": {
     "electron": "44.9.2",
     "electron-builder": "26.15.3",
-    "esbuild": "0.28.2",
     "playwright": "1.58.2"
   }
 }

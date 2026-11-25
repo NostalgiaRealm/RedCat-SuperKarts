@@ -1,0 +1,101 @@
+# hud-scale-levers: recompiled rcskspel.dat, Nederland, RedCat; k = 1.25
+
+## What the code does with each field (Ghidra export of rcskspel.dat, original-source/modules/rcskspel.dat)
+- composite world transform 0x4589c0 (vtable 0x4d2834 +0x30), p = the parent's 12 floats
+    position = local +0x04/+0x08 * p.Width/p.Height + p.position, z = local z + p.z
+    ScreenWidth = p.ScreenWidth; Width = +0x7c * p.Width; Height = +0x80 * p.Height
+    Scale = p.Scale * GetScale() (vtable +0x20 = 0x4583e0: +0x10..+0x18); Rotation = p.Rotation + +0x1c..
+- string world transform 0x463bb0 (vtables 0x4d28c8, 0x4d2b98 +0x30): as the composite, except
+    Width = +0x7c * p.ScreenWidth (not p.Width); the string SetScale 0x463c90 stores +0x10.. and, through
+    0x458be0, +0x7c = Scale.x, so a string's glyph advance follows its own scale and the root's ScreenWidth only
+- element draw 0x459440 (vtable 0x4d2890 +0): render object (table 0x6a5c38, stride 0xa9)
+    +0x50/+0x54 = local * p.Width/p.Height + p.position; +0x58 = local z + p.z + 1;
+    +0x80.. = this +0x10.. (0x4583e0, called directly) * p.Scale; +0x74.. = rotation + p.Rotation
+    element SetScale 0x459910 keeps the raw value at +0x44 (GetScale 0x459980) and raw * 0x544ab0 at +0x10
+- glyphs are elements under their string: glyph position = glyph local * string Width/Height + string position
+So a group (direct child of Screen) grows uniformly about its own origin by: its +0x10/+0x14 (sizes of every
+mesh and glyph below it), its +0x7c/+0x80 (places of its children), and +0x7c of every string below it (glyph
+advance, which does not follow the parent's Width). Scale z and every z stay: all HUD vertices are at z 1
+(projected z column below), so this is an exact 2D similarity of the drawing.
+
+## Group extents on the 4:3 screen (canvas pixels of 640x480, y down): the start lights parked at tick 345, every
+other group as far as it reaches on every 10th pass of a race to the finish (ticks 40..1700, throttle held from
+331; the portraits change places and the leader's grows); without the bonus model, which flies in from the kart
+type  group                    x0      x1      y0      y1     z range        draws
+0     NUMBERS                   360.1   635.9     3.9    93.4   1.0000..1.0000  8517
+0     Portraits                  -2.2    76.6    -2.1   263.3   1.0000..1.0000  3340
+0     Map                       488.2   589.5   345.8   449.5   1.0000..1.0000  1002
+0     Bonus                      25.5   114.6   346.6   444.5   1.0000..1.0000  1002
+0     321Timer                  199.2   440.8    98.7   197.7   1.0000..1.0000  3
+0     JunctionArrow             262.6   377.4   168.3   251.8   1.0005..1.0005  4
+0     BackArrow                 270.5   369.5   168.3   251.8   1.0005..1.0005  7
+1     NUMBERS                   360.1   635.9     3.9    93.4   1.0000..1.0000  8517
+1     Portraits                  -2.2    76.6    -2.1   263.3   1.0000..1.0000  3340
+1     Map                       488.0   589.5   345.6   449.5   1.0000..1.0000  1002
+1     Bonus                      25.5   114.6   346.6   444.5   1.0000..1.0000  1002
+1     STRING_COUNTDOWN_VALUE    238.1   401.9   101.2   138.8   1.0000..1.0000  1169
+1     321Timer                  199.2   440.8    98.7   197.7   1.0000..1.0000  3
+1     JunctionArrow             262.6   377.4   168.3   251.8   1.0005..1.0005  3
+2     NUMBERS                   360.1   635.9     3.9    93.4   1.0000..1.0000  8517
+2     Portraits                  -2.2    76.6    -2.1   261.5   1.0000..1.0000  3340
+2     Map                       488.2   589.5   345.8   449.5   1.0000..1.0000  1002
+2     Bonus                      25.5   114.6   346.6   444.5   1.0000..1.0000  1002
+2     Stars                     135.7   284.3     4.7    89.7   1.0000..1.0010  2171
+2     321Timer                  199.2   440.8    98.7   197.7   1.0000..1.0000  3
+2     JunctionArrow             262.6   377.4   168.3   251.8   1.0005..1.0005  4
+2     BackArrow                 270.5   369.5   168.3   251.8   1.0005..1.0005  7
+(type 0 Landenrace, 1 Tijdrace, 2 Sterrenrace: race.ini [RACETYPEINFO] RaceType)
+
+## STRING_SPECIAL notices (dispatcher 0x430610): the width each holds on the 4:3 screen (its most common width
+while shown; the zoom style ends by growing past the screen, the slide by leaving it)
+   5 Laatste ronde! (style 4, zoom)           shown 198 passes,  301.5 px wide in  98 of them; widest 5.425e+10 px, x seen -2.730e+10..2.695e+10
+   6 Snelste ronde (style 5, slide)           shown 198 passes,  285.6 px wide in 198 of them; widest 285.6 px, x seen -307.3..957.5
+   4 Raak! (style 1)                          shown 158 passes,  116.3 px wide in 158 of them; widest 116.3 px, x seen 261.7..378.1
+   3 Superbonus! (no caller)                  shown 198 passes,  257.3 px wide in 198 of them; widest 257.3 px, x seen 191.3..448.6
+  10 Alle voorwerpen verzameld! (no caller)   shown 199 passes,  602.7 px wide in 199 of them; widest 602.7 px, x seen 18.42..621.1
+  11 Controlepunt! (no shipped marker)        shown 199 passes,  289.0 px wide in 199 of them; widest 289.0 px, x seen 175.3..464.3
+   1 PAUZE (style 0)                          shown 220 passes,  133.8 px wide in 220 of them; widest 133.8 px, x seen 253.1..386.9
+
+## Levers: each group with one set of fields times k = 1.25, against uniform growth about the group's origin
+size: bounding box of each draw, B / A (min..max over the group's draws); off: largest distance of a vertex of
+B from O + k (vertex of A - O), O the group's world origin, in canvas pixels; advance: distance between glyph
+neighbours of one string, B / A
+group                    lever                           size x          size y          off px   advance
+NUMBERS                  +0x10/+0x14 scale               1.2500          1.2500            95.85   1.0000
+NUMBERS                  +0x7c/+0x80 width/height        1.0000          1.0000            38.38   1.0000
+NUMBERS                  +0x7c of the strings below      1.0000          1.0000           100.82   1.2500
+NUMBERS                  all three                       1.2500          1.2500             0.00   1.2500
+NUMBERS                  root ScreenWidth (+0x18+0x0c)   1.0000          1.0000           100.82   1.2500
+Portraits                +0x10/+0x14 scale               1.2500          1.2500            33.60   -
+Portraits                +0x7c/+0x80 width/height        1.0000          1.0000             8.75   -
+Portraits                +0x7c of the strings below      (none)
+Portraits                all three                       1.2500          1.2500             0.00   -
+Portraits                root ScreenWidth (+0x18+0x0c)   1.0000          1.0000            40.83   -
+Map                      +0x10/+0x14 scale               1.2500          1.2500            10.72   -
+Map                      +0x7c/+0x80 width/height        1.0000          1.0000            17.50   -
+Map                      +0x7c of the strings below      (none)
+Map                      all three                       1.2500          1.2500             0.00   -
+Map                      root ScreenWidth (+0x18+0x0c)   1.0000          1.0000            17.50   -
+Bonus                    +0x10/+0x14 scale               1.2500          1.2500            12.28   1.0000
+Bonus                    +0x7c/+0x80 width/height        1.0000          1.0000            15.75   1.0000
+Bonus                    +0x7c of the strings below      1.0000          1.0000            15.75   1.2500
+Bonus                    all three                       1.2500          1.2500             0.00   1.2500
+Bonus                    root ScreenWidth (+0x18+0x0c)   1.0000          1.0000            15.75   1.2500
+321Timer                 +0x10/+0x14 scale               1.2500          1.2500            72.42   -
+321Timer                 +0x7c/+0x80 width/height        1.0000          1.0000            16.24   -
+321Timer                 +0x7c of the strings below      (none)
+321Timer                 all three                       1.2500          1.2500             0.00   -
+321Timer                 root ScreenWidth (+0x18+0x0c)   1.0000          1.0000            87.45   -
+STRING_SPECIAL           +0x10/+0x14 scale               1.2500          1.2500            35.94   1.0000
+STRING_SPECIAL           +0x7c/+0x80 width/height        1.0000          1.0000             8.03   1.2500
+STRING_SPECIAL           +0x7c of the strings below      1.0000          1.0000             8.03   1.2500
+STRING_SPECIAL           all three                       1.2500          1.2500             0.00   1.2500
+STRING_SPECIAL           root ScreenWidth (+0x18+0x0c)   1.0000          1.0000             8.03   1.2500
+
+## Room on a portrait screen (no side insets): the largest k at which each pair just touches; the layout uses 4/3
+  Portraits (right edge) and NUMBERS (left edge) side by side    k <= 1.795
+  Tijdrace time (top centre) right of Portraits                  k <= 2.019
+  Portraits and Stars side by side (both from the left edge)     k <= any
+  Bonus (bottom left) and Map (bottom right)                     k <= 2.401
+  Laatste ronde! (widest reachable notice) inside the width      k <= 2.123
+  Sterrenrace at k 4/3: Stars and NUMBERS overlap sideways by 112.3 px; Stars, 110 px lower, start 28.5 px below NUMBERS' last row

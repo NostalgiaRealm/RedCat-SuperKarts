@@ -1,0 +1,390 @@
+{
+  "status": "passed",
+  "version": "2.0.0",
+  "executable": "/home/rick/.cache/claude-tmp/claude-1000/-home-rick-Documents-Rebuilds-RedCat-Superkarts--claude-worktrees-magical-dhawan-251123/1ec21308-8e95-49e2-a440-dd51e3d7760c/scratchpad/ai/squashfs-root/redcat-superkarts",
+  "legacy": null,
+  "profile": "/tmp/rcsk-desktop-check-euTNoC",
+  "graphicsArgs": [
+    "--ozone-platform=x11",
+    "--disable-dev-shm-usage",
+    "--use-angle=swiftshader",
+    "--enable-unsafe-swiftshader",
+    "--autoplay-policy=no-user-gesture-required"
+  ],
+  "scope": "Linux x64 package under Xvfb with SwiftShader, no window manager, no sound card. Not run: Windows, macOS, a physical GPU, a whole race.",
+  "checks": [
+    {
+      "name": "the packaged app runs as RedCat SuperKarts 2.0.0 on the given profile, its renderer sandboxed",
+      "ok": true,
+      "electron": "44.9.2",
+      "chrome": "152.0.7977.167",
+      "defaultProfile": "/home/rick/.config/RedCat SuperKarts"
+    },
+    {
+      "name": "the intro plays and Enter leads to the menu",
+      "ok": true,
+      "movie": {
+        "src": "rcsk://game/assets/media/intro.mp4",
+        "readyState": 4,
+        "error": null
+      }
+    },
+    {
+      "name": "the page is rcsk://game, a secure context and cross-origin isolated",
+      "ok": true,
+      "origin": "rcsk://game",
+      "secure": true,
+      "isolated": true,
+      "sab": "function",
+      "wait": "function",
+      "offscreen": "function",
+      "webgl2": true,
+      "require": "undefined",
+      "process": "undefined"
+    },
+    {
+      "name": "the protocol: isolation headers and the policy on every answer, types, ranges, refusals",
+      "ok": true,
+      "revision": "ab45642aa656",
+      "rangeFile": {
+        "name": "rcs.img",
+        "size": 180416854
+      },
+      "answers": [
+        {
+          "url": "./",
+          "status": 200,
+          "type": "text/html; charset=utf-8",
+          "length": "2793",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 2793
+        },
+        {
+          "url": "app/ab45642aa656/source/main.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "length": "66067",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 66067
+        },
+        {
+          "url": "app/ab45642aa656/source/web/worker.js",
+          "status": 200,
+          "type": "text/javascript; charset=utf-8",
+          "length": "30303",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 30303
+        },
+        {
+          "url": "app/ab45642aa656/game/rcskspel.wasm",
+          "status": 200,
+          "type": "application/wasm",
+          "length": "4020833",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 0
+        },
+        {
+          "url": "data/index.json",
+          "status": 200,
+          "type": "application/json",
+          "length": "3163",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 3163
+        },
+        {
+          "url": "data/rcs.img",
+          "status": 206,
+          "type": "application/octet-stream",
+          "length": "1000",
+          "range": "bytes 1000-1999/180416854",
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 1000
+        },
+        {
+          "url": "data/rcs.img?expected-error",
+          "status": 416,
+          "type": "text/plain; charset=utf-8",
+          "length": null,
+          "range": "bytes */180416854",
+          "accept": null,
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 21
+        },
+        {
+          "url": "assets/fonts/comic.ttf",
+          "status": 200,
+          "type": "font/ttf",
+          "length": "245600",
+          "range": null,
+          "accept": "bytes",
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 0
+        },
+        {
+          "url": "expected-404.js?expected-error",
+          "status": 404,
+          "type": "text/plain; charset=utf-8",
+          "length": null,
+          "range": null,
+          "accept": null,
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 9
+        },
+        {
+          "url": "/%2e%2e/%2e%2e/package.json?expected-error",
+          "status": 404,
+          "type": "text/plain; charset=utf-8",
+          "length": null,
+          "range": null,
+          "accept": null,
+          "coop": "same-origin",
+          "coep": "require-corp",
+          "corp": "same-origin",
+          "bytes": 9
+        }
+      ],
+      "csp": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'none'; form-action 'none'"
+    },
+    {
+      "name": "the menu bar is the JS app's: Spel, Bewerken, Beeld (F11)",
+      "ok": true,
+      "menu": [
+        {
+          "label": "Spel",
+          "items": [
+            [
+              "Stoppen",
+              "quit",
+              "CommandOrControl+Q"
+            ]
+          ]
+        },
+        {
+          "label": "Bewerken",
+          "items": [
+            [
+              "Undo",
+              "undo",
+              "CommandOrControl+Z"
+            ],
+            [
+              "Redo",
+              "redo",
+              "Shift+CommandOrControl+Z"
+            ],
+            [
+              "",
+              null,
+              null
+            ],
+            [
+              "Cut",
+              "cut",
+              "CommandOrControl+X"
+            ],
+            [
+              "Copy",
+              "copy",
+              "CommandOrControl+C"
+            ],
+            [
+              "Paste",
+              "paste",
+              "CommandOrControl+V"
+            ],
+            [
+              "Select All",
+              "selectall",
+              "CommandOrControl+A"
+            ]
+          ]
+        },
+        {
+          "label": "Beeld",
+          "items": [
+            [
+              "Volledig scherm",
+              "togglefullscreen",
+              "F11"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "F11 toggles fullscreen (Electron's window state; no window manager here)",
+      "ok": true
+    },
+    {
+      "name": "a second start with the same profile hands over to the running window and exits",
+      "ok": true,
+      "code": 0,
+      "signal": null
+    },
+    {
+      "name": "a QuickRace starts from the menu, runs the recompiled race and draws",
+      "ok": true,
+      "loadMs": 902,
+      "before": {
+        "frames": 357,
+        "ticks": 343,
+        "phase": 0,
+        "dead": 0
+      },
+      "after": {
+        "frames": 488,
+        "ticks": 474,
+        "phase": 0,
+        "dead": 0
+      },
+      "colours": 5856,
+      "selection": {
+        "character": 0,
+        "difficulty": 1,
+        "country": 0,
+        "race": 0
+      }
+    },
+    {
+      "name": "Esc and J leave the race for the menu",
+      "ok": true
+    },
+    {
+      "name": "navigation stays on the game: other pages, other origins and new windows are refused",
+      "ok": true,
+      "url": "rcsk://game/"
+    },
+    {
+      "name": "a relaunch with --skip-intro opens the menu with the saves kept",
+      "ok": true
+    },
+    {
+      "name": "Stoppen > Ja in the menu closes the app",
+      "ok": true
+    }
+  ],
+  "errors": [],
+  "launches": [
+    {
+      "number": 1,
+      "tag": "2.0.0",
+      "exe": "/home/rick/.cache/claude-tmp/claude-1000/-home-rick-Documents-Rebuilds-RedCat-Superkarts--claude-worktrees-magical-dhawan-251123/1ec21308-8e95-49e2-a440-dd51e3d7760c/scratchpad/ai/squashfs-root/redcat-superkarts",
+      "args": [
+        "--ozone-platform=x11",
+        "--disable-dev-shm-usage",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--autoplay-policy=no-user-gesture-required"
+      ],
+      "stdout": "",
+      "stderr": "Debugger ending on ws://127.0.0.1:33597/655bd7d4-c7a9-49ce-be49-483c29234666\nFor help, see: https://nodejs.org/learn/getting-started/debugging\n",
+      "runtime": {
+        "packaged": true,
+        "name": "RedCat SuperKarts",
+        "version": "2.0.0",
+        "profile": "/tmp/rcsk-desktop-check-euTNoC",
+        "sessionData": "/tmp/rcsk-desktop-check-euTNoC",
+        "appData": "/home/rick/.config",
+        "resourcesPath": "/home/rick/.cache/claude-tmp/claude-1000/-home-rick-Documents-Rebuilds-RedCat-Superkarts--claude-worktrees-magical-dhawan-251123/1ec21308-8e95-49e2-a440-dd51e3d7760c/scratchpad/ai/squashfs-root/resources",
+        "electron": "44.9.2",
+        "chrome": "152.0.7977.167",
+        "preferences": {
+          "allowRunningInsecureContent": false,
+          "contextIsolation": true,
+          "disableDialogs": false,
+          "disablePopups": false,
+          "enableBlinkFeatures": "",
+          "experimentalFeatures": false,
+          "javascript": true,
+          "nodeIntegration": false,
+          "nodeIntegrationInSubFrames": false,
+          "nodeIntegrationInWorker": false,
+          "safeDialogs": false,
+          "safeDialogsMessage": "",
+          "sandbox": true,
+          "webSecurity": true,
+          "webviewTag": false
+        }
+      }
+    },
+    {
+      "number": 2,
+      "tag": "relaunch",
+      "exe": "/home/rick/.cache/claude-tmp/claude-1000/-home-rick-Documents-Rebuilds-RedCat-Superkarts--claude-worktrees-magical-dhawan-251123/1ec21308-8e95-49e2-a440-dd51e3d7760c/scratchpad/ai/squashfs-root/redcat-superkarts",
+      "args": [
+        "--ozone-platform=x11",
+        "--disable-dev-shm-usage",
+        "--use-angle=swiftshader",
+        "--enable-unsafe-swiftshader",
+        "--autoplay-policy=no-user-gesture-required",
+        "--skip-intro"
+      ],
+      "stdout": "",
+      "stderr": "Waiting for the debugger to disconnect...\n",
+      "runtime": {
+        "packaged": true,
+        "name": "RedCat SuperKarts",
+        "version": "2.0.0",
+        "profile": "/tmp/rcsk-desktop-check-euTNoC",
+        "sessionData": "/tmp/rcsk-desktop-check-euTNoC",
+        "appData": "/home/rick/.config",
+        "resourcesPath": "/home/rick/.cache/claude-tmp/claude-1000/-home-rick-Documents-Rebuilds-RedCat-Superkarts--claude-worktrees-magical-dhawan-251123/1ec21308-8e95-49e2-a440-dd51e3d7760c/scratchpad/ai/squashfs-root/resources",
+        "electron": "44.9.2",
+        "chrome": "152.0.7977.167",
+        "preferences": {
+          "allowRunningInsecureContent": false,
+          "contextIsolation": true,
+          "disableDialogs": false,
+          "disablePopups": false,
+          "enableBlinkFeatures": "",
+          "experimentalFeatures": false,
+          "javascript": true,
+          "nodeIntegration": false,
+          "nodeIntegrationInSubFrames": false,
+          "nodeIntegrationInWorker": false,
+          "safeDialogs": false,
+          "safeDialogsMessage": "",
+          "sandbox": true,
+          "webSecurity": true,
+          "webviewTag": false
+        }
+      }
+    }
+  ],
+  "screenshots": [
+    "intro.png",
+    "menu.png",
+    "race-driving.png",
+    "race-requester.png",
+    "quit-requester.png"
+  ]
+}

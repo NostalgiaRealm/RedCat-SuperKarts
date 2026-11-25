@@ -1,0 +1,131 @@
+$ node tools/checks/start-compare.mjs evidence/checks/start-parity.txt evidence/checks/start-reference-recomp-clock.txt
+== start-parity.txt (recomp)
+#   tick 41 (1.025 s): start camera stage 0 -> 1
+#   tick 136 (3.400 s): start camera stage 1 -> 2
+#   tick 175 (4.375 s): 321 phase 6 -> 0
+#   tick 224 (5.600 s): 321 phase 0 -> 1
+#   tick 257 (6.425 s): 321 phase 1 -> 2
+#   tick 290 (7.250 s): 321 phase 2 -> 3
+#   tick 322 (8.050 s): race phase 1 -> 0
+#   tick 322 (8.050 s): movement flag 0x53b9e0 0 -> 1
+#   tick 322 (8.050 s): 321 phase 3 -> 4
+#   tick 323 (8.075 s): first player movement: forward 0.15072761476039886 moved 0.01563
+#   tick 354 (8.850 s): 321 phase 4 -> 5
+#   tick 402 (10.050 s): 321 phase 5 -> 6
+== start-reference-recomp-clock.txt (JS port)
+#   tick 41 (1.025 s): start camera stage 0 -> 1 (3 = done)
+#   tick 136 (3.400 s): start camera stage 1 -> 2 (3 = done)
+#   tick 175 (4.375 s): start camera stage 2 -> 3 (3 = done)
+#   tick 175 (4.375 s): 321 phase 6 -> 0
+#   tick 224 (5.600 s): 321 phase 0 -> 1
+#   tick 257 (6.425 s): 321 phase 1 -> 2
+#   tick 290 (7.250 s): 321 phase 2 -> 3
+#   tick 322 (8.050 s): race phase 1 -> 0
+#   tick 322 (8.050 s): 321 phase 3 -> 4
+#   tick 323 (8.075 s): first player movement: forward 0.15072761476039886 moved 0.01563
+#   tick 354 (8.850 s): 321 phase 4 -> 5
+#   tick 402 (10.050 s): 321 phase 5 -> 6
+
+== row comparison over 480 updates
+first update with a difference in phase/321/sector/km/h/dt or position/speed beyond print precision: 385
+first update with a different CRT rand state: 1
+  384 A {"game":9.6,"phase":"0","cd":"5","dt":"0.0249998","x":-2343.727,"y":-16.276,"z":7142.384,"sector":"4","fwd":28.8032,"kmh":"102","rng":"f35d8a56"}
+  384 B {"game":9.6,"phase":"0","cd":"5","dt":"0.0249998","x":-2343.727,"y":-16.276,"z":7142.384,"sector":"4","fwd":28.8032,"kmh":"102","rng":"70f9bbfc"}
+  385 A {"game":9.625,"phase":"0","cd":"5","dt":"0.0249999","x":-2343.359,"y":-16.826,"z":7135.143,"sector":"4","fwd":29.2568,"kmh":"103","rng":"9470128d"}
+  385 B {"game":9.625,"phase":"0","cd":"5","dt":"0.0249999","x":-2343.44,"y":-16.646,"z":7136.733,"sector":"4","fwd":25.966,"kmh":"103","rng":"9470128d"}
+  386 A {"game":9.65,"phase":"0","cd":"5","dt":"0.0250002","x":-2342.985,"y":-17.384,"z":7127.789,"sector":"4","fwd":29.7081,"kmh":"105","rng":"71e9badb"}
+  386 B {"game":9.65,"phase":"0","cd":"5","dt":"0.0250002","x":-2343.174,"y":-17.057,"z":7130.792,"sector":"4","fwd":24.3328,"kmh":"93","rng":"71e9badb"}
+  387 A {"game":9.675,"phase":"0","cd":"5","dt":"0.0250000","x":-2342.606,"y":-17.951,"z":7120.323,"sector":"4","fwd":30.1567,"kmh":"106","rng":"c9125087"}
+  387 B {"game":9.675,"phase":"0","cd":"5","dt":"0.0250000","x":-2342.993,"y":-17.519,"z":7124.661,"sector":"4","fwd":24.7962,"kmh":"87","rng":"c9125087"}
+
+== forward speed at game time after the first moving update (linear between updates)
+  start-parity.txt: first moving update 323 at 8.075 s; 0.25 s: 2.222, 0.5 s: 6.265, 1 s: 17.755, 1.5 s: 27.889, 2 s: 31.568
+  start-reference-recomp-clock.txt: first moving update 323 at 8.075 s; 0.25 s: 2.222, 0.5 s: 6.265, 1 s: 17.755, 1.5 s: 27.889, 2 s: 30.664
+
+$ node tools/checks/start-compare.mjs evidence/checks/start-parity.txt evidence/checks/start-reference-ideal.txt
+== start-parity.txt (recomp)
+#   tick 41 (1.025 s): start camera stage 0 -> 1
+#   tick 136 (3.400 s): start camera stage 1 -> 2
+#   tick 175 (4.375 s): 321 phase 6 -> 0
+#   tick 224 (5.600 s): 321 phase 0 -> 1
+#   tick 257 (6.425 s): 321 phase 1 -> 2
+#   tick 290 (7.250 s): 321 phase 2 -> 3
+#   tick 322 (8.050 s): race phase 1 -> 0
+#   tick 322 (8.050 s): movement flag 0x53b9e0 0 -> 1
+#   tick 322 (8.050 s): 321 phase 3 -> 4
+#   tick 323 (8.075 s): first player movement: forward 0.15072761476039886 moved 0.01563
+#   tick 354 (8.850 s): 321 phase 4 -> 5
+#   tick 402 (10.050 s): 321 phase 5 -> 6
+== start-reference-ideal.txt (JS port)
+#   tick 40 (1.000 s): start camera stage 0 -> 1 (3 = done)
+#   tick 135 (3.375 s): start camera stage 1 -> 2 (3 = done)
+#   tick 174 (4.350 s): start camera stage 2 -> 3 (3 = done)
+#   tick 174 (4.350 s): 321 phase 6 -> 0
+#   tick 222 (5.550 s): 321 phase 0 -> 1
+#   tick 255 (6.375 s): 321 phase 1 -> 2
+#   tick 287 (7.175 s): 321 phase 2 -> 3
+#   tick 320 (8.000 s): race phase 1 -> 0
+#   tick 320 (8.000 s): 321 phase 3 -> 4
+#   tick 321 (8.025 s): first player movement: forward 0.1507318913936615 moved 0.01563
+#   tick 352 (8.800 s): 321 phase 4 -> 5
+#   tick 401 (10.025 s): 321 phase 5 -> 6
+
+== row comparison over 480 updates
+first update with a difference in phase/321/sector/km/h/dt or position/speed beyond print precision: 4
+first update with a different CRT rand state: 1
+  3 A {"game":0.075,"phase":"1","cd":"6","dt":"0.1000000","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  3 B {"game":0.075,"phase":"1","cd":"6","dt":"0.1000000","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"f042ad81"}
+  4 A {"game":0.1,"phase":"1","cd":"6","dt":"0.0250001","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  4 B {"game":0.1,"phase":"1","cd":"6","dt":"0.0249996","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"f042ad81"}
+  5 A {"game":0.125,"phase":"1","cd":"6","dt":"0.0249999","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  5 B {"game":0.125,"phase":"1","cd":"6","dt":"0.0250005","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"f042ad81"}
+  6 A {"game":0.15,"phase":"1","cd":"6","dt":"0.0250001","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  6 B {"game":0.15,"phase":"1","cd":"6","dt":"0.0250004","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"f042ad81"}
+
+== forward speed at game time after the first moving update (linear between updates)
+  start-parity.txt: first moving update 323 at 8.075 s; 0.25 s: 2.222, 0.5 s: 6.265, 1 s: 17.755, 1.5 s: 27.889, 2 s: 31.568
+  start-reference-ideal.txt: first moving update 321 at 8.025 s; 0.25 s: 2.222, 0.5 s: 6.266, 1 s: 17.755, 1.5 s: 27.889, 2 s: 30.664
+
+$ node tools/checks/start-compare.mjs evidence/checks/start-parity.txt evidence/checks/start-parity-31ms.txt
+== start-parity.txt (recomp)
+#   tick 41 (1.025 s): start camera stage 0 -> 1
+#   tick 136 (3.400 s): start camera stage 1 -> 2
+#   tick 175 (4.375 s): 321 phase 6 -> 0
+#   tick 224 (5.600 s): 321 phase 0 -> 1
+#   tick 257 (6.425 s): 321 phase 1 -> 2
+#   tick 290 (7.250 s): 321 phase 2 -> 3
+#   tick 322 (8.050 s): race phase 1 -> 0
+#   tick 322 (8.050 s): movement flag 0x53b9e0 0 -> 1
+#   tick 322 (8.050 s): 321 phase 3 -> 4
+#   tick 323 (8.075 s): first player movement: forward 0.15072761476039886 moved 0.01563
+#   tick 354 (8.850 s): 321 phase 4 -> 5
+#   tick 402 (10.050 s): 321 phase 5 -> 6
+== start-parity-31ms.txt (recomp)
+#   tick 32 (1.000 s): start camera stage 0 -> 1
+#   tick 127 (3.969 s): start camera stage 1 -> 2
+#   tick 166 (5.188 s): 321 phase 6 -> 0
+#   tick 205 (6.406 s): 321 phase 0 -> 1
+#   tick 231 (7.219 s): 321 phase 1 -> 2
+#   tick 257 (8.031 s): 321 phase 2 -> 3
+#   tick 283 (8.844 s): race phase 1 -> 0
+#   tick 283 (8.844 s): movement flag 0x53b9e0 0 -> 1
+#   tick 283 (8.844 s): 321 phase 3 -> 4
+#   tick 284 (8.875 s): first player movement: forward 0.19197772443294525 moved 0.02589
+#   tick 309 (9.656 s): 321 phase 4 -> 5
+#   tick 348 (10.875 s): 321 phase 5 -> 6
+
+== row comparison over 400 updates
+first update with a difference in phase/321/sector/km/h/dt or position/speed beyond print precision: 4
+first update with a different CRT rand state: 284
+  3 A {"game":0.075,"phase":"1","cd":"6","dt":"0.1000000","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  3 B {"game":0.094,"phase":"1","cd":"6","dt":"0.1000000","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  4 A {"game":0.1,"phase":"1","cd":"6","dt":"0.0250001","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  4 B {"game":0.125,"phase":"1","cd":"6","dt":"0.0312500","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  5 A {"game":0.125,"phase":"1","cd":"6","dt":"0.0249999","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  5 B {"game":0.156,"phase":"1","cd":"6","dt":"0.0312500","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  6 A {"game":0.15,"phase":"1","cd":"6","dt":"0.0250001","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+  6 B {"game":0.188,"phase":"1","cd":"6","dt":"0.0312501","x":-2353.726,"y":-0.704,"z":7343.168,"sector":"2","fwd":0,"kmh":"0","rng":"99d3a374"}
+
+== forward speed at game time after the first moving update (linear between updates)
+  start-parity.txt: first moving update 323 at 8.075 s; 0.25 s: 2.222, 0.5 s: 6.265, 1 s: 17.755, 1.5 s: 27.889, 2 s: 31.568
+  start-parity-31ms.txt: first moving update 284 at 8.875 s; 0.25 s: 2.233, 0.5 s: 6.275, 1 s: 17.825, 1.5 s: 28.035, 2 s: 30.319

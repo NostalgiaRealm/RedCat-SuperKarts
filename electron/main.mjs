@@ -3,9 +3,15 @@ import {mkdirSync} from 'node:fs';
 import {assertGameRuntime,createGameProtocolHandler} from './game-protocol.mjs';
 import {APP_NAME,GAME_SCHEME,RENDERER_PREFERENCES,gamePaths,isGameNavigation,launchURL,userDataPath} from './runtime.mjs';
 
-// These privileges must be registered synchronously, before app.ready.
+// The JS port's desktop shell (../RedCat Superkarts/electron/main.mjs, 1.0.x) on the recomp's packaged site: the
+// same window, menu bar, F11, single instance and navigation lock, and the same identity (runtime.mjs), so the
+// profile of an installed 1.0.x is this app's profile. What differs is in game-protocol.mjs: the isolation
+// headers and a policy that lets the workers run the wasm race.
+
+// These privileges must be registered synchronously, before app.ready. codeCache keeps the compiled page and
+// worker modules between starts.
 protocol.registerSchemesAsPrivileged([{scheme:GAME_SCHEME,privileges:{
-  standard:true,secure:true,supportFetchAPI:true,stream:true,
+  standard:true,secure:true,supportFetchAPI:true,stream:true,codeCache:true,
 }}]);
 app.setName(APP_NAME);
 try{

@@ -1,3 +1,8 @@
+/* The JavaScript reconstruction's style sheet: ../RedCat Superkarts/source/style.css at commit 5bfe0b62 (1.0.3).
+   Changed for the recomp: #game (the recompiled race's canvas, shown only while a race runs) takes #world's place;
+   the rules for the JS port's own race parts are left out (#race-hud, the JS-drawn requester .race-requester-button,
+   the track viewer #viewer-hud/#viewer-caption/#render-size), and the touch controls' rules are gathered at the end of
+   this file, with the recomp's markup (source/input/touch.js: #touch-stop with its span). */
 @font-face{font-family:'Original Comic Sans';src:url('../assets/fonts/comic.ttf') format('truetype');font-weight:400;font-display:swap}
 @font-face{font-family:'Original Comic Sans';src:url('../assets/fonts/comicbd.ttf') format('truetype');font-weight:700;font-display:swap}
 :root{color-scheme:dark;font-family:'Original Comic Sans',Arial,sans-serif;color:#fff;background:#10192b;font-synthesis:none}
@@ -16,17 +21,11 @@
 .native-slider::-webkit-slider-thumb{appearance:none;width:var(--native-slider-thumb);height:var(--native-slider-thumb);background:url('../assets/menu/mn_0010x.png') center/contain no-repeat;border:0}
 .native-slider::-moz-range-thumb{width:var(--native-slider-thumb);height:var(--native-slider-thumb);background:url('../assets/menu/mn_0010x.png') center/contain no-repeat;border:0;border-radius:0}
 .native-edit{background:#ffffdf;color:#111;border:1px solid #000}
-.race-requester-button{position:absolute;border:0;padding:0;background:var(--up) center/100% 100% no-repeat;cursor:inherit}
-.race-requester-button:hover,.race-requester-button:focus-visible{background-image:var(--hover)}
-.race-requester-button:active{background-image:var(--hover)}
-.race-requester-button[data-pressed=true]{background-image:var(--down)}
-.race-requester-button::before{content:"";position:absolute;inset:50% auto auto 50%;width:100%;height:max(100%,44px);transform:translate(-50%,-50%)}
 *{box-sizing:border-box}html,body,#app{margin:0;width:100%;height:100%;min-height:100dvh}body{overflow:hidden}
 button,input,select{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid #edff53;outline-offset:5px}
 button{border:0;border-radius:0;background:var(--up,url('../assets/menu/mn_0004a.png')) center/contain no-repeat;color:#000;padding:0 0 0 26px;width:119px;height:43px;min-height:43px;font-size:15px;font-weight:bold;box-shadow:none}
 button:hover,button:focus-visible{background-image:var(--hover,url('../assets/menu/mn_0004b.png'))}button:active{background-image:var(--down,url('../assets/menu/mn_0004c.png'))}button[aria-pressed=true]{background-image:var(--down,url('../assets/menu/mn_0004c.png'))}
-[hidden]{display:none!important}#world{position:absolute;inset:0;width:100%;height:100%;display:block}
-#race-hud{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;--hud-safe-top:env(safe-area-inset-top,0px);--hud-safe-right:env(safe-area-inset-right,0px);--hud-safe-bottom:env(safe-area-inset-bottom,0px);--hud-safe-left:env(safe-area-inset-left,0px)}
+[hidden]{display:none!important}#game{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;background:#000}
 #screen{position:absolute;inset:0;overflow:auto;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:#10192b}
 .menu{width:min(100%,960px);min-height:min(720px,calc(100dvh - 32px));margin:auto;display:flex;flex-direction:column;position:relative;isolation:isolate}
 .menu::before{content:"";position:absolute;z-index:-2;inset:0;background:center/contain no-repeat url('../assets/menu/mn_0000x.png');opacity:1;pointer-events:none}
@@ -65,6 +64,7 @@ h1{font-size:clamp(22px,4vw,32px);text-align:center;margin:18px 0;color:#d6f547;
 .settings-version{margin-top:8px;padding-top:12px;border-top:1px solid #7b8b9c}
 .settings-form select:disabled{opacity:.6}
 .settings-wide-button{width:220px!important;height:79px!important;max-width:100%;background-size:100% 100%;padding-left:35px;font-size:15px}
+#save-controls{display:flex;flex-wrap:wrap;gap:12px}
 .more-settings .footer{justify-content:center;gap:20px}
 .more-settings .footer button{font-size:12px;line-height:1}
 .more-settings-accept{position:relative;isolation:isolate}
@@ -98,13 +98,43 @@ h1{font-size:clamp(22px,4vw,32px);text-align:center;margin:18px 0;color:#d6f547;
 #movie{display:block;min-width:0;min-height:0;width:100%;height:100%;object-fit:contain;object-position:center}
 .movie-actions{position:absolute;left:max(16px,env(safe-area-inset-left));bottom:max(16px,env(safe-area-inset-bottom));display:flex;gap:12px}
 #movie-audio{width:190px;height:69px;padding-left:32px;font-size:14px}
-#viewer-hud{position:absolute;inset:0;pointer-events:none;padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
-#viewer-hud header{display:flex;align-items:center;gap:18px;justify-content:space-between}
-#viewer-hud header button{pointer-events:auto}#viewer-hud strong{background:#111c32cf;padding:10px 18px;border-radius:8px}
-#viewer-caption{position:absolute;bottom:50px;left:16px;display:flex;flex-direction:column;gap:6px;padding:12px 18px;background:#111c32df;border-radius:8px}
-#viewer-caption span{font-size:13px}#render-size{position:absolute;bottom:18px;right:18px;padding:6px 10px;background:#101a31da;border-radius:6px;font-size:12px}
 #message{position:absolute;left:50%;bottom:max(26px,env(safe-area-inset-bottom));transform:translateX(-50%);width:min(90%,680px);padding:20px 24px;background:url('../assets/menu/mn_0000a.png') center/100% 100%;z-index:10;text-align:center;pointer-events:none}
+/* recomp: the notice for a browser the race cannot run in (#unsupported, main.js showUnsupported), on #message's art */
+#unsupported{position:absolute;left:50%;top:max(16px,env(safe-area-inset-top));transform:translateX(-50%);width:min(92%,680px);padding:18px 26px;background:url('../assets/menu/mn_0000a.png') center/100% 100%;z-index:20;text-align:center;font-size:18px;line-height:1.35}
+#unsupported[hidden]{display:none}
+#unsupported p{margin:0}
+#unsupported .unsupported-actions{display:flex;gap:18px;justify-content:center;align-items:center;margin-top:14px}
+#unsupported a{color:#edff53;font-weight:bold}
+#unsupported button{font:bold 16px 'Original Comic Sans',Arial,sans-serif;padding:6px 22px}
 .visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+#flight-touch{position:absolute;left:50%;bottom:70px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px}
+#flight-touch button.held{background-image:var(--down,url('../assets/menu/mn_0004c.png'))} /* recomp: the JS port's .held (style.css:122), for Omhoog and Omlaag only */
+@media (orientation:portrait){
+ .native-portrait>.more-settings-button{position:relative;inset:auto;align-self:center;width:166px!important;height:60px!important;min-height:44px;font-size:14px;padding-left:28px;flex-shrink:0}
+ #flight-controls{width:calc(100% - 24px);padding:8px}
+ #flight-touch{top:8px;bottom:auto;left:16px;transform:none;gap:4px}
+ #flight-touch button{width:80px;height:34px;min-height:34px;font-size:11px;padding-left:18px}
+ .menu{min-height:calc(100dvh - 32px)}.menu::before{background-size:auto 100%;opacity:1}
+ .menu-header{padding:8px 0 18px}.menu-content{padding:8px 8px 20px}.brand{font-size:23px}
+ .main-cards{gap:22px}.main-cards .art-button{width:42%;min-width:110px}.main-cards img{width:135px}
+ .character-cards{gap:24px}.character-cards .art-button{width:34%}
+ .country-cards{gap:20px 12px}.country-cards img{width:78px}.country-cards .art-button{font-size:14px}
+ .choice-row{gap:12px}.choice-row button{font-size:13px;min-width:84px}
+ .footer{padding:14px 0}.settings-form label{grid-template-columns:1fr}.settings-form{gap:16px}
+}
+@media (max-height:520px) and (orientation:landscape){
+ .menu{min-height:0}.menu-header{min-height:44px;padding-bottom:6px}.menu-title{margin:6px auto;width:220px}
+ .menu-content{padding-top:0;padding-bottom:8px}.main-cards img{height:155px;width:auto}.main-cards .art-button{font-size:14px}
+ .footer{padding:10px}.choice-row{margin:14px 0}.status-note{margin-top:12px}.character-cards img{height:90px;width:auto}
+}
+/* Touch controls: the JS reconstruction's rules as they are (its source/style.css:108-124, :129-131 and :149-152 at
+   5bfe0b62), so every control has its size and place on every screen: the small wheel only on a sideways screen at most
+   600 px wide, Stoppen 8 px from the top of an upright one (not below the notch), upright side padding max(16px, inset).
+   Stoppen is a menu button as there (the art through --up/--hover/--down and the button rules above: black bold 15px
+   Original Comic Sans right of the paw); its label is a span in the recomp's markup (source/index.html), inline as the
+   JS port's text. tools/checks/hud-touch-boxes.mjs compares the pixels with the JS port's. Recomp's own: .held on
+   Stoppen (source/input/touch.js holds Esc with it, as long as :active). In the game's pause the controls stay drawn
+   and receive taps as the JS port's do, but hold nothing (touch.js sets .inert on #touch-controls, no rule of its own). */
 #touch-controls{position:absolute;inset:auto 0 0;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding:12px max(20px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left));pointer-events:none;--wheel-size:clamp(148px,44vmin,224px);--action-size:clamp(84px,23vmin,112px)}
 #touch-controls button,#touch-wheel{pointer-events:auto;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 #touch-wheel{position:relative;width:var(--wheel-size);height:var(--wheel-size);flex-shrink:0;border-radius:50%;cursor:grab;outline-offset:5px;background:radial-gradient(circle,#15203875 0 44%,transparent 65%)}
@@ -119,32 +149,13 @@ h1{font-size:clamp(22px,4vw,32px);text-align:center;margin:18px 0;color:#d6f547;
 .touch-actions img{display:block;width:100%;height:calc(100% - 18px);object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 2px #0009);opacity:.85;transform-origin:center bottom}
 .touch-actions span{position:absolute;bottom:0;left:50%;transform:translateX(-50%);font-size:12px;line-height:18px;color:#fff;text-shadow:1px 1px 2px #000,-1px -1px 2px #000;pointer-events:none}
 .touch-actions button.held img{opacity:1;transform:scale(.92);filter:drop-shadow(0 0 5px #ffdc66)}
-.held{background-image:var(--down,url('../assets/menu/mn_0004c.png'))}
 #touch-stop{--up:url('../assets/menu/mn_0220a.png');--hover:url('../assets/menu/mn_0220b.png');--down:url('../assets/menu/mn_0220c.png');position:absolute;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);width:119px;height:43px;flex-shrink:0}
 #touch-stop:active{transform:translateX(-50%)}
-#flight-touch{position:absolute;left:50%;bottom:70px;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px}
+#touch-stop.held{background-image:var(--down)}#touch-stop span{pointer-events:none}
 @media (orientation:portrait){
- .native-portrait>.more-settings-button{position:relative;inset:auto;align-self:center;width:166px!important;height:60px!important;min-height:44px;font-size:14px;padding-left:28px;flex-shrink:0}
- #flight-controls{width:calc(100% - 24px);padding:8px}
  #touch-controls{--wheel-size:clamp(148px,45vw,224px);--action-size:clamp(72px,20vw,96px);gap:12px;padding-top:62px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right))}
  .touch-actions{flex-direction:column-reverse;gap:10px}
  #touch-stop{top:8px;bottom:auto}
- #flight-touch{top:8px;bottom:auto;left:16px;transform:none;gap:4px}
- #flight-touch button{width:80px;height:34px;min-height:34px;font-size:11px;padding-left:18px}
- .menu{min-height:calc(100dvh - 32px)}.menu::before{background-size:auto 100%;opacity:1}
- .menu-header{padding:8px 0 18px}.menu-content{padding:8px 8px 20px}.brand{font-size:23px}
- .main-cards{gap:22px}.main-cards .art-button{width:42%;min-width:110px}.main-cards img{width:135px}
- .character-cards{gap:24px}.character-cards .art-button{width:34%}
- .country-cards{gap:20px 12px}.country-cards img{width:78px}.country-cards .art-button{font-size:14px}
- .choice-row{gap:12px}.choice-row button{font-size:13px;min-width:84px}
- .footer{padding:14px 0}.settings-form label{grid-template-columns:1fr}.settings-form{gap:16px}
- #viewer-hud header{gap:8px;flex-wrap:wrap}#viewer-hud strong{order:-1;width:100%;text-align:center}
- #viewer-caption{left:12px;right:12px;bottom:60px}#viewer-caption span{font-size:12px}
-}
-@media (max-height:520px) and (orientation:landscape){
- .menu{min-height:0}.menu-header{min-height:44px;padding-bottom:6px}.menu-title{margin:6px auto;width:220px}
- .menu-content{padding-top:0;padding-bottom:8px}.main-cards img{height:155px;width:auto}.main-cards .art-button{font-size:14px}
- .footer{padding:10px}.choice-row{margin:14px 0}.status-note{margin-top:12px}.character-cards img{height:90px;width:auto}
 }
 @media (max-width:600px) and (orientation:landscape){
  #touch-controls{--wheel-size:140px;--action-size:64px}

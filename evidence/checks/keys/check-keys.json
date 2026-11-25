@@ -1,0 +1,465 @@
+{
+ "date": "2026-11-25T21:47:02.817Z",
+ "node": "v24.13.1",
+ "failed": 0,
+ "results": {
+  "table": [
+   {
+    "name": "after boot 0x53a5b8.. holds game.ini [INPUT] in 0x42ec40's order, the copy at 0x6aba20 too, mode 0x53a5dc = 1",
+    "ok": true,
+    "detail": {
+     "table": {
+      "left": 37,
+      "right": 39,
+      "accelerate": 87,
+      "brake": 40,
+      "bonus": 66,
+      "handbrake": 18
+     },
+     "copy": [
+      37,
+      39,
+      87,
+      40,
+      66,
+      18
+     ],
+     "mode": 1
+    }
+   }
+  ],
+  "rebind": [
+   {
+    "name": "after W, F, U, D are written mid-race, the old ArrowUp no longer drives",
+    "ok": true,
+    "detail": {
+     "steer": 0,
+     "throttle": 0,
+     "kmh": 0
+    }
+   },
+   {
+    "name": "W+D+Ctrl drive with the new binding (throttle, steer right, speed), every pass returns",
+    "ok": true,
+    "detail": {
+     "steer": 99.98179626464844,
+     "throttle": 100,
+     "kmh": 113
+    }
+   },
+   {
+    "name": "cheats off: no fog, fill, debug page or overlay change from the newly bound keys",
+    "ok": true,
+    "detail": {
+     "before": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     },
+     "after": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     }
+    }
+   }
+  ],
+  "p-esc": [
+   {
+    "name": "P bound to accelerate: holding P pauses (the pause loop ran, Space resumed) and does not drive",
+    "ok": true,
+    "detail": {
+     "res": "returned",
+     "step": 3,
+     "loopPolls": 601,
+     "steer": 0,
+     "throttle": 0,
+     "kmh": 0,
+     "bindingPollsAnsweredUp": 11
+    }
+   },
+   {
+    "name": "control: W bound in its place drives",
+    "ok": true,
+    "detail": {
+     "steer": 0,
+     "throttle": 35.00004196166992,
+     "kmh": 9
+    }
+   },
+   {
+    "name": "Esc bound to brake: the requester opens and N goes on, the brake does nothing (Down bound brakes in the same pass)",
+    "ok": true,
+    "detail": {
+     "esc": {
+      "res": "returned",
+      "step": 3,
+      "loopPolls": 3001,
+      "brakeAfterPass": 0,
+      "running": 1,
+      "phase": 0,
+      "answeredUp": 1
+     },
+     "down": {
+      "res": "returned",
+      "brakeAfterPass": 1,
+      "running": 1,
+      "phase": 0,
+      "answeredUp": 0
+     }
+    }
+   }
+  ],
+  "mix": [
+   {
+    "name": "ArrowLeft held and the pad's accelerate: the keyboard device steers left and accelerates",
+    "ok": true,
+    "detail": {
+     "steer": -99.85025024414062,
+     "throttle": 100,
+     "kmh": 83,
+     "device": 1,
+     "joyPolls": 120
+    }
+   },
+   {
+    "name": "Shift+ArrowUp alone does not drive (0x4b3880); with the pad's accelerate it does (the Shift poll answered for that slot)",
+    "ok": true,
+    "detail": {
+     "alone": {
+      "steer": 0,
+      "throttle": 0,
+      "kmh": 59
+     },
+     "withPad": {
+      "steer": 0,
+      "throttle": 70.00009155273438,
+      "kmh": 7
+     }
+    }
+   },
+   {
+    "name": "every binding poll comes from one of 0x42ee60's eight calls of 0x4b3880 (slots 0..7)",
+    "ok": true,
+    "detail": {
+     "slots": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+     ],
+     "polls": 2920
+    }
+   }
+  ],
+  "browser": [
+   {
+    "name": "live: the game's table follows a binding changed mid-race (stats.bindings), pad X/Y and touch Bonus/Rem hold the new keys",
+    "ok": true,
+    "detail": {
+     "before": {
+      "left": 37,
+      "right": 39,
+      "accelerate": 38,
+      "brake": 40,
+      "bonus": 17,
+      "handbrake": 18
+     },
+     "after": {
+      "left": 85,
+      "right": 68,
+      "accelerate": 87,
+      "brake": 70,
+      "bonus": 66,
+      "handbrake": 72
+     },
+     "pad": {
+      "bonus": 66,
+      "handbrake": 72
+     },
+     "touch": {
+      "bonus": 66,
+      "handbrake": 72
+     }
+    }
+   },
+   {
+    "name": "live: the old ArrowUp no longer drives",
+    "ok": true,
+    "detail": {
+     "kmh": 0,
+     "throttle": 0
+    }
+   },
+   {
+    "name": "live: W and D drive with the new binding (cheats off: the key filter lets the binding reader through)",
+    "ok": true,
+    "detail": {
+     "throttle": 100,
+     "steer": 100,
+     "kmh": 109
+    }
+   },
+   {
+    "name": "stuck: accelerate rebound to W in the countdown, W held from the green: the recovery fires on the new key",
+    "ok": true,
+    "detail": {
+     "rebindPhase": 1,
+     "safe": {
+      "stuck": 1,
+      "relocated": 1,
+      "npc": 0,
+      "keys": 44632,
+      "joy": 0,
+      "cheats": false
+     },
+     "bindings": {
+      "left": 37,
+      "right": 39,
+      "accelerate": 87,
+      "brake": 40,
+      "bonus": 17,
+      "handbrake": 18
+     }
+    }
+   },
+   {
+    "name": "shift: at Nederland's first wall, Shift+ArrowUp held 10.5 s: the kart stands and the recovery does not fire",
+    "ok": true,
+    "detail": {
+     "wall": {
+      "ticks": 2036,
+      "phase": 0,
+      "kmh": 6,
+      "device": 1,
+      "stuck": 0,
+      "pedals": [
+       0,
+       0
+      ]
+     },
+     "shift": {
+      "ticks": 2450,
+      "phase": 0,
+      "kmh": 0,
+      "device": 1,
+      "stuck": 0,
+      "pedals": [
+       0,
+       0
+      ]
+     }
+    }
+   },
+   {
+    "name": "shift: at the same wall, the pad's RT at 0.15 for 10 s (light throttle) does not fire it either",
+    "ok": true,
+    "detail": {
+     "ticks": 2887,
+     "phase": 0,
+     "kmh": 1,
+     "device": 3,
+     "stuck": 0,
+     "pedals": [
+      1500,
+      0
+     ]
+    }
+   },
+   {
+    "name": "shift: ArrowUp alone at that wall fires it after about 8 s (the place allows a recovery)",
+    "ok": true,
+    "detail": {
+     "ticks": 3277,
+     "phase": 0,
+     "kmh": 0,
+     "device": 1,
+     "stuck": 1,
+     "pedals": [
+      0,
+      0
+     ],
+     "ms": 8507
+    }
+   },
+   {
+    "name": "shiftpad: Shift+ArrowUp+RT 0.3: the keyboard's ramps (device 1) at full throttle with the pad's accelerate, as the JS port; let go but RT: the analog handler (device 3) at the trigger's throttle",
+    "ok": true,
+    "detail": {
+     "shift": {
+      "device": 1,
+      "kmh": 145,
+      "throttle": 100,
+      "joyPolls": 204
+     },
+     "rtOnly": {
+      "device": 3,
+      "kmh": 173,
+      "throttle": 38
+     }
+    }
+   },
+   {
+    "name": "mixpad: ArrowLeft and the pad's RT 1: the keyboard device steers left and accelerates, the kart moves (the JS port's per-action merge)",
+    "ok": true,
+    "detail": {
+     "device": 1,
+     "steer": -100,
+     "throttle": 100,
+     "kmh": 138,
+     "joyPolls": 206
+    }
+   },
+   {
+    "name": "pbound: P bound to accelerate pauses, does not drive, Space resumes",
+    "ok": true,
+    "detail": {
+     "s1": {
+      "waiting": true,
+      "kmh": 0,
+      "throttle": 0,
+      "bindingPolls": {
+       "stuck": 0,
+       "relocated": 0,
+       "npc": 0,
+       "keys": 15682,
+       "joy": 0,
+       "cheats": false
+      }
+     },
+     "s2": {
+      "waiting": false,
+      "ticks": 22
+     }
+    }
+   },
+   {
+    "name": "pedals: RT 1 and LT 0.5 reach the game worker apart (IN.JOY_GAS 10000, IN.JOY_BRAKE 5000), and 0 when let go",
+    "ok": true,
+    "detail": {
+     "held": [
+      10000,
+      5000
+     ],
+     "released": [
+      0,
+      0
+     ]
+    }
+   },
+   {
+    "name": "focus1: blur in the countdown (phase 1) enters the original pause, which holds until Space; the race reaches the green",
+    "ok": true,
+    "detail": {
+     "s0": [
+      83,
+      1
+     ],
+     "s1": [
+      83,
+      1,
+      true
+     ],
+     "s2": 83,
+     "s3": [
+      312,
+      0
+     ]
+    }
+   },
+   {
+    "name": "focus3: blur on the finish screen (phase 3) holds the race (no passes, CTRL.PAUSED) until a key, which only ends the hold",
+    "ok": true,
+    "detail": {
+     "s0": [
+      356,
+      3
+     ],
+     "s1": [
+      356,
+      true,
+      1
+     ],
+     "s2": 356,
+     "s3": [
+      390,
+      3,
+      false
+     ]
+    }
+   },
+   {
+    "name": "reqkeys: in the requester Enter presses the focused \"nee\" (the race goes on); ArrowLeft moves the focus to \"ja\" and Enter quits",
+    "ok": true,
+    "detail": {
+     "s1": {
+      "ticks": 352,
+      "waiting": true,
+      "kind": 2,
+      "focus": "no",
+      "mouse": [
+       482,
+       369
+      ],
+      "exit": null
+     },
+     "s2": {
+      "ticks": 394,
+      "waiting": false,
+      "kind": 0,
+      "focus": null,
+      "mouse": [
+       482,
+       369
+      ],
+      "exit": null
+     },
+     "s3": {
+      "ticks": 394,
+      "waiting": true,
+      "kind": 2,
+      "focus": "yes",
+      "mouse": [
+       207,
+       369
+      ],
+      "exit": null
+     },
+     "s4": {
+      "ticks": 394,
+      "waiting": false,
+      "kind": 0,
+      "focus": null,
+      "mouse": [
+       207,
+       369
+      ],
+      "exit": 0
+     }
+    }
+   },
+   {
+    "name": "tab: Tab moves the focus to the touch wheel and still reaches the game; ArrowUp (bound) is kept from the browser, P (not bound) is not, as the JS port",
+    "ok": true,
+    "detail": {
+     "focused": "touch-wheel",
+     "tabHeld": true,
+     "prevented": {
+      "Tab": false,
+      "ArrowUp": true,
+      "KeyP": false
+     },
+     "pausedByP": true
+    }
+   }
+  ]
+ }
+}

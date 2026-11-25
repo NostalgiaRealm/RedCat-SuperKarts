@@ -1,3 +1,9 @@
+// electron-builder's afterPack hook (electron-builder.json), the JS port's tools/verify-desktop-package.mjs for the
+// recomp: before a package is archived or signed, its resources/site must be dist/site byte for byte (less the .gz
+// and .br copies the builder's filter leaves out, which are for web servers), the race module and the original data
+// files included, and app.asar must hold only the shell. The report goes next to the packages as
+// integrity-<platform>-<arch>.json; equal gameTreeSha256 values mean every platform got the same game.
+//   node tools/verify-desktop-package.mjs release/2.0.0/linux-unpacked/resources
 import assert from 'node:assert/strict';
 import {createReadStream} from 'node:fs';
 import {readdir,readFile,writeFile} from 'node:fs/promises';
@@ -8,6 +14,7 @@ import {listPackage,extractFile} from '@electron/asar';
 import {Arch} from 'builder-util';
 
 const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const webOnly=name=>/\.(?:gz|br)$/.test(name);
 async function files(root,prefix=''){
   const output=[];
   for(const entry of await readdir(path.join(root,prefix),{withFileTypes:true})){
@@ -24,9 +31,14 @@ async function hash(file){
 }
 
 export async function verifyDesktopPackage(resources){
-  const source=path.join(project,'dist'),destination=path.join(resources,'game');
-  const names=await files(source);
-  assert.deepEqual(await files(destination),names,'Packaged game must contain every built file, including Three.js');
+  // RCSK_SITE: a site built elsewhere, given to electron-builder too (-c.extraResources.0.from=...; docs/building.md)
+  const source=process.env.RCSK_SITE?path.resolve(process.env.RCSK_SITE):path.join(project,'dist/site'),destination=path.join(resources,'site');
+  const names=(await files(source)).filter(name=>!webOnly(name));
+  assert.deepEqual(await files(destination),names,'Packaged site must contain every file of dist/site');
+  const build=JSON.parse(await readFile(path.join(destination,'build.json'),'utf8'));
+  for(const name of ['index.html',`app/${build.revision}/source/main.js`,`app/${build.revision}/game/rcskspel.wasm`])
+    assert.ok(names.includes(name),`Packaged site lacks ${name}`);
+  assert.ok(names.some(name=>name.startsWith('data/')),'Packaged site lacks the original data files');
   const tree=createHash('sha256');
   for(const name of names){
     const expected=await hash(path.join(source,name));
@@ -44,12 +56,17 @@ export async function verifyDesktopPackage(resources){
   const archiveEntries=listPackage(archive).map(name=>name.replaceAll('\\','/')).sort();
   assert.deepEqual(archiveEntries,[...entries].sort(),'Unexpected files in app.asar');
   const metadata=JSON.parse(extractFile(archive,'package.json'));
+  const own=JSON.parse(await readFile(path.join(project,'package.json'),'utf8'));
   assert.equal(metadata.main,'electron/main.mjs');
-  assert.equal(metadata.version,JSON.parse(await readFile(path.join(project,'package.json'),'utf8')).version);
+  assert.equal(metadata.version,own.version);
   assert.equal(metadata.devDependencies,undefined,'Development dependencies must not ship');
-  return {status:'passed',gameFiles:names.length,gameTreeSha256:tree.digest('hex'),wrapperFiles:wrapper.length+1,
-    checks:['All game files match dist byte-for-byte, including Three.js and original media',
-      'Wrapper matches source; no research, tests, development dependencies or unrelated project files in app.asar']};
+  const {GAME_VERSION}=await import(pathToFileURL(path.join(project,'source/version.js')).href);
+  assert.equal(GAME_VERSION,own.version,'source/version.js must match package.json (npm run version:sync)');
+  return {status:'passed',version:own.version,siteRevision:build.revision,gameFiles:names.length,
+    gameTreeSha256:tree.digest('hex'),wrapperFiles:wrapper.length+1,
+    checks:['All site files match dist/site byte-for-byte, including the recompiled race and the original data files',
+      'Wrapper matches source; no tests, tools, development dependencies or unrelated project files in app.asar',
+      'package.json and source/version.js carry the same version']};
 }
 
 // Runs before signing/archiving unless the release explicitly disables build checks.

@@ -1,0 +1,666 @@
+{
+ "date": "2026-11-25T21:49:10.633Z",
+ "node": "v24.13.1",
+ "failed": 0,
+ "results": {
+  "keys": [
+   {
+    "name": "cheats off: W+D+Ctrl bound to accelerate, right and bonus drive (throttle, steer right, speed)",
+    "ok": true,
+    "detail": {
+     "drive": {
+      "steer": 99.98471069335938,
+      "throttle": 100,
+      "kmh": 125,
+      "speed": 35.2
+     },
+     "maxPollsPerPass": 80
+    }
+   },
+   {
+    "name": "cheats off: no fog, fill, debug page or overlay change and no frozen pass",
+    "ok": true,
+    "detail": {
+     "before": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     },
+     "after": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     }
+    }
+   },
+   {
+    "name": "cheats off: F+U+Ctrl bound to brake, left and bonus brake and steer left",
+    "ok": true,
+    "detail": {
+     "steer": -98.63141632080078,
+     "kmh": 24
+    }
+   },
+   {
+    "name": "cheats off: polls answered \"up\" were counted",
+    "ok": true,
+    "detail": {
+     "filtered": 20080
+    }
+   },
+   {
+    "name": "cheats on: a held D bound to steering freezes the pass in 0x42f9c0 as in the original",
+    "ok": true,
+    "detail": {
+     "res": "spin: GetAsyncKeyState polled 20001 times in one tick",
+     "before": 0,
+     "after": 1
+    }
+   },
+   {
+    "name": "cheats off: 44 debug and cheat keys held change no byte of the game against the same race without them",
+    "ok": true,
+    "detail": {
+     "res": [],
+     "passes": 60,
+     "diff": 0,
+     "first": null,
+     "marks": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     },
+     "filtered": 17080
+    }
+   },
+   {
+    "name": "cheats on: the same keys reach the original (the race changes)",
+    "ok": true,
+    "detail": {
+     "res": [
+      "spin: GetAsyncKeyState polled 20001 times in one tick"
+     ],
+     "passes": 1,
+     "diff": 10228,
+     "first": "0x4ead64",
+     "marks": {
+      "phase": 0,
+      "fog": 0,
+      "fill": 0,
+      "page": 0,
+      "overlay": 0
+     },
+     "filtered": 0
+    }
+   },
+   {
+    "name": "cheats off: the camera keys 2, 4, 1 switch the camera (0x41d920)",
+    "ok": true,
+    "detail": {
+     "modes": [
+      3,
+      0,
+      1
+     ]
+    }
+   },
+   {
+    "name": "cheats off: P pauses and a key resumes (the pause loop ran and came back)",
+    "ok": true,
+    "detail": {
+     "pres": "returned",
+     "step": 3,
+     "pauseMs": 25
+    }
+   },
+   {
+    "name": "cheats off: Esc opens the requester and N goes on",
+    "ok": true,
+    "detail": {
+     "qres": "returned",
+     "step": 3,
+     "running": 1
+    }
+   },
+   {
+    "name": "cheats on: Ctrl+F+I finishes the race (0x42f740(3))",
+    "ok": true,
+    "detail": {
+     "phase": 3,
+     "fog": 0,
+     "fill": 0,
+     "page": 0,
+     "overlay": 0
+    }
+   },
+   {
+    "name": "cheats off: Ctrl+F+I does nothing",
+    "ok": true,
+    "detail": {
+     "phase": 0,
+     "fog": 0,
+     "fill": 0,
+     "page": 0,
+     "overlay": 0
+    }
+   },
+   {
+    "name": "cheats on: Ctrl+W+D toggles the fog",
+    "ok": true,
+    "detail": {
+     "before": 0,
+     "after": 1
+    }
+   },
+   {
+    "name": "the allow-list has the 39 calls of the design",
+    "ok": true,
+    "detail": 39
+   }
+  ],
+  "stuck": [
+   {
+    "name": "NED, accelerator held: the kart is queued for the rescue after 8 s (320 passes) of trying within 60 units",
+    "ok": true,
+    "detail": {
+     "k": 578,
+     "event": "queued",
+     "entry": {
+      "frame": 1,
+      "shrinking": 1,
+      "finished": 0,
+      "flag": 128
+     },
+     "attemptBefore": 7.975000000000046,
+     "sinceOrigin": 319,
+     "pose": [
+      -2274.7,
+      -60,
+      6110
+     ],
+     "sector": 12,
+     "laps": 0,
+     "armed": 1,
+     "distance": 9
+    }
+   },
+   {
+    "name": "the original shrink runs 20 passes, then the kart moves at grow frame 0",
+    "ok": true,
+    "detail": {
+     "queued": 578,
+     "moved": 598,
+     "shrinkPasses": 19
+    }
+   },
+   {
+    "name": "it returns to a pose at least 80 units back, on this lap, sector before the trap, previous sector = sector",
+    "ok": true,
+    "detail": {
+     "dist": 298.4,
+     "destination": {
+      "waypoint": 44,
+      "sector": 10,
+      "position": [
+       -2274.671142578125,
+       -60,
+       6408.3583984375
+      ],
+      "yaw": -1985.2254638671875,
+      "distance": 7
+     },
+     "from": [
+      -2274.7,
+      -60,
+      6110
+     ],
+     "queuedSector": 12
+    }
+   },
+   {
+    "name": "the finish is not newly armed by the return",
+    "ok": true,
+    "detail": {
+     "before": 1,
+     "after": 1
+    }
+   },
+   {
+    "name": "it grows for 20 passes and ends standing, no forward 5.0, no rates",
+    "ok": true,
+    "detail": {
+     "k": 617,
+     "event": "done",
+     "speed": [
+      0,
+      0,
+      0
+     ],
+     "rates": [
+      0,
+      0,
+      0
+     ],
+     "growPasses": 20
+    }
+   },
+   {
+    "name": "it drives on afterwards",
+    "ok": true,
+    "detail": {
+     "at": [
+      -2248.1,
+      6135.9
+     ]
+    }
+   },
+   {
+    "name": "ENG tyres (the JS port's regression start and input): rescued, at least 80 units from the tyres, and it drives off",
+    "ok": true,
+    "detail": {
+     "queued": {
+      "k": 385,
+      "ms": 9650,
+      "at": [
+       -7167.3,
+       6332.7
+      ],
+      "sector": 125
+     },
+     "moved": {
+      "k": 405,
+      "destination": {
+       "waypoint": 589,
+       "sector": 125,
+       "position": [
+        -7027.060546875,
+        0,
+        6317.619140625
+       ],
+       "yaw": -35.27010726928711,
+       "distance": 1
+      }
+     },
+     "fromTyres": 141.1,
+     "after": [
+      -6934.1,
+      7059.2
+     ]
+    }
+   },
+   {
+    "name": "standing still for 500 passes: no rescue",
+    "ok": true,
+    "detail": {
+     "started": 0,
+     "relocated": 0,
+     "blocked": 0,
+     "recheck": 0,
+     "last": null
+    }
+   },
+   {
+    "name": "the accelerator with the handbrake (Alt) at the wall: no rescue",
+    "ok": true,
+    "detail": {
+     "started": 0,
+     "relocated": 0,
+     "blocked": 0,
+     "recheck": 0,
+     "last": null
+    }
+   },
+   {
+    "name": "both pedals at the wall: no rescue",
+    "ok": true,
+    "detail": {
+     "started": 0,
+     "relocated": 0,
+     "blocked": 0,
+     "recheck": 0,
+     "last": null
+    }
+   },
+   {
+    "name": "the game's pause starts the 8 s again",
+    "ok": true,
+    "detail": {
+     "queued": 770,
+     "sinceOrigin": 319
+    }
+   }
+  ],
+  "stuckTrace": [
+   {
+    "k": 578,
+    "event": "queued",
+    "entry": {
+     "frame": 1,
+     "shrinking": 1,
+     "finished": 0,
+     "flag": 128
+    },
+    "attemptBefore": 7.975000000000046,
+    "sinceOrigin": 319,
+    "pose": [
+     -2274.7,
+     -60,
+     6110
+    ],
+    "sector": 12,
+    "laps": 0,
+    "armed": 1,
+    "distance": 9
+   },
+   {
+    "k": 598,
+    "event": "moved",
+    "destination": {
+     "waypoint": 44,
+     "sector": 10,
+     "position": [
+      -2274.671142578125,
+      -60,
+      6408.3583984375
+     ],
+     "yaw": -1985.2254638671875,
+     "distance": 7
+    },
+    "sector": 10,
+    "prev": 10,
+    "laps": 0,
+    "armed": 1,
+    "distance": 7
+   },
+   {
+    "k": 617,
+    "event": "done",
+    "speed": [
+     0,
+     0,
+     0
+    ],
+    "rates": [
+     0,
+     0,
+     0
+    ]
+   }
+  ],
+  "englandTyres": {
+   "queued": {
+    "k": 385,
+    "ms": 9650,
+    "at": [
+     -7167.3,
+     6332.7
+    ],
+    "sector": 125
+   },
+   "moved": {
+    "k": 405,
+    "destination": {
+     "waypoint": 589,
+     "sector": 125,
+     "position": [
+      -7027.060546875,
+      0,
+      6317.619140625
+     ],
+     "yaw": -35.27010726928711,
+     "distance": 1
+    }
+   }
+  },
+  "pause": [
+   {
+    "name": "the module carries the pause-entry patch 0x42f6d8 (jmp 0x42f703)",
+    "ok": true,
+    "detail": {
+     "addr": 4388568,
+     "old": "8b0dd0b953",
+     "new": "e926000000",
+     "asm": "jmp 0x42f703",
+     "what": "pause entry: no extra object pass 0x491530 (render and present stay: the pauze notice)"
+    }
+   },
+   {
+    "name": "P pass: from P's poll straight into the pause loop, no 0x414160 polls of an extra object pass",
+    "ok": true,
+    "detail": {
+     "pAt": 31,
+     "loopAt": 32,
+     "between": []
+    }
+   },
+   {
+    "name": "the P pass flips twice: its own render and the one that shows the pauze notice (no extra object pass)",
+    "ok": true,
+    "detail": {
+     "normalFlips": 1,
+     "pFlips": 2
+    }
+   },
+   {
+    "name": "the pause picture on the grid (40 passes after green): every kart whole and as in the pass's picture, no scene draw moved, the HUD with the notice after it",
+    "ok": true,
+    "detail": {
+     "karts": "4,30,30,30,30,52,193,211 | 4,30,30,30,30,167,193 | 4,30,30,30,30,193,292 | 4,30,30,30,30,157,193 | 4,30,30,30,30,123,193",
+     "drawnKarts": 5,
+     "scene": "130/130",
+     "moved": 0,
+     "withObject": 0,
+     "objectsMovedBetween": 0,
+     "hud": "86/91"
+    }
+   },
+   {
+    "name": "the race goes on after the pause",
+    "ok": true,
+    "detail": {
+     "kmh": 46,
+     "passes": 40
+    }
+   },
+   {
+    "name": "the pause picture racing (440 passes later, returned): every kart whole and as in the pass's picture, no scene draw moved, the HUD with the notice after it",
+    "ok": true,
+    "detail": {
+     "karts": "4,30,30,30,30,52,193,211 |  |  |  | ",
+     "drawnKarts": 1,
+     "scene": "162/162",
+     "moved": 0,
+     "withObject": 1,
+     "objectsMovedBetween": 1,
+     "hud": "87/92"
+    }
+   },
+   {
+    "name": "the pause renders gave every aging draw back what the pass's render found, and left what it left (render-replay.js)",
+    "ok": true,
+    "detail": {
+     "pauseEntries": 2,
+     "kartsRestored": 6,
+     "effectsRestored": 23,
+     "effectsSkipped": 0,
+     "effectsDiffer": 0,
+     "displaced": 0,
+     "maxOff": 29
+    }
+   }
+  ],
+  "npc": [
+   {
+    "name": "a speed the catch-up overflows is set to 0 and counted once",
+    "ok": true,
+    "detail": {
+     "seen": 0,
+     "corrections": 1,
+     "event": {
+      "racer": 0,
+      "body": 347,
+      "offset": 160,
+      "previous": 3.3999999521443642e+38,
+      "rejected": "Infinity"
+     }
+    }
+   },
+   {
+    "name": "a speed that was not finite before the dispatch is not hidden",
+    "ok": true,
+    "detail": {
+     "seen": "Infinity",
+     "corrections": 0
+    }
+   }
+  ],
+  "browser": [
+   {
+    "name": "?nocheats: W, D and Ctrl bound to accelerate, right and bonus drive, the passes go on",
+    "ok": true,
+    "detail": {
+     "s0": {
+      "ticks": 353,
+      "phase": 0,
+      "steer": 0,
+      "throttle": 0,
+      "kmh": 0,
+      "safe": {
+       "stuck": 0,
+       "relocated": 0,
+       "npc": 0,
+       "keys": 15732,
+       "joy": 0,
+       "cheats": false
+      },
+      "exit": null,
+      "crash": null
+     },
+     "s1": {
+      "ticks": 436,
+      "phase": 0,
+      "steer": 100,
+      "throttle": 100,
+      "kmh": 117,
+      "safe": {
+       "stuck": 0,
+       "relocated": 0,
+       "npc": 0,
+       "keys": 19882,
+       "joy": 0,
+       "cheats": false
+      },
+      "exit": null,
+      "crash": null
+     }
+    }
+   },
+   {
+    "name": "?nocheats: Ctrl+F+I does not finish the race",
+    "ok": true,
+    "detail": {
+     "ticks": 540,
+     "phase": 0,
+     "steer": 0,
+     "throttle": 0,
+     "kmh": 122,
+     "safe": {
+      "stuck": 0,
+      "relocated": 0,
+      "npc": 0,
+      "keys": 25082,
+      "joy": 0,
+      "cheats": false
+     },
+     "exit": null,
+     "crash": null
+    }
+   },
+   {
+    "name": "development page (cheats by default): Ctrl+F+I finishes the race",
+    "ok": true,
+    "detail": {
+     "ticks": 355,
+     "phase": 3,
+     "steer": 0,
+     "throttle": 0,
+     "kmh": 0,
+     "safe": {
+      "stuck": 0,
+      "relocated": 0,
+      "npc": 0,
+      "keys": 0,
+      "joy": 0,
+      "cheats": true
+     },
+     "exit": null,
+     "crash": null
+    }
+   },
+   {
+    "name": "NED, ArrowUp held from the green light: the stuck recovery moves the kart back (worker input, CTRL.SAFE_STUCK)",
+    "ok": true,
+    "detail": {
+     "ticks": 2368,
+     "phase": 0,
+     "steer": 0,
+     "throttle": 19.3,
+     "kmh": 0,
+     "safe": {
+      "stuck": 1,
+      "relocated": 1,
+      "npc": 0,
+      "keys": 116488,
+      "joy": 0,
+      "cheats": false
+     },
+     "exit": null,
+     "crash": null
+    }
+   },
+   {
+    "name": "?fixed, Nederland, pass 401 with P: the pause picture is the pass's picture without P but for the notice (every kart whole)",
+    "ok": true,
+    "detail": {
+     "frozen": [
+      [
+       400,
+       401
+      ],
+      [
+       400,
+       400
+      ]
+     ],
+     "n": 47,
+     "raw": 73,
+     "notice": {
+      "x": 402,
+      "y": 248,
+      "width": 155,
+      "height": 46
+     },
+     "replay": {
+      "renders": 392,
+      "kartsRestored": 0,
+      "effectsRestored": 0,
+      "effectsSkipped": 0,
+      "effectsDiffer": 0,
+      "displaced": 0,
+      "lastDisplaced": 0,
+      "maxOff": 28.558280032908463,
+      "pauseEntries": 0,
+      "repaints": 0,
+      "notices": 0
+     }
+    }
+   }
+  ]
+ }
+}

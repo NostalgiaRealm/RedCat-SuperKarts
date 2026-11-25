@@ -1,0 +1,41 @@
+# rand (0x4be6c9) return addresses per update, from a build with env.trace on rand's entry, made outside the project:
+#   cp tools/recomp/*.py $SCRATCH/rc/tools/recomp/ && cd $SCRATCH/rc && SUPERKARTS_ORIGINAL_SOURCE='../RedCat Superkarts/original-source' re-python -I tools/recomp/build.py --out $SCRATCH/rc/game --trace 4be6c9
+#   (codemap identical to public/game; only the trace import calls differ)
+$ node tools/checks/start-trace.mjs --ticks 330 --game $SCRATCH/rc/game --rand-callers 0,1,2,3,322,323,324,325,326,327,328,329 | grep -E '^#rand|rand state'
+#rand tick 0: 18 draws: 40c7afx15 43e737x3
+# player 346: obj 347 sector 3 pos -2353.726 0.000 7343.168 (matrix row +0x40: -2353.726 0.000 7343.168) phase 1 countdown phase 6 rand state 3e8
+#rand tick 1: 1 draws: 40c7afx1
+#rand tick 2: 11 draws: 43874bx4 4381f6x3 438715x3 438156x1
+#rand tick 3: 0 draws: 
+#rand tick 322: 0 draws: 
+#rand tick 323: 29 draws: 40e05fx20 41306dx4 41317dx4 40e087x1
+#rand tick 324: 39 draws: 438715x4 4381f6x2 43874bx2 438156x2 40e05fx20 41306dx4 41317dx4 40e087x1
+#rand tick 325: 29 draws: 40e05fx20 41306dx4 41317dx4 40e087x1
+#rand tick 326: 39 draws: 43874bx4 4381f6x2 40e05fx20 40e087x5 41306dx4 41317dx4
+#rand tick 327: 32 draws: 40e05fx20 40e087x4 41306dx4 41317dx4
+#rand tick 328: 29 draws: 40e05fx20 41306dx4 41317dx4 40e087x1
+#rand tick 329: 31 draws: 40e05fx20 41306dx4 41317dx4 40e087x3
+
+# JS port, same scenario and recomp clock: draw sites per update (scratch harness wrapping NativeRandom.next)
+tick 1: 17 draws
+   x6 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.passing (simulation/native-character-voice.js:71:14 < RaceSimulation.step (race-simulation.js:334:46
+   x4 selectNativeVoiceSample (simulation/native-character-voice.js:20:36 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:37 < NativeCharacterVoices.passing (simulation/native-character-voice.js:74:12
+   x4 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.replaceRacer (simulation/native-character-voice.js:60:15 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:17
+   x2 selectNativeVoiceSample (simulation/native-character-voice.js:20:36 < NativeCharacterVoices.passing (simulation/native-character-voice.js:72:40 < RaceSimulation.step (race-simulation.js:334:46
+   x1 RaceSimulation.createPlayerRecord (race-simulation.js:643:25 < RaceSimulation.pickups.onPlayerCheck (race-simulation.js:195:41 < NativeBonusPickups.step (simulation/native-bonus.js:273:56
+tick 2: 6 draws
+   x2 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.passing (simulation/native-character-voice.js:71:14 < RaceSimulation.step (race-simulation.js:334:46
+   x2 selectNativeVoiceSample (simulation/native-character-voice.js:20:36 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:37 < NativeCharacterVoices.passing (simulation/native-character-voice.js:74:12
+   x2 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.replaceRacer (simulation/native-character-voice.js:60:15 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:17
+tick 323: 30 draws
+   x20 updateNativeAIPriorities (simulation/native-ai.js:7:14 < getPriorities (simulation/native-ai.js:481:37 < searchNativeAIPath (simulation/native-ai.js:403:29
+   x2 updateNativeAIPriorities (simulation/native-ai.js:8:65 < getPriorities (simulation/native-ai.js:481:37 < searchNativeAIPath (simulation/native-ai.js:403:29
+   x8 updateNativeAIWobble (simulation/native-ai.js:25:33 < updateNativeAIRacerMotion (simulation/native-ai.js:459:3 < prepareNativeNormalAI (simulation/native-ai.js:502:3
+tick 324: 34 draws
+   x2 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.passing (simulation/native-character-voice.js:71:14 < RaceSimulation.step (race-simulation.js:334:46
+   x1 selectNativeVoiceSample (simulation/native-character-voice.js:20:36 < NativeCharacterVoices.passing (simulation/native-character-voice.js:72:40 < RaceSimulation.step (race-simulation.js:334:46
+   x1 selectNativeVoiceSample (simulation/native-character-voice.js:20:36 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:37 < NativeCharacterVoices.passing (simulation/native-character-voice.js:74:12
+   x1 NativeCharacterVoices.chance (simulation/native-character-voice.js:56:33 < NativeCharacterVoices.replaceRacer (simulation/native-character-voice.js:60:15 < NativeCharacterVoices.selected (simulation/native-character-voice.js:66:17
+   x20 updateNativeAIPriorities (simulation/native-ai.js:7:14 < getPriorities (simulation/native-ai.js:481:37 < searchNativeAIPath (simulation/native-ai.js:403:29
+   x8 updateNativeAIWobble (simulation/native-ai.js:25:33 < updateNativeAIRacerMotion (simulation/native-ai.js:459:3 < prepareNativeNormalAI (simulation/native-ai.js:502:3
+   x1 updateNativeAIPriorities (simulation/native-ai.js:8:65 < getPriorities (simulation/native-ai.js:481:37 < searchNativeAIPath (simulation/native-ai.js:403:29

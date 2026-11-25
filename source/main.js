@@ -1,44 +1,62 @@
-import {readSettings,writeSettings,renderDimensions,autoPixelBudget,chooseMultisampleCount} from './settings.js';
-import {assetURL} from './asset-url.js';
+// The app: the JavaScript reconstruction's menu and its flow (../RedCat Superkarts/source/main.js at commit 5bfe0b62,
+// 1.0.3), with its race replaced by the recompiled one. Kept as there, in its own compact style so the two can be
+// compared line by line: the intro, the main menu and its greetings, QuickRace, Adventure, highscores, settings with
+// Geavanceerd, Instellen and Meer instellingen, Help, Stoppen, the reward movies, the saves (rcsk.* in localStorage)
+// and the keyboard, pad and touch navigation of the menus.
+// Changed for the recomp ("recomp:" marks each place):
+// - showTrack/DrivingView and resumeViewer became startSelectedRace with source/race-runner.js: the menu hides its
+//   screens, shows the canvas and the JS port's loading screen (fed by the runner's load percent until the race
+//   runs), awaits runner.start() and hands its result patch to finishRace unchanged.
+// - Left out because the original race code does them itself: the JS-drawn quit requester and pause gate, the race
+//   HUD, the race's key handling (focus loss in a race is the runner's: it presses the original's P). Left out for
+//   now: the track viewer (?track). During a race the menu ignores keys and the pad.
+// - The free-flight panel and its touch buttons are the JS port's; the flight itself is the race worker's
+//   (source/host/free-flight.js). Its Instellingen holds the race under the settings (runner.menu, raceMenu) and
+//   their OK or Terug gives it back (resumeRace), where the JS port suspended and resumed its viewer.
+// - Settings that change are also passed to runner.applySettings().
+import {readSettings,writeSettings,renderDimensions,autoPixelBudget,chooseMultisampleCount} from './menu/settings.js';
 import {GAME_VERSION} from './version.js';
-import {FrameLimiter} from './frame-limit.js';
-import {FpsCounter} from './fps-counter.js';
-import {MoviePlayback} from './movie-playback.js';
-import {InputController,nativeIntroSkipKey} from './input.js';
-import {NativeMenu} from './native-menu.js';
-import {MenuAudio} from './menu-audio.js';
-import {NATIVE_MOVIE_GAIN,settingsAudioPercent} from './audio-mixing.js';
-import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeAdventureBriefingSound,nativeCountryInfoSound,nativeMenuFirstTime,nativeMainMenuGreeting} from './menu-sound-events.js';
-import {NativeControlDraft,NATIVE_CONTROL_FIELDS,nativeBindingImage,nativeBindingLabel,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from './native-control-settings.js';
-import {createNativeDisplaySettings} from './native-display-settings.js';
-import {nativeNavigationOrder} from './native-tab-order.js';
-import {applyNativeMenuRegion} from './menu-regions.js';
-import {readRaceSave,writeRaceSave,applyRaceResult,saveHighscore,unlockAllCountries} from './race-save.js';
-import {nativeHighscoreIndex,formatNativeResultTime} from './simulation/native-results.js';
-import {NativeMenuRandom,nativeMenuRandomSeed,nativeAdventureOutcomeVoice,nativeDebriefRankVoice} from './simulation/native-menu-random.js';
-import {NativeRacePauseGate,nativeRacePauseRequest} from './simulation/native-race-lifecycle.js';
-import {createRaceQuitRequester} from './race-requester.js';
-import {createLoadingScreen} from './loading-screen.js';
-import {HelpViewer} from './help-viewer.js';
-import {nativeHelpContext,nativeHelpNotice} from './native-help-context.js';
+import {MoviePlayback} from './menu/movie-playback.js';
+import {InputController,nativeIntroSkipKey} from './menu/input.js';
+import {NativeMenu} from './menu/native-menu.js';
+import {MenuAudio} from './menu/menu-audio.js';
+import {NATIVE_MOVIE_GAIN,settingsAudioPercent} from './menu/audio-mixing.js';
+import {nativeMenuNavigationSound,nativeMenuRaceModeSound,nativeAdventureBriefingSound,nativeCountryInfoSound,nativeMenuFirstTime,nativeMainMenuGreeting} from './menu/menu-sound-events.js';
+import {NativeControlDraft,NATIVE_CONTROL_FIELDS,nativeBindingImage,nativeBindingLabel,nativeOptionsDraft,commitNativeOptions,nativeShowsStartInfo} from './menu/native-control-settings.js';
+import {createNativeDisplaySettings} from './menu/native-display-settings.js';
+import {nativeNavigationOrder} from './menu/native-tab-order.js';
+import {applyNativeMenuRegion} from './menu/menu-regions.js';
+import {assetURL} from './menu/asset-url.js';
+import {readRaceSave,writeRaceSave,applyRaceResult,saveHighscore,unlockAllCountries,configWithRaceSave} from './menu/race-save.js';
+import {nativeHighscoreIndex,formatNativeResultTime} from './menu/simulation/native-results.js';
+import {NativeMenuRandom,nativeMenuRandomSeed,nativeAdventureOutcomeVoice,nativeDebriefRankVoice} from './menu/simulation/native-menu-random.js';
+import {createLoadingScreen} from './menu/loading-screen.js';
+import {HelpViewer} from './menu/help-viewer.js';
+import {nativeHelpContext,nativeHelpNotice} from './menu/native-help-context.js';
 import {nativeAdventureConfiguration,createNativeAdventureProfile,restartNativeAdventureProfile,
   nativeAdventureBriefing,beginNativeAdventureEvent,applyNativeAdventureResult,
   nativeAdventureSaveSlot,nativeAdventureReward,NATIVE_ADVENTURE_TYPES,NATIVE_ADVENTURE_COUNTRIES,
-  nativeAdventureQualification} from './simulation/native-adventure.js';
+  nativeAdventureQualification} from './menu/simulation/native-adventure.js';
+import {RaceRunner} from './race-runner.js';
+import {exportSaves,parseSaves,importSaves} from './save-transfer.js';
+import {unsupported,classicAddress} from './web/support.js';
 
 const $=id=>document.getElementById(id),screen=$('screen');
 const moviePlayback=new MoviePlayback($('movie'),$('movie-audio'),{onError:()=>message('De film kon niet worden afgespeeld.')});
 const countries=['Nederland','Duitsland','Groot-Brittanië','Frankrijk','Spanje','Italië'];
 const countryArt=['mn_0301a','mn_0302a','mn_0304a','mn_0303a','mn_0305a','mn_0306a'];
 const characters=['RedCat','WhizzKitty','Brutus','Max'],modes=['Landenrace','Tijdrace','Sterrenrace','Duelrace'];
-let settings=readSettings(),mode='intro',page='main',viewer=null,forms=null,nativeMenu=null,returnFromSettings='main',loadSerial=0,configs={},assetManifest={},menuAudio=null;
+let settings=readSettings(),mode='intro',page='main',forms=null,nativeMenu=null,returnFromSettings='main',loadSerial=0,configs={},assetManifest={},menuAudio=null;
 let selection={character:0,difficulty:1,country:0,race:0};
 let raceSave=readRaceSave(),lastRace=null,playMode='quickrace',newProfileSelection=false;
 let adventureConfig=null,promptReturn=null,rewardDone=null,highscoreCountry=0;
-let racePause=null;
 let optionsDraft=null,controlDialog=null,displayDraft=null,advancedSettingsActive=false;
 let moreSettingsDraft=null;
-let pendingTrackLoad=null;
+// recomp: the recompiled race behind its runner (source/race-runner.js). racing is true from the start of a race's
+// loading until runner.start() has settled; the menu then ignores keys, the pad and focus loss.
+let runner=null,racing=false,lastRunnerConfig=null;
+// recomp: raceMenu is true while the settings are open over a held race (the flight panel's Instellingen).
+let raceMenu=false;
 const visitedForms=new Set();
 const firstTimePhases={main:'PHASE_MAIN',characters:'PHASE_SELECTCHAR',
   countries:'PHASE_SELECTCOUNTRY',adventure:'PHASE_ADVENT_MAIN'};
@@ -66,18 +84,35 @@ async function commonPress(method){
 try{const saved=JSON.parse(localStorage.getItem('rcsk.selection.v1'));for(const [key,max]of Object.entries({character:3,difficulty:2,country:5,race:2}))if(Number.isInteger(saved?.[key])&&saved[key]>=0&&saved[key]<=max)selection[key]=saved[key];}catch{}
 const saveSelection=()=>{try{localStorage.setItem('rcsk.selection.v1',JSON.stringify(selection));}catch{}};
 function message(text){$('message').textContent=text;$('message').hidden=false;clearTimeout(message.timer);message.timer=setTimeout(()=>$('message').hidden=true,6500);}
-const input=new InputController({onMenu:menuKey,onPause:back,onKeysChanged:advanceRacePause,onActivity:()=>viewer?.resumeAudio?.(),deadzone:()=>settings.deadzone,bindings:()=>settings.bindings});
-input.bindSteeringWheel($('touch-wheel'));
-for(const button of document.querySelectorAll('[data-input]'))input.bindTouch(button,button.dataset.input);
+// recomp: the notice for a browser the race cannot run in (#unsupported in source/index.html; source/web/support.js), in
+// Dutch as the menu; the link to the old version appears only when classic/ answers.
+const UNSUPPORTED_WHY={isolation:'deze website geeft het spel niet het gedeelde geheugen dat het nodig heeft (de pagina is niet "cross-origin isolated")',
+  wasm:'deze browser kent niet alles van WebAssembly wat het spel nodig heeft',
+  canvas:'deze browser kan het beeld van het spel niet buiten de pagina tekenen (OffscreenCanvas ontbreekt)',
+  webgl2:'deze browser geeft het spel geen WebGL 2 om mee te tekenen (het ontbreekt of staat uit)'};
+function showUnsupported(reason){
+  const box=$('unsupported');
+  const text=document.createElement('p');
+  text.textContent=`De races kunnen in deze browser niet starten: ${UNSUPPORTED_WHY[reason]||'onbekende reden'}. Probeer een recente versie van Chrome, Edge, Firefox of Safari.`;
+  const actions=document.createElement('p');actions.className='unsupported-actions';
+  const close=document.createElement('button');close.type='button';close.textContent='OK';close.onclick=()=>{box.hidden=true;};
+  actions.append(close);box.replaceChildren(text,actions);box.hidden=false;
+  classicAddress().then(url=>{if(!url)return;const a=document.createElement('a');a.href=url;a.id='unsupported-classic';a.textContent='Speel de vorige versie';actions.prepend(a);});
+}
+// recomp: settings are stored as the JS port stores them and also go to the race runner.
+function storeSettings(){writeSettings(settings);try{runner?.applySettings({...settings});}catch(error){console.error(error);}}
+const input=new InputController({onMenu:menuKey,onPause:back,deadzone:()=>settings.deadzone,enabled:()=>(!racing&&!runner?.active)||raceMenu});
+// recomp: the JS port's flight panel (main.js:72-81 there), made before the runner so its touch controls bind Omhoog and
+// Omlaag (Space and C, source/input/touch.js; there input.bindTouch). Instellingen holds the race under the menu.
 const flightPanel=document.createElement('aside');flightPanel.id='flight-controls';flightPanel.hidden=true;
 const flightHelp=document.createElement('p');flightHelp.textContent='Vrij vliegen — race gepauzeerd. Rijtoetsen: bewegen en draaien · Spatie: omhoog · C: omlaag.';
-const flightActions=document.createElement('div');flightActions.append(button('Instellingen',()=>showSettings('viewer')),button('Stop vliegen',()=>{
-  settings.freeFlight=false;writeSettings(settings);viewer?.setFreeFlight?.(false);
+const flightActions=document.createElement('div');flightActions.append(button('Instellingen',()=>{
+  if(!runner?.active)return;raceMenu=true;flightPanel.hidden=true;flightTouch.hidden=true;runner.menu(true);input.resyncPad();showSettings('race');
+}),button('Stop vliegen',()=>{
+  settings.freeFlight=false;storeSettings();
 }));flightPanel.append(flightHelp,flightActions);$('app').append(flightPanel);
 const flightTouch=document.createElement('div');flightTouch.id='flight-touch';flightTouch.hidden=true;
-for(const [label,action]of [['Omhoog','flightUp'],['Omlaag','flightDown']]){
-  const control=button(label,()=>{});input.bindTouch(control,action);flightTouch.append(control);
-}
+for(const label of ['Omhoog','Omlaag'])flightTouch.append(button(label,()=>{}));
 $('touch-controls').insertBefore(flightTouch,$('touch-stop'));
 function button(text,handler,attrs={}){
   const b=document.createElement('button');b.textContent=text;
@@ -104,8 +139,10 @@ function artButton(art,text,handler,selected=false){
   }
   const span=document.createElement('span');span.textContent=text;b.append(img,span);return b;
 }
+// recomp: the menus hide the race's canvas, FPS counter and touch controls (the JS port: #world stays, its HUDs hide).
+function hideRace(){$('game').hidden=true;$('fps-counter').hidden=true;$('touch-controls').hidden=true;}
 function base(title,art,variant=''){
-  bindingCapture=null;mode='menu';input.setMode('menu');screen.hidden=false;$('intro').hidden=true;$('viewer-hud').hidden=true;$('race-hud').hidden=true;viewer?.suspend();$('touch-controls').hidden=true;
+  bindingCapture=null;mode='menu';input.setMode('menu');screen.hidden=false;$('intro').hidden=true;hideRace();
   const wrap=document.createElement('div');wrap.className='menu '+variant;
   const header=document.createElement('header');header.className='menu-header';const logo=document.createElement('img');logo.className='brand';logo.src='assets/menu/mn_0003x.png';logo.alt='RedCat SuperKarts';header.append(logo,button('Help',showHelp));wrap.append(header);
   if(art){const img=document.createElement('img');img.className='menu-title';img.src='assets/menu/'+art+'.png';img.alt=title;wrap.append(img);}else{const h=document.createElement('h1');h.textContent=title;wrap.append(h);}
@@ -115,8 +152,7 @@ function base(title,art,variant=''){
 }
 function showNative(name,options){
   const focused=screen.querySelector('[data-form]')?.dataset.form===name?document.activeElement?.dataset.element:null;
-  bindingCapture=null;mode='menu';input.setMode('menu');screen.hidden=false;$('intro').hidden=true;$('viewer-hud').hidden=true;$('race-hud').hidden=true;viewer?.suspend();
-  $('touch-controls').hidden=true;
+  bindingCapture=null;mode='menu';input.setMode('menu');screen.hidden=false;$('intro').hidden=true;hideRace();
   screen.replaceChildren(nativeMenu.render(name,options));
   if(focused){const element=screen.querySelector(`[data-element="${focused}"]`);if(element&&!element.disabled&&element.tabIndex>=0)element.focus();}
   else if(['TFRMSELECTCHAR','TFRMSELECTCOUNTRY','TFRMADVENTUREMAIN','TFRMADVENTBRIEF'].includes(name)){
@@ -339,17 +375,17 @@ function showCountryInfo(){
   const cards=document.createElement('div');cards.className='cards';
   for(const value of Object.values(entries)){const [image,label]=value.split(',');const card=document.createElement('figure');card.style.margin='10px';const img=document.createElement('img');img.src='assets/menu/'+image.trim().replace('(IMAGEBASE)','').replace('.bmp','.png');img.width=121;img.height=137;img.alt=label?.trim()||'';const caption=document.createElement('figcaption');caption.textContent=label?.trim();card.append(img,caption);cards.append(card);}content.append(cards);footer.replaceChildren(button('Terug',closeCountryInfo));
 }
+// recomp: no track viewer or race HUD to capture; the race is never under a menu.
 function captureMenu(){
   return {page,mode,inputMode:input.mode,bindingCapture,nodes:[...screen.childNodes],
-    scrollTop:screen.scrollTop,focus:document.activeElement,viewerActive:viewer?.active,
-    hidden:Object.fromEntries(['screen','intro','viewer-hud','race-hud','touch-controls'].map(id=>[id,$(id).hidden]))};
+    scrollTop:screen.scrollTop,focus:document.activeElement,
+    hidden:Object.fromEntries(['screen','intro','touch-controls'].map(id=>[id,$(id).hidden]))};
 }
 function restoreMenu(saved){
   page=saved.page;mode=saved.mode;bindingCapture=saved.bindingCapture;
   input.setMode(saved.inputMode);screen.replaceChildren(...saved.nodes);
   for(const [id,hidden]of Object.entries(saved.hidden))$(id).hidden=hidden;
   screen.scrollTop=saved.scrollTop;saved.focus?.focus({preventScroll:true});
-  if(saved.viewerActive)viewer?.resume();
 }
 function menuReturn(){const saved=captureMenu();return()=>restoreMenu(saved);}
 let helpData=null,helpReturn=showMain,helpSession=null,helpViewer=null;
@@ -394,9 +430,17 @@ function showQuit(){
   });
 }
 function finishOptions(commit=false){
-  if(commit&&optionsDraft){settings=commitNativeOptions(settings,optionsDraft);writeSettings(settings);menuAudio?.setVolume();}
+  if(commit&&optionsDraft){settings=commitNativeOptions(settings,optionsDraft);storeSettings();menuAudio?.setVolume();}
   optionsDraft=null;advancedSettingsActive=false;controlDialog=null;displayDraft=null;moreSettingsDraft=null;
-  returnFromSettings==='viewer'?resumeViewer():showMain();
+  // recomp: from the menus or the flight panel ('race'; the JS port's 'viewer' was also its track viewer).
+  returnFromSettings==='race'?resumeRace():showMain();
+}
+// recomp: the JS port's resumeViewer after settings over a race: the canvas again, the race given back to its runner,
+// whose touch controls, FPS counter and flight panel (frame) show again; settings.freeFlight off lands the kart.
+function resumeRace(){
+  raceMenu=false;returnFromSettings='main';
+  if(!runner?.active){showMain();return;}
+  page='driving';mode='race';screen.hidden=true;$('game').hidden=false;runner.menu(false);
 }
 function showSettings(from=returnFromSettings){
   page='settings';returnFromSettings=from;advancedSettingsActive=false;
@@ -427,7 +471,46 @@ function showSettings(from=returnFromSettings){
 function showStartInfo(){
   saveSelection();if(nativeShowsStartInfo(settings))showControlSettings(true);else startSelectedRace();
 }
-function startSelectedRace(){return showTrack(selection.country,true,{countdown:true});}
+// recomp: the JS port's showTrack(country,true,{countdown:true}) with the recompiled race. The selection and the
+// context are taken now, as showTrack did (main.js:708); the loading screen is the JS port's (424360/424f70 art) with
+// the runner's load percent; the result goes to finishRace unchanged.
+async function startSelectedRace(){
+  const raceSelection={...selection},raceContext={kind:playMode,slot:raceSave.selectedSlot};
+  page='loading';const serial=++loadSerial;base(countries[raceSelection.country],null);mode='loading';racing=true;
+  let loading=null,running=false;
+  // recomp: the picture's letter is the race type, not the character (the JS port passes selection.character):
+  // 0x424360 formats e0%d_%c_hi.tga with *(int*)0x53a4b0+'A', the race type object 0x42ac60 fills from race.ini
+  // RACETYPEINFO RaceType, and the four pictures carry the flag, clock, star and duel icons. The game's own copy of
+  // this screen follows this one when the race boots, so both must show the same picture.
+  try{loading=createLoadingScreen(assetManifest,raceSelection.country,raceSelection.race);screen.replaceChildren(loading.root);}catch(error){console.error(error);}
+  $('message').hidden=true;$('game').hidden=false;document.activeElement?.blur?.();
+  const save=readRaceSave(),merged=configWithRaceSave({'race.ini':{player:{},'best times':{}}},save);
+  const position=merged['race.ini'].player.position;
+  const config={country:raceSelection.country,character:raceSelection.character,difficulty:raceSelection.difficulty,raceType:raceSelection.race,
+    save:{bestTimes:{...merged['race.ini']['best times']},playerPosition:position===undefined?undefined:Number(position)},settings:{...settings},
+    onProgress:percent=>{if(serial===loadSerial&&page==='loading')try{loading?.update(Math.max(0,Math.min(100,Number(percent)||0)));}catch(error){console.error(error);}},
+    onRunning:()=>{if(serial===loadSerial&&page==='loading'){running=true;page='driving';mode='race';screen.hidden=true;}},
+    // recomp: the JS port's main.js:716-719 after its load: 437560 repairs enabled FX_VOLUME0 to75 and writes it back
+    // to Race.ini; the runner hands over the level the race plays with once it has booted. Taken here and not from the
+    // race's result: a level changed during the race (Instellingen) is the player's, applied live (race-runner.js
+    // applySettings, source/host/live-volume.js), and the result must not put the start's level back.
+    onEffects:percent=>{if(serial===loadSerial&&settingsAudioPercent(settings.effects)!==percent){settings.effects=percent/100;storeSettings();}}};
+  lastRunnerConfig={...config,onProgress:undefined,onRunning:undefined,onEffects:undefined};
+  let outcome;
+  try{
+    if(!runner)throw Error(notRunnable?UNSUPPORTED_WHY[notRunnable.reason]:'de race kon niet worden gestart');
+    outcome=await runner.start(config);
+  }catch(error){outcome={patch:null,effectsPercent:null,exitCode:null,error};}
+  racing=false;raceMenu=false;hideRace();input.resyncPad();
+  if(serial!==loadSerial)return;
+  // (outcome.effectsPercent is not adopted: onEffects took the race's level at its start, as the JS port does)
+  if(outcome?.error||!outcome?.patch?.PLAYER){
+    const error=outcome?.error;console.error(error);
+    message((running?'De race is gestopt door een fout: ':'De race kon niet worden geladen: ')+(error?.message||error||'geen resultaat'));
+    playMode=raceContext.kind;raceContext.kind==='adventure'?showBriefing():showCountries();return;
+  }
+  finishRace(outcome.patch,raceSelection,raceContext);
+}
 function startQuickRace(){playMode='quickrace';return startSelectedRace();}
 function finishRace(patch,raceSelection,raceContext={kind:playMode,slot:raceSave.selectedSlot}){
   raceSave=readRaceSave();raceSave.locks??=[...adventureConfig.locks];applyRaceResult(raceSave,patch);
@@ -529,7 +612,7 @@ async function processAdventureResult(backToMain){
 function playAdventureReward(kind,index){
   const reward=nativeAdventureReward(configs,kind,index);
   menuAudio?.stop();page='reward';mode='reward';input.setMode('menu');
-  screen.hidden=true;$('viewer-hud').hidden=true;$('race-hud').hidden=true;$('touch-controls').hidden=true;
+  screen.hidden=true;hideRace();
   moviePlayback.stop();$('intro').hidden=false;$('skip-movie').hidden=true;
   return new Promise(resolve=>{
     rewardDone=()=>{
@@ -551,7 +634,7 @@ function finishControls(commit){
   if(commit){
     if(startInfo)settings.startInfo=controlDialog.showInfo;
     else settings.bindings=controlDialog.draft.commit();
-    writeSettings(settings);
+    storeSettings();
   }else controlDialog.draft.cancel();
   controlDialog=null;bindingCapture=null;
   if(startInfo){if(commit)startSelectedRace();else playMode==='adventure'?showBriefing():showCountries();}
@@ -599,7 +682,7 @@ function showAdvancedSettings(from='main'){
   showNative('TFRMOPTIONS',{});
   page='settings';advancedSettingsActive='display';
   const finish=commit=>{
-    if(commit){settings.display={...displayDraft};writeSettings(settings);}
+    if(commit){settings.display={...displayDraft};storeSettings();}
     displayDraft=null;showSettings(from);
   };
   screen.replaceChildren(createNativeDisplaySettings(forms.TFRMDISPLAYSETTINGS,displayDraft,{
@@ -631,6 +714,7 @@ function showBrowserSettings(from='main'){
   <h2>Bediening</h2>
   <label>Controller deadzone<input id="deadzone" type="range" min="0" max="50"></label>
   <label>Aanraakbediening<select id="touch"><option value="auto">Automatisch</option><option value="on">Aan</option><option value="off">Uit</option></select></label>
+  <div id="save-section"><h2>Opslag</h2><div id="save-controls"></div><p id="save-status" class="settings-detail" role="status"></p></div>
   <p id="game-version" class="settings-detail settings-version">Versie ${GAME_VERSION}</p>`;
   content.append(form);
   $('resolution').value=draft.resolution;$('scale').value=draft.renderScale;$('deadzone').value=draft.deadzone*100;$('touch').value=draft.touch;
@@ -646,6 +730,28 @@ function showBrowserSettings(from='main'){
     }else $('unlock-status').textContent='Ontgrendelen kon niet worden opgeslagen. Probeer het opnieuw.';
   });
   unlock.id='unlock-all';unlock.classList.add('settings-wide-button');$('unlock-controls').append(unlock);
+  // recomp: saves between sites (source/save-transfer.js). On one site the recomp shares the JS port's saves; on
+  // another host or port, or from the JS port's desktop app, they move as a file. Not during a race (the import
+  // reloads the page).
+  if(runner?.active)$('save-section').hidden=true;
+  else{
+    const picker=document.createElement('input');picker.type='file';picker.accept='.json,application/json';picker.hidden=true;picker.id='save-file';
+    picker.onchange=async()=>{
+      const file=picker.files?.[0];picker.value='';if(!file)return;
+      try{
+        const {keys,summary}=parseSaves(await file.text());
+        const what=[summary.profiles.length?`avonturen: ${summary.profiles.join(', ')}`:'geen avonturen',`${summary.scores} highscores`,summary.settings?'instellingen':'geen instellingen'].join(', ');
+        if(!confirm(`Opslag importeren (${what})? De huidige opslag in deze browser wordt vervangen.`))return;
+        importSaves(keys);location.reload();
+      }catch(error){$('save-status').textContent=error.message||'Importeren is mislukt.';}
+    };
+    const exportButton=button('Opslag exporteren',()=>{try{exportSaves();$('save-status').textContent='De opslag is als bestand opgeslagen (redcat-superkarts-opslag.json).';}catch{$('save-status').textContent='Exporteren is mislukt.';}});
+    const importButton=button('Opslag importeren',()=>picker.click());
+    exportButton.id='save-export';importButton.id='save-import';
+    for(const b of [exportButton,importButton])b.classList.add('settings-wide-button');
+    $('save-controls').append(exportButton,importButton,picker);
+    $('save-status').textContent='Neem avonturen, highscores en instellingen mee naar een andere website of browser. Importeren vervangt de opslag hier.';
+  }
   $('unlock-status').textContent=raceSave.locks?.every(locked=>!locked)?'Alle landen en circuits zijn al ontgrendeld.':'Ontgrendelt direct alle landen en circuits. Voortgang en scores blijven behouden.';
   const update=()=>{
     Object.assign(draft,{resolution:$('resolution').value,renderScale:Number($('scale').value),deadzone:Number($('deadzone').value)/100,touch:$('touch').value,
@@ -655,7 +761,9 @@ function showBrowserSettings(from='main'){
     const size=renderDimensions({width:innerWidth,height:innerHeight,dpr:devicePixelRatio,...draft,autoPixels:autoPixelBudget()});
     $('scale-value').textContent=draft.renderScale+'%';$('effective-resolution').textContent=`Basis ${size.baseWidth} × ${size.baseHeight} → 3D ${size.width} × ${size.height} pixels`;
     $('msaa-samples').disabled=!draft.msaaEnabled;
-    const supported=viewer?.msaaStatus?.supportedSamples;
+    // recomp: the runner may report the sample counts its renderer supports (msaaStatus.supportedSamples, as the
+    // JS port's viewer did); without it the general note shows.
+    const supported=runner?.msaaStatus?.supportedSamples;
     const actual=Array.isArray(supported)?chooseMultisampleCount(draft.msaaSamples,supported):null;
     $('msaa-status').textContent=!draft.msaaEnabled?'MSAA staat uit.':
       actual!==null&&actual!==draft.msaaSamples?
@@ -678,104 +786,13 @@ function finishMoreSettings(commit){
   }
   moreSettingsDraft=null;showSettings(returnFromSettings);
 }
-async function showTrack(id,driving=false,options={}){
-  page='loading';const serial=++loadSerial;base(countries[id],null);
-  const loading=createLoadingScreen(assetManifest,id,selection.character);screen.replaceChildren(loading.root);
-  const progress=index=>{
-    if(serial===loadSerial&&page==='loading')loading.update(Number(configs['sndgfx.ini'].progress[`percent${index}`]));
-  };
-  progress(0);
-  try{
-    // A canceled asset load may still own the viewer's caches and audio.
-    // Let it finish cleanup before reusing that viewer for a newer request.
-    if(pendingTrackLoad)await pendingTrackLoad.catch(()=>{});
-    if(serial!==loadSerial||page!=='loading')return;
-    // The menu/intro need neither WebGL nor the racing engine. Loading them
-    // here also lets the distribution bundle keep those modules on demand.
-    const View=driving?(await import('./driving-view.js')).DrivingView:(await import('./world.js')).TrackViewer;
-    if(serial!==loadSerial||page!=='loading')return;
-    if(viewer&&(driving?!(viewer instanceof View):!!viewer.motion)){
-      viewer.suspend();await viewer.audio?.dispose();viewer.hud?.dispose();await viewer.hudMeshes?.dispose();viewer.finishFlag?.dispose();
-      if(viewer.group)viewer.disposeGroup(viewer.group);
-      viewer.controls.dispose();viewer.disposeRenderer();viewer=null;
-    }
-    if(!viewer)viewer=driving?new View($('world'),input.state,$('race-hud')):new View($('world'));
-    // Poll analog controls at simulation admission as well as display refresh.
-    viewer.beforeUpdate=time=>input.poll(time);
-    viewer.displaySettings=settings.display;viewer.surfaceShadows=settings.surfaceShadows;viewer.smoothEngineLights=settings.smoothEngineLights;
-    if(driving)viewer.audioSettings={...settings};
-    viewer.onLoadProgress=progress;
-    const raceSelection={...selection},raceContext={kind:playMode,slot:raceSave.selectedSlot};viewer.onExit=patch=>finishRace(patch,raceSelection,raceContext);
-    const loadingViewer=viewer;
-    const loading=loadingViewer.load(id,{character:selection.character,difficulty:selection.difficulty,raceMode:selection.race,...options});
-    pendingTrackLoad=loading;
-    let result;
-    try{result=await loading;}finally{if(pendingTrackLoad===loading)pendingTrackLoad=null;}
-    if(serial!==loadSerial||page!=='loading'){loadingViewer.suspend();return;}
-    if(!result)return;
-    // 437560 repairs enabled FX_VOLUME0 to75 and writes it back to Race.ini.
-    if(driving&&settingsAudioPercent(settings.effects)!==viewer.audio.groupVolume){
-      settings.effects=viewer.audio.groupVolume/100;writeSettings(settings);
-    }
-    $('track-title').textContent=result.track.name;resumeViewer();
-    if(result.errors.length)message(`${result.errors.length} objectbronnen ontbreken in deze weergave. Zie het validatieverslag.`);
-  }catch(error){
-    if(serial!==loadSerial||page!=='loading')return;
-    console.error(error);message('Circuit kon niet worden geladen: '+error.message);showCountries();
-  }
-}
-function resumeViewer(){
-  racePause=null;
-  const driving=!!viewer?.motion;
-  page=driving?'driving':'viewer';mode=driving?'race':'viewer';input.setMode(mode);screen.hidden=true;$('viewer-hud').hidden=driving;$('viewer-caption').hidden=driving;$('race-hud').hidden=!driving;
-  $('touch-controls').hidden=!driving||settings.touch==='off'||(settings.touch==='auto'&&!matchMedia('(pointer:coarse)').matches);
-  viewer?.setAudioSettings?.(settings);viewer?.setSurfaceShadows?.(settings.surfaceShadows);viewer?.setSmoothEngineLights?.(settings.smoothEngineLights);viewer?.setFreeFlight?.(settings.freeFlight);viewer?.resume();resize();
-}
-function resize(){
-  input.clear();
-  if(viewer){const size=viewer.resize(settings);$('render-size').textContent=`${size.width} × ${size.height} · ${settings.renderScale}%${size.limited?' · GPU-limiet':''}`;}
-}
+// recomp: the race's own Esc, P, pause and requester are the original code's (in the runner), so back() only
+// serves the menus, the intro and the reward movies; focus loss in the menus changes nothing (as in the JS port).
 function back(reason){
+  if((racing||runner?.active)&&!raceMenu)return;
   if(mode==='reward'||mode==='quitting')return;
   if(mode==='intro'){if(reason!=='focus'&&!$('movie').paused)finishIntro();return;}
-  if(reason==='focus'){
-    if(mode==='viewer'||mode==='race'||mode==='paused'){
-      // A pending key release or requester press may finish after blur. It
-      // must not undo the host's focus pause without a fresh resume gesture.
-      if(racePause)racePause.focusSuspended=true;
-      viewer?.suspend();mode='paused';input.setMode('menu');
-    }
-    return;
-  }
-  if(racePause?.requester){
-    // Physical Escape belongs to the release-gated native keyboard poll.
-    // Controller Back has no Win32 key state and selects the same No action.
-    if(reason!=='pause'&&!input.state.keys.has(27)&&!input.state.keys.has('Escape'))
-      racePause.requester.choose(3);
-    return;
-  }
-  if(mode==='paused'&&!racePause){resumeViewer();return;}
-  if(mode==='race'){
-    const request=nativeRacePauseRequest(viewer.race.phase,input.state.keys);
-    if(!request)return;
-    const heldKeys=[...input.state.keys];
-    racePause={gate:new NativeRacePauseGate(request),choice:-1};
-    viewer.suspend({notifyPause:request!=='quit',pauseAudio:false,nativePause:true});mode='paused';input.setMode('menu');
-    // Preserve physical key releases across the mode switch. The game must
-    // not interpret the opening Escape/P as an already released key.
-    for(const key of heldKeys)input.state.keys.add(key);
-    if(request==='quit'){
-      const pause=racePause;
-      pause.requester=createRaceQuitRequester(configs,assetManifest,choice=>{
-        if(racePause===pause)pause.choice=choice;
-      },{onPress:()=>menuAudio?.play('click4.wav')});
-      screen.replaceChildren(pause.requester);
-      // 42f290 leaves the captured race visible until opening Escape releases.
-      screen.hidden=true;
-    }
-    return;
-  }
-  if(racePause)return;
+  if(reason==='focus')return;
   if(page==='settings'){
     if(advancedSettingsActive==='browser')finishMoreSettings(false);
     else if(advancedSettingsActive==='display'){displayDraft=null;showSettings();}
@@ -788,21 +805,14 @@ function back(reason){
   if(page==='debrief'){if(lastRace)debriefBack();return;}
   // rcskmenu 0x473c9f disables Back in Adventure character selection.
   if(page==='characters'&&playMode==='adventure')return;
-  if(page==='countries')showCharacters();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else if(page==='viewer')showCountries();else showMain();
+  if(page==='countries')showCharacters();else if(page==='country-info')closeCountryInfo();else if(page==='start-info')playMode==='adventure'?showBriefing():showCountries();else showMain();
 }
 function menuKey(key,source){
+  if((racing||runner?.active)&&!raceMenu)return;
   if((mode==='intro'||mode==='reward')&&document.activeElement===$('movie-audio')&&(key==='Enter'||key==='Space')){
     moviePlayback.activate();return;
   }
   if(mode==='reward'){if($('movie').paused&&(key==='Enter'||key==='Space'))moviePlayback.activate();return;}
-  if(mode==='paused'&&!racePause){resumeViewer();return;}
-  if(racePause){
-    if(racePause.requester?.stage!=='input')return;
-    const buttons=[...screen.querySelectorAll('.race-requester-button')];
-    if((key==='Enter'||key==='Space')&&buttons.includes(document.activeElement))document.activeElement.click();
-    else if(buttons.length)buttons[(buttons.indexOf(document.activeElement)+1)%buttons.length].focus();
-    return;
-  }
   // Keyboard skips use the native key-press rule in the keydown listener
   // below; skipping with any controller button is a browser adaptation.
   if(mode==='intro'){if(!$('movie').paused){if(source!=='keyboard')finishIntro();}else if(key==='Enter'||key==='Space')moviePlayback.activate();return;}
@@ -821,7 +831,7 @@ function menuKey(key,source){
 }
 function playIntro(){
   menuAudio?.stop();
-  page='intro';mode='intro';input.setMode('menu');screen.hidden=true;$('viewer-hud').hidden=true;$('intro').hidden=false;
+  page='intro';mode='intro';input.setMode('menu');screen.hidden=true;hideRace();$('intro').hidden=false;
   moviePlayback.start('assets/media/intro.mp4',NATIVE_MOVIE_GAIN);
 }
 function finishIntro(){moviePlayback.stop();showMain();}
@@ -831,81 +841,41 @@ window.addEventListener('keydown',e=>{
   if(e.target===$('movie-audio')&&(e.code==='Enter'||e.code==='Space'))return;
   if(mode==='intro'&&!$('movie').paused&&nativeIntroSkipKey(e)){e.preventDefault();finishIntro();}
 });
-$('leave-viewer').onclick=showCountries;$('viewer-settings').onclick=()=>showSettings('viewer');
-function requestTouchQuit(){
-  // Mobile adaptation: the original Stoppen art invokes the same Esc gate.
-  if(mode!=='race')return;
-  input.state.keys.add(27);back();input.state.keys.delete(27);advanceRacePause();
-}
-$('touch-stop').onclick=requestTouchQuit;
-$('touch-stop').addEventListener('pointerup',event=>{
-  // A second finger does not synthesize click while the first holds the wheel.
-  // Keep release-inside behavior; the mode gate ignores any duplicate click.
-  if(event.pointerType!=='touch'||event.isPrimary)return;
-  const box=event.currentTarget.getBoundingClientRect();
-  if(event.clientX>=box.left&&event.clientX<=box.right&&event.clientY>=box.top&&event.clientY<=box.bottom){
-    event.preventDefault();requestTouchQuit();
-  }
+// recomp: a hidden page suspends a running race (its clock, sound and input) and a shown one resumes it; blur and a
+// lost pad are the runner's (it pauses with the original's P).
+document.addEventListener('visibilitychange',()=>{
+  if(!runner?.active)return;
+  try{document.hidden?runner.suspend():runner.resume();}catch(error){console.error(error);}
 });
-$('world').addEventListener('pointerdown',()=>{
-  if(mode==='paused'&&!racePause)resumeViewer();
-  else if(mode==='race'&&[3,6].includes(viewer.race.phase))input.state.keys.add('Space');
-});
-for(const event of ['pointerup','pointercancel'])window.addEventListener(event,()=>input.state.keys.delete('Space'));
 let portrait=matchMedia('(orientation: portrait)').matches;
-window.addEventListener('resize',()=>{resize();const now=matchMedia('(orientation: portrait)').matches;if(now!==portrait){portrait=now;({main:showMain,characters:showCharacters,countries:showCountries})[page]?.();}});
-const phoneFrames=matchMedia('(pointer:coarse)').matches?new FrameLimiter():null;
-const fpsDisplay=$('fps-counter'),fpsCounter=new FpsCounter();
+window.addEventListener('resize',()=>{if(racing||runner?.active)return;const now=matchMedia('(orientation: portrait)').matches;if(now!==portrait){portrait=now;({main:showMain,characters:showCharacters,countries:showCountries})[page]?.();}});
+// recomp: the menu's frame loop only polls the pad for menu navigation (the runner draws the race and its FPS counter).
 function frame(time){
   input.poll(time);
-  advanceRacePause();
-  viewer?.updateLoop?.serveLate();
-  const drawing=!phoneFrames||phoneFrames.due(time);
-  if(drawing)viewer?.render(time);
-  const showFps=settings.showFps===true&&viewer?.active===true&&(mode==='race'||mode==='viewer');
-  if(fpsDisplay.hidden===showFps)fpsDisplay.hidden=!showFps;
-  if(showFps){
-    if(drawing)fpsCounter.frame(time);
-    if(fpsDisplay.textContent!==fpsCounter.label)fpsDisplay.textContent=fpsCounter.label;
-  }else if(fpsCounter.previous!==null)fpsCounter.reset();
-  const flying=mode==='race'&&viewer?.simulation?.freeFlightActive===true;
+  // recomp: the JS port's flight panel rule (main.js:871-872), shown only while the kart flies and the game does not
+  // wait in its own pause or requester (the JS port's mode 'paused') nor sits under the settings
+  const flying=!!runner?.active&&runner.flying&&!runner.waiting&&!raceMenu&&mode==='race';
   if(flightPanel.hidden===flying){flightPanel.hidden=!flying;flightTouch.hidden=!flying;}
   requestAnimationFrame(frame);
 }
-function advanceRacePause(){
-  if(racePause){
-    const requester=racePause.requester;
-    if(requester){
-      const state=requester.update(input.state.keys,performance.now());
-      if(!racePause.requesterShown&&state.stage!=='initial-release'){
-        racePause.requesterShown=true;screen.hidden=false;
-        $('race-hud').hidden=true;$('touch-controls').hidden=true;
-        screen.querySelector('[data-choice=no]').focus();
-      }
-    }
-    // The graphical requester owns key-release and pressed-frame timing.
-    // The outer pause gate consumes only its completed result.
-    const result=racePause.gate.update(requester?{}:input.state.keys,{requesterCode:racePause.choice});
-    if(result.done){
-      const focusSuspended=racePause.focusSuspended;
-      racePause=null;
-      if(result.quit)finishRace({PLAYER:{finished:0}},{...selection});
-      else if(focusSuspended){
-        // Closing the native dialog does not lift a later host focus pause.
-        // The existing world-click/menu-key handler resumes deliberately.
-        screen.hidden=true;$('race-hud').hidden=false;
-      }
-      else resumeViewer();
-    }
-  }
-}
 requestAnimationFrame(frame);
 // Read-only diagnostics are used by automated checks; no simulated race completion.
-window.rcsk={get state(){return {mode,page,selection:{...selection},settings:{...settings},input:input.state.snapshot(),track:viewer?.track?.id,objects:viewer?.group?.children.length,assetErrors:viewer?.errors||[],menuAudio:menuAudio?.last};},get viewer(){return viewer;}};
+window.rcsk={get state(){return {mode,page,selection:{...selection},settings:{...settings},racing,lastRunnerConfig,menuAudio:menuAudio?.last};},get runner(){return runner;}};
 try{const [r,m,c,a]=await Promise.all([fetch('assets/ui/forms.json'),fetch('assets/menu/manifest.json'),fetch('assets/config.json'),fetch('assets/manifest.json')]);if(r.ok&&m.ok){forms=await r.json();nativeMenu=new NativeMenu(forms,await m.json(),commonPress);}if(c.ok)configs=await c.json();if(a.ok)assetManifest=await a.json();}catch(error){console.error(error);}
 menuAudio=new MenuAudio(configs,()=>settings.effects,assetManifest);
 if(nativeMenu)nativeMenu.language=configs['ini/shellang.ini']?.dutch||{};
 adventureConfig=nativeAdventureConfiguration(configs);raceSave.locks??=[...adventureConfig.locks];
+// recomp: one runner for the page; it owns the canvas, the touch controls and the FPS counter while a race runs.
+// recomp: ?cheats lets the original's debug and cheat keys answer in races (Ctrl+F+I finishes one: tools/check-menu-race.mjs);
+// without it they read "up", as the JS port has none (source/host/safeguards.js).
+// recomp: a browser the race cannot run in (source/web/support.js: no cross-origin isolation, WebAssembly features, no
+// WebGL 2 on an OffscreenCanvas) is told so at once, in a notice that stays, with the old version (classic/, the JS port,
+// when the server has it) offered; the menu, its saves and highscores still work there, a race does not start.
+const notRunnable=unsupported();
+if(notRunnable){console.warn(`[${notRunnable.reason}] ${notRunnable.detail}`);showUnsupported(notRunnable.reason);}
+else try{runner=new RaceRunner({canvas:$('game'),touchRoot:$('touch-controls'),fpsElement:$('fps-counter'),settings:{...settings},cheats:new URLSearchParams(location.search).has('cheats')});}catch(error){console.error(error);message('De race kan in deze browser niet starten: '+error.message);}
 const params=new URLSearchParams(location.search);
-if(params.has('drive')&&/^[0-5]$/.test(params.get('drive')))showTrack(Number(params.get('drive')),true);
-else if(params.has('track')&&/^[0-5]$/.test(params.get('track')))showTrack(Number(params.get('track')));else if(params.has('skipIntro'))showMain();else playIntro();
+// recomp: ?drive=N starts a QuickRace in country N with the saved character, difficulty and race type (the JS port's
+// ?drive=N); ?track=N (the JS port's track viewer) does not exist here.
+if(params.has('drive')&&/^[0-5]$/.test(params.get('drive'))){selection.country=Number(params.get('drive'));playMode='quickrace';startSelectedRace();}
+else if(params.has('skipIntro'))showMain();else playIntro();
