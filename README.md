@@ -1,9 +1,9 @@
 # RedCat SuperKarts, recompiled
 
-**Version 2.0.0** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.0.md) ·
+**Version 2.0.1** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.1.md) ·
 [Play in the browser](https://games.nostalgiarealm.com/redcatsuperkarts/) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.0) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.0)
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.1) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.1)
 
 > **This is a static recompilation, not a reconstruction.** From version 2.0.0 RedCat SuperKarts runs the
 > game's own original race program, `rcskspel.dat` (Davilex, 2000), recompiled from x86 machine code to
@@ -177,7 +177,7 @@ Linux (AppImage, tar.gz) and Windows (installer, zip) x64 are built here, macOS 
 workflow. How to build and check them: [`docs/building.md`](docs/building.md).
 
 ```bash
-npm ci && npm run package && npm run dist:linux && npm run dist:win    # release/2.0.0/
+npm ci && npm run package && npm run dist:linux && npm run dist:win    # release/<version>/
 node tools/desktop-check.mjs --legacy /path/to/1.0.3/redcat-superkarts  # launch check of the Linux build
 ```
 

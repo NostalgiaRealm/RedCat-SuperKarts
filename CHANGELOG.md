@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.1 — 2026-11-26
+
+Fixes stationary objects that snapped out of place and back while racing. Saves and settings are unchanged. See
+the [2.0.1 release notes](docs/releases/2.0.1.md).
+
+### Fixed
+
+- **Objects snapping in and out of place.** The picture blends the game's last two 25 ms steps. Something without
+  a counterpart in the step before (an object coming into view, a growing skid mark, or one whose twin another draw
+  took, about one every two steps) was drawn with the newer step's camera, up to a whole step ahead of the scene
+  around it, and jumped back the step after. It is now seen through the same blended camera as the rest. Objects that
+  did not move are matched with their exact twin first, and the others closest pairs first, so neighbouring puffs
+  of smoke no longer swap. Checked by `tools/checks/pairing-probe.mjs`.
+
 ## 2.0.0 — 2026-11-25
 
 **A new port: the race now runs the game's own original code.** Until now RedCat SuperKarts was a

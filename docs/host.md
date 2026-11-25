@@ -335,11 +335,16 @@ widening or heightening so its edges stay off screen (A2's `scaleFlag`).
 
 **Smoothing.** The game draws a frame per 25 ms pass; a 60 Hz display would show some twice. The render
 worker keeps the last two frames of 3D draws and shows a blend of them on its own `requestAnimationFrame`,
-one pass (25 ms) behind the game (A2 Racer 4's model): each draw of the newer frame is paired with the nearest
-draw of the older one with the same texture, primitive and counts (so karts that share a mesh do not swap), and
-its world matrix, the camera's view and projection, and its vertices when they move by themselves (smoke,
-sparks, animated meshes) are blended. A draw without a partner, one that moved more than 30 units in a pass
-(a jump), or a vertex more than 10 units from its last place shows the newer frame; a turn of more than 20
+one pass (25 ms) behind the game (A2 Racer 4's model): each draw of the newer frame is paired with a draw of the
+older one with the same texture, primitive and counts (so karts that share a mesh do not swap): first its exact
+twin when it did not move (same world matrix and vertices), then the rest by distance, closest pairs first over
+all draws of that kind (of draws that start at the same point, the most alike). Its world matrix, the camera's view
+and projection, and its vertices when they move by themselves (smoke, sparks, animated meshes) are blended. A draw
+without a partner (something that came into view, a skid strip that grew; about one every two passes) keeps its
+newer place but is seen through the blended camera of the draws around it; until 2026-11-26 it was drawn with the
+newer pass's camera, up to a pass ahead of the scene, so stationary objects snapped out of place and back
+(`tools/checks/pairing-probe.mjs`). One that moved more than 30 units in a pass (a jump), or a vertex more than 10
+units from its last place shows the newer frame; a turn of more than 20
 degrees per pass (a wheel) keeps the newer rotation and blends the place only. The HUD's draws (the pass
 0x467d30, wrapped in `race.js`) are never blended, so it changes from one pass to the next as in the original.
 Every frame is still replayed once, exactly, into the flip chain; the blend goes to a display buffer of its

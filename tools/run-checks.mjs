@@ -46,6 +46,7 @@ const CHECKS = [
   { name: 'flight', group: 'node', min: 10, args: ['tools/checks/flight.mjs', '--out', join(LOGS, 'flight.txt')] },
   { name: 'pause-repaint', group: 'node', min: 10, args: ['tools/checks/pause-repaint.mjs'] },
   { name: 'shadows', group: 'node', min: 15, args: ['tools/checks/shadows.mjs'] },
+  { name: 'pairing', group: 'node', min: 10, args: ['tools/checks/pairing-probe.mjs'] },
   { name: 'hud-layout-4x3', group: 'node', min: 5, args: ['tools/checks/hud-layout-check.mjs', '--out', join(LOGS, 'hud-layout-4x3.txt')] },
   { name: 'hud-layout-9x16', group: 'node', min: 5, args: ['tools/checks/hud-layout-check.mjs', '--xr', '1', '--yr', String(16 / 9), '--out', join(LOGS, 'hud-layout-9x16.txt')] },
   // the shapes of evidence/checks/hud-scale-*.txt (their first two lines give aspect, insets and band)

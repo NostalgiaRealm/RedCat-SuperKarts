@@ -10,11 +10,13 @@
 //
 // Smoothing (on unless options.smooth is false). A frame of 3D draws that ends in a FLIP is also kept, with the
 // one before it, and the display shows a blend of the two (the A2 Racer 4 port's model, source/render/
-// d3d-renderer.js there): each draw of the newer frame is paired with the draw of the older one with the same
-// texture, primitive and counts that lies nearest, and its world matrix, the camera's view and projection, and,
-// when the vertices themselves move (smoke, sparks, animated meshes), its vertices are blended. A draw without a
-// partner, one that moved more than TELEPORT units in a pass, or a turn of more than SPIN degrees (a wheel at
-// speed: its rotation is the newer one's, only its place is blended) shows the newer frame. The display lags one
+// d3d-renderer.js there): each draw of the newer frame is paired with a draw of the older one with the same
+// texture, primitive and counts (its unmoved twin first, then the nearest, closest pairs first), and its world
+// matrix, the camera's view and projection, and, when the vertices themselves move (smoke, sparks, animated
+// meshes), its vertices are blended. A draw without a partner keeps its newer place, seen through the blended
+// camera of the draws around it (pair's camFrom); one that moved more than TELEPORT units in a pass, or a turn of
+// more than SPIN degrees (a wheel at speed: its rotation is the newer one's, only its place is blended) shows the
+// newer frame. The display lags one
 // pass (25 ms) behind the game. Frames with 2D changes are shown as they are. The blended picture goes to a
 // buffer of its own, so the flip chain stays exactly the game's.
 //
@@ -144,6 +146,11 @@ function blendMatrix(out, a, b, t, isView) {
     return true;
   }
   for (let k = 0; k < 16; k++) out[k] = a[k] + (b[k] - a[k]) * t;
+  return true;
+}
+
+function sameMatrix(a, b) {
+  for (let k = 0; k < 16; k++) if (a[k] !== b[k]) return false;
   return true;
 }
 
@@ -674,13 +681,16 @@ export class GLRenderer {
   drawInfo(frame, prim, vtype, count, tex, base, nverts, hud, sheet, c, tag) {
     const v = frame.vx, o = base * 8;
     const vx = nverts ? v[o] : 0, vy = nverts ? v[o + 1] : 0, vz = nverts ? v[o + 2] : 0;
+    // (shape: a sum over all its vertices, to tell an unmoved draw from another one that starts at the same point)
+    let shape = 0;
+    for (let i = o, end = o + nverts * 8; i < end; i += 8) shape += v[i] + 3 * v[i + 1] + 7 * v[i + 2];
     const w = this.world;
     const flags = c ? c[tag + 2] : 0, follow = (flags & TAG.FOLLOW) !== 0;
     return {
       key: tex + ':' + prim + ':' + vtype + ':' + count + ':' + nverts + (follow ? ':' + c[tag + 1] : ''),
       world: this.world.slice(), view: this.view.slice(), proj: this.proj.slice(), base, nverts, vx, vy, vz,
       ax: w[12] + vx, ay: w[13] + vy, az: w[14] + vz,
-      partner: null, vertexBlend: false, hud, sheet,
+      partner: null, camFrom: null, vertexBlend: false, hud, sheet, shape,
       follow, hold: (flags & TAG.HOLD) !== 0, decal: (flags & TAG.DECAL) !== 0,
       ox: follow ? c[tag + 3] : 0, oy: follow ? c[tag + 4] : 0, oz: follow ? c[tag + 5] : 0,
     };
@@ -695,27 +705,62 @@ export class GLRenderer {
       if (!g) groups.set(d.key, (g = []));
       g.push(d);
     }
-    const followers = [];
+    const followers = [], own = [];
     for (const d of newer.draws.values()) {
       if (d.hud) continue;
       // (HOLD: an engine flare with Motorlicht volgt de kart off, at its newest pass as the JS reconstruction draws it)
       if (d.hold) { this.stats.held++; continue; }
       if (d.follow) { followers.push(d); continue; }
+      own.push(d);
+    }
+    // first every draw whose exact twin is there (same key, world and vertices: it did not move), so that something
+    // that came into view near it cannot take its twin first and leave it to pair with a neighbour
+    for (const d of own) {
       const g = groups.get(d.key);
-      if (!g || !g.length) { this.stats.unpaired++; continue; }
-      let best = -1, bestD = Infinity;
-      for (let j = 0; j < g.length; j++) {
-        const e = g[j];
-        const dist = (e.ax - d.ax) ** 2 + (e.ay - d.ay) ** 2 + (e.az - d.az) ** 2;
-        if (dist < bestD) { bestD = dist; best = j; }
-      }
-      const e = g.splice(best, 1)[0];
-      d.partner = e;
-      // the vertices move by themselves (smoke, sparks, animated meshes) when they differ; blended unless they jumped
-      d.vertexBlend = e.nverts === d.nverts && Math.hypot(e.vx - d.vx, e.vy - d.vy, e.vz - d.vz) < VERTEX_JUMP;
+      if (!g) continue;
+      const j = g.findIndex((e) => e.shape === d.shape && e.ax === d.ax && e.ay === d.ay && e.az === d.az && sameMatrix(e.world, d.world));
+      if (j < 0) continue;
+      d.partner = g.splice(j, 1)[0];
+      d.vertexBlend = false;
       this.stats.paired++;
     }
+    // then the rest by distance, closest pairs first over all draws of a kind (taken in draw order, a puff of smoke
+    // could take its neighbour's partner and leave the neighbour with another puff); of draws that start at the same
+    // point (a mesh whose other vertices move), the most alike first
+    const rest = new Map();
+    for (const d of own) {
+      if (d.partner) continue;
+      const g = groups.get(d.key);
+      if (!g || !g.length) { this.stats.unpaired++; continue; }
+      let r = rest.get(d.key);
+      if (!r) rest.set(d.key, (r = []));
+      r.push(d);
+    }
+    for (const [key, ds] of rest) {
+      const g = groups.get(key), cand = [];
+      for (const d of ds) for (const e of g) cand.push([(e.ax - d.ax) ** 2 + (e.ay - d.ay) ** 2 + (e.az - d.az) ** 2, Math.abs(e.shape - d.shape), d, e]);
+      cand.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      const taken = new Set();
+      for (const [, , d, e] of cand) {
+        if (d.partner || taken.has(e)) continue;
+        taken.add(e);
+        d.partner = e;
+        // the vertices move by themselves (smoke, sparks, animated meshes) when they differ; blended unless they jumped
+        d.vertexBlend = e.nverts === d.nverts && Math.hypot(e.vx - d.vx, e.vy - d.vy, e.vz - d.vz) < VERTEX_JUMP;
+        this.stats.paired++;
+      }
+      for (const d of ds) if (!d.partner) this.stats.unpaired++;
+      groups.set(key, g.filter((e) => !taken.has(e)));
+    }
     if (followers.length) this.pairFollowers(groups, followers);
+    // A draw without a partner (something that came into view, a skid strip that grew, a HOLD flare, a draw whose
+    // twin another took) keeps its own, newer place, but is seen through the camera the rest of the picture is seen
+    // through: the blend of its pass's camera with the same camera in the pass before. Drawn with the newer camera it
+    // stood up to a whole pass ahead of the scene around it (a kart's camera covers about 14 units a pass at racing
+    // speed) and sprang back when it was paired again: stationary scenery snapping in and out of place.
+    const cams = new Map(), sig = (v) => v[0] + ',' + v[5] + ',' + v[10] + ',' + v[12] + ',' + v[13] + ',' + v[14];
+    for (const d of newer.draws.values()) if (d.partner && !cams.has(sig(d.view))) cams.set(sig(d.view), d.partner);
+    for (const d of newer.draws.values()) if (!d.hud && !d.partner) d.camFrom = cams.get(sig(d.view)) || null;
   }
 
   /**
@@ -781,9 +826,16 @@ export class GLRenderer {
           const prim = c[k + 1], vtype = c[k + 2], first = c[k + 3], count = c[k + 4], tex = c[k + 5];
           this.bindTarget('display');
           this.prepare(vtype, tex, info.hud, info.sheet, info.decal);
-          const e = prev && info.partner;
+          const e = prev && info.partner, ce = prev && !e && info.camFrom;
           let vertT = 1;
-          if (e && t < 1) {
+          if (ce && t < 1) {
+            // (no partner: its own world matrix and vertices, the blended camera; pair's camFrom)
+            blendMatrix(this.bv, ce.view, info.view, t, true);
+            for (let j = 0; j < 16; j++) this.bp[j] = ce.proj[j] + (info.proj[j] - ce.proj[j]) * t;
+            gl.uniformMatrix4fv(this.u.uWorld, false, info.world);
+            gl.uniformMatrix4fv(this.u.uView, false, this.bv);
+            gl.uniformMatrix4fv(this.u.uProj, false, this.bp);
+          } else if (e && t < 1) {
             const moved = blendMatrix(this.bw, e.world, info.world, t, false);
             blendMatrix(this.bv, e.view, info.view, t, true);
             for (let j = 0; j < 16; j++) this.bp[j] = e.proj[j] + (info.proj[j] - e.proj[j]) * t;
