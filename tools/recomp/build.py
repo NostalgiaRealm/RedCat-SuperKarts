@@ -336,6 +336,11 @@ GAME_HOOKS = {
     # 0x491530 sets back; the pause entry and free flight render without it, so source/host/render-replay.js puts back the
     # part matrices the render before found.
     0x00430020: {'hook': 'Render', 'pop': 0, 'wrap': True, 'conv': 'cdecl ()'},
+    # The camera mode setter 0x41e280(mode), cdecl, plain RETs at 0x41e9dc and 0x41eaff (cases 0-10 of a jump table;
+    # the mode goes to 0x4e3064). Key 3 held selects mode 5, the look back (0x41d969..0x41d99d), and its release the
+    # mode before (0x4e2ac8). The host sets mode 5's camera offset and aim the way A2 Racer 4's look back has them
+    # (source/host/look-back.js; docs/intentional-differences.md).
+    0x0041E280: {'hook': 'CameraMode', 'pop': 0, 'wrap': True, 'conv': 'cdecl (mode)'},
     # CBonusController::PickUp 0x4514e0 (JS native-bonus.js:121), thiscall ECX = bonus object with two stack arguments
     # (PUSH EDI, PUSH ESI, MOV ECX,EBP at 0x45418b..0x45418d), RET 8 at 0x451588/0x451634. Called only at 0x45418f
     # (0x4540c0). Safeguards phase 2: the JS port's pickup exclusion after a soft-lock relocation (race-simulation.js:

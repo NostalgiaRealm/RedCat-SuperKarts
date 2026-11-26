@@ -1,9 +1,9 @@
 # RedCat SuperKarts, recompiled
 
-**Version 2.0.2** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.2.md) ·
+**Version 2.0.3** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.3.md) ·
 [Play in the browser](https://games.nostalgiarealm.com/redcatsuperkarts/) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.2) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.2)
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.3) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.3)
 
 > **This is a static recompilation, not a reconstruction.** From version 2.0.0 RedCat SuperKarts runs the
 > game's own original race program, `rcskspel.dat` (Davilex, 2000), recompiled from x86 machine code to
@@ -34,6 +34,55 @@ The original program, its decompilation and the analysis that the recompiler and
 [`original-source/`](original-source/README.md) (recovered code and indexes, not the developers' source
 project). The game's data files (`rcs.img` and the rest, 204 MB) are not in the repository; the website and the
 desktop packages carry them, and a build reads them from an installation ([Run it](#run-it)).
+
+## Intentional differences from the original
+
+The race is the original program, but in these places this port shows or runs it differently on purpose. Each is
+explained, with the original's behaviour and its cost, in [`docs/intentional-differences.md`](docs/intentional-differences.md).
+
+**Picture**
+- **Screen shape:** fills any shape instead of 640x480; wider shows more at the sides, taller more above and below.
+  At 4:3 it is the original's.
+- **HUD:** laid out for the screen's shape and size the way the JavaScript reconstruction lays it out, clear of
+  notches and touch controls; at 4:3 without insets nothing moves.
+- **Finish flag:** the flag sheet grows on other shapes so its edges stay off screen.
+- **2D screens:** the quit requester and other full-screen pictures stay 4:3 in the middle, with black at the sides.
+- **Smoothness:** the display blends the game's last two 25 ms steps at its own rate (one step behind); the HUD is not
+  blended. `?nosmooth` shows the steps as they are.
+- **Resolution and MSAA:** any drawing size, render scale and 2/4/8x MSAA.
+- **Kart shadows (Schaduwen op het wegdek, on by default):** shadows lie on the road surface under each kart; off
+  shows the original shadow.
+- **Engine lights (Motorlicht volgt de kart, on by default):** the light stays on the engine between steps; off shows
+  it at the newer step.
+- **Look back (key 3 held):** framed like A2 Racer 4's look back, so the track and the karts behind are in view; the
+  original's camera looked up past the kart from close in front.
+
+**Controls**
+- **Input devices:** keyboard, gamepad and touch work together; the pad and the touch wheel steer through the game's
+  own analog joystick code, where the original drove with one device chosen in the menu.
+- **Key bindings:** letter keys work as set (the original menu wrote codes the race read as F-keys); P and Esc never
+  drive.
+- **Debug and cheat keys:** the original's own (fog, fill mode, finish, bonus and the like) only work with `?cheats`.
+- **WinMain's own keys:** Ctrl+Q (emergency exit) and Backspace (screenshot) are left out.
+- **Short key presses:** every key, click and touch press lasts at least 80 ms for the game, so quick taps are not
+  missed.
+
+**Race**
+- **Pause entry:** P and Esc pause without the original's one extra object step, as the JavaScript reconstruction
+  does; the original's "pauze" still shows.
+- **Focus loss:** leaving the window or tab pauses the race with the game's own pause and silences it.
+- **Stuck recovery:** a kart that stays stuck for 8 seconds is put back on the track with the original's own rescue.
+- **NPC speed overflow:** an opponent speed the original's arithmetic overflows is set to 0 instead.
+- **Free flight (Vrij vliegen, off by default):** a cheat from the JavaScript reconstruction to fly through the track
+  with the race held.
+- **Sound levels during a race:** music and effects volume changed during a race apply at once.
+- **Pass rate:** a game step every 25 ms with a 25 ms step, where the original measured its steps (about 31 ms on
+  Windows' clock).
+
+**Menu and saves**
+- **Menu:** the JavaScript reconstruction's menu, saves and settings instead of the original's Delphi menu program;
+  it hands the race the same INI settings and reads the results back. The loading picture follows the race type, as
+  the original does.
 
 ## How it fits together
 

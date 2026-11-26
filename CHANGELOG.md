@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.0.3 — 2026-11-26
+
+A clearer look back, and every intentional difference from the original listed in the README. Saves and settings are
+unchanged. See the [2.0.3 release notes](docs/releases/2.0.3.md).
+
+### Changed
+
+- **Look back (key 3 held)** is framed like A2 Racer 4's: the camera stands well in front of the kart, looking back
+  over it at the track and the karts behind (140 units ahead, 33 up, aimed where the chase camera aims). The
+  original's camera stood close in front and looked up past the kart, showing its front and sky. An intentional
+  difference from the original (`source/host/look-back.js`, a wrap of the camera mode setter 0x41e280).
+- **README:** a section "Intentional differences from the original" lists every one of them.
+
 ## 2.0.2 — 2026-11-26
 
 Fixes kart wheels that glitched at speed, above all with a speed powerup on Normaal or Moeilijk. Saves and settings

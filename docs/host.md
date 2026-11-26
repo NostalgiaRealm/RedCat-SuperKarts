@@ -355,6 +355,8 @@ degrees per pass (a wheel) keeps the newer rotation and blends the place only. T
 Every frame is still replayed once, exactly, into the flip chain; the blend goes to a display buffer of its
 own, and frames with 2D changes (the requester) are shown as they are. `?nosmooth` turns it off.
 
+**Look back** (`source/host/look-back.js`). Key 3 held selects camera mode 5 through 0x41e280; that function is a wrap hook (`CameraMode`), and after the original sets mode 5 the host writes A2 Racer 4's look-back framing into the camera (place +0xbc: 0, 33, 140; aim +0xcc: 0, 25, 0). docs/intentional-differences.md, Look back.
+
 **Kart shadows and engine lights** (`source/host/shadows.js`; the JS reconstruction's Schaduwen op het wegdek and
 Motorlicht volgt de kart, both on by default; docs/intentional-differences.md). The recorder asks a tagger about every
 draw outside the HUD (`recorder.tagger`), and a tag (`CMD.TAG`: id, flags, the owner's place) goes before the draws it

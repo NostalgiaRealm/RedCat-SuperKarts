@@ -13,6 +13,7 @@ import { installEh, CppException } from './eh.js';
 import { installSafeguards } from './safeguards.js';
 import { installShadows } from './shadows.js';
 import { installRenderReplay } from './render-replay.js';
+import { installLookBack } from './look-back.js';
 import { FreeFlight } from './free-flight.js';
 
 class BootDone extends Error {}
@@ -106,6 +107,7 @@ export class Race {
     // Kart shadows on the ground and engine flares that follow their kart (the JS reconstruction's two race visuals;
     // the shadow callback 0x4260c0 wrapped, the recorder's tagger): source/host/shadows.js
     installShadows(m, host);
+    this.lookBack = installLookBack(m, host);
     // The renders that no object pass precedes, the pause entry's and free flight's: the render 0x430020 wrapped, the
     // kart parts (wheels, driver) and the pause picture's aging draws put back (source/host/render-replay.js)
     this.renderReplay = installRenderReplay(m, host);
