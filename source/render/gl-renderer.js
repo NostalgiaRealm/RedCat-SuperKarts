@@ -21,8 +21,9 @@
 // buffer of its own, so the flip chain stays exactly the game's.
 //
 // Tags (CMD.TAG, source/host/shadows.js) say what a draw belongs to. A FOLLOW draw (a kart's shadow, an engine
-// flare) pairs only with the same owner's in the pass before, and its vertices are blended unless the owner (the
-// kart's matrix) moved more than TELEPORT, so it moves exactly as its kart, which is blended by the same rule; a HOLD
+// flare, the kart's own body, wheels and driver) pairs only with the same owner's in the pass before, nearest by its
+// place on the owner, and is blended unless the owner (the kart's matrix) moved more than FOLLOW_JUMP, so the kart's
+// parts move together; a HOLD
 // draw always shows the newer pass; a DECAL (the surface shadow) gets a polygon offset and writes no depth.
 //
 // Screen shape, resolution, MSAA. The buffers have the drawing size the page asks for (resize: any shape, any
@@ -51,6 +52,12 @@ const RS_DEFAULT = { 7: 1, 14: 1, 17: 1, 18: 1, 19: 2, 20: 1, 21: 2, 22: 3, 23: 
 // pass on average and at most 28.1 with a turbo, measured over 4000 passes on Frankrijk, 2026-11-25; true jumps,
 // rescues and respawns, are 400 and more)
 const TELEPORT = 30;
+// A kart and what is tagged FOLLOW with it (its body, wheels, driver, shadow, engine flares) is cut loose only when the
+// kart itself moved more than this in a pass: a turbo on Moeilijk or a draw pulled along by another kart covers more
+// than TELEPORT, while a rescue or respawn moves the kart 400 units and more (595 measured in the turbo check). The
+// camera follows the kart, so its eye has the same limit (a cut to another camera, the start's or a rescue's, is
+// longer)
+const FOLLOW_JUMP = 150;
 // A vertex of a moving mesh further than this from its place in the pass before belongs to something else
 // (the game reuses vertex arrays for other puffs and sparks)
 const VERTEX_JUMP = 10;
@@ -135,11 +142,11 @@ const eyeA = new Float32Array(3), eyeB = new Float32Array(3);
  * out = a blend of matrices a (older) and b (newer) at t. Returns false when they are too far apart to blend
  * (out is then b). isView: the distance is the eye's, not the translation's.
  */
-function blendMatrix(out, a, b, t, isView) {
+function blendMatrix(out, a, b, t, isView, jump = TELEPORT) {
   let d;
   if (isView) { eye(a, eyeA); eye(b, eyeB); d = Math.hypot(eyeB[0] - eyeA[0], eyeB[1] - eyeA[1], eyeB[2] - eyeA[2]); }
   else d = Math.hypot(b[12] - a[12], b[13] - a[13], b[14] - a[14]);
-  if (d > TELEPORT) { out.set(b); return false; }
+  if (d > jump) { out.set(b); return false; }
   if (turnCos(a, b) < SPIN_COS) {
     out.set(b);
     if (!isView) for (let k = 12; k < 15; k++) out[k] = a[k] + (b[k] - a[k]) * t;
@@ -787,7 +794,7 @@ export class GLRenderer {
       // the owner's own matrix, so the kart and what follows it snap together
       // (a kart turning more than SPIN a pass keeps its newer rotation, blendMatrix, while these stay blended point by
       // point; measured: no such turn in 4000 passes on Frankrijk and Duitsland, evidence/checks/shadows.txt)
-      d.vertexBlend = e.nverts === d.nverts && Math.hypot(e.ox - d.ox, e.oy - d.oy, e.oz - d.oz) <= TELEPORT;
+      d.vertexBlend = e.nverts === d.nverts && Math.hypot(e.ox - d.ox, e.oy - d.oy, e.oz - d.oz) <= FOLLOW_JUMP;
       this.stats.followed++;
       if (!d.vertexBlend) this.stats.followSnapped++;
       this.stats.paired++;
@@ -830,14 +837,14 @@ export class GLRenderer {
           let vertT = 1;
           if (ce && t < 1) {
             // (no partner: its own world matrix and vertices, the blended camera; pair's camFrom)
-            blendMatrix(this.bv, ce.view, info.view, t, true);
+            blendMatrix(this.bv, ce.view, info.view, t, true, FOLLOW_JUMP);
             for (let j = 0; j < 16; j++) this.bp[j] = ce.proj[j] + (info.proj[j] - ce.proj[j]) * t;
             gl.uniformMatrix4fv(this.u.uWorld, false, info.world);
             gl.uniformMatrix4fv(this.u.uView, false, this.bv);
             gl.uniformMatrix4fv(this.u.uProj, false, this.bp);
           } else if (e && t < 1) {
-            const moved = blendMatrix(this.bw, e.world, info.world, t, false);
-            blendMatrix(this.bv, e.view, info.view, t, true);
+            const moved = blendMatrix(this.bw, e.world, info.world, t, false, info.follow ? FOLLOW_JUMP : TELEPORT);
+            blendMatrix(this.bv, e.view, info.view, t, true, FOLLOW_JUMP);
             for (let j = 0; j < 16; j++) this.bp[j] = e.proj[j] + (info.proj[j] - e.proj[j]) * t;
             if (moved && info.vertexBlend) vertT = t;
             gl.uniformMatrix4fv(this.u.uWorld, false, this.bw);

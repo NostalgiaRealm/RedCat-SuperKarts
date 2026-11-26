@@ -343,7 +343,12 @@ and projection, and its vertices when they move by themselves (smoke, sparks, an
 without a partner (something that came into view, a skid strip that grew; about one every two passes) keeps its
 newer place but is seen through the blended camera of the draws around it; until 2026-11-26 it was drawn with the
 newer pass's camera, up to a pass ahead of the scene, so stationary objects snapped out of place and back
-(`tools/checks/pairing-probe.mjs`). One that moved more than 30 units in a pass (a jump), or a vertex more than 10
+(`tools/checks/pairing-probe.mjs`). A kart's body, wheels and driver are tagged with their kart (`shadows.js`, by
+their drawn matrices) and pair only with the same kart's part at the same place on it; until 2026-11-26 they paired by
+nearest place over all karts, so a wheel took another kart's wheel in a pack, or its own other wheel when a turbo on
+Normaal or Moeilijk carried the kart further in a pass than its wheels lie apart, and glitched
+(`tools/checks/wheel-probe.mjs`). Karts, what follows them and the camera are cut loose only by a jump of more than
+150 units (a rescue is 400 and more). One that moved more than 30 units in a pass (a jump), or a vertex more than 10
 units from its last place shows the newer frame; a turn of more than 20
 degrees per pass (a wheel) keeps the newer rotation and blends the place only. The HUD's draws (the pass
 0x467d30, wrapped in `race.js`) are never blended, so it changes from one pass to the next as in the original.

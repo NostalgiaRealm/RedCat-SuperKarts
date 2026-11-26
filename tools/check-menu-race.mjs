@@ -77,7 +77,8 @@ async function through(stops, tag) {
   for (let i = 0; i < 12; i++) {
     await page.waitForTimeout(600);
     const f = await currentForm();
-    if (f && seen.at(-1) !== f) seen.push(f);
+    // (the screen the click before left may still show for a moment over a real network: not counted)
+    if (f && f !== 'TFRMDEBRIEF' && seen.at(-1) !== f) seen.push(f);
     if (stops.includes(f)) break;
     if (f === 'TFRMREQUESTER' || f === 'TFRMEDITBOX') {
       await shot(`${tag}-${seen.length}-${f.toLowerCase()}`);

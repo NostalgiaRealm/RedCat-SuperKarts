@@ -55,7 +55,8 @@ export const DEFAULT_OPTIONS = OPT.SURFACE_SHADOWS | OPT.SMOOTH_ENGINE_LIGHTS;  
 export const ADDR = {
   KART_SHADOW: 0x004260c0,   // the shadow callback, wrapped as 'KartShadow' (cdecl, the engine slot; plain RET 0x4264b1)
   KARTS: 0x0067ee20,         // engine slots, 0xd0 each: +0xc object index, +0x1c route chunk (the sector hint), +0x28 shadow object or -1
-  KART_COUNT: 0x0067ee24,
+  KART_COUNT: 0x0067ee24,   // the slot array's size (5000; render-replay.js SLOT_CAPACITY)
+  SLOT_USED: 0x0067ee30,     // u32 -> one byte per slot, 1 in use
   OBJECTS: 0x006a5c38,       // objects, 0xa9 each (unaligned): +0 type, +4 animation, +8 frame, +0x10 the drawn matrix (its place at +0x40/+0x44/+0x48), +0x99 mesh or -1
   MESHES: 0x006a5ee0,        // mesh records, 0xbc each: +0x10 the box, 8 corners x y z (0x4aa0c0), +0x80 vertices, +0x84 their count
   ANIMS: 0x006a5f78,         // animations, 9 bytes each (unaligned): +4 the frame table (frame -> entry)
@@ -166,7 +167,7 @@ export function installShadows(m, host) {
   let cur = -1, surface = false, hint = 0, idxSig = '';
   const quadU = new Uint32Array(32), quadF = new Float32Array(quadU.buffer);   // the quad over the body's box
   // mesh: the body mesh of the last grid
-  const stats = host.shadowStats = { callbacks: 0, grids: 0, points: 0, kinds: { '-1': 0, 0: 0, 1: 0, 2: 0 }, flares: 0, ms: 0, mesh: -1 };
+  const stats = host.shadowStats = { callbacks: 0, grids: 0, points: 0, kinds: { '-1': 0, 0: 0, 1: 0, 2: 0 }, flares: 0, parts: 0, ms: 0, mesh: -1 };
 
   const hook = m.meta.hooks && m.meta.hooks.KartShadow;
   if (hook && hook.kind === 'wrap' && hook.addr === ADDR.KART_SHADOW) {
@@ -199,6 +200,50 @@ export function installShadows(m, host) {
     const obj = m.u32[ADDR.OBJECTS >> 2] + m.i32[(kart + 0xc) >> 2] * 0xa9;
     tag.ox = m.view.getFloat32(obj + 0x40, true); tag.oy = m.view.getFloat32(obj + 0x44, true); tag.oz = m.view.getFloat32(obj + 0x48, true);
     return kart;
+  };
+
+  // A kart's body, wheels and driver (engine slot +0xc and the part objects at +0x64.., +0x8c of them; render-replay.js):
+  // 0x490d40 puts each part on the body in its render object's matrix (+0x10) and hands that matrix to SetTransform, so a
+  // draw whose world matrix's place is one of those matrices' is that part. Tagged FOLLOW with its kart, so it pairs
+  // only with the same kart's part at the same place on the kart, and is blended unless the kart itself jumped
+  // (gl-renderer.js FOLLOW_JUMP). Paired by nearest place over all karts, a wheel took another kart's wheel when karts
+  // ran close, or its own other wheel when the kart covered more in a pass than the wheels lie apart (a turbo on
+  // Normaal or Moeilijk), and was drawn halfway between the two or cut loose from its body (tools/checks/wheel-probe.mjs).
+  const partTag = { id: 0, flags: TAG.FOLLOW, ox: 0, oy: 0, oz: 0, drop: false, verts: 0, worldSpace: false };
+  let kartList = [], kartListFrame = -1;
+  /** [slot, matrix address, ...] of every kart's body and parts, once a frame (the slots do not change inside one) */
+  const kartMatrices = () => {
+    const f = host.render ? host.render.stats.frames : 0;
+    if (kartListFrame === f) return kartList;
+    kartListFrame = f; kartList = [];
+    const table = m.u32[ADDR.KARTS >> 2], objs = m.u32[ADDR.OBJECTS >> 2], used = m.u32[ADDR.SLOT_USED >> 2];
+    if (!table || !objs || !used) return kartList;
+    let last = m.i32[ADDR.KART_COUNT >> 2] - 1;
+    while (last >= 0 && m.u8[used + last] !== 1) last--;
+    for (let i = 0; i <= last; i++) {
+      if (m.u8[used + i] !== 1) continue;
+      const slot = table + i * 0xd0, n = m.view.getInt32(slot + 0x8c, true);
+      if (n <= 0 || n > 10 || !m.view.getInt32(slot + 0x44, true)) continue;
+      kartList.push(i, objs + m.view.getInt32(slot + 0xc, true) * 0xa9 + 0x10);
+      for (let k = 0; k < n; k++) kartList.push(i, objs + m.view.getInt32(slot + 0x64 + 4 * k, true) * 0xa9 + 0x10);
+    }
+    return kartList;
+  };
+  // (the whole matrix must match, and never the identity: world-space draws, the track, skid marks and streams, are
+  // drawn with the identity, and a part that is not on a body, at the origin, would take them)
+  const part = (world) => {
+    if (world[12] === 0 && world[13] === 0 && world[14] === 0 && world[0] === 1 && world[5] === 1 && world[10] === 1) return null;
+    const L = kartMatrices(), v = m.view;
+    next: for (let j = 0; j < L.length; j += 2) {
+      const a = L[j + 1];
+      for (let k = 12; k >= 0; k--) if (v.getFloat32(a + 4 * k, true) !== world[k]) continue next;
+      for (const k of [13, 14, 15]) if (v.getFloat32(a + 4 * k, true) !== world[k]) continue next;
+      owner(L[j], partTag);
+      partTag.id = L[j] + 1;
+      stats.parts++;
+      return partTag;
+    }
+    return null;
   };
 
   const tagger = (prim, vtype, verts, nverts, indices, nindices, world) => {
@@ -236,7 +281,7 @@ export function installShadows(m, host) {
       shadowTag.verts = grid; shadowTag.nverts = npts; shadowTag.indices = gridIdx; shadowTag.nindices = nidx; shadowTag.worldSpace = true;
       return shadowTag;
     }
-    if (prim !== 5) return null;
+    if (prim !== 5) return part(world);
     // an engine flare (0x4888b0): its vertices are the flare in the pool
     const mg = m.u32[ADDR.FLARES >> 2];
     if (!mg) return null;

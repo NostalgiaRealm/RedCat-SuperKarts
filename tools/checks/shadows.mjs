@@ -196,6 +196,9 @@ for (const etappe of ETAPPES) {
           if (c[k] !== CMD.TAG || c[k + 1] < 1) continue;
           const flags = c[k + 2], draw = ks[q + 1];
           if (c[draw] !== CMD.DRAWIDX) continue;            // (a flare's: DRAW)
+          // a kart's body, wheels and driver are tagged FOLLOW too (the parts, shadows.js part()): neither the grid
+          // (DECAL) nor the original 4/6 quad
+          if (!(flags & TAG.DECAL) && !(c[draw + 7] === 4 && c[draw + 4] === 6)) continue;
           if (isOn) {
             const pre = ks[q - 1], post = ks[q + 2];
             const ident = c[pre] === CMD.TRANSFORM && c[pre + 1] === 1 && [...Array(16)].every((_, j) => c[pre + 2 + j] === (j % 5 === 0 ? 1 : 0));

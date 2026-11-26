@@ -1,9 +1,9 @@
 # RedCat SuperKarts, recompiled
 
-**Version 2.0.1** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.1.md) ·
+**Version 2.0.2** · [Changelog](CHANGELOG.md) · [Release notes](docs/releases/2.0.2.md) ·
 [Play in the browser](https://games.nostalgiarealm.com/redcatsuperkarts/) ·
-[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.1) ·
-[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.1)
+[GitHub downloads](https://github.com/NostalgiaRealm/RedCat-SuperKarts/releases/tag/v2.0.2) ·
+[GitLab downloads](https://gitlab.com/Nostalgia_Realm/RedCat-SuperKarts/-/releases/v2.0.2)
 
 > **This is a static recompilation, not a reconstruction.** From version 2.0.0 RedCat SuperKarts runs the
 > game's own original race program, `rcskspel.dat` (Davilex, 2000), recompiled from x86 machine code to

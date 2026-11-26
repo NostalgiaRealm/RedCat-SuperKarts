@@ -1,7 +1,7 @@
-# node tools/checks/shadows.mjs --ticks 2000 --etappes 0,3  (2026-11-25T22:26:54.470Z)
+# node tools/checks/shadows.mjs --ticks 2000 --etappes 0,3  (2026-11-26T11:41:12.237Z)
 
 == Nederland (etappe 0), 2000 passes, gas held, fixed clock
-runs: 6.7 s
+runs: 7.3 s
 ok   a  0x6802c4 = 0x4260c0, KartShadow is a wrap hook
 ok   a  the wrapper ran 6272 times on, 6272 off (3.14 a pass)
 ok   b  on: 6172 shadow draws as TRANSFORM(identity) TAG(FOLLOW|DECAL) DRAWIDX(81, 384) TRANSFORM(world), 0 otherwise
@@ -10,19 +10,19 @@ ok   c  grid corners 0, 8, 80, 72 against the body box's corners through the qua
 ok   i  6172 of 6172 grids span the drawn body's box, the JS reconstruction's kart03.d3d quad bit for bit (40.8 x 64.0; body meshes 1477, 6, 1474, 1475, 1476)
 ok   i  12444 quads the game drew (on and off) are 0x4260c0's from 0x490ce0's redcar.d3d (28.2 x 37.0), 0 otherwise
    first grids (slot, original quad Y, grid Y min..max): 346 -0.70 -2.70..0.25 | 347 -9.63 -12.92..-6.96 | 348 -10.45 -12.44..-7.26 | 349 -19.63 -22.60..-17.22 | 350 -20.58 -22.53..-17.43
-   grid: 6172 grids, 0.024 ms each, 0.074 ms a pass (Node); faces found {"0":22972,"1":476960,"2":0,"-1":0}
+   grid: 6172 grids, 0.021 ms each, 0.066 ms a pass (Node); faces found {"0":22972,"1":476960,"2":0,"-1":0}
 ok   e  game memory from 0x400000 up after 2000 passes: c603516227e3 on, c603516227e3 off
 ok   e  race.ini and the racers' places the same on and off: 346 -2274.7,-60.0,6110.0 | 347 -2466.3,-4.3,2254.7 | 348 -2488.4,-6.1,2138.7 | 349 -2243.0,-60.0,6095.6 | 350 -2614.6,-15.3,2260.1
 ok   f  on: 10000 of 10000 flare draws tagged FOLLOW with their owner (owners 346, 350, 349, 348, 347)
 ok   f  off: 10000 racer flares HOLD, 0 other flares FOLLOW, 0 otherwise
 ok   g  on: 9995 flare and 6166 shadow pairings, 0 with another owner's (0 flares moved in the pool between the two passes)
-ok   g  on: 16161 tagged draws paired with their owner's, 0 cut loose, 0 of them while the owner moved <= 30
+ok   g  on: 53763 tagged draws paired with their owner's, 0 cut loose, 0 of them while the owner moved <= 30
 ok   g  on: flare off its place on the kart shown at mid-blend: 0.00 mean, 0.00 max, 0 of 9995 over 2 units; kart turns over 20 degrees 0 (the old 10-unit vertex rule: 0.62 mean, 8.22 max, 962 over 2)
 ok   g  off: 9995 racer flares held at the newer pass, 0 other flares paired
 ok   h  free flight (passes 600..699): 100 player shadow draws left out, 459 callbacks ran
 
 == Frankrijk (etappe 3), 2000 passes, gas held, fixed clock
-runs: 6.2 s
+runs: 7.6 s
 ok   a  0x6802c4 = 0x4260c0, KartShadow is a wrap hook
 ok   a  the wrapper ran 9740 times on, 9740 off (4.87 a pass)
 ok   b  on: 9640 shadow draws as TRANSFORM(identity) TAG(FOLLOW|DECAL) DRAWIDX(81, 384) TRANSFORM(world), 0 otherwise
@@ -32,13 +32,13 @@ ok   i  9640 of 9640 grids span the drawn body's box, the JS reconstruction's ka
 ok   i  19380 quads the game drew (on and off) are 0x4260c0's from 0x490ce0's redcar.d3d (28.2 x 37.0), 0 otherwise
    first grids (slot, original quad Y, grid Y min..max): 252 0.00 20.51..26.59 | 253 0.00 10.85..15.65 | 254 0.00 8.74..16.41 | 255 0.00 18.60..20.25 | 256 0.00 19.43..25.76
 ok   d  Frankrijk start: the original quads lie at Y 0, the first pass's grid points on faces the search found ({"0":162,"1":243,"2":0,"-1":0}; -1 the fallback plane), the lowest at Y 8.74
-   grid: 9640 grids, 0.032 ms each, 0.154 ms a pass (Node); faces found {"0":137168,"1":630260,"2":0,"-1":13412}
+   grid: 9640 grids, 0.032 ms each, 0.157 ms a pass (Node); faces found {"0":137168,"1":630260,"2":0,"-1":13412}
 ok   e  game memory from 0x400000 up after 2000 passes: 165c768efc26 on, 165c768efc26 off
 ok   e  race.ini and the racers' places the same on and off: 252 -3752.9,52.6,5353.2 | 253 -5663.2,40.0,4674.5 | 254 -4504.4,-0.0,4842.0 | 255 -5920.4,47.8,4695.7 | 256 -6166.0,61.7,4563.2
 ok   f  on: 10201 of 10201 flare draws tagged FOLLOW with their owner (owners 252, 256, 255, 254, 253)
 ok   f  off: 10201 racer flares HOLD, 0 other flares FOLLOW, 0 otherwise
 ok   g  on: 10195 flare and 9632 shadow pairings, 0 with another owner's (19 flares moved in the pool between the two passes)
-ok   g  on: 19827 tagged draws paired with their owner's, 2 cut loose, 0 of them while the owner moved <= 30
+ok   g  on: 78225 tagged draws paired with their owner's, 8 cut loose, 0 of them while the owner moved <= 30
 ok   g  on: flare off its place on the kart shown at mid-blend: 0.00 mean, 0.00 max, 0 of 10194 over 2 units; kart turns over 20 degrees 0 (the old 10-unit vertex rule: 5.10 mean, 32.26 max, 7246 over 2)
 ok   g  off: 10196 racer flares held at the newer pass, 0 other flares paired
 ok   h  free flight (passes 600..699): 100 player shadow draws left out, 500 callbacks ran

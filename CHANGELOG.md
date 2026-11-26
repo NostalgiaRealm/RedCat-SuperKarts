@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.0.2 — 2026-11-26
+
+Fixes kart wheels that glitched at speed, above all with a speed powerup on Normaal or Moeilijk. Saves and settings
+are unchanged. See the [2.0.2 release notes](docs/releases/2.0.2.md).
+
+### Fixed
+
+- **Wheels glitching at speed.** The picture blends the game's last two 25 ms steps, and a kart's wheels and driver
+  were matched by nearest place over all karts: in a pack a wheel took another kart's wheel, and when a turbo carried
+  a kart further in a step than its wheels lie apart, its own other wheel, so it was drawn halfway between two wheels
+  or cut loose from its body. A kart's body, wheels and driver are now matched only with the same kart's, by their
+  place on the kart, and move together; karts and the camera are cut loose only by a jump of more than 150 units (a
+  rescue). Checked by `tools/checks/wheel-probe.mjs`.
+
 ## 2.0.1 — 2026-11-26
 
 Fixes stationary objects that snapped out of place and back while racing. Saves and settings are unchanged. See
